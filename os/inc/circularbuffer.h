@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//    Copyright (C) 2011  Angelo Coppi (coppi dot angelo at virgilio dot it )
+//    Copyright (C) 2011  Angelo Coppi (angelogkcop at hotmail.com )
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
 // History:        
-// Created on 12 Nov 2011
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _CIRCULARBUFFER_H
