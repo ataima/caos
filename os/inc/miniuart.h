@@ -1,0 +1,120 @@
+#ifndef _MINI_UART_HEADER_
+#define _MINI_UART_HEADER_
+
+
+#if   HAVE_MINIUART 
+
+class caMiniUart {
+public:
+
+
+public:
+    static u32 Init(u32 vel, u32 stop, u32 parity, u32 data);
+
+    static inline u32 Enable(bool rx, bool tx) {
+        system_aux_mini_uart(mu);
+        mu->ctrl.asReg |= (rx | (2 * tx));
+        return (mu->ctrl.asReg & 3);
+    }
+
+    static inline u32 EnableIrq(void) {
+        system_aux_mini_uart(mu);
+        mu->ier.asReg = 0xf;
+        return 1;
+    }
+
+    static inline u32 EnableIrqRx(void) {
+        system_aux_mini_uart(mu);
+        mu->ier.asReg |= 0xd;
+        return mu->ier.asBit.rxe;
+    }
+
+    static inline u32 DisableIrqRx(void) {
+        system_aux_mini_uart(mu);
+        mu->ier.asReg &= 0xe;
+        return mu->ier.asBit.rxe;
+    }
+
+    static inline u32 DisableIrqTx(void) {
+        system_aux_mini_uart(mu);
+        mu->ier.asReg &= 0xd;
+        return mu->ier.asBit.rxe;
+    }
+
+    static inline u32 EnableIrqTx(void) {
+        system_aux_mini_uart(mu);
+        mu->ier.asReg |= 0xe;
+        return mu->ier.asBit.txe;
+    }
+
+    static inline u8 GetIO(void) {
+        system_aux_mini_uart(mu);
+        return (mu->io.asReg & 0xff);
+    }
+
+    static inline void SetIO(u8 c) {
+        system_aux_mini_uart(mu);
+        mu->io.asReg = c;
+    }
+
+    static inline u32 GetIER(void) {
+        system_aux_mini_uart(mu);
+        return mu->ier.asReg;
+    }
+
+    static inline u32 GetIIR(void) {
+        system_aux_mini_uart(mu);
+        return mu->iir.asReg;
+    }
+
+    static inline u32 GetLsr(void) {
+        system_aux_mini_uart(mu);
+        return mu->lsr.asReg;
+    }
+
+    static inline u32 GetStat(void) {
+        system_aux_mini_uart(mu);
+        return mu->stat.asReg;
+    }
+
+    static inline u32 ClearFifos(void) {
+        system_aux_mini_uart(mu);
+        mu->iir.asReg = 0xC6;
+        return 1;
+    }
+
+    static inline u32 GetRxFifo(void) {
+        system_aux_mini_uart(mu);
+        return mu->stat.asBit.rxfifo;
+    }
+
+    static inline u32 GetTxFifo(void) {
+        system_aux_mini_uart(mu);
+        return mu->stat.asBit.txfifo;
+    }
+
+
+    static u32 Stop(void);
+
+    static u32 Recv(void) {
+        system_aux_mini_uart(mu);
+        while (!mu->lsr.asBit.rxready);
+        return mu->io.asReg;
+    }
+
+    static inline void Send(u32 c) {
+        system_aux_mini_uart(mu);
+        while (!mu->lsr.asBit.txempty);
+        mu->io.asReg = c;
+    }
+
+    static inline void Ready(void) {
+        system_aux_mini_uart(mu);
+        while (!mu->lsr.asBit.txempty);
+    }
+
+    static u32 Dump(caStringStream<s8> & ss);
+};
+
+#endif
+#endif
