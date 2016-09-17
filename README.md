@@ -1,5 +1,5 @@
 # caos
-a Berametal Operating System for raspberry PI 2 
+a Baremetal Operating System for raspberry PI 2 
 
 setup to build.
 
