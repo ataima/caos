@@ -115,7 +115,7 @@ $(BUILDIR)/$(OBJ_OUT)/%.o:$(SRC)/%.s
 	@echo -e $(C_BLUE)"[AS ]"$(C_RESET)" $<"$(C_BLUE)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F))" $(C_RESET) >/dev/stderr
 
 
-.PHONY: doversion all clean info dwload qemu asm
+.PHONY: doversion all clean info dwload qemu asm download
 
 all: doversion kernel7.img
 
@@ -167,6 +167,8 @@ dwload: kernel7.img
 	@echo -e $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
 	@$(DWLOAD) $(BUILDIR)/caOS.hex
 
+download:
+	@$(DWLOAD) $(BUILDIR)/caOS.hex
 
 kernel7.img :   depend all_asm_file all_c_file all_cpp_file all_test_file link_file objdump_file
 
