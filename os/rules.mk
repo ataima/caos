@@ -4,7 +4,7 @@ CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
 #CROS TOOLS 
-ARMGNU:= arm-none-eabi
+ARMGNU:= arm-oe-linux-gnueabi
 # CURRENT DEBUG LEVEL
 DBG:= -O2 
 # C LANGUAGE OPTIONS
@@ -16,9 +16,9 @@ ASM_OPTS:= -g -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve
 #LIBRARY TO LOAD FROM CROSS TOOL CHAIN FOR BASIC FUNCTION
 # OR IF NOT IN CLUDFED HAVE TO SUPPLI TO MISSING FUNCTION
 # TRY TO SEE ...
-LK_OPT:= ../../tools/GNU-CROSS-GCC/5.3-2016q1/lib/gcc/arm-none-eabi/5.3.1/libgcc.a 
+########LK_OPT********:= ../../tools/GNU-CROSS-GCC/5.3-2016q1/lib/gcc/arm-oe-linux-gnueabi/5.3.1/libgcc.a 
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE
-DWLOAD:= ../DWLOAD.EXE  
+DWLOAD:= ./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 PUTTY:= putty.exe -load "pi-tty" 
 # CROSS TOOOL PROGRAMS

@@ -166,7 +166,7 @@ objdump_file:
 dwload: kernel7.img
 	@echo -e $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
 	@$(DWLOAD) $(BUILDIR)/caOS.hex
-	@$(PUTTY)  
+
 
 kernel7.img :   depend all_asm_file all_c_file all_cpp_file all_test_file link_file objdump_file
 
