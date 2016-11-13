@@ -35,9 +35,13 @@
 // CLOK FOR SYSTEM TIMER USUALLY 1Mhz
 #define SYS_CLOCK_TIMER 1000000
 // SYSTEM TIMER FOR SCHEDULER
-#define SYS_TIMER_TICK  100
+#define SYS_TIMER_TICK  10
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
+// soft request interrupt true or simulated
+#define SYS_SOFT_REQ_ENABLED  0
+// soft request Debug
+#define SYS_SOFT_REQ_DEBUG  0
 
 ///////////////////////////// INCLUDE SEXCLUDE DEVICE FROM KERNEL
 
@@ -55,9 +59,9 @@
 // DUMP REQUEST OF SOFTWARE INTERRUPT
 #define DEBUG_IOCTL_SVC_REQ     0
 // DUMP IO COM1 DEVICE
-#define DEBUG_ALLOC_MEM         0
+#define DEBUG_ALLOC_MEM         1
 // DUMP atomicLOck
-#define DEBUG_ATOMIC_LOCK       0
+#define DEBUG_ATOMIC_LOCK       1
 
 // TO EXECUTE TESTS
 #define TEST                    0

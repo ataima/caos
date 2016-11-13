@@ -62,7 +62,7 @@ extern "C" {
 
     void switchContext(void) {
 
-        //asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
+        asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
 
         asm volatile ("DSB"); //TOTEST
         asm volatile ("ISB"); //TOTEST
@@ -102,7 +102,7 @@ extern "C" {
 
         asm volatile ("LDMIA R0, {R0-R14}^"); //Load from PCB R0-R14
 
-        //asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
+        asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
         asm volatile ("ERET");
     }
 

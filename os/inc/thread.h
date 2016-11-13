@@ -124,9 +124,9 @@ public:
     static void Dump(caStringStream<s8> & ss, caThreadContext *ctx);
 
     static inline void ReqSchedule(void) {
-        asm volatile ("DSB"); //TOTEST
-        asm volatile ("ISB"); //TOTEST
-        asm volatile ("SVC 7961"); /// SWITCH CONTEXT
+        //asm volatile ("DSB"); //TOTEST
+        //asm volatile ("ISB"); //TOTEST
+        //asm volatile ("SVC 7961"); /// SWITCH CONTEXT
     }
 };
 

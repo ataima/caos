@@ -45,6 +45,7 @@ u32 start_system_timer(void) {
     if (caSysTimer::Init(SYS_CLOCK_TIMER, SYS_TIMER_TICK)) {
         if (caSysTimer::EnableCounter(1)) {
             if (caSysTimer::EnableTimer(1)) {
+                Dbg::Put("> c.a.O.S. : [ Start Schedule interrupt ... ]\r\n");
                 res = caSysTimer::IrqEnable();
             }
         }
@@ -65,6 +66,7 @@ u32 stop_system_timer(void) {
 }
 
 u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
+    Dbg::Put("Idle live..\r\n");
     u32 idleCount = 1;
     for (;;) {
         idleCount++;
@@ -74,6 +76,7 @@ u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 }
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
+    Dbg::Put("Main live..\r\n");
     u32 st = 0;
     caSysLed::LedsOff();
     while (1) {
@@ -93,6 +96,7 @@ u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 #define CONS_LINE_LENGHT 1024
 
 u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
+    Dbg::Put("Console live..\r\n");
     u8 buff_in[CONS_LINE_LENGHT];
     caComDeviceConfigure in;
     caDevicePort port;

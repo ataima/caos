@@ -50,7 +50,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
     else
         a_stk = (((stack - header_mem_alloc) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
     u32 res, base;
-    MemoryAlloc<u32 *, u32 *>(&a_stk, &base, &res);
+    MemoryAlloc(&a_stk, &base, &res);
     if (res) {
         a_stk += base;
         a_stk -= sizeof (caThreadContext);

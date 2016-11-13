@@ -68,21 +68,26 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
     system_irq_control(irq);
     // MAX PRIORITY
     if (irq->basepending.asBit.timer) {
+        Dbg::Put("TIMER = ", irq->basepending.asReg);
         caSysTimer::IrqService();
         if (Lock.Get() == LOCK_FREE && Lock.Lock() == 1) {
             res = -1;
             Lock.UnLock();
         }
+        Dbg::Put("TIMER = ", irq->basepending.asReg);
     }
     if (irq->basepending.asBit.pending1) {
         if (irq->gpu0.asBit.irqaux29 == 1) {
+            Dbg::Put("AUX = ", irq->basepending.asReg);
             system_aux(aux);
             if (aux->irq.asBit.miniuart) {
                 caComDevice::IrqService();
             } else
                 if (aux->irq.asBit.spi_m_1) {
+            Dbg::Put("SP1 = ", irq->basepending.asReg);
             } else
                 if (aux->irq.asBit.spi_m_2) {
+                   Dbg::Put("SP2 = ", irq->basepending.asReg);
             }
         } else {
             Dbg::Put("BASE = ", irq->basepending.asReg);
@@ -105,6 +110,7 @@ u32 caIrqCtrl::SelectServiceFiq(void) {
         u32 source = irq->fiq.asBit.source;
         switch (source) {
             case 64:caSysTimer::IrqService();
+                Dbg::Put("FIQ TIMER = ", irq->basepending.asReg);
                 if (Lock.Get() == LOCK_FREE && Lock.Lock() == 1) {
                     res = -1;
                     Lock.UnLock();

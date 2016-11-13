@@ -29,7 +29,7 @@ class caAtomicLock {
     static inline u32 AtomicSwap(u32 *ptr, u32 v_old, u32 v_new) {
         u32 oldval;
         u32 res;
-
+#if HAVE_ATOMIC_LOCK
         asm volatile("pldw %a0"::"p" (ptr));
 
         do {
@@ -42,7 +42,11 @@ class caAtomicLock {
                     : "r" (ptr), "Ir" (v_old), "r" (v_new)
                     : "cc");
         } while (res);
-
+#else
+        *ptr=v_new;
+        res=oldval=v_old;
+        return res;
+#endif
         return oldval;
     }
 

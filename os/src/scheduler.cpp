@@ -307,12 +307,8 @@ u32 caScheduler::Dump(caStringStream<s8> & ss) {
 }
 
 u32 Sleep(u32 ms) {
-    u32 res = 0;
-    caSoftRequest::SVC_IOCTL(ioCtrlRequest::Scheduler |
-            ioCtrlFunction::caIoSleep,
-            &ms,
-            (u32*) caScheduler::GetCurrentTaskId(),
-            &res);
+    u32 res = 0;    
+    SchedulerIoCtrlSleep(&ms,(u32*)caScheduler::GetCurrentTaskId(),&res);
     // task was blocked here...
     if (res == deviceError::okey) {
         caScheduler::SwitchContext();

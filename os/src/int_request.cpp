@@ -45,14 +45,14 @@ extern CpuRegs cpu_reg;
 
 void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_und) {
-    /*
+    
     caArmCpu::Dump(caArmCpu::GetStackPointerR13());
     Dbg::Put("---->Undefined EXCEPTION !\r\n");
     Dbg::Put("---->LR USR = ", lr_usr);
     Dbg::Put("---->LR SVC = ", lr_svc);
     Dbg::Put("---->LR IRQ = ", lr_irq);
     Dbg::Put("---->LR UND = ", lr_und);
-     */
+    
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);

@@ -60,3 +60,4 @@ I_GREEN= "\"\033[0;32m\""
 I_RESET="\"\033[0m\""
 I_TAB="\"\t\""
 I_CPURPLE=-e "\"\033[1;35m\""
+NIL:=/dev/stderr
