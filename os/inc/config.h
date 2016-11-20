@@ -1,7 +1,7 @@
 #ifndef _SYSTEM_CONFIG_HEADER_
 #define _SYSTEM_CONFIG_HEADER_
 ////////////////////////////////////////////////////////////////////////////////
-//    Copyright (C) 2011  Angelo Coppi (angelogkcop at hotmail.com )
+//    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -21,19 +21,21 @@
 
 #define MAX_TASK        128
 
-#define HAVE_DUMP_OBJ  0
+#define HAVE_DUMP_OBJ           0
 //MINIUART 
-#define HAVE_MINIUART   1
+#define HAVE_MINIUART           1
 //SPIO1 
-#define HAVE_SPI_1      1
+#define HAVE_SPI_1              1
 //SPIO2
-#define HAVE_SPI_2      1
+#define HAVE_SPI_2              1
 //LEDS 
-#define HAVE_LEDS   1
+#define HAVE_LEDS               1
 // ATOMIC LOCK
-#define  HAVE_ATOMIC_LOCK  0
+#define  HAVE_ATOMIC_LOCK       1
 // ARM AP804 SYSTEM TIMER
-#define HAVE_AP804_SYS_TIMER  1
+#define HAVE_AP804_SYS_TIMER    1
+// SYSTEM MEROY LOG
+#define HAVE_SYS_LOG            1
 // CLOK FOR SYSTEM TIMER USUALLY 1Mhz
 #define SYS_CLOCK_TIMER 1000000
 // SYSTEM TIMER FOR SCHEDULER

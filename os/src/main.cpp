@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//    Copyright (C) 2011  Angelo Coppi (angelogkcop at hotmail.com )
+//    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@
 #include "cache.h"
 #include "test.h"
 #include "cachedevice.h"
+#include "syslog.h"
+
 
 u32 start_system_timer(void) {
     u32 res = FALSE;
@@ -171,6 +173,7 @@ int main(void) {
     caCache::Start();
 #endif
     msgSTART();
+    caSysLog::Init(16*1024*1024);
     caScheduler::Init(caSchedulerMode::Priority);
 
 #if TEST
@@ -203,5 +206,6 @@ int main(void) {
     caThread::DestroyThread(thMainTask);
     caThread::DestroyThread(thConsoleTask);
     caThread::DestroyThread(thNullTask);
+    caSysLog::Destroy();
     return 0;
 }

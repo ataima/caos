@@ -1,7 +1,7 @@
 #ifndef LOCKER_HEADER
 #define LOCKER_HEADER
 ////////////////////////////////////////////////////////////////////////////////
-//    Copyright (C) 2011  Angelo Coppi (angelogkcop at hotmail.com )
+//    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
