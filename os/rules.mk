@@ -1,10 +1,15 @@
 #MAKE VERSION x.xx.xxx
+OS=$(uname)
 CAOS_VERSION_1:= 1
 CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
-#CROS TOOLS 
-ARMGNU:= arm-oe-linux-gnueabi
+#CROSs TOOLS 
+ifeq ($(OS),Linux) 
+	ARMGNU:= arm-oe-linux-gnueabi
+else
+	ARMGNU:= arm-none-eabi
+endif	
 # CURRENT DEBUG LEVEL
 DBG:= -O2 
 # C LANGUAGE OPTIONS
@@ -13,12 +18,8 @@ C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -
 CPP_OPTS := -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -c 
 # ASM LANGUAGE OPTIONS
 ASM_OPTS:= -g -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
-#LIBRARY TO LOAD FROM CROSS TOOL CHAIN FOR BASIC FUNCTION
-# OR IF NOT IN CLUDFED HAVE TO SUPPLI TO MISSING FUNCTION
-# TRY TO SEE ...
-#########LK_OPT*********:= ../../tools/GNU-CROSS-GCC/5.3-2016q1/lib/gcc/arm-oe-linux-gnueabi/5.3.1/libgcc.a 
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE
-DWLOAD:= /bin/dash ./download.sh
+DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 PUTTY:= putty.exe -load "pi-tty" 
 # CROSS TOOOL PROGRAMS
@@ -60,4 +61,3 @@ I_GREEN= "\"\033[0;32m\""
 I_RESET="\"\033[0m\""
 I_TAB="\"\t\""
 I_CPURPLE=-e "\"\033[1;35m\""
-NIL:=/dev/stderr

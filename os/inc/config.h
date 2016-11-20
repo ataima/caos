@@ -30,16 +30,18 @@
 #define HAVE_SPI_2      1
 //LEDS 
 #define HAVE_LEDS   1
+// ATOMIC LOCK
+#define  HAVE_ATOMIC_LOCK  0
 // ARM AP804 SYSTEM TIMER
 #define HAVE_AP804_SYS_TIMER  1
 // CLOK FOR SYSTEM TIMER USUALLY 1Mhz
 #define SYS_CLOCK_TIMER 1000000
 // SYSTEM TIMER FOR SCHEDULER
-#define SYS_TIMER_TICK  10
+#define SYS_TIMER_TICK  100
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
 // soft request interrupt true or simulated
-#define SYS_SOFT_REQ_ENABLED  0
+#define SYS_SOFT_REQ_ENABLED  1
 // soft request Debug
 #define SYS_SOFT_REQ_DEBUG  0
 
