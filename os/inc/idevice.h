@@ -169,6 +169,9 @@ typedef enum tag_device_error {
     error_invalid_null_destination,
     error_device_is_busy,
     error_signal_already_set,
+    error_log_already_set,
+    error_log_not_set,
+    error_log_empthy
 } deviceError;
 
 class caDevice {

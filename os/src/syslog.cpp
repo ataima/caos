@@ -30,46 +30,38 @@
 
 #if HAVE_SYS_LOG
 
-caLogStream caSysLog::mn_CBuffer;
-s8 * caSysLog::mn_Base=NULL;
-caAtomicLock caSysLog::mn_Lock;
-
 u32 caSysLog::Init(u32 total_size) {
-    u32 res=FALSE;
-    if(total_size>0)
-    {
-        if(total_size<a1mb)
-            total_size=a1mb;
-        mn_Base=static_cast<s8*>(caMemory::Allocate(total_size));
-        if(mn_Base!=NULL)
-        {
-           mn_CBuffer.Init(mn_Base,total_size);
-           res=TRUE;
-        }                
+    u32 res = FALSE;
+    if (total_size < a1mb)
+        total_size = a1mb;
+    mn_Base = static_cast<s8*> (caMemory::Allocate(total_size));
+    if (mn_Base != NULL) {
+        mn_CBuffer.Init(mn_Base, total_size);
+        res = TRUE;
     }
     return res;
 }
 
 u32 caSysLog::Destroy(void) {
-    u32 res=FALSE;    
-        if(mn_Base!=NULL)
-        {            
-           mn_CBuffer.Init(NULL,0);
-           res=caMemory::Free(mn_Base);
-        }                
+    u32 res = FALSE;
+    if (mn_Base != NULL) {
+        mn_CBuffer.Init(NULL, 0);
+        res = caMemory::Free(mn_Base);
+    }
     return res;
 }
 
-
-void caSysLog::DoLog(caStringStream<s8> & ss){
-    if(mn_Lock.Lock())
-    {
-        u32 writed=0;
-        mn_CBuffer.Insert(ss.Str(),ss.Size(),writed);
-        mn_Lock.UnLock();
-    }
+void caSysLog::doLog(caStringStream<s8> & ss) {
+    u32 writed = 0;
+    mn_CBuffer.Insert(ss.Str(), ss.Size(), writed);
 }
-        
+
+
+void caSysLog::getLog(caStringStream<s8> & ss) {
+    ss<<mn_CBuffer;
+}
+
+
 
 
 #endif

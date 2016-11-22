@@ -173,7 +173,6 @@ int main(void) {
     caCache::Start();
 #endif
     msgSTART();
-    caSysLog::Init(16*1024*1024);
     caScheduler::Init(caSchedulerMode::Priority);
 
 #if TEST
@@ -206,6 +205,5 @@ int main(void) {
     caThread::DestroyThread(thMainTask);
     caThread::DestroyThread(thConsoleTask);
     caThread::DestroyThread(thNullTask);
-    caSysLog::Destroy();
     return 0;
 }

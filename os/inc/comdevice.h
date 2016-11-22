@@ -24,6 +24,7 @@
 #include "circularbuffer.h"
 #include "stream.h"
 #include "atomiclock.h"
+#include "syslog.h"
 
 struct caComDeviceConfigure
 : public caIDeviceConfigure {
@@ -58,6 +59,9 @@ public:
         comAddSignalTx,
         comRemoveSignalRx,
         comRemoveSignalTx,
+        comStartLog,
+        comStopLog,
+        comGetLog
     } IoCtrlDirect;
 
     IoCtrlDirect command;
@@ -82,6 +86,7 @@ private:
     static caAtomicLock TxLock;
     static u32 Flush(caDevicePort *port);
     static bool IsValidHandle(u32 handle);
+    static caSysLog caLog;
 public:
     static u32 Open(caComDeviceConfigure *in, caDevicePort *out);
     static u32 Close(caDevicePort *port);

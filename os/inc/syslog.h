@@ -33,13 +33,26 @@
 typedef caCircularBuffer<s8> caLogStream;
 
 class caSysLog {
-    static caLogStream mn_CBuffer;
-    static s8 *mn_Base;
-    static caAtomicLock mn_Lock;
+    caLogStream mn_CBuffer;
+    s8 *mn_Base;
+    u32 enable;
 public:
-    static u32 Init(u32 total_size);    
-    static void DoLog(caStringStream<s8> & ss);
-    static u32 Destroy();    
+    u32 Init(u32 total_size=0);
+    void doLog(caStringStream<s8> & ss);
+    void getLog(caStringStream<s8> & ss);
+    u32 Destroy();
+
+    inline u32 isEnabled(void) {
+        return enable;
+    }
+
+    inline void Enable(void) {
+        enable = 0x1000;
+    }
+
+    inline void Disable(void) {
+        enable = 0;
+    }
 };
 
 

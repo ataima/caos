@@ -33,6 +33,9 @@
 #include "atomiclock.h"
 #include "thread.h"
 #include "scheduler.h"
+#include "syslog.h"
+
+
 
 u32 caComDevice::guid = (u32) ioCtrlRequest::Com1 + BASE_HANDLE;
 u32 caComDevice::isOpen = 0;
@@ -45,6 +48,7 @@ caAtomicLock caComDevice::RxLock;
 caAtomicLock caComDevice::TxLock;
 u32 caComDevice::signalRx = 0;
 u32 caComDevice::signalTx = 0;
+caSysLog Log;
 
 bool caComDevice::IsValidHandle(u32 handle) {
     bool res = false;
@@ -301,10 +305,33 @@ u32 caComDevice::IoCtrl(caDevicePort *port, caComDeviceCtrl *in) {
                 }
                 break;
             case caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx:
-                if (caScheduler::IsValidContext(signalRx)) {
-                    signalRx = 0;
+                if (caScheduler::IsValidContext(signalTx)) {
+                    signalTx = 0;
                 } else {
                     res = deviceError::error_invalid_handle_port;
+                }
+                break;
+            case caComDeviceCtrl::IoCtrlDirect::comStartLog:
+                if (caLog.isEnabled() == 0) {
+                    caLog.Enable();
+                    res = caLog.Init();
+                } else {
+                    res = deviceError::error_log_already_set;
+                }
+                break;
+            case caComDeviceCtrl::IoCtrlDirect::comStopLog:
+                if (caLog.isEnabled() != 0) {
+                    caLog.Disable();
+                    res = caLog.Destroy();
+                } else {
+                    res = deviceError::error_log_not_set;
+                }
+                break;
+            case caComDeviceCtrl::IoCtrlDirect::comGetLog:
+                if (caLog.isEnabled() != 0) {
+                    
+                } else {
+                    res = deviceError::error_log_empthy;
                 }
                 break;
         }
@@ -342,6 +369,7 @@ u32 caComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
 }
 
 // ISR Interrupt service routine from caIrqCtrl::SelectServiceIrq()
+
 void caComDevice::IrqService(void) {
     muIirReg iir;
     muLsrReg lsr;
