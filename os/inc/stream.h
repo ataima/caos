@@ -45,8 +45,8 @@ typedef struct tag_ss_end_line {
 
 template <typename T>
 class caStringStream {
-public:
-private:
+
+protected:
     size_t capacity;
     T *cBuff;
     T *start;
@@ -55,7 +55,8 @@ private:
     bool mode_dec;
     bool mode_hex;
     bool mode_bin;
-private:
+
+protected:
 
     void toBase10(u32 v, size_t max_w) {
         const u32 iDiv[10] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
@@ -132,7 +133,16 @@ private:
     }
 
 public:
-
+	
+    caStringStream()
+    {
+	capacity=0;
+	cBuff=start=stop=NULL;
+        size=0;
+        mode_dec=mode_hex=mode_bin=false;
+    }
+    
+    
     u32 Init(T *base, size_t a_size) {
         u32 res = FALSE;
         capacity = a_size - 1;
