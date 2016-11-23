@@ -48,7 +48,7 @@ caAtomicLock caComDevice::RxLock;
 caAtomicLock caComDevice::TxLock;
 u32 caComDevice::signalRx = 0;
 u32 caComDevice::signalTx = 0;
-caSysLog Log;
+caSysLog caComDevice::caLog;
 
 bool caComDevice::IsValidHandle(u32 handle) {
     bool res = false;
@@ -390,7 +390,7 @@ void caComDevice::IrqService(void) {
                     if (lsr.asBit.overrun)eOverrun++;
                     if (lsr.asBit.txempty == 0)break;
                     if (Tx.Empty() == false) {
-                        size_t removed = 0;
+                        s_t removed = 0;
                         Tx.Remove(&c, 1, removed);
                         caMiniUart::SetIO(c);
                     } else {
@@ -413,7 +413,7 @@ void caComDevice::IrqService(void) {
                 if (lsr.asBit.overrun)eOverrun++;
                 if (lsr.asBit.rxready == 0) break;
                 c = caMiniUart::GetIO();
-                size_t inserted = 0;
+                s_t inserted = 0;
                 Rx.Insert(&c, 1, inserted);
                 symbol--;
             }

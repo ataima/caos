@@ -118,8 +118,8 @@ typedef enum tag_software_request {
 
 typedef struct tag_mem_dump_addr {
     s8 *buffo;
-    size_t size;
-    size_t addr;
+    s_t size;
+    s_t addr;
 } dumpAddrReq;
 
 /* AL DEVICE CLASSES ARE STATIC ... BUT IMPLEMENT ALL SAME METHOD AS VIRTUAL CLASSES*/

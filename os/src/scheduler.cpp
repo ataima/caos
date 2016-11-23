@@ -50,7 +50,7 @@ caThreadContext *caScheduler::current_task;
 
 ///////////////////////////////////////////////////////////////////////
 
-bool caNextTaskManager::Init(caThreadContext ** ebuff, size_t max_task) {
+bool caNextTaskManager::Init(caThreadContext ** ebuff, s_t max_task) {
     table.Init(ebuff, max_task);
     return true;
 }
@@ -58,7 +58,7 @@ bool caNextTaskManager::Init(caThreadContext ** ebuff, size_t max_task) {
 bool caNextTaskManager::AddTask(caThreadContext *ctx) {
     bool res = false;
     ctx->index = table.PushBack(ctx);
-    res = (ctx->index != (size_t) - 1);
+    res = (ctx->index != (s_t) - 1);
     if (res) {
         ctx->index += (BASE_HANDLE + 1);
         res = IsValidContext(ctx->index);
@@ -66,7 +66,7 @@ bool caNextTaskManager::AddTask(caThreadContext *ctx) {
     return res;
 }
 
-bool caNextTaskManager::RemoveTask(size_t idx) {
+bool caNextTaskManager::RemoveTask(s_t idx) {
     bool res = false;
     if (IsValidContext(idx)) {
         idx -= (BASE_HANDLE + 1);

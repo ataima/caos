@@ -29,10 +29,10 @@ typedef enum tag_ss_format_req {
 
 typedef struct tag_ss_fill_req {
     s8 ch;
-    size_t width;
-    size_t end;
+    s_t width;
+    s_t end;
 
-    tag_ss_fill_req(s8 c, size_t s) : ch(c), width(s), end(0) {
+    tag_ss_fill_req(s8 c, s_t s) : ch(c), width(s), end(0) {
     }
 } caStringFiller;
 
@@ -47,18 +47,18 @@ template <typename T>
 class caStringStream {
 
 protected:
-    size_t capacity;
+    s_t capacity;
     T *cBuff;
     T *start;
     T *stop;
-    size_t size;
+    s_t size;
     bool mode_dec;
     bool mode_hex;
     bool mode_bin;
 
 protected:
 
-    void toBase10(u32 v, size_t max_w) {
+    void toBase10(u32 v, s_t max_w) {
         const u32 iDiv[10] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
         u32 fl, div;
         fl = 0;
@@ -84,7 +84,7 @@ protected:
         }
     }
 
-    void toBase16(u32 v, size_t max_w) {
+    void toBase16(u32 v, s_t max_w) {
         u32 rb;
         u32 rc;
         Add('0');
@@ -102,7 +102,7 @@ protected:
         }
     }
 
-    void toBase2(u32 v, size_t max_w) {
+    void toBase2(u32 v, s_t max_w) {
         const u32 iMask[] = {
             1, 2, 4, 8,
             0x10, 0x20, 0x40, 0x80,
@@ -143,7 +143,7 @@ public:
     }
     
     
-    u32 Init(T *base, size_t a_size) {
+    u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         capacity = a_size - 1;
         cBuff = base;
@@ -167,15 +167,15 @@ public:
         cBuff[0] = '\0';
     }
 
-    inline size_t Size(void) {
+    inline s_t Size(void) {
         return size;
     }
 
-    inline size_t Capacity(void) {
+    inline s_t Capacity(void) {
         return capacity;
     }
 
-    inline void Forward(size_t pos) {
+    inline void Forward(s_t pos) {
         size += pos;
     }
 
@@ -293,8 +293,8 @@ public:
 
     caStringStream<T> & operator<<(caStringStream<T> & t) {
         T* base = t.Str();
-        size_t t_size = t.Size();
-        size_t i = 0;
+        s_t t_size = t.Size();
+        s_t i = 0;
         while (i < t_size && Good()) {
             Add(base[i++]);
         }
@@ -386,7 +386,7 @@ template <typename T>
 class TokenString {
 public:
     T * ptr;
-    size_t size;
+    s_t size;
 
     TokenString() {
         ptr = NULL;
@@ -399,11 +399,11 @@ public:
 template <typename T>
 class caTokenizeSStream {
 private:
-    size_t capacity;
+    s_t capacity;
     T *cBuff;
     T *pos;
     T *stop;
-    size_t size;
+    s_t size;
     bool good;
 private:
 
@@ -504,7 +504,7 @@ private:
         return res;
     }
 
-    void tokenize(T *&res, size_t & rsize) {
+    void tokenize(T *&res, s_t & rsize) {
         T u = 0;
         rsize = 0;
         good = Next();
@@ -525,7 +525,7 @@ private:
     }
 public:
 
-    u32 Init(T *base, size_t a_size) {
+    u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         capacity = a_size - 1;
         cBuff = base;
@@ -561,7 +561,7 @@ public:
         good = (capacity > 2);
     }
 
-    inline size_t Size(void) {
+    inline s_t Size(void) {
         return size;
     }
 
@@ -569,15 +569,15 @@ public:
         return size == 0;
     }
 
-    inline size_t Capacity(void) {
+    inline s_t Capacity(void) {
         return capacity;
     }
 
-    inline size_t Good(void) {
+    inline s_t Good(void) {
         return good;
     }
 
-    inline void Forward(size_t npos) {
+    inline void Forward(s_t npos) {
         size += npos;
         stop = &cBuff[size];
         good = Next();
@@ -596,8 +596,8 @@ public:
             return stop;
     }
 
-    inline size_t Remain(void) {
-        return (size_t) (stop - pos);
+    inline s_t Remain(void) {
+        return (s_t) (stop - pos);
     }
 
     caTokenizeSStream<T> & operator>>(s8 & c) {

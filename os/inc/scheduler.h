@@ -37,16 +37,16 @@ class caNextTaskManager {
 private:
     static caArray<caThreadContext *> table;
 public:
-    static bool Init(caThreadContext ** ebuff, size_t max_task);
+    static bool Init(caThreadContext ** ebuff, s_t max_task);
     static bool AddTask(caThreadContext *ctx);
-    static bool RemoveTask(size_t idx);
+    static bool RemoveTask(s_t idx);
     static caThreadContext * RoundRobinNextContext(caThreadContext *current);
     static caThreadContext * PriorityNextContext(caThreadContext *current);
     static bool IsValidContext(u32 thIdx);
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
 
-    static inline size_t Size(void) {
+    static inline s_t Size(void) {
         return table.Size();
     }
 };
@@ -83,7 +83,7 @@ public:
     static u32 Dump(caStringStream<s8> & ss);
     static void EndTask(u32 result);
 
-    static inline size_t Size(void) {
+    static inline s_t Size(void) {
         return mng.Size();
     }
     static u32 StartTask(void);

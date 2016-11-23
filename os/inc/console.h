@@ -25,7 +25,7 @@ typedef deviceError(*consoleFunc)(caDevicePort &port, caTokenizeSStream <u8> & i
 
 typedef struct tag_pair_str_func {
     const char * cmd;
-    size_t size;
+    s_t size;
     const char * help;
     consoleFunc func;
 } pairCmd;

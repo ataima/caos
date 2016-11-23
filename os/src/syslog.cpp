@@ -58,7 +58,7 @@ void caSysLog::doLog(caStringStream<s8> & ss) {
 
 
 void caSysLog::getLog(caStringStream<s8> & ss) {
-    ss<<mn_CBuffer;
+    //ss<<mn_CBuffer;
 }
 
 

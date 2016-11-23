@@ -22,13 +22,13 @@
 
 template <typename T>
 class caCircularBuffer {
-    size_t WIDTH;
-    size_t start;
-    size_t stop;
+    s_t WIDTH;
+    s_t start;
+    s_t stop;
     T *cBuff;
 public:
 
-    void Init(T * buff, size_t assigned_width) {
+    void Init(T * buff, s_t assigned_width) {
         WIDTH = assigned_width;
         start = stop = 0;
         cBuff = buff;
@@ -42,10 +42,10 @@ public:
         return cBuff;
     }
 
-    bool Insert(T *ptr, size_t requested, size_t & writed) {
+    bool Insert(T *ptr, s_t requested, s_t & writed) {
         bool res = false;
-        size_t i;
-        size_t p;
+        s_t i;
+        s_t p;
         for (i = 0; i < requested; i++) {
             p = (stop + i) % WIDTH;
             if (Empty() == false && p == start) {
@@ -62,11 +62,11 @@ public:
         return res;
     }
 
-    bool Remove(T *ptr, size_t requested, size_t & removed) {
+    bool Remove(T *ptr, s_t requested, s_t & removed) {
         bool res = false;
         if (start != stop) {
-            size_t i;
-            size_t p;
+            s_t i;
+            s_t p;
             for (i = 0; i < requested; i++) {
                 p = (start + i) % WIDTH;
                 if (Empty() == false && p == stop) {
@@ -84,19 +84,19 @@ public:
         return res;
     }
 
-    size_t Size(void) {
+    s_t Size(void) {
         if (stop >= start)
             return (stop - start);
         else
             return (WIDTH - start + stop);
     }
 
-    inline size_t Available(void) {
+    inline s_t Available(void) {
         return WIDTH - Size();
     }
 
     void Clean(void) {
-        size_t i;
+        s_t i;
         for (i = 0; i < WIDTH; i++) {
             cBuff[i] = 0;
         }

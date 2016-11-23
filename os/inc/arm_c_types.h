@@ -30,13 +30,14 @@ typedef short s16;
 typedef int s32;
 typedef long long s64;
 
-typedef u32 size_t;
+typedef u32 s_t;
 
 #define TRUE    1
 #define FALSE   0
 
-#define NULL   ((0))
-
+#ifndef NULL
+    #define NULL   ((0))
+#endif
 /* READ ONLY !*/
 #define _R_  
 /* WRITE ONLY !*/

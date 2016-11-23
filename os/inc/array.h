@@ -25,12 +25,12 @@
 template <typename T>
 class caArray {
 protected:
-    size_t capacity;
-    size_t size;
+    s_t capacity;
+    s_t size;
     T *buff;
 public:
 
-    void Init(T* ebuff, size_t esize) {
+    void Init(T* ebuff, s_t esize) {
         if (ebuff)
             buff = ebuff;
         capacity = esize;
@@ -42,11 +42,11 @@ public:
         size = 0;
     }
 
-    inline size_t Size(void) {
+    inline s_t Size(void) {
         return size;
     }
 
-    inline size_t Capacity(void) {
+    inline s_t Capacity(void) {
         return capacity;
     }
 
@@ -54,8 +54,8 @@ public:
         return size == 0;
     }
 
-    size_t PushBack(T obj) {
-        size_t res = -1; // check !=-1
+    s_t PushBack(T obj) {
+        s_t res = -1; // check !=-1
         if (size < capacity) {
             res = size;
             buff[size++] = obj;
@@ -94,7 +94,7 @@ public:
         return obj;
     }
 
-    T At(size_t index) {
+    T At(s_t index) {
         T obj = NULL;
         if (index < size) {
             obj = buff[index];
@@ -110,7 +110,7 @@ public:
         return buff[size - 1];
     }
 
-    T operator[](const size_t index) {
+    T operator[](const s_t index) {
         T obj = NULL;
         if (index < size) {
             obj = buff[index];
@@ -122,7 +122,7 @@ public:
         return obj;
     }
 
-    bool SetAt(T obj, size_t index) {
+    bool SetAt(T obj, s_t index) {
         bool res = false;
         if (index < size) {
             buff[index] = obj;
@@ -135,7 +135,7 @@ public:
         return res;
     }
 
-    bool Swap(size_t h, size_t k) {
+    bool Swap(s_t h, s_t k) {
         bool res = false;
         if (h < size && k < size) {
             if (h != k) {
@@ -152,7 +152,7 @@ public:
         return res;
     }
 
-    bool Remove(size_t index) {
+    bool Remove(s_t index) {
         // caARRAY : remove invalidate Sort...
         bool res = false;
         if (index < size) {

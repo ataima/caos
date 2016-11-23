@@ -28,7 +28,7 @@ class caHeapArray
 private:
 
     void SortTopDown(void) {
-        size_t j, k = 0;
+        s_t j, k = 0;
         while (2 * k < this->size) {
             j = 2 * k;
             if (j < this->size && less(this->buff[j], this->buff[j + 1])) j++;
@@ -39,8 +39,8 @@ private:
     }
 
     void SortBottomUp(void) {
-        size_t k = this->size - 1;
-        size_t h = k / 2;
+        s_t k = this->size - 1;
+        s_t h = k / 2;
         while (k >= 0 && less(this->buff[h], this->buff[k])) {
             this->Swap(h, k);
             k = h;
@@ -50,14 +50,14 @@ private:
 public:
 
     bool Add(T obj) {
-        bool res = (this->PushBack(obj) != (size_t) - 1);
+        bool res = (this->PushBack(obj) != (s_t) - 1);
         if (res) {
             SortBottomUp();
         }
         return res;
     }
 
-    bool Remove(size_t index) {
+    bool Remove(s_t index) {
         bool res = caArray<T>::Remove(index);
         if (res && this->Size() > 0) {
             SortTopDown();
