@@ -1,7 +1,7 @@
 #MAKE VERSION x.xx.xxx
 OS=$(uname)
 # CURRENT DEBUG LEVEL
-DBG:= -O2 
+DBG:= -O0 -g 
 # C LANGUAGE OPTIONS
 C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99  -ffreestanding  -c
 # CPP LANGUAGE OPTIONS

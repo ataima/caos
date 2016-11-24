@@ -39,7 +39,7 @@
           <buildCommandWorkingDir>../os_test</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>build/test.exe</executablePath>
           <ccTool>
             <incDir>
               <pElem>../os_test/inc</pElem>

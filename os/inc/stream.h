@@ -20,7 +20,6 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-
 typedef enum tag_ss_format_req {
     dec,
     hex,
@@ -45,7 +44,6 @@ typedef struct tag_ss_end_line {
 
 template <typename T>
 class caStringStream {
-
 protected:
     s_t capacity;
     T *cBuff;
@@ -58,32 +56,96 @@ protected:
 
 protected:
 
-    void toBase10(u32 v, s_t max_w) {
-        const u32 iDiv[10] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
-        u32 fl, div;
-        fl = 0;
+    //Tested
+    void toBase10(u32 v, u32 div) {
+        while ((div != 0) && Good()) {
+            register u32 r = (v / div)&0xff;
+            v = v % div;
+            div /= 10;
+            Add((s8) (r + '0'));
+        }
+        Stopper();
+    }
+
+    //Tested
+    void toBase10(u32 v) {
+        u32 div;
         if (v == 0)
             Add('0');
         else {
-            if (max_w > 9)
-                max_w = 9;
-            div = iDiv[max_w];
-            while ((div != 0) && Good()) {
-                u32 r = (v / div)&0xff;
-                v = v % div;
-                div /= 10;
-                if (fl == 0) {
-                    if (r != 0) {
-                        Add((s8) (r + '0'));
-                        fl = 1;
-                    }
-                } else {
-                    Add((s8) (r + '0'));
-                }
-            }
+            if (v < 1000000000) {
+                if (v < 100000000) {
+                    if (v < 10000000) {
+                        if (v < 1000000) {
+                            if (v < 100000) {
+                                if (v < 10000) {
+                                    if (v < 1000) {
+                                        if (v < 100) {
+                                            if (v < 10) {
+                                                div = 1;
+                                            } else
+                                                div = 10;
+                                        } else
+                                            div = 100;
+                                    } else
+                                        div = 1000;
+                                } else
+                                    div = 10000;
+                            } else
+                                div = 100000;
+                        } else
+                            div = 1000000;
+                    } else
+                        div = 10000000;
+                } else
+                    div = 100000000;
+            } else
+                div = 1000000000;
+            toBase10(v, div);
         }
     }
 
+    //Tested
+    void toBase10(u16 v) {
+        u32 div;
+        if (v == 0)
+            Add('0');
+        else {
+            if (v < 10000) {
+                if (v < 1000) {
+                    if (v < 100) {
+                        if (v < 10) {
+                            div = 1;
+                        } else
+                            div = 10;
+                    } else
+                        div = 100;
+                } else
+                    div = 1000;
+            } else
+                div = 10000;
+            toBase10((u32) v, div);
+        }
+    }
+
+    //Tested
+    void toBase10(u8 v) {
+        u32 div;
+        if (v == 0)
+            Add('0');
+        else {
+            if (v < 100) {
+                if (v < 10) {
+                    div = 1;
+                } else
+                    div = 10;
+            } else
+                div = 100;
+            toBase10((u32) v, div);
+        }
+    }
+
+    //Tested
     void toBase16(u32 v, s_t max_w) {
         u32 rb;
         u32 rc;
@@ -100,8 +162,10 @@ protected:
             Add((s8) rc);
             if (rb == 0) break;
         }
+        Stopper();
     }
 
+    //Tested
     void toBase2(u32 v, s_t max_w) {
         const u32 iMask[] = {
             1, 2, 4, 8,
@@ -123,8 +187,10 @@ protected:
                 Add('0');
             mask >>= 1;
         }
+        Stopper();
     }
 
+    //Tested
     inline void Add(T v) {
         if (start != stop) {
             *start++ = v;
@@ -132,17 +198,32 @@ protected:
         }
     }
 
-public:
-	
-    caStringStream()
-    {
-	capacity=0;
-	cBuff=start=stop=NULL;
-        size=0;
-        mode_dec=mode_hex=mode_bin=false;
+    inline void Add(T *ptr,s_t num) {
+        s_t avail=Available();
+        if(num>avail)num=avail;
+        memcpy(start,ptr,num*sizeof(T));
+        start+=num;
+        size+=num;
+    }
+
+    //Tested
+    inline void Stopper(void) {
+        if (start != stop) {
+            *start=0;
+        }
     }
     
-    
+public:
+
+    //Tested
+    caStringStream() {
+        capacity = 0;
+        cBuff = start = stop = NULL;
+        size = 0;
+        mode_dec = mode_hex = mode_bin = false;
+    }
+
+    //Tested
     u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         capacity = a_size - 1;
@@ -160,6 +241,7 @@ public:
         return res;
     }
 
+    //Tested
     void Clear(void) {
         start = cBuff;
         stop = &cBuff[capacity];
@@ -167,18 +249,26 @@ public:
         cBuff[0] = '\0';
     }
 
+    //Tested
     inline s_t Size(void) {
         return size;
     }
 
+    //Tested
     inline s_t Capacity(void) {
         return capacity;
+    }
+
+    //Tested
+    inline s_t Available(void) {
+        return (capacity-size);
     }
 
     inline void Forward(s_t pos) {
         size += pos;
     }
 
+    //Tested
     inline T* Str(void) {
         if (size < capacity)
             cBuff[size] = '\0';
@@ -190,6 +280,7 @@ public:
         return &cBuff[size];
     }
 
+    //Tested
     inline bool Good(void) {
         return start != stop;
     }
@@ -206,6 +297,7 @@ public:
         t.end = size + t.width;
     }
 
+    //Tested
     caStringStream<T> & operator<<(caStringFormat t) {
         mode_dec = mode_hex = mode_bin = false;
         if (t == caStringFormat::dec) {
@@ -220,24 +312,15 @@ public:
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(s8 t) {
-        /*
-        if (mode_dec) {
-            if (t < 0) {
-                Add('-');
-            }
-            toBase10(t, 2);
-        } else
-            if (mode_hex)toBase16(t, 2);
-        else
-            if (mode_bin)toBase2(t, 7);
-         * */
         Add(t);
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(u8 t) {
-        if (mode_dec)toBase10(t, 2);
+        if (mode_dec)toBase10(t);
         else
             if (mode_hex)toBase16(t, 2);
         else
@@ -245,13 +328,17 @@ public:
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(s16 t) {
+        register u16 n;
         if (mode_dec) {
             if (t < 0) {
                 Add('-');
-                t = -t;
+                n = (u16)(-t);
             }
-            toBase10(t, 4);
+            else
+                n=(u16)(t);
+            toBase10(n);
         } else
             if (mode_hex)toBase16(t, 4);
         else
@@ -259,8 +346,9 @@ public:
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(u16 t) {
-        if (mode_dec)toBase10(t, 4);
+        if (mode_dec)toBase10(t);
         else
             if (mode_hex)toBase16(t, 4);
         else
@@ -268,13 +356,17 @@ public:
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(s32 t) {
+        u32 n;
         if (mode_dec) {
             if (t < 0) {
                 Add('-');
-                t = -t;
+                n =(u32)(-t);
             }
-            toBase10(t, 9);
+            else
+                n=(u32)(t);
+            toBase10(n);
         } else
             if (mode_hex)toBase16(t, 8);
         else
@@ -282,8 +374,9 @@ public:
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(u32 t) {
-        if (mode_dec)toBase10(t, 9);
+        if (mode_dec)toBase10(t);
         else
             if (mode_hex)toBase16(t, 8);
         else
@@ -291,13 +384,9 @@ public:
         return *this;
     }
 
-    caStringStream<T> & operator<<(caStringStream<T> & t) {
-        T* base = t.Str();
-        s_t t_size = t.Size();
-        s_t i = 0;
-        while (i < t_size && Good()) {
-            Add(base[i++]);
-        }
+    
+    inline caStringStream<T> & operator<<(caStringStream<T> & t) {
+        Add(t.Str(),t.Size());
         return *this;
     }
 
@@ -309,7 +398,6 @@ public:
     }
 
     //by pointer
-
     caStringStream<T> & operator<<(s8 *t) {
         Add('[');
         toBase16(t, 8);
