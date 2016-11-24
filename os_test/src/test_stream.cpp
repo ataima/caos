@@ -24,6 +24,7 @@ class caStringStream_test_class
     CA_TEST(caStringStream_test_class::test10,"<< u32  test");
     CA_TEST(caStringStream_test_class::test11,"<< caStringArray  test");
     CA_TEST(caStringStream_test_class::test12,"<< const char *  test");
+    CA_TEST(caStringStream_test_class::test13,"<< *s8 test");
     CA_TEST_SUITE_END();
     void setUp(void){}
     void test1(void);
@@ -38,6 +39,7 @@ class caStringStream_test_class
     void test10(void);
     void test11(void);
     void test12(void);
+    void test13(void);
     void tearDown(void){}
  
 };
@@ -804,4 +806,21 @@ void caStringStream_test_class::test12(void){
     CA_ASSERT(a.Good()==false);
     CA_ASSERT(strcmp(a.Str(),"1234567890123456712")==0);    
     
+}
+
+
+void caStringStream_test_class::test13(void){
+    _START();
+    _INFO("to check Initoperator << *s8 of caStringStream");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff_a[20];
+    char buff_b[20];
+    caStringStream<char> a;
+    a.Init(buff_a,sizeof(buff_a));
+    s8 t='A';
+    sprintf(buff_b,"[0x%08x]%c",&t,t);
+    a<<&t;
+    CA_ASSERT(strcmp(a.Str(),buff_b)==0);    
 }

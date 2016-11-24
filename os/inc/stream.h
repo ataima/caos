@@ -198,6 +198,7 @@ protected:
         }
     }
 
+    //Tested
     inline void Add(T *ptr,s_t num) {
         s_t avail=Available();
         if(num>avail)num=avail;
@@ -286,7 +287,6 @@ public:
     }
 
     // by value
-
     caStringStream<T> & operator<<(caStringFiller t) {
         while (size < t.end && Good())
             Add(t.ch);
@@ -384,12 +384,13 @@ public:
         return *this;
     }
 
-    
+    //Tested
     inline caStringStream<T> & operator<<(caStringStream<T> & t) {
         Add(t.Str(),t.Size());
         return *this;
     }
 
+    //Tested
     caStringStream<T> & operator<<(const char * t) {
         while (*t != '\0') {
             Add(*t++);
@@ -400,7 +401,7 @@ public:
     //by pointer
     caStringStream<T> & operator<<(s8 *t) {
         Add('[');
-        toBase16(t, 8);
+        toBase16((u32)(t), 8);
         Add(']');
         return (*this) << *t;
     }
@@ -414,21 +415,21 @@ public:
 
     caStringStream<T> & operator<<(s16 *t) {
         Add('[');
-        toBase16(t, 8);
+        toBase16((u32)t, 8);
         Add(']');
         return (*this) << *t;
     }
 
     caStringStream<T> & operator<<(u16 *t) {
         Add('[');
-        toBase16(t, 8);
+        toBase16((u32)t, 8);
         Add(']');
         return (*this) << *t;
     }
 
     caStringStream<T> & operator<<(s32 *t) {
         Add('[');
-        toBase16(t, 8);
+        toBase16((u32)t, 8);
         Add(']');
         return (*this) << *t;
     }
