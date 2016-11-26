@@ -19,6 +19,29 @@
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
+// Check GCC
+
+#if __x86_64__ 
+#define _IS_64_ 1
+#define _IS_32_ 0
+#else
+#define _IS_64_ 0
+#define _IS_32_ 1
+#endif
+
+#if _IS_64_
+inline u32 ptr_to_uint(void *p)
+{
+    long long int v64=(long long int)(p);
+    u32 v=(u32)(v64&0xffffffff);
+    return v;
+}
+#endif        
+
+
+#if _IS_32_
+#define ptr_to_uint(PTR)  ((u32)(PTR))
+#endif        
 
 typedef enum tag_ss_format_req {
     dec,
@@ -26,6 +49,7 @@ typedef enum tag_ss_format_req {
     bin
 } caStringFormat;
 
+//Tested
 typedef struct tag_ss_fill_req {
     s8 ch;
     s_t width;
@@ -276,23 +300,20 @@ public:
         return cBuff;
     }
 
-    inline T* AtEnd(void) {
-        cBuff[size] = '\0';
-        return &cBuff[size];
-    }
-
     //Tested
     inline bool Good(void) {
         return start != stop;
     }
 
-    // by value
+    //Tested
     caStringStream<T> & operator<<(caStringFiller t) {
         while (size < t.end && Good())
             Add(t.ch);
+        Stopper();
         return *this;
     }
 
+    //Tested
     void Fix(caStringFiller & t) {
         t.end = size + t.width;
     }
@@ -395,59 +416,79 @@ public:
         while (*t != '\0') {
             Add(*t++);
         }
+        Stopper();
         return *this;
     }
 
     //by pointer
+    //Tested
     caStringStream<T> & operator<<(s8 *t) {
         Add('[');
-        toBase16((u32)(t), 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //Tested
     caStringStream<T> & operator<<(u8 *t) {
         Add('[');
-        toBase16((u32) t, 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //Tested
     caStringStream<T> & operator<<(s16 *t) {
         Add('[');
-        toBase16((u32)t, 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //Tested
     caStringStream<T> & operator<<(u16 *t) {
         Add('[');
-        toBase16((u32)t, 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //Tested
     caStringStream<T> & operator<<(s32 *t) {
         Add('[');
-        toBase16((u32)t, 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
-
+    
+    //Tested
     caStringStream<T> & operator<<(u32 *t) {
         Add('[');
-        toBase16(t, 8);
+        toBase16(ptr_to_uint(t), 8);
         Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //Tested
     caStringStream<T> & operator<<(caStringStream<T> *t) {
-        Add('[');
-        toBase16(t, 8);
-        Add(']');
-        return (*this) << *t;
+        if(t!=NULL)
+            (*this) << *t;
+        return (*this);
     }
 
+    //TO DO REMOVE IT ! to -> caDevicePort operator << (caStringStream...)
     caStringStream<T> & operator<<(caDevicePort & port) {
         if (port.IsValidHandle()) {
             //Write Out + Clear Stream;
