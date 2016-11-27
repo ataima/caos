@@ -30,10 +30,10 @@
 #endif
 
 #if _IS_64_
-inline u32 ptr_to_uint(void *p)
-{
-    long long int v64=(long long int)(p);
-    u32 v=(u32)(v64&0xffffffff);
+
+inline u32 ptr_to_uint(void *p) {
+    long long int v64 = (long long int) (p);
+    u32 v = (u32) (v64 & 0xffffffff);
     return v;
 }
 #endif        
@@ -50,6 +50,7 @@ typedef enum tag_ss_format_req {
 } caStringFormat;
 
 //Tested
+
 typedef struct tag_ss_fill_req {
     s8 ch;
     s_t width;
@@ -81,6 +82,7 @@ protected:
 protected:
 
     //Tested
+
     void toBase10(u32 v, u32 div) {
         while ((div != 0) && Good()) {
             register u32 r = (v / div)&0xff;
@@ -92,6 +94,7 @@ protected:
     }
 
     //Tested
+
     void toBase10(u32 v) {
         u32 div;
         if (v == 0)
@@ -130,6 +133,7 @@ protected:
     }
 
     //Tested
+
     void toBase10(u16 v) {
         u32 div;
         if (v == 0)
@@ -153,6 +157,7 @@ protected:
     }
 
     //Tested
+
     void toBase10(u8 v) {
         u32 div;
         if (v == 0)
@@ -170,6 +175,7 @@ protected:
     }
 
     //Tested
+
     void toBase16(u32 v, s_t max_w) {
         u32 rb;
         u32 rc;
@@ -190,6 +196,7 @@ protected:
     }
 
     //Tested
+
     void toBase2(u32 v, s_t max_w) {
         const u32 iMask[] = {
             1, 2, 4, 8,
@@ -215,6 +222,7 @@ protected:
     }
 
     //Tested
+
     inline void Add(T v) {
         if (start != stop) {
             *start++ = v;
@@ -223,24 +231,27 @@ protected:
     }
 
     //Tested
-    inline void Add(T *ptr,s_t num) {
-        s_t avail=Available();
-        if(num>avail)num=avail;
-        memcpy(start,ptr,num*sizeof(T));
-        start+=num;
-        size+=num;
+
+    inline void Add(T *ptr, s_t num) {
+        s_t avail = Available();
+        if (num > avail)num = avail;
+        memcpy(start, ptr, num * sizeof (T));
+        start += num;
+        size += num;
     }
 
     //Tested
+
     inline void Stopper(void) {
         if (start != stop) {
-            *start=0;
+            *start = 0;
         }
     }
-    
+
 public:
 
     //Tested
+
     caStringStream() {
         capacity = 0;
         cBuff = start = stop = NULL;
@@ -249,6 +260,7 @@ public:
     }
 
     //Tested
+
     u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         capacity = a_size - 1;
@@ -267,6 +279,7 @@ public:
     }
 
     //Tested
+
     void Clear(void) {
         start = cBuff;
         stop = &cBuff[capacity];
@@ -275,18 +288,28 @@ public:
     }
 
     //Tested
+
     inline s_t Size(void) {
         return size;
     }
 
     //Tested
+
     inline s_t Capacity(void) {
         return capacity;
     }
 
+
     //Tested
+
+    inline bool Empty(void) {
+        return size == 0;
+    }
+
+    //Tested
+
     inline s_t Available(void) {
-        return (capacity-size);
+        return (capacity - size);
     }
 
     inline void Forward(s_t pos) {
@@ -294,6 +317,7 @@ public:
     }
 
     //Tested
+
     inline T* Str(void) {
         if (size < capacity)
             cBuff[size] = '\0';
@@ -301,11 +325,13 @@ public:
     }
 
     //Tested
+
     inline bool Good(void) {
         return start != stop;
     }
 
     //Tested
+
     caStringStream<T> & operator<<(caStringFiller t) {
         while (size < t.end && Good())
             Add(t.ch);
@@ -314,11 +340,13 @@ public:
     }
 
     //Tested
+
     void Fix(caStringFiller & t) {
         t.end = size + t.width;
     }
 
     //Tested
+
     caStringStream<T> & operator<<(caStringFormat t) {
         mode_dec = mode_hex = mode_bin = false;
         if (t == caStringFormat::dec) {
@@ -334,12 +362,14 @@ public:
     }
 
     //Tested
+
     caStringStream<T> & operator<<(s8 t) {
         Add(t);
         return *this;
     }
 
     //Tested
+
     caStringStream<T> & operator<<(u8 t) {
         if (mode_dec)toBase10(t);
         else
@@ -350,15 +380,15 @@ public:
     }
 
     //Tested
+
     caStringStream<T> & operator<<(s16 t) {
         register u16 n;
         if (mode_dec) {
             if (t < 0) {
                 Add('-');
-                n = (u16)(-t);
-            }
-            else
-                n=(u16)(t);
+                n = (u16) (-t);
+            } else
+                n = (u16) (t);
             toBase10(n);
         } else
             if (mode_hex)toBase16(t, 4);
@@ -368,6 +398,7 @@ public:
     }
 
     //Tested
+
     caStringStream<T> & operator<<(u16 t) {
         if (mode_dec)toBase10(t);
         else
@@ -378,15 +409,15 @@ public:
     }
 
     //Tested
+
     caStringStream<T> & operator<<(s32 t) {
         u32 n;
         if (mode_dec) {
             if (t < 0) {
                 Add('-');
-                n =(u32)(-t);
-            }
-            else
-                n=(u32)(t);
+                n = (u32) (-t);
+            } else
+                n = (u32) (t);
             toBase10(n);
         } else
             if (mode_hex)toBase16(t, 8);
@@ -396,6 +427,7 @@ public:
     }
 
     //Tested
+
     caStringStream<T> & operator<<(u32 t) {
         if (mode_dec)toBase10(t);
         else
@@ -406,12 +438,14 @@ public:
     }
 
     //Tested
+
     inline caStringStream<T> & operator<<(caStringStream<T> & t) {
-        Add(t.Str(),t.Size());
+        Add(t.Str(), t.Size());
         return *this;
     }
 
     //Tested
+
     caStringStream<T> & operator<<(const char * t) {
         while (*t != '\0') {
             Add(*t++);
@@ -422,73 +456,81 @@ public:
 
     //by pointer
     //Tested
+
     caStringStream<T> & operator<<(s8 *t) {
         Add('[');
         toBase16(ptr_to_uint(t), 8);
         Add(']');
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //Tested
+
     caStringStream<T> & operator<<(u8 *t) {
         Add('[');
         toBase16(ptr_to_uint(t), 8);
         Add(']');
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //Tested
+
     caStringStream<T> & operator<<(s16 *t) {
         Add('[');
         toBase16(ptr_to_uint(t), 8);
         Add(']');
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //Tested
+
     caStringStream<T> & operator<<(u16 *t) {
         Add('[');
         toBase16(ptr_to_uint(t), 8);
         Add(']');
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //Tested
+
     caStringStream<T> & operator<<(s32 *t) {
         Add('[');
         toBase16(ptr_to_uint(t), 8);
         Add(']');
-        if(t!=NULL)
-            (*this) << *t;
-        return (*this);
-    }
-    
-    //Tested
-    caStringStream<T> & operator<<(u32 *t) {
-        Add('[');
-        toBase16(ptr_to_uint(t), 8);
-        Add(']');
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //Tested
+
+    caStringStream<T> & operator<<(u32 *t) {
+        Add('[');
+        toBase16(ptr_to_uint(t), 8);
+        Add(']');
+        if (t != NULL)
+            (*this) << *t;
+        return (*this);
+    }
+
+    //Tested
+
     caStringStream<T> & operator<<(caStringStream<T> *t) {
-        if(t!=NULL)
+        if (t != NULL)
             (*this) << *t;
         return (*this);
     }
 
     //TO DO REMOVE IT ! to -> caDevicePort operator << (caStringStream...)
+
     caStringStream<T> & operator<<(caDevicePort & port) {
         if (port.IsValidHandle()) {
             //Write Out + Clear Stream;
@@ -506,7 +548,7 @@ public:
 
     caDevicePort & Endl(caDevicePort &t) {
         (*this) << caEnd::endl;
-        Str();
+        Stopper();
         return t;
     }
 
@@ -538,15 +580,15 @@ private:
 private:
 
     bool inline Next(void) {
-        return (pos <= stop);
+        return (pos++);
     }
 
     T inline Get(void) {
-        return *pos++;
+        return *pos;
     }
 
     bool inline IsSpace(T u) {
-        return (u < ' ');
+        return (u <= ' ');
     }
 
     bool inline IsNumber(T u) {
@@ -583,22 +625,48 @@ private:
         u32 res = 0;
         u32 base = 10;
         s32 sign = 1;
-        good = Next();
+        Good();
         if (good) {
-            while (Next()) {
-                u = Get();
-                if (!IsSpace(u))break;
+            u=Get();
+            if (IsSpace(u)) {
+                Next();
+                while (Good()) {
+                    u = Get();                    
+                    Next();            
+                    if (!IsSpace(u))break;
+                }
             }
             if (IsMinus(u))
+            {
                 sign = -1;
-            if (IsNumber(u) && Next()) {
+                if(Good()) {
+                    Next();
+                    u = Get();
+                    if(!IsNumber(u))
+                    {
+                        good=false;
+                        res=0;
+                        return res;  
+                    }
+                    else
+                        Next();
+                }
+                else
+                {
+                    good=false;
+                    res=0;
+                    return res;
+                }
+            }
+            if (IsNumber(u) && Good()) {
                 res = res * base + GetNumber(u);
                 u = Get();
+                Next();
                 if (res == 0) {
                     if (u == 'X' || u == 'x') {
                         base = 16;
                         u = ToUpper(Get());
-                        while (Next()) {
+                        while (Good()) {
                             if (IsNumber(u))
                                 res = res * base + GetNumber(u);
                             else
@@ -606,25 +674,33 @@ private:
                                 res = res * base + GetHexNumber(u);
                             else
                                 break;
+                            Next();
                             u = Get();
                         }
                     } else
                         if (u == 'b' || u == 'b') {
                         base = 2;
                         u = Get();
+                        Next();
                         while ((u == '0' || u == '1') && Next()) {
                             res = res * base + GetNumber(u);
                             u = Get();
+                            Next();
                         }
                     }
                 } else {
-                    while (IsNumber(u) && Next()) {
+                    while (IsNumber(u) && Good()) {
                         res = res * base + GetNumber(u);
                         u = Get();
+                        Next();
                     }
                 }
-                while (IsSpace(u) && Next()) {
-                    u = Get();
+                if (IsSpace(u)) {
+                    while (Good()) {
+                        u = Get();
+                        if(!IsSpace(u))break;
+                        Next();
+                    }                    
                 }
                 res *= sign;
             } else {
@@ -637,37 +713,53 @@ private:
     void tokenize(T *&res, s_t & rsize) {
         T u = 0;
         rsize = 0;
-        good = Next();
+        Good();
         if (good) {
-            while (Next()) {
+            while (Good()) {
                 res = pos;
                 u = Get();
                 if (!IsSpace(u))break;
+                Next();
             }
             while (IsAscii(u)) {
                 rsize++;
                 u = Get();
-                if (!Next())break;
+                if (!Good())break;
+                Next();
             }
         } else {
             res = NULL;
         }
     }
+
 public:
 
-    u32 Init(T *base, s_t a_size) {
+    //Tested 
+
+    caTokenizeSStream() {
+        capacity = 0;
+        cBuff = pos = stop = NULL;
+        size = 0;
+        good = false;
+    }
+
+    //Tested 
+
+    u32 Init(T *base, s_t total_size, s_t s_size) {
         u32 res = FALSE;
-        capacity = a_size - 1;
+        capacity = total_size - 1;
         cBuff = base;
         pos = cBuff;
-        stop = &cBuff[capacity];
-        size = 0;
+        size = s_size;
+        stop = &cBuff[size];
         if (cBuff != NULL && capacity > 0) {
             res = TRUE;
         }
-        good = (res == TRUE);
+        good = ((res == TRUE ) && Good());
         return res;
     }
+
+    //Tested 
 
     u32 Init(caStringStream<T> & ss) {
         u32 res = FALSE;
@@ -679,9 +771,11 @@ public:
         if (cBuff != NULL && capacity > 0) {
             res = TRUE;
         }
-        good = (res == TRUE);
+        good = ((res == TRUE ) && Good());
         return res;
     }
+
+    //Tested 
 
     void Clear(void) {
         pos = cBuff;
@@ -691,20 +785,34 @@ public:
         good = (capacity > 2);
     }
 
+    //Tested 
+
     inline s_t Size(void) {
         return size;
     }
 
+    //Tested
+
     inline bool Empty(void) {
-        return size == 0;
+        return pos == &cBuff[size];
     }
+
+    //Tested 
 
     inline s_t Capacity(void) {
         return capacity;
     }
 
+    //Tested 
+
+    inline s_t Available(void) {
+        return capacity - size;
+    }
+
+    //Tested 
+
     inline s_t Good(void) {
-        return good;
+        return good=(pos<=stop && pos!=NULL);
     }
 
     inline void Forward(s_t npos) {
@@ -713,10 +821,12 @@ public:
         good = Next();
     }
 
+    //Tested 
+
     inline T* Str(void) {
-        if (size < capacity)
-            cBuff[size] = '\0';
-        return cBuff;
+        if (stop != NULL)
+            *stop = '\0';
+        return pos;
     }
 
     inline T* Position(void) {
@@ -727,20 +837,24 @@ public:
     }
 
     inline s_t Remain(void) {
-        return (s_t) (stop - pos);
+        return (s_t) (ptr_to_uint(stop) - ptr_to_uint(pos));
     }
 
     caTokenizeSStream<T> & operator>>(s8 & c) {
-        good = Next();
-        if (good)
+        Good();
+        if (good){
             c = (s8) Get();
+            Next();
+        }
         return (*this);
     }
 
     caTokenizeSStream<T> & operator>>(u8 & c) {
-        good = Next();
-        if (good)
+        Good();
+        if (good){
             c = (u8) Get();
+            Next();
+        }
         return (*this);
     }
 

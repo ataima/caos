@@ -5,7 +5,8 @@
       <df name="src">
         <in>mainApp.cpp</in>
         <in>memoryvalidator.cpp</in>
-        <in>test_stream.cpp</in>
+        <in>test_string_stream.cpp</in>
+        <in>test_token_string.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -31,6 +32,8 @@
       <flagsDictionary>
         <element flagsID="0"
                  commonFlags="-Wpedantic -O2 -std=c++11 -fno-rtti -ffreestanding"/>
+        <element flagsID="1"
+                 commonFlags="-Wpedantic -std=c++11 -fno-rtti -ffreestanding"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -40,11 +43,11 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/test.exe</executablePath>
-          <ccTool>
+          <ccTool flags="1">
             <incDir>
-              <pElem>../os_test/inc</pElem>
+              <pElem>inc</pElem>
               <pElem>../os/inc</pElem>
-              <pElem>../os_test</pElem>
+              <pElem>.</pElem>
             </incDir>
           </ccTool>
         </makeTool>
@@ -61,8 +64,18 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="../os_test/src/test_stream.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
+      <item path="../os_test/src/test_string_stream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/test_token_string.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <folder path="0">
