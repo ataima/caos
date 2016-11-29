@@ -28,6 +28,11 @@ class caCircularBuffer {
     T *cBuff;
 public:
 
+    caCircularBuffer(){
+        start=stop=WIDTH = 0;
+        cBuff=NULL;
+    }
+    
     void Init(T * buff, s_t assigned_width) {
         WIDTH = assigned_width;
         start = stop = 0;
@@ -38,8 +43,8 @@ public:
         return start == stop;
     }
 
-    inline T* GetData(void) {
-        return cBuff;
+    inline s_t Capacity(void) {
+        return WIDTH;
     }
 
     bool Insert(T *ptr, s_t requested, s_t & writed) {

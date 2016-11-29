@@ -580,8 +580,8 @@ private:
 private:
 
     bool inline Next(void) {
-        pos++;        
-        return (pos!=stop);
+        pos++;
+        return (pos != stop);
     }
 
     T inline Get(void) {
@@ -646,7 +646,7 @@ private:
                         good = false;
                         res = 0;
                         return res;
-                    } 
+                    }
                 } else {
                     good = false;
                     res = 0;
@@ -656,7 +656,7 @@ private:
             if (IsNumber(u) && Good()) {
                 Next();
                 if (u == '0') {
-                    u=Get();
+                    u = Get();
                     Next();
                     if (u == 'X' || u == 'x') {
                         base = 16;
@@ -677,10 +677,15 @@ private:
                         base = 2;
                         u = Get();
                         Next();
-                        while ((u == '0' || u == '1') && Next()) {
-                            res = res * base + GetNumber(u);
-                            u = Get();
-                            Next();
+                        if (u == '0' || u == '1') {
+                            while (Good()) {
+                                res = res * base + GetNumber(u);
+                                u = Get();
+                                if (u == '0' || u == '1')
+                                    Next();
+                                else
+                                    break;
+                            }
                         }
                     }
                 } else {

@@ -22,7 +22,6 @@
 #include "arm_c_types.h"
 #include "idevice.h"
 #include "stream.h"
-#include <iostream>
 
 class caTokenizeSStream_test_class
 : public caTester {
