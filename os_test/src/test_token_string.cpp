@@ -40,6 +40,10 @@ class caTokenizeSStream_test_class
     CA_TEST(caTokenizeSStream_test_class::test17, " (hex) >> u16 test");
     CA_TEST(caTokenizeSStream_test_class::test18, " (hex) >> s32 test");
     CA_TEST(caTokenizeSStream_test_class::test19, " (hex) >> u32 test");
+    CA_TEST(caTokenizeSStream_test_class::test26, " (bin) >> s16 test");
+    CA_TEST(caTokenizeSStream_test_class::test27, " (bin) >> u16 test");
+    CA_TEST(caTokenizeSStream_test_class::test28, " (bin) >> s32 test");
+    CA_TEST(caTokenizeSStream_test_class::test29, " (bin) >> u32 test");
     CA_TEST_SUITE_END();
     void setUp(void) {
     }
@@ -56,6 +60,10 @@ class caTokenizeSStream_test_class
     void test17(void);
     void test18(void);
     void test19(void);
+    void test26(void);
+    void test27(void);
+    void test28(void);
+    void test29(void);
     void tearDown(void) {
     }
 
@@ -545,7 +553,7 @@ void caTokenizeSStream_test_class::test18(void) {
     b>>t;    
     CA_ASSERT(t == 0x1234);
     CA_ASSERT(b.Size() == 14);
-    CA_ASSERT(b.Remain() == 7);
+    CA_ASSERT(b.Remain() == 5);
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == &buff[9]);
     CA_ASSERT(b.Good() == true);
@@ -580,26 +588,26 @@ void caTokenizeSStream_test_class::test19(void) {
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
-    CA_ASSERT(b.Size() == 16);
+    CA_ASSERT(b.Size() == 23);
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == buff);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(b.Empty() == false);
     u32 t=0;
     b>>t;    
-    CA_ASSERT(t == 1234);
-    CA_ASSERT(b.Size() == 16);
-    CA_ASSERT(b.Remain() == 9);
+    CA_ASSERT(t == 0x12345678);
+    CA_ASSERT(b.Size() == 23);
+    CA_ASSERT(b.Remain() == 10);
     CA_ASSERT(b.Capacity() == 99);
-    CA_ASSERT(b.Str() == &buff[7]);
+    CA_ASSERT(b.Str() == &buff[13]);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(b.Empty() == false);
     b>>t;    
-    CA_ASSERT(t == 473253456);
-    CA_ASSERT(b.Size() == 16);
+    CA_ASSERT(t == 0xfacacaaa);
+    CA_ASSERT(b.Size() == 23);
     CA_ASSERT(b.Remain() == 0);
     CA_ASSERT(b.Capacity() == 99);
-    CA_ASSERT(b.Str() == &buff[16]);
+    CA_ASSERT(b.Str() == &buff[23]);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(b.Empty() == true);
     b.Clear();
@@ -611,4 +619,187 @@ void caTokenizeSStream_test_class::test19(void) {
     CA_ASSERT(b.Empty() == true);
 }
 
+//////////////  BIN     
+
+
+
+
+
+void caTokenizeSStream_test_class::test26(void) {
+    _START();
+    _INFO(" caTokenizeSStream: to check operator( bin ) >> s16 ");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff[100];
+    caStringStream<char> a;
+    a.Init(buff, 100);
+    a<<" 0b1010  0b1110";
+    caTokenizeSStream<s8> b;
+    CA_ASSERT(b.Empty() == true);
+    b.Init(a);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    s16 t=0;
+    b>>t;    
+    CA_ASSERT(t == 10);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 6);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[9]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    b>>t;    
+    CA_ASSERT(t == 14);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[15]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+    b.Clear();
+    CA_ASSERT(b.Size() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Available() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+}
+
+
+
+void caTokenizeSStream_test_class::test27(void) {
+    _START();
+    _INFO(" caTokenizeSStream: to check operator ( bin ) >> u16 ");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff[100];
+    caStringStream<char> a;
+    a.Init(buff, 100);
+    a<<" 0b1010  0b1110";
+    caTokenizeSStream<s8> b;
+    CA_ASSERT(b.Empty() == true);
+    b.Init(a);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    u16 t=0;
+    b>>t;    
+    CA_ASSERT(t == 10);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 6);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[9]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    b>>t;    
+    CA_ASSERT(t == 14);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[15]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+    b.Clear();
+    CA_ASSERT(b.Size() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Available() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+}
+
+void caTokenizeSStream_test_class::test28(void) {
+    _START();
+    _INFO(" caTokenizeSStream: to check operator ( bin ) >> s32 ");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff[100];
+    caStringStream<char> a;
+    a.Init(buff, 100);
+    a<<" 0b1010  0b1110";
+    caTokenizeSStream<s8> b;
+    CA_ASSERT(b.Empty() == true);
+    b.Init(a);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    s32 t=0;
+    b>>t;    
+    CA_ASSERT(t == 10);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 6);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[9]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    b>>t;    
+    CA_ASSERT(t == 14);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[15]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+    b.Clear();
+    CA_ASSERT(b.Size() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Available() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+}
+
+void caTokenizeSStream_test_class::test29(void) {
+    _START();
+    _INFO(" caTokenizeSStream: to check operator ( bin ) >> u32 ");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff[100];
+    caStringStream<char> a;
+    a.Init(buff, 100);
+    a<<" 0b1010  0b1110";
+    caTokenizeSStream<s8> b;
+    CA_ASSERT(b.Empty() == true);
+    b.Init(a);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    u32 t=0;
+    b>>t;    
+    CA_ASSERT(t == 10);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 6);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[9]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == false);
+    b>>t;    
+    CA_ASSERT(t == 14);
+    CA_ASSERT(b.Size() == 15);
+    CA_ASSERT(b.Remain() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Str() == &buff[15]);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+    b.Clear();
+    CA_ASSERT(b.Size() == 0);
+    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Available() == 99);
+    CA_ASSERT(b.Str() == buff);
+    CA_ASSERT(b.Good() == true);
+    CA_ASSERT(b.Empty() == true);
+}
 
