@@ -580,7 +580,8 @@ private:
 private:
 
     bool inline Next(void) {
-        return (pos++);
+        pos++;        
+        return (pos!=stop);
     }
 
     T inline Get(void) {
@@ -627,42 +628,36 @@ private:
         s32 sign = 1;
         Good();
         if (good) {
-            u=Get();
+            u = Get();
             if (IsSpace(u)) {
                 Next();
                 while (Good()) {
-                    u = Get();                    
-                    Next();            
+                    u = Get();
                     if (!IsSpace(u))break;
+                    Next();
                 }
             }
-            if (IsMinus(u))
-            {
+            if (IsMinus(u)) {
                 sign = -1;
-                if(Good()) {
+                if (Good()) {
                     Next();
                     u = Get();
-                    if(!IsNumber(u))
-                    {
-                        good=false;
-                        res=0;
-                        return res;  
-                    }
-                    else
-                        Next();
-                }
-                else
-                {
-                    good=false;
-                    res=0;
+                    if (!IsNumber(u)) {
+                        good = false;
+                        res = 0;
+                        return res;
+                    } 
+                } else {
+                    good = false;
+                    res = 0;
                     return res;
                 }
             }
             if (IsNumber(u) && Good()) {
-                res = res * base + GetNumber(u);
-                u = Get();
                 Next();
-                if (res == 0) {
+                if (u == '0') {
+                    u=Get();
+                    Next();
                     if (u == 'X' || u == 'x') {
                         base = 16;
                         u = ToUpper(Get());
@@ -675,7 +670,7 @@ private:
                             else
                                 break;
                             Next();
-                            u = Get();
+                            u = ToUpper(Get());
                         }
                     } else
                         if (u == 'b' || u == 'b') {
@@ -692,15 +687,16 @@ private:
                     while (IsNumber(u) && Good()) {
                         res = res * base + GetNumber(u);
                         u = Get();
+                        if (!IsNumber(u))break;
                         Next();
                     }
                 }
-                if (IsSpace(u)) {
+                if (u != '\0' && IsSpace(u)) {
                     while (Good()) {
                         u = Get();
-                        if(!IsSpace(u))break;
+                        if (!IsSpace(u))break;
                         Next();
-                    }                    
+                    }
                 }
                 res *= sign;
             } else {
@@ -755,7 +751,7 @@ public:
         if (cBuff != NULL && capacity > 0) {
             res = TRUE;
         }
-        good = ((res == TRUE ) && Good());
+        good = ((res == TRUE) && Good());
         return res;
     }
 
@@ -771,7 +767,7 @@ public:
         if (cBuff != NULL && capacity > 0) {
             res = TRUE;
         }
-        good = ((res == TRUE ) && Good());
+        good = ((res == TRUE) && Good());
         return res;
     }
 
@@ -812,7 +808,7 @@ public:
     //Tested 
 
     inline s_t Good(void) {
-        return good=(pos<=stop && pos!=NULL);
+        return good = (pos <= stop && pos != NULL);
     }
 
     inline void Forward(s_t npos) {
@@ -842,7 +838,7 @@ public:
 
     caTokenizeSStream<T> & operator>>(s8 & c) {
         Good();
-        if (good){
+        if (good) {
             c = (s8) Get();
             Next();
         }
@@ -851,7 +847,7 @@ public:
 
     caTokenizeSStream<T> & operator>>(u8 & c) {
         Good();
-        if (good){
+        if (good) {
             c = (u8) Get();
             Next();
         }

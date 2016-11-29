@@ -177,7 +177,7 @@ extern int _mn_line_Rq;
 #define _safeDELETE(a)  free(a);
 #endif
 ///////////////////////////////////////////////////////////////////
-
+/*
 extern void * operator new (size_t len)throw (std::bad_alloc);
 
 extern void * operator new[] (size_t len)throw (std::bad_alloc);
@@ -185,7 +185,7 @@ extern void * operator new[] (size_t len)throw (std::bad_alloc);
 extern void operator delete[] (void *ptr)throw ();
 
 extern void operator delete ( void *ptr)throw ();
-
+*/
 
 
 
