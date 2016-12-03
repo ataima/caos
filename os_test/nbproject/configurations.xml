@@ -32,8 +32,6 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-Wpedantic -O2 -std=c++11 -fno-rtti -ffreestanding"/>
-        <element flagsID="1"
                  commonFlags="-Wpedantic -std=c++11 -fno-rtti -ffreestanding"/>
       </flagsDictionary>
       <codeAssistance>
@@ -44,7 +42,7 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/test.exe</executablePath>
-          <ccTool flags="1">
+          <ccTool flags="0">
             <incDir>
               <pElem>inc</pElem>
               <pElem>../os/inc</pElem>
@@ -54,7 +52,8 @@
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
-          <preBuildCommand></preBuildCommand>
+          <preBuildCommand>make distclean</preBuildCommand>
+          <preBuildFirst>true</preBuildFirst>
         </preBuild>
       </makefileType>
       <item path="../os_test/src/mainApp.cpp" ex="false" tool="1" flavor2="8">
@@ -65,22 +64,30 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="../os_test/src/test_circular_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="../os_test/src/test_string_stream.cpp"
             ex="false"
             tool="1"
             flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="../os_test/src/test_token_string.cpp"
             ex="false"
             tool="1"
             flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <folder path="0">
         <cTool>
+          <standard>9</standard>
           <incDir>
             <pElem>../os_test/inc</pElem>
             <pElem>../os/inc</pElem>
@@ -88,12 +95,12 @@
         </cTool>
         <ccTool>
           <standard>8</standard>
+          <incDir>
+            <pElem>../os_test/inc</pElem>
+            <pElem>../os/inc</pElem>
+          </incDir>
         </ccTool>
       </folder>
-      <item path="src/test_circular_buffer.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

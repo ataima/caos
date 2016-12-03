@@ -26,74 +26,130 @@ class caCircularBuffer {
     s_t start;
     s_t stop;
     T *cBuff;
+    bool error;
+
+protected:
+
+    bool add(T *v, s_t requested, s_t & writed) {
+        bool res = false;
+        writed = 0;
+        s_t i = Available();
+        s_t request=requested;
+        if (request > i)
+            request = i;
+        for (i = 0; i < request; i++) {
+            if (Push(v[i]))
+                writed++;
+            else
+                break;
+        }
+        res = (writed == requested);
+        return res;
+    }
+
+    bool remove(T *ptr, s_t requested, s_t & removed) {
+        bool res = false;
+        removed = 0;
+        s_t i = Size();
+        s_t request=requested;
+        if (request > i)
+            request = i;
+        for (i = 0; i < request; i++) {
+            T v;
+            if (Pop(v)) {
+                ptr[i] = v;
+                removed++;
+            } else
+                break;
+        }
+        res = (removed == requested);
+        return res;
+    }
+
+
+
 public:
 
-    caCircularBuffer(){
-        start=stop=WIDTH = 0;
-        cBuff=NULL;
+    caCircularBuffer() {
+        start = stop = WIDTH = 0;
+        cBuff = NULL;
     }
-    
+
     void Init(T * buff, s_t assigned_width) {
         WIDTH = assigned_width;
         start = stop = 0;
         cBuff = buff;
     }
 
+    inline bool Good(void) {
+        bool res;
+        s_t diff;
+        if (start == stop)
+            res = true;
+        else {
+            if (start > stop)
+                diff = start - stop;
+            else
+                diff = stop - start;
+            res = (diff != WIDTH);
+        }
+        return res;
+    }
+
     inline bool Empty(void) {
-        return start == stop;
+        return (start == stop);
     }
 
     inline s_t Capacity(void) {
         return WIDTH;
     }
 
-    bool Insert(T *ptr, s_t requested, s_t & writed) {
+    inline bool Push(T v) {
+        if (stop == WIDTH)
+            stop = 0;
+        if (start == WIDTH)
+            start = 0;
+        cBuff[stop] = v;
+        stop += 1;
+        //stop = stop % WIDTH;        
+        return true;
+    }
+
+    inline bool Pop(T & V) {
         bool res = false;
-        s_t i;
-        s_t p;
-        for (i = 0; i < requested; i++) {
-            p = (stop + i) % WIDTH;
-            if (Empty() == false && p == start) {
-                i--;
-                break;
-            }
-            T v = ptr[i];
-            cBuff[p] = v;
-        }
-        if (i == requested)
+        if (Empty() == false) {
+            if (start == WIDTH)
+                start = 0;
+            V = cBuff[start];
+            start += 1;
             res = true;
-        writed = i;
-        stop = (stop + i) % WIDTH;
+        }
         return res;
     }
 
-    bool Remove(T *ptr, s_t requested, s_t & removed) {
+    inline bool Push(T *ptr, s_t requested, s_t & writed) {
         bool res = false;
-        if (start != stop) {
-            s_t i;
-            s_t p;
-            for (i = 0; i < requested; i++) {
-                p = (start + i) % WIDTH;
-                if (Empty() == false && p == stop) {
-                    i--;
-                    break;
-                }
-                T v = cBuff[p];
-                ptr[i] = v;
-            }
-            if (i == requested)
-                res = true;
-            removed = i;
-            start = (start + i) % WIDTH;
+        if (ptr != NULL) {
+            res = add(ptr, requested, writed);
+        }
+        return res;
+    }
+
+    inline bool Pop(T *ptr, s_t requested, s_t & readed) {
+        bool res = false;
+        if (ptr != NULL) {
+            res = remove(ptr, requested, readed);
         }
         return res;
     }
 
     s_t Size(void) {
+        s_t size;
         if (stop >= start)
-            return (stop - start);
+            size = (stop - start);
         else
-            return (WIDTH - start + stop);
+            size = (WIDTH - start + stop);
+        return size;
     }
 
     inline s_t Available(void) {
