@@ -86,13 +86,13 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
-	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
+	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F) $<
 	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(TEST)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
-	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
+	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F)  $<
 	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 
@@ -152,7 +152,7 @@ link_file:
 	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
 	
 objdump_file:
-	$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.list
+	$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf -S > $(BUILDIR)/caOS.list
 	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.list">/dev/stderr
 	$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O ihex $(BUILDIR)/caOS.hex
 	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr

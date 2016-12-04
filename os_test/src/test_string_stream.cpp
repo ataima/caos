@@ -25,7 +25,7 @@
 #include <iostream>
 
 
-caCSTR (caEnd::endl,"\r\n");
+const char *caEnd::endl="\r\n";
 
 class caStringStream_test_class
 : public caTester {
@@ -52,6 +52,7 @@ class caStringStream_test_class
     CA_TEST(caStringStream_test_class::test19, "<< *u32 test");
     CA_TEST(caStringStream_test_class::test20, "filler test");
     CA_TEST(caStringStream_test_class::test21, "terminator test");
+    CA_TEST(caStringStream_test_class::testPrefetch,"use case prefetch");
     CA_TEST_SUITE_END();
 
     void setUp(void) {
@@ -78,7 +79,7 @@ class caStringStream_test_class
     void test19(void);
     void test20(void);
     void test21(void);
-
+    void testPrefetch(void);
     void tearDown(void) {
     }
 
@@ -892,7 +893,7 @@ void caStringStream_test_class::test13(void) {
     caStringStream<char> a;
     a.Init(buff_a, sizeof (buff_a));
     s8 t = 'A';
-    sprintf(buff_b, "[0x%08X]%c", &t, t);
+    sprintf(buff_b, "[0x%08X]%c", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -909,12 +910,12 @@ void caStringStream_test_class::test14(void) {
     a.Init(buff_a, sizeof (buff_a));
     u8 t = 169;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", &t, t);
+    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
     a.Clear();
     a << caStringFormat::hex;
-    sprintf(buff_b, "[0x%08X]0x%02X", &t, t);
+    sprintf(buff_b, "[0x%08X]0x%02X", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -931,7 +932,7 @@ void caStringStream_test_class::test15(void) {
     a.Init(buff_a, sizeof (buff_a));
     s16 t = -4589;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", &t, t);
+    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -948,7 +949,7 @@ void caStringStream_test_class::test16(void) {
     a.Init(buff_a, sizeof (buff_a));
     u16 t = 43256;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", &t, t);
+    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -965,7 +966,7 @@ void caStringStream_test_class::test17(void) {
     a.Init(buff_a, sizeof (buff_a));
     s32 t = -13243256;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", &t, t);
+    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -982,7 +983,7 @@ void caStringStream_test_class::test18(void) {
     a.Init(buff_a, sizeof (buff_a));
     u32 t = 0x0efacaca;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", &t, t);
+    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -1076,4 +1077,29 @@ void caStringStream_test_class::test21(void) {
     caCSTR (f,"pippo");
     a << f << caEnd::endl;
     CA_ASSERT(strcmp(a.Str(), "pippo\r\n") == 0);
+}
+
+
+void caStringStream_test_class::testPrefetch(void) {
+    _START();
+    _INFO("to check terminator object");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    s8 buffio[512];
+    u32 lr_usr,lr_svc,lr_irq,lr_abt;
+    lr_usr=0x12345678;
+    lr_svc=0x12345678;
+    lr_irq=0x12345678;
+    lr_abt=0x12345678;
+    caStringStream<s8> ss;
+    ss.Init(buffio, 512);
+    ss << caStringFormat::hex;
+    ss << "Prefetch" << caEnd::endl;
+    ss << "USR = " << lr_usr << caEnd::endl;
+    ss << "SVC = " << lr_svc << caEnd::endl;
+    ss << "IRQ = " << lr_irq << caEnd::endl;
+    ss << "ABT = " << lr_abt << caEnd::endl;   
+    std::cout<<ss.Str();
+    CA_ASSERT(ss.Str()!=NULL);
 }

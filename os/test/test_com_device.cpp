@@ -1,3 +1,4 @@
+#include "config.h"
 #include "test.h"
 #if TEST_COM1_DEVICE && TEST
 

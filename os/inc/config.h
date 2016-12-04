@@ -68,5 +68,5 @@
 #define DEBUG_ATOMIC_LOCK       1
 
 // TO EXECUTE TESTS
-#define TEST                    0
+#define TEST                    1
 #endif

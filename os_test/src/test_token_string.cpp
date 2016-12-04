@@ -43,6 +43,7 @@ class caTokenizeSStream_test_class
     CA_TEST(caTokenizeSStream_test_class::test27, " (bin) >> u16 test");
     CA_TEST(caTokenizeSStream_test_class::test28, " (bin) >> s32 test");
     CA_TEST(caTokenizeSStream_test_class::test29, " (bin) >> u32 test");
+    CA_TEST(caTokenizeSStream_test_class::test40, " Foward ");
     CA_TEST_SUITE_END();
     void setUp(void) {
     }
@@ -63,6 +64,7 @@ class caTokenizeSStream_test_class
     void test27(void);
     void test28(void);
     void test29(void);
+    void test40(void);
     void tearDown(void) {
     }
 
@@ -816,3 +818,25 @@ void caTokenizeSStream_test_class::test29(void) {
     CA_ASSERT(b.Empty() == true);
 }
 
+void caTokenizeSStream_test_class::test40(void) {
+    _START();
+    _INFO(" caTokenizeSStream: to check Foward method ");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    caTokenizeSStream<s8> iss;
+    caStringStream<s8> tt;
+    s8 buft[1024];
+    tt.Init(buft, 1024);
+    iss.Init(tt);
+    CA_ASSERT(iss.Size()==0);
+    CA_ASSERT(iss.Capacity() == 1023);
+    CA_ASSERT(iss.Empty() == true);
+    CA_ASSERT(iss.Str() == buft);
+    tt << "pippo pluto paperino";
+    iss.Forward(tt.Size());
+    CA_ASSERT (iss.Size() == tt.Size());
+    TokenString<s8> res;
+    iss >> res;
+    CA_ASSERT (strncmp(res.ptr,"pippo",5)==0);
+}

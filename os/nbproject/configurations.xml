@@ -75,6 +75,12 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>inc</pElem>
+              <pElem>.</pElem>
+            </incDir>
+          </cTool>
           <ccTool>
             <incDir>
               <pElem>inc</pElem>

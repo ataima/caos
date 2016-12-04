@@ -1,3 +1,4 @@
+#include "config.h"
 #include "test.h"
 
 #if SYS_TIMER_DEVICE && TEST

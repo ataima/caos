@@ -1,4 +1,4 @@
-
+#include "config.h"
 #include "config.h"
 #include "test.h"
 #if TEST_LOCKING && TEST

@@ -45,7 +45,7 @@ extern CpuRegs cpu_reg;
 
 void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_und) {
-    
+    DisableInt();
     caArmCpu::Dump(caArmCpu::GetStackPointerR13());
     Dbg::Put("---->Undefined EXCEPTION !\r\n");
     Dbg::Put("---->LR USR = ", lr_usr);
@@ -63,6 +63,7 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "UND = " << lr_und << caEnd::endl;
     Dbg::Put(ss.Str());
+    EnableInt();
 }
 
 void caInterruptRequest::Software(u32 ioctl,
@@ -115,7 +116,7 @@ void caInterruptRequest::Software(u32 ioctl,
 
 void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_abt) {
-    asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
+    DisableInt();
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -126,7 +127,7 @@ void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
-    asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
+    EnableInt();
 }
 
 u32 caInterruptRequest::IRQ(void) {
@@ -138,6 +139,7 @@ u32 caInterruptRequest::FIQ(void) {
 }
 
 void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt) {
+    DisableInt();
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -148,14 +150,17 @@ void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
+    EnableInt();
 }
 
 void caInterruptRequest::Hypervisor(void) {
+    DisableInt();
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
     ss << caStringFormat::hex;
     ss << "HYpervisor" << caEnd::endl;
     Dbg::Put(ss.Str());
+    EnableInt();
 }
 

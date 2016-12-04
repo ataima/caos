@@ -81,7 +81,7 @@ typedef struct tag_ss_fill_req {
 // HAVE TO DO ss<<caEnd::endl o ss<<ss.Endl(Port))
 
 typedef struct tag_ss_end_line {
-    static const caString endl;
+    static const char* endl;
 } caEnd;
 
 template <typename T>
@@ -849,7 +849,7 @@ public:
     }
 
     inline void Forward(s_t npos) {
-        size += npos;
+        size = npos;
         stop = &cBuff[size];
         good = Next();
     }

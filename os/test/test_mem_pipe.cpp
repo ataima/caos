@@ -1,3 +1,4 @@
+#include "config.h"
 #include "test.h"
 
 #if MEM_PIPE_DEVICE   && TEST

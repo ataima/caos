@@ -21,7 +21,6 @@
 #include "arm_c_types.h"
 #include "interrupt.h"
 #include "idevice.h"
-
 #include "stream.h"
 
-caCSTR(caEnd::endl ,"\r\n");
+const char *caEnd::endl="\r\n";

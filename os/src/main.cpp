@@ -48,7 +48,7 @@ u32 start_system_timer(void) {
         if (caSysTimer::EnableCounter(1)) {
             if (caSysTimer::EnableTimer(1)) {
                 Dbg::Put("> c.a.O.S. : [ Start Schedule interrupt ... ]\r\n");
-                res = caSysTimer::IrqEnable();
+                //res = caSysTimer::IrqEnable();
             }
         }
     }
@@ -148,8 +148,8 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
                     u32 endC = port.readed - 1;
                     buff_in[endC] = '\0';
                     caTokenizeSStream<u8> iss;
-                    iss.Init(buff_in, endC,endC);
-                    iss.Forward(endC);
+                    iss.Init(buff_in, endC,0);
+                    //iss.Forward(endC);
                     caConsole::Execute(iss, port);
                 }
             }
@@ -178,7 +178,9 @@ int main(void) {
 #if TEST
     tmain();
 #endif    
-
+    caInterruptRequest::Prefetch(10,20,30,40);
+    caInterruptRequest::Abort(10,20,30,40);
+    caInterruptRequest::Undefined(10,20,30,40);
     // MAIN TASK SVC MODE TO RUN  ALL SERVICES    
     thMainTask = caThread::CreateSystemThread("main",
             caThreadPriority::caThLevel3,
