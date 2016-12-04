@@ -22,15 +22,15 @@
 
 
 #include "bcm2836.h"
-#include "stream.h"
 #include "circularbuffer.h"
+#include "stream.h"
 #include "atomiclock.h"
 
 
 
 #ifdef HAVE_SYS_LOG
 
-typedef caCircularBuffer<s8> caLogStream;
+
 
 class caSysLog {
     caLogStream mn_CBuffer;

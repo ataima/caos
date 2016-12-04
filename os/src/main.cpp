@@ -68,7 +68,7 @@ u32 stop_system_timer(void) {
 }
 
 u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    Dbg::Put("Idle live..\r\n");
+    //Dbg::Put("Idle live..\r\n");
     u32 idleCount = 1;
     for (;;) {
         idleCount++;
@@ -78,7 +78,7 @@ u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 }
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    Dbg::Put("Main live..\r\n");
+    //Dbg::Put("Main live..\r\n");
     u32 st = 0;
     caSysLed::LedsOff();
     while (1) {
@@ -148,7 +148,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
                     u32 endC = port.readed - 1;
                     buff_in[endC] = '\0';
                     caTokenizeSStream<u8> iss;
-                    iss.Init(buff_in, endC);
+                    iss.Init(buff_in, endC,endC);
                     iss.Forward(endC);
                     caConsole::Execute(iss, port);
                 }

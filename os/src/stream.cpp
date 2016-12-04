@@ -24,4 +24,4 @@
 
 #include "stream.h"
 
-const char *caEnd::endl = "\r\n";
+caCSTR(caEnd::endl ,"\r\n");

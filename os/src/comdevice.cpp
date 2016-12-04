@@ -137,7 +137,7 @@ u32 caComDevice::Write(caDevicePort *port) {
             if (TxLock.Get() != 0) {
                 res = deviceError::error_device_is_busy;
             } else {
-                u32 wSize, writed;
+                u32 wSize, writed=0;
                 u32 maxWr = Tx.Available();
                 if (maxWr > 0) {
                     if (maxWr > port->wrSize)
@@ -145,7 +145,7 @@ u32 caComDevice::Write(caDevicePort *port) {
                     else
                         wSize = maxWr;
                     if (TxLock.Lock()) {
-                        if (!Tx.Insert(port->wrBuff, wSize, writed))
+                        if (!Tx.Push(port->wrBuff, wSize, writed))
                             res = deviceError::error_write_less_data;
                         TxLock.UnLock();
                     } else {
@@ -188,14 +188,14 @@ u32 caComDevice::Read(caDevicePort *port) {
             if (RxLock.Get() != 0) {
                 res = deviceError::error_device_is_busy;
             } else {
-                u32 rSize, pSize;
+                u32 rSize, pSize=0;
                 if (Rx.Empty() == false) {
                     if (Rx.Size() < port->rdSize)
                         rSize = Rx.Size();
                     else
                         rSize = port->rdSize;
                     if (RxLock.Lock()) {
-                        if (!Rx.Remove(port->rdBuff, rSize, pSize))
+                        if (!Rx.Pop(port->rdBuff, rSize, pSize))
                             res = deviceError::error_read_less_data;
                         RxLock.UnLock();
                     } else {
@@ -391,7 +391,7 @@ void caComDevice::IrqService(void) {
                     if (lsr.asBit.txempty == 0)break;
                     if (Tx.Empty() == false) {
                         s_t removed = 0;
-                        Tx.Remove(&c, 1, removed);
+                        Tx.Pop(&c, 1, removed);
                         caMiniUart::SetIO(c);
                     } else {
                         caMiniUart::DisableIrqTx();
@@ -414,7 +414,7 @@ void caComDevice::IrqService(void) {
                 if (lsr.asBit.rxready == 0) break;
                 c = caMiniUart::GetIO();
                 s_t inserted = 0;
-                Rx.Insert(&c, 1, inserted);
+                Rx.Push(&c, 1, inserted);
                 symbol--;
             }
             if (signalRx != 0)

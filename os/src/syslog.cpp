@@ -53,13 +53,20 @@ u32 caSysLog::Destroy(void) {
 
 void caSysLog::doLog(caStringStream<s8> & ss) {
     u32 writed = 0;
-    mn_CBuffer.Insert(ss.Str(), ss.Size(), writed);
+    mn_CBuffer.Push(ss.Str(), ss.Size(), writed);
 }
-
 
 void caSysLog::getLog(caStringStream<s8> & ss) {
-    //ss<<mn_CBuffer;
+    s_t s = mn_CBuffer.Size();
+    if (s) {
+        s8 v = 0;
+        while (s--) {
+            mn_CBuffer.Pop(v);
+            ss << v;
+        }
+    }
 }
+
 
 
 

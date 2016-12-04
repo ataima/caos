@@ -121,7 +121,8 @@ void caTokenizeSStream_test_class::test3(void) {
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff);
     CA_ASSERT(a.Good() == true);
-    a << "test";
+    caCSTR(t,"test");
+    a << t;
     CA_ASSERT(a.Size() == 4);
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff);
@@ -157,7 +158,8 @@ void caTokenizeSStream_test_class::test4(void) {
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff);
     CA_ASSERT(a.Good() == true);
-    a << "test";
+    caCSTR(f,"test");
+    a << f;
     CA_ASSERT(a.Size() == 4);
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff);
@@ -265,7 +267,8 @@ void caTokenizeSStream_test_class::test6(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 1234  -3245";
+    caCSTR(f," 1234  -3245");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -310,8 +313,9 @@ void caTokenizeSStream_test_class::test7(void) {
     _STOP();
     char buff[100];
     caStringStream<char> a;
-    a.Init(buff, 100);
-    a<<" 1234  47325";
+    a.Init(buff, 100);    
+    caCSTR(f," 1234  47325");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -355,7 +359,8 @@ void caTokenizeSStream_test_class::test8(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 1234  -3245";
+    caCSTR(f," 1234  -3245");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -399,7 +404,8 @@ void caTokenizeSStream_test_class::test9(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 1234  473253456";
+    caCSTR(f," 1234  473253456");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -449,7 +455,8 @@ void caTokenizeSStream_test_class::test16(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0x1234  -3245";
+    caCSTR(f," 0x1234  -3245");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -495,7 +502,8 @@ void caTokenizeSStream_test_class::test17(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0x1234  0xfbca";
+    caCSTR(f," 0x1234  0xfbca");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -539,7 +547,8 @@ void caTokenizeSStream_test_class::test18(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0x1234  -3245";
+    caCSTR(f," 0x1234  -3245");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -583,7 +592,8 @@ void caTokenizeSStream_test_class::test19(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0x12345678  0xfacacaaa";
+    caCSTR(f," 0x12345678  0xfacacaaa");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -633,7 +643,8 @@ void caTokenizeSStream_test_class::test26(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0b1010  0b1110";
+    caCSTR(f," 0b1010  0b1110");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -679,7 +690,8 @@ void caTokenizeSStream_test_class::test27(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0b1010  0b1110";
+    caCSTR(f," 0b1010  0b1110");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -723,7 +735,8 @@ void caTokenizeSStream_test_class::test28(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0b1010  0b1110";
+    caCSTR(f," 0b1010  0b1110");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);
@@ -767,7 +780,8 @@ void caTokenizeSStream_test_class::test29(void) {
     char buff[100];
     caStringStream<char> a;
     a.Init(buff, 100);
-    a<<" 0b1010  0b1110";
+    caCSTR(f," 0b1010  0b1110");
+    a<<f;
     caTokenizeSStream<s8> b;
     CA_ASSERT(b.Empty() == true);
     b.Init(a);

@@ -35,10 +35,14 @@ public:
     u32 data;
 
     void Dump(caStringStream<s8> & ss) {
-        ss << "SETUP SPEED = " << speed << caEnd::endl;
-        ss << "SETUP STOP = " << stop << caEnd::endl;
-        ss << "SETUP PARITY = " << parity << caEnd::endl;
-        ss << "SETUP DATA = " << data << caEnd::endl;
+        caCSTR(cs_speed,    "SETUP SPEED  = ");
+        caCSTR(cs_stop,     "SETUP STOP   = ");
+        caCSTR(cs_parity,   "SETUP PARITY = ");
+        caCSTR(cs_data,     "SETUP DATA   = ");
+        ss << cs_speed   << speed << caEnd::endl;
+        ss << cs_stop    << stop << caEnd::endl;
+        ss << cs_parity  << parity << caEnd::endl;
+        ss << cs_data    << data << caEnd::endl;
         ss.Str();
     }
 

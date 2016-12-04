@@ -1,6 +1,9 @@
 #ifndef STREAM_H
 #define STREAM_H
 
+#include "circularbuffer.h"
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
@@ -43,6 +46,20 @@ inline u32 ptr_to_uint(void *p) {
 #define ptr_to_uint(PTR)  ((u32)(PTR))
 #endif        
 
+// CSTR simple and effcient string
+
+struct caString {
+    const s8* str;
+    const u32 len;
+
+    caString(const s8* msg, s_t _len)
+    : str(msg), len(_len) {
+    }
+};
+
+// WARNING : sizeof(MSG)==strlen(MSG)+1
+#define caCSTR(a,MSG) const caString a(MSG,sizeof(MSG))
+
 typedef enum tag_ss_format_req {
     dec,
     hex,
@@ -64,7 +81,7 @@ typedef struct tag_ss_fill_req {
 // HAVE TO DO ss<<caEnd::endl o ss<<ss.Endl(Port))
 
 typedef struct tag_ss_end_line {
-    static const char *endl;
+    static const caString endl;
 } caEnd;
 
 template <typename T>
@@ -232,11 +249,14 @@ protected:
 
     //Tested
 
-    inline void Add(T *ptr, s_t num) {
-        s_t avail = Available();
+    inline void Add(const T *ptr, s_t num) {
+        s_t i, avail = Available();
         if (num > avail)num = avail;
-        memcpy(start, ptr, num * sizeof (T));
-        start += num;
+        i = num;
+        while (i) {
+            *start++ = *ptr++;
+            i--;
+        }
         size += num;
     }
 
@@ -446,13 +466,24 @@ public:
 
     //Tested
 
-    caStringStream<T> & operator<<(const char * t) {
-        while (*t != '\0') {
-            Add(*t++);
+    caStringStream<T> & operator<<(const char * msg) {
+        if (msg) {
+            while (*msg) {
+                Add(*msg++);
+            }
+            Stopper();
         }
+        return *this;
+    }
+
+    //Tested
+
+    caStringStream<T> & operator<<(const caString & t) {
+        Add(t.str, t.len - 1);
         Stopper();
         return *this;
     }
+
 
     //by pointer
     //Tested
@@ -528,6 +559,7 @@ public:
             (*this) << *t;
         return (*this);
     }
+
 
     //TO DO REMOVE IT ! to -> caDevicePort operator << (caStringStream...)
 

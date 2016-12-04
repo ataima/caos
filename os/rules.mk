@@ -4,12 +4,8 @@ CAOS_VERSION_1:= 1
 CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
-#CROSs TOOLS 
-ifeq ($(OS),Linux) 
-	ARMGNU:= arm-oe-linux-gnueabi
-else
-	ARMGNU:= arm-none-eabi
-endif	
+#CROSS TOOLS 
+ARMGNU:= arm-none-eabi
 # CURRENT DEBUG LEVEL
 DBG:= -O2 
 # C LANGUAGE OPTIONS
@@ -21,7 +17,11 @@ ASM_OPTS:= -g -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE
 DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
-PUTTY:= putty.exe -load "pi-tty" 
+ifeq ($(OS),Linux)
+    PUTTY:= putty -load "pi-tty" 
+else	
+    PUTTY:= putty.exe -load "pi-tty" 
+endif
 # CROSS TOOOL PROGRAMS
 CROSS_CC:= $(ARMGNU)-gcc 
 CROSS_CPP:= $(ARMGNU)-g++ 
@@ -55,9 +55,9 @@ C_BROWN= "\033[0;33m"
 C_YELLOW= "\033[1;33m"
 C_BLACK= "\033[0;30m"
 C_RESET="\033[0m"
-I_CRED=-e "\"\033[0;31m\""
+I_CRED= "\"\033[0;31m\""
 I_RED="\"\033[0;31m\""
 I_GREEN= "\"\033[0;32m\""
 I_RESET="\"\033[0m\""
 I_TAB="\"\t\""
-I_CPURPLE=-e "\"\033[1;35m\""
+I_CPURPLE= "\"\033[1;35m\""

@@ -25,7 +25,7 @@
 #include <iostream>
 
 
-const char *caEnd::endl = "\r\n";
+caCSTR (caEnd::endl,"\r\n");
 
 class caStringStream_test_class
 : public caTester {
@@ -765,13 +765,15 @@ void caStringStream_test_class::test11(void) {
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == buff_b);
     CA_ASSERT(b.Good() == true);
-    a << "pippo  ";
+    caCSTR( f,"pippo  ");
+    a << f;
     CA_ASSERT(a.Size() == 7);
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff_a);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(a.Str(), "pippo  ") == 0);
-    b << "pluto  ";
+    caCSTR(g,"pluto  ");
+    b << g;
     CA_ASSERT(b.Size() == 7);
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == buff_b);
@@ -826,14 +828,15 @@ void caStringStream_test_class::test12(void) {
     CA_ASSERT(a.Capacity() == 19);
     CA_ASSERT(a.Str() == buff_a);
     CA_ASSERT(a.Good() == true);
-    a << "12345678901234567";
+    caCSTR(f,"12345678901234567");
+    a << f;
     CA_ASSERT(a.Size() == 17);
     CA_ASSERT(a.Capacity() == 19);
     CA_ASSERT(a.Available() == 2);
     CA_ASSERT(a.Str() == buff_a);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(a.Str(), "12345678901234567") == 0);
-    a << "12345678901234567";
+    a << f;
     CA_ASSERT(a.Size() == 19);
     CA_ASSERT(a.Capacity() == 19);
     CA_ASSERT(a.Available() == 0);
@@ -970,13 +973,15 @@ void caStringStream_test_class::test19(void) {
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == buff_b);
     CA_ASSERT(b.Good() == true);
-    a << "pippo  ";
+    caCSTR(f,"pippo  ");
+    a << f;
     CA_ASSERT(a.Size() == 7);
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff_a);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(a.Str(), "pippo  ") == 0);
-    b << "pluto  ";
+    caCSTR(g,"pluto  ");
+    b << g;
     CA_ASSERT(b.Size() == 7);
     CA_ASSERT(b.Capacity() == 99);
     CA_ASSERT(b.Str() == buff_b);
@@ -1010,7 +1015,8 @@ void caStringStream_test_class::test20(void) {
     CA_ASSERT(a.Str() == buff);
     CA_ASSERT(a.Good() == true);
     caStringFiller v('a', 10);
-    a << "pippo";
+    caCSTR(f,"pippo");
+    a << f;
     a.Fix(v);
     a << v;
     CA_ASSERT(strcmp(a.Str(), "pippoaaaaaaaaaa") == 0);
@@ -1032,6 +1038,7 @@ void caStringStream_test_class::test21(void) {
     CA_ASSERT(a.Capacity() == 99);
     CA_ASSERT(a.Str() == buff);
     CA_ASSERT(a.Good() == true);
-    a << "pippo" << caEnd::endl;
+    caCSTR (f,"pippo");
+    a << f << caEnd::endl;
     CA_ASSERT(strcmp(a.Str(), "pippo\r\n") == 0);
 }

@@ -35,14 +35,12 @@
       </df>
       <df name="test">
         <in>main_test.cpp</in>
-        <in>test_circular_buffer.cpp</in>
         <in>test_com_device.cpp</in>
         <in>test_locking.cpp</in>
         <in>test_mem_pipe.cpp</in>
         <in>test_miniuart.cpp</in>
         <in>test_scheduler.cpp</in>
         <in>test_sys_timer_device.cpp</in>
-        <in>test_token_sstream.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -86,7 +84,7 @@
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
-          <preBuildCommand></preBuildCommand>
+          <preBuildCommand>make distclean</preBuildCommand>
         </preBuild>
       </makefileType>
       <item path="src/atomiclock.cpp" ex="false" tool="1" flavor2="8">
@@ -209,10 +207,6 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/test_circular_buffer.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
       <item path="test/test_com_device.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -234,10 +228,6 @@
         </ccTool>
       </item>
       <item path="test/test_sys_timer_device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="test/test_token_sstream.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

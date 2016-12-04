@@ -166,6 +166,7 @@ public:
 
 };
 
+typedef caCircularBuffer<s8> caLogStream;
 
 #endif /* _CCIRCULARBUFFER_H */
 

@@ -115,6 +115,7 @@ void caInterruptRequest::Software(u32 ioctl,
 
 void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_abt) {
+    asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -125,7 +126,7 @@ void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
-
+    asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
 }
 
 u32 caInterruptRequest::IRQ(void) {

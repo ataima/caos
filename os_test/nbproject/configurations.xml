@@ -6,6 +6,7 @@
         <in>mainApp.cpp</in>
         <in>memoryvalidator.cpp</in>
         <in>test_circular_buffer.cpp</in>
+        <in>test_cstr.cpp</in>
         <in>test_string_stream.cpp</in>
         <in>test_token_string.cpp</in>
       </df>
@@ -101,6 +102,8 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="src/test_cstr.cpp" ex="false" tool="1" flavor2="0">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -150,7 +150,10 @@ u32 caMemDevice::Close(caDevicePort *port) {
                 port->error = 0;
             } else
                 if (desc->host == port->handle) {
-                caMemory::Free(desc->queue.GetData(), &size);
+                u32 ptr;
+                if (desc->queue.Pop(ptr)) {
+                    caMemory::Free((void *)ptr, &size);
+                }
                 caMemAux::MemZero((u32*) desc, sizeof (caMemDeviceDescriptor));
                 isOpen--;
                 port->status = caDevicePort::statusPort::Close;
@@ -194,7 +197,7 @@ u32 caMemDevice::Write(caDevicePort *port) {
                         else
                             wSize = maxWr;
                         if (wSize > 0) {
-                            if (!desc->queue.Insert((u32*) port->wrBuff, wSize, pSize))
+                            if (!desc->queue.Push((u32*) port->wrBuff, wSize, pSize))
                                 res = deviceError::error_write_less_data;
                             pSize *= sizeof (u32);
                             port->writed += pSize;
@@ -246,7 +249,7 @@ u32 caMemDevice::Read(caDevicePort *port) {
                     else
                         rSize = pSize;
                     if (rSize > 0) {
-                        if (!desc->queue.Remove((u32 *) port->rdBuff, rSize, pSize))
+                        if (!desc->queue.Pop((u32*) port->rdBuff, rSize, pSize))
                             res = deviceError::error_read_less_data;
                         pSize *= sizeof (u32);
                         port->readed += pSize;
@@ -286,7 +289,8 @@ u32 caMemDevice::Resize(caDevicePort *port, u32 size) {
         u32 old_size;
         caMemDeviceDescriptor * desc = GetDescriptor(port->handle);
         if (desc != NULL) {
-            if (caMemory::Free(desc->queue.GetData(), &old_size)) {
+            u32 ptr;            
+            if (desc->queue.Pop(ptr) && caMemory::Free((void *)ptr, &old_size)) {
                 desc->size = (size / sizeof (u32)) + 1;
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {
