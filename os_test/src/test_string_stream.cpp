@@ -42,6 +42,7 @@ class caStringStream_test_class
     CA_TEST(caStringStream_test_class::test10, "<< u32  test");
     CA_TEST(caStringStream_test_class::test11, "<< caStringArray  test");
     CA_TEST(caStringStream_test_class::test12, "<< const char *  test");
+    CA_TEST(caStringStream_test_class::test12bis, "<< caCSTR  test");
     CA_TEST(caStringStream_test_class::test13, "<< *s8 test");
     CA_TEST(caStringStream_test_class::test14, "<< *u8 test");
     CA_TEST(caStringStream_test_class::test15, "<< *s16 test");
@@ -67,6 +68,7 @@ class caStringStream_test_class
     void test10(void);
     void test11(void);
     void test12(void);
+    void test12bis(void);
     void test13(void);
     void test14(void);
     void test15(void);
@@ -815,6 +817,39 @@ void caStringStream_test_class::test11(void) {
 }
 
 void caStringStream_test_class::test12(void) {
+    _START();
+    _INFO("to check operator << const char *msg of caStringStream");
+    _INFO("concatenate string (slower mode: no memcpy)");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff_a[20];
+    caStringStream<char> a;
+    a.Init(buff_a, sizeof (buff_a));
+    CA_ASSERT(a.Size() == 0);
+    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Str() == buff_a);
+    CA_ASSERT(a.Good() == true);
+    a << "12345678901234567";
+    CA_ASSERT(a.Size() == 17);
+    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Available() == 2);
+    CA_ASSERT(a.Str() == buff_a);
+    CA_ASSERT(a.Good() == true);
+    CA_ASSERT(strcmp(a.Str(), "12345678901234567") == 0);
+    a << "12345678901234567";
+    CA_ASSERT(a.Size() == 19);
+    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Available() == 0);
+    CA_ASSERT(a.Str() == buff_a);
+    CA_ASSERT(a.Good() == false);
+    CA_ASSERT(strcmp(a.Str(), "1234567890123456712") == 0);
+
+}
+
+
+
+void caStringStream_test_class::test12bis(void) {
     _START();
     _INFO("to check operator << const char *msg of caStringStream");
     _INFO("concatenate string (slower mode: no memcpy)");

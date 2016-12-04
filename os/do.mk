@@ -55,7 +55,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH)  $(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 $(BUILDIR)/$(DEPEND)/%.d:$(TEST)/%.cpp
@@ -64,7 +64,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(TEST)/%.cpp
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(I_CPURPLE)"[TEST]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH)  $(I_CPURPLE)"[TEST]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 
@@ -76,7 +76,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH)  $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 #double pass : first create dependences with compile command so build it
@@ -87,32 +87,32 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo  $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(TEST)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo  $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo  $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	cp $< $(BUILDIR)/$(GE_ASM)/$(@F) 
-	@echo  $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 $(BUILDIR)/$(OBJ_OUT)/%.o:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_AS) -o $(BUILDIR)/$(OBJ_OUT)/$(@F)  $(ASM_OPTS)  $<
-	@echo  $(C_BLUE)"[AS ]"$(C_RESET)" $<"$(C_BLUE)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F))" $(C_RESET) >/dev/stderr
+	@echo  $(EH) $(C_BLUE)"[AS ]"$(C_RESET)" $<"$(C_BLUE)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F))" $(C_RESET) >/dev/stderr
 
 
 .PHONY: doversion all clean info dwload qemu asm
@@ -149,22 +149,22 @@ all_test_file: 	$(TEST_OBJ_CPP)
 
 link_file:
 	$(CROSS_LD) $(TEST_OBJ_CPP) $(OBJ_CPP)  $(OBJ_C) $(OBJ_ASM)  $(LK_OPT) -T ld_conf/BCM2836.ld -o $(BUILDIR)/caOS.elf
-	@echo  $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
+	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
 	
 objdump_file:
 	$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.list
-	@echo  $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.list">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.list">/dev/stderr
 	$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O ihex $(BUILDIR)/caOS.hex
-	@echo  $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
 	$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O binary $(BUILDIR)/caOS.bin
-	@echo  $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.bin">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.bin">/dev/stderr
 	@cp $(BUILDIR)/caOS.bin kernel7.img
-	@echo  $(C_GREEN)"[OBJCOPY]"$(C_RESET)" kernel7.img">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" kernel7.img">/dev/stderr
 	$(CROSS_OBJDUMP) -m arm -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
-	@echo  $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.s">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.s">/dev/stderr
 
 dwload: kernel7.img
-	@echo  $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
+	@echo  $(EH) $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
 	@$(DWLOAD) $(BUILDIR)/caOS.hex
 	@$(PUTTY)  
 
@@ -172,26 +172,26 @@ kernel7.img :   depend all_asm_file all_c_file all_cpp_file all_test_file link_f
 
 
 info:	
-	@echo  $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
-	@echo  $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
-	@echo  $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
-	@echo  $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
-	@echo  $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
-	@echo  $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
-	@echo  $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPT)
-	@echo  $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
-	@echo  $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
-	@echo  $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)
-	@echo  $(C_YELLOW)"C source = "$(C_RESET)$(SRC_C)
-	@echo  $(C_YELLOW)"CPP source = "$(C_RESET)$(SRC_CPP) $(TEST_CPP)
-	@echo  $(C_YELLOW)"Assembler objs = "$(C_RESET)$(OBJ_ASM)
-	@echo  $(C_YELLOW)"C objs = "$(C_RESET)$(OBJ_C)
-	@echo  $(C_YELLOW)"CPP objs = "$(C_RESET)$(OBJ_CPP) $(TEST_OBJ_CPP)
-	@echo  $(C_YELLOW)"All objs = "$(C_RESET)$(OBJS)
-	@echo  $(C_YELLOW)"All dep = "$(C_RESET)$(DEP_OBJ)
-	@echo  $(C_YELLOW)"Asm = "$(C_RESET)$(ASM_OBJ)
-	@echo  $(C_YELLOW)"MAIN ROOT = "$(C_RESET)$(ROOT)
-	@echo  $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
+	@echo  $(EH) $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
+	@echo  $(EH) $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
+	@echo  $(EH) $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
+	@echo  $(EH) $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
+	@echo  $(EH) $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
+	@echo  $(EH) $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPT)
+	@echo  $(EH) $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
+	@echo  $(EH) $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
+	@echo  $(EH) $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)
+	@echo  $(EH) $(C_YELLOW)"C source = "$(C_RESET)$(SRC_C)
+	@echo  $(EH) $(C_YELLOW)"CPP source = "$(C_RESET)$(SRC_CPP) $(TEST_CPP)
+	@echo  $(EH) $(C_YELLOW)"Assembler objs = "$(C_RESET)$(OBJ_ASM)
+	@echo  $(EH) $(C_YELLOW)"C objs = "$(C_RESET)$(OBJ_C)
+	@echo  $(EH) $(C_YELLOW)"CPP objs = "$(C_RESET)$(OBJ_CPP) $(TEST_OBJ_CPP)
+	@echo  $(EH) $(C_YELLOW)"All objs = "$(C_RESET)$(OBJS)
+	@echo  $(EH) $(C_YELLOW)"All dep = "$(C_RESET)$(DEP_OBJ)
+	@echo  $(EH) $(C_YELLOW)"Asm = "$(C_RESET)$(ASM_OBJ)
+	@echo  $(EH) $(C_YELLOW)"MAIN ROOT = "$(C_RESET)$(ROOT)
+	@echo  $(EH) $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
 	
 
 qemu:
@@ -203,14 +203,14 @@ qemu_deb:
 	qemu-system-arm.exe -M raspi2 -cpu bcm2836 -m 128M -s  -kernel $(BUILDIR)/caOS.bin  &
 	echo "target remote :1234" >gdb.conf
 	echo "file $(BUILDIR)/caos.elf" >>gdb.conf
-	@echo  $(C_RED )[GDB] $(C_RESTORE)
+	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
 	@$(CROSS_GDB) -x gdb.conf
 
 
 sim:
 	echo "target sim" >gdb.conf
 	echo "file $(BUILDIR)/caos.elf" >>gdb.conf
-	@echo  $(C_RED )[GDB]$C_RESTORE
+	@echo $(EH)  $(C_RED )[GDB]$C_RESTORE
 	@$(CROSS_GDB) -x gdb.conf
 
 asm:    $(ASM_OBJ)
@@ -218,4 +218,4 @@ asm:    $(ASM_OBJ)
 
 doversion :
 	$(eval BUILD_NUMBER=`./version.sh $(CAOS_VERSION_1) $(CAOS_VERSION_2) $(CAOS_VERSION_3)`)
-	@echo  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED)$(BUILD_NUMBER) $(C_RESTORE) 
+	@echo $(EH)  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED)$(BUILD_NUMBER) $(C_RESTORE) 

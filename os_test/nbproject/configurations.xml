@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="100">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="../os_test" name="0">
       <df name="src">
         <in>mainApp.cpp</in>
         <in>memoryvalidator.cpp</in>
         <in>test_circular_buffer.cpp</in>
-        <in>test_cstr.cpp</in>
         <in>test_string_stream.cpp</in>
         <in>test_token_string.cpp</in>
       </df>
@@ -27,7 +26,7 @@
   <confs>
     <conf name="Default" type="0">
       <toolsSet>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>Cygwin|Cygwin</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -102,8 +101,6 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/test_cstr.cpp" ex="false" tool="1" flavor2="0">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

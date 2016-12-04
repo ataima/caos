@@ -50,7 +50,7 @@ void _mn_Ident_Mem::dump(int nm,FILE *out_file)
 #ifdef WIN32
 #pragma warning( disable : 4311)
 #endif
-    fprintf(out_file,"%04d) %05d 0x%08x%5ld  %s,%d",nm,numAlloc,reinterpret_cast<long>(ptrMem),size,file,line);
+    fprintf(out_file,"%04d) %05d 0x%08lx%5d  %s,%d",nm,numAlloc,reinterpret_cast<long>(ptrMem),size,file,line);
 #ifdef WIN32
 #pragma warning( default : 4311)
 #endif
@@ -143,7 +143,7 @@ void MemoryValidator::dumpMemory(int mode)
     }
     //
     if (leaksize!=0)
-        fprintf(_mn_file,"SIZE ALLOCATED = %ld\n",leaksize);
+        fprintf(_mn_file,"SIZE ALLOCATED = %d\n",leaksize);
     fflush(_mn_file);
     fprintf(_mn_file,"--------\n");
     _mn_record=oldFlg;
@@ -270,7 +270,7 @@ void MemoryValidator::Free(void *ptr ) throw ()
         // se ho allocato con _mn_record=true finisce qui
         else
         {
-            fprintf(_mn_file,"Memory Validator :: PTR =%08lX non esiste nella lista dei puntatori attivi:\r\n  Allocazione statica oppure  doppia chiamata a delete\n",ptr);
+            fprintf(_mn_file,"Memory Validator :: PTR =%08lX non esiste nella lista dei puntatori attivi:\r\n  Allocazione statica oppure  doppia chiamata a delete\n",(long unsigned int)ptr);
             fflush(_mn_file);
         }
         _mn_record=false;
