@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
 //    This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ class caTokenizeSStream_test_class
     CA_TEST(caTokenizeSStream_test_class::test27, " (bin) >> u16 test");
     CA_TEST(caTokenizeSStream_test_class::test28, " (bin) >> s32 test");
     CA_TEST(caTokenizeSStream_test_class::test29, " (bin) >> u32 test");
-    CA_TEST(caTokenizeSStream_test_class::test40, " Foward ");
+    CA_TEST(caTokenizeSStream_test_class::test30, " Foward ");
     CA_TEST_SUITE_END();
     void setUp(void) {
     }
@@ -64,7 +64,7 @@ class caTokenizeSStream_test_class
     void test27(void);
     void test28(void);
     void test29(void);
-    void test40(void);
+    void test30(void);
     void tearDown(void) {
     }
 
@@ -818,7 +818,7 @@ void caTokenizeSStream_test_class::test29(void) {
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test40(void) {
+void caTokenizeSStream_test_class::test30(void) {
     _START();
     _INFO(" caTokenizeSStream: to check Foward method ");
     _AUTHOR("Coppi Angelo");
@@ -839,4 +839,14 @@ void caTokenizeSStream_test_class::test40(void) {
     TokenString<s8> res;
     iss >> res;
     CA_ASSERT (strncmp(res.ptr,"pippo",5)==0);
+    CA_ASSERT(res.size==5);
+    iss >> res;
+    CA_ASSERT (strncmp(res.ptr,"pluto",5)==0);
+    CA_ASSERT(res.size==5);
+    iss >> res;
+    CA_ASSERT (strncmp(res.ptr,"paperino",8)==0);
+    CA_ASSERT(res.size==8);
+    iss >> res;
+    CA_ASSERT (res.ptr==NULL);
+    CA_ASSERT(res.size==0);
 }

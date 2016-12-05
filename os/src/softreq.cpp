@@ -28,31 +28,7 @@
 #include "softreq.h"
 
 
-#if SYS_SOFT_REQ_ENABLED
-
-void caSoftRequest::SVC_IOCTL(register u32 /*R0= ioctl*/, register u32 */*R1=input */,
-        register u32 */*R2=output*/, register u32 * /*R3=res*/) {
-        asm volatile ("DSB"); //TOTEST
-        asm volatile ("ISB"); //TOTEST
-        asm volatile ("SVC #1");
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-        asm volatile ("bx lr"); 
-    }
-#else
-void caSoftRequest::SVC_IOCTL(register u32 ioctl, register u32 *input ,
-        register u32 *output, register u32 *res ) {
-    ISR_Software(ioctl,input,output,res);
-    }
-#endif        
+       
 
 void caSoftRequest::DumpSvc(const char *name,const char *file, u32 line){
     Dbg::Put("SVC : > ");

@@ -48,7 +48,7 @@ u32 start_system_timer(void) {
         if (caSysTimer::EnableCounter(1)) {
             if (caSysTimer::EnableTimer(1)) {
                 Dbg::Put("> c.a.O.S. : [ Start Schedule interrupt ... ]\r\n");
-                //res = caSysTimer::IrqEnable();
+                res = caSysTimer::IrqEnable();
             }
         }
     }
@@ -68,7 +68,7 @@ u32 stop_system_timer(void) {
 }
 
 u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    //Dbg::Put("Idle live..\r\n");
+    Dbg::Put("Idle live..\r\n");
     u32 idleCount = 1;
     for (;;) {
         idleCount++;
@@ -78,7 +78,7 @@ u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 }
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    //Dbg::Put("Main live..\r\n");
+    Dbg::Put("Main live..\r\n");
     u32 st = 0;
     caSysLed::LedsOff();
     while (1) {
@@ -149,7 +149,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
                     buff_in[endC] = '\0';
                     caTokenizeSStream<u8> iss;
                     iss.Init(buff_in, endC,0);
-                    //iss.Forward(endC);
+                    iss.Forward(endC);
                     caConsole::Execute(iss, port);
                 }
             }
@@ -178,9 +178,6 @@ int main(void) {
 #if TEST
     tmain();
 #endif    
-    caInterruptRequest::Prefetch(10,20,30,40);
-    caInterruptRequest::Abort(10,20,30,40);
-    caInterruptRequest::Undefined(10,20,30,40);
     // MAIN TASK SVC MODE TO RUN  ALL SERVICES    
     thMainTask = caThread::CreateSystemThread("main",
             caThreadPriority::caThLevel3,
@@ -198,9 +195,10 @@ int main(void) {
     start_system_timer();
     //
 
-    caInterruptRequest::WaitForInterrupt();
+    //caInterruptRequest::WaitForInterrupt();
     while (1) {
         //leave this throw irq/fiq scheduler interrupt
+        Dbg::Put("Wait\r\n");
     };
     //lbl_shutdown:
     stop_system_timer();

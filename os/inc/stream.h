@@ -746,22 +746,28 @@ private:
     void tokenize(T *&res, s_t & rsize) {
         T u = 0;
         rsize = 0;
-        Good();
-        if (good) {
-            while (Good()) {
-                res = pos;
-                u = Get();
-                if (!IsSpace(u))break;
-                Next();
-            }
-            while (IsAscii(u)) {
-                rsize++;
-                u = Get();
-                if (!Good())break;
-                Next();
-            }
-        } else {
+        if (pos != NULL && pos == stop && *pos == '\0') {
             res = NULL;
+        } else {
+            if (Good()) {
+                while (Good()) {
+                    res = pos;
+                    u = Get();
+                    if (!IsSpace(u))break;
+                    Next();
+                }
+                if (Good()) {
+                    do {
+                        u = Get();
+                        if (!IsAscii(u))break;
+                        rsize++;
+                        if (!Good())break;
+                        Next();
+                    } while (1);
+                }
+            } else {
+                res = NULL;
+            }
         }
     }
 
@@ -851,7 +857,7 @@ public:
     inline void Forward(s_t npos) {
         size = npos;
         stop = &cBuff[size];
-        good = Next();
+        good = (pos != stop);
     }
 
     //Tested 

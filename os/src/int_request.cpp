@@ -63,6 +63,7 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "UND = " << lr_und << caEnd::endl;
     Dbg::Put(ss.Str());
+    while (1);
     EnableInt();
 }
 
@@ -127,10 +128,12 @@ void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
+    while (1);
     EnableInt();
 }
 
 u32 caInterruptRequest::IRQ(void) {
+    Dbg::Put("IRQ\r\n");
     return caIrqCtrl::SelectServiceIrq();
 }
 
@@ -150,6 +153,7 @@ void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
+    while (1);
     EnableInt();
 }
 
@@ -161,6 +165,7 @@ void caInterruptRequest::Hypervisor(void) {
     ss << caStringFormat::hex;
     ss << "HYpervisor" << caEnd::endl;
     Dbg::Put(ss.Str());
+    while (1);
     EnableInt();
 }
 

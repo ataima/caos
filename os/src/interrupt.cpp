@@ -103,6 +103,7 @@ extern "C" {
         asm volatile ("LDMIA R0, {R0-R14}^"); //Load from PCB R0-R14
 
         asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
+        
         asm volatile ("ERET");
     }
 

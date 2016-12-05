@@ -26,7 +26,38 @@
 
 class caSoftRequest {
 public:
-    static void SVC_IOCTL(register u32 /*R0= ioctl*/, register u32 */*R1=input */, register u32 */*R2=output*/, register u32 * /*R3=res*/)__attribute__((naked));
+
+#if SYS_SOFT_REQ_ENABLED
+
+static inline  void SVC_IOCTL(register u32 /*R0= ioctl*/, 
+        register u32 */*R1=input */, 
+        register u32 */*R2=output*/, 
+        register u32 * /*R3=res*/)__attribute__((naked)) 
+        {
+        asm volatile ("DSB"); //TOTEST
+        asm volatile ("ISB"); //TOTEST
+        asm volatile ("SVC #1");
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+        asm volatile ("bx lr"); 
+    }
+#else
+static  inline void SVC_IOCTL(
+            register u32 ioctl, 
+            register u32 *input ,
+            register u32 *output, 
+            register u32 *res )__attribute__((naked)) {
+    ISR_Software(ioctl,input,output,res);
+    }
+#endif 
     static void DumpSvc(const char *name,const char *file, u32 line);
 };
 

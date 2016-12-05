@@ -893,7 +893,7 @@ void caStringStream_test_class::test13(void) {
     caStringStream<char> a;
     a.Init(buff_a, sizeof (buff_a));
     s8 t = 'A';
-    sprintf(buff_b, "[0x%08X]%c", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%c", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -910,12 +910,12 @@ void caStringStream_test_class::test14(void) {
     a.Init(buff_a, sizeof (buff_a));
     u8 t = 169;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%d", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
     a.Clear();
     a << caStringFormat::hex;
-    sprintf(buff_b, "[0x%08X]0x%02X", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]0x%02X", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -932,7 +932,7 @@ void caStringStream_test_class::test15(void) {
     a.Init(buff_a, sizeof (buff_a));
     s16 t = -4589;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%d", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -949,7 +949,7 @@ void caStringStream_test_class::test16(void) {
     a.Init(buff_a, sizeof (buff_a));
     u16 t = 43256;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%d", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -966,7 +966,7 @@ void caStringStream_test_class::test17(void) {
     a.Init(buff_a, sizeof (buff_a));
     s32 t = -13243256;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%d", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
@@ -983,7 +983,7 @@ void caStringStream_test_class::test18(void) {
     a.Init(buff_a, sizeof (buff_a));
     u32 t = 0x0efacaca;
     a << caStringFormat::dec;
-    sprintf(buff_b, "[0x%08X]%d", (u32)&t, t);
+    sprintf(buff_b, "[0x%08X]%d", ptr_to_uint(&t), t);
     a << &t;
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }

@@ -164,6 +164,10 @@ public:
         start = stop = 0;
     }
 
+    inline T * GetBase(void){
+        return cBuff;
+    }
+    
 };
 
 typedef caCircularBuffer<s8> caLogStream;

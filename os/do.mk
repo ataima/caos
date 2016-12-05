@@ -147,8 +147,10 @@ all_cpp_file: 	$(OBJ_CPP)
 	
 all_test_file: 	$(TEST_OBJ_CPP)	
 
+
+
 link_file:
-	$(CROSS_LD) $(TEST_OBJ_CPP) $(OBJ_CPP)  $(OBJ_C) $(OBJ_ASM)  $(LK_OPT) -T ld_conf/BCM2836.ld -o $(BUILDIR)/caOS.elf
+	$(CROSS_LD) $(TEST_OBJ_CPP) $(OBJ_CPP)  $(OBJ_C) $(OBJ_ASM) -M $(LK_OPT) -T ld_conf/BCM2836.ld -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
 	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
 	
 objdump_file:

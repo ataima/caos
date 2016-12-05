@@ -106,8 +106,7 @@ static void test_02(u32 & success, u32 &failed) {
         Dbg::Put((const char *) ss.Str());
     }
     TokenString<s8> res;
-    iss >> res;
-    Dbg::Put((const char *) res.ptr);
+    iss >> res;    
     u32 i = caMemAux::StrNCmp(res.ptr, "pippo", 5);
     if (i == 0) {
         success++;

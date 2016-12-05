@@ -150,10 +150,7 @@ u32 caMemDevice::Close(caDevicePort *port) {
                 port->error = 0;
             } else
                 if (desc->host == port->handle) {
-                u32 ptr;
-                if (desc->queue.Pop(ptr)) {
-                    caMemory::Free((void *)ptr, &size);
-                }
+                caMemory::Free(desc->queue.GetBase(), &size);
                 caMemAux::MemZero((u32*) desc, sizeof (caMemDeviceDescriptor));
                 isOpen--;
                 port->status = caDevicePort::statusPort::Close;
@@ -289,8 +286,8 @@ u32 caMemDevice::Resize(caDevicePort *port, u32 size) {
         u32 old_size;
         caMemDeviceDescriptor * desc = GetDescriptor(port->handle);
         if (desc != NULL) {
-            u32 ptr;            
-            if (desc->queue.Pop(ptr) && caMemory::Free((void *)ptr, &old_size)) {
+                  
+            if (caMemory::Free(desc->queue.GetBase(), &old_size)) {
                 desc->size = (size / sizeof (u32)) + 1;
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {

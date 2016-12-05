@@ -346,6 +346,8 @@ void caScheduler::EndTask(u32 result) {
 void caScheduler::Panic(void) {
     s8 buff[512];
     caStringStream<s8> ss;
+    caInterruptRequest::DisableInt();
+    caArmCpu::DisableIrqFiq();
     ss.Init(buff, 512);
     if (current_task != NULL)
         caThread::Dump(ss, current_task);
@@ -355,8 +357,6 @@ void caScheduler::Panic(void) {
     Dbg::Put((const char *) ss.Str());
     ss.Clear();
     Dbg::Put("> c.a.O.S. : [ panic error : stop ! ]\r\n");
-    caInterruptRequest::DisableInt();
-    caArmCpu::DisableIrqFiq();
     while (1);
 }
 
