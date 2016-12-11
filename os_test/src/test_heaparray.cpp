@@ -28,10 +28,14 @@ class caHeapArray_test_class
 {
     CA_TEST_SUITE(caHeapArray_test_class);
     CA_TEST(caHeapArray_test_class::test1, "ctor test");
+    CA_TEST(caHeapArray_test_class::test2, "init test");
+    CA_TEST(caHeapArray_test_class::test3, "add test");
     CA_TEST_SUITE_END();
     void setUp(void)    {
     }
     void test1(void);
+    void test2(void);
+    void test3(void);
 
     void tearDown(void){
     }
@@ -40,6 +44,8 @@ class caHeapArray_test_class
 
 REGISTER_CLASS(caHeapArray_test_class);
 
+
+
 void caHeapArray_test_class::test1(void)
 {
     _START();
@@ -47,4 +53,86 @@ void caHeapArray_test_class::test1(void)
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();  
+    caHeapArray<int> v;
+    CA_ASSERT(v.Capacity() == 0);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == NULL);
+    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Good() == false);
+    CA_ASSERT(v.Empty() == true);
+}
+
+
+
+void caHeapArray_test_class::test2(void)
+{
+    _START();
+    _INFO("to check ctor of caHeapArray");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();  
+    caHeapArray<int> v;
+    CA_ASSERT(v.Capacity() == 0);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == NULL);
+    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Good() == false);
+    CA_ASSERT(v.Empty() == true);
+    int buff[100];
+    v.Init(buff, sizeof (buff) / sizeof (int));
+    CA_ASSERT(v.Capacity() == 100);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == &buff[0]);
+    CA_ASSERT(v.Stop() == &buff[99]);
+    CA_ASSERT(v.Good() == true);
+    CA_ASSERT(v.Empty() == true);
+}
+
+
+void caHeapArray_test_class::test3(void)
+{
+    _START();
+    _INFO("to check ctor of caHeapArray");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();  
+    caHeapArray<int> v;
+    int buff[100];
+    int u;
+    v.Init(buff, sizeof (buff) / sizeof (int));
+    CA_ASSERT(v.Capacity() == 100);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == &buff[0]);
+    CA_ASSERT(v.Stop() == &buff[99]);
+    CA_ASSERT(v.Good() == true);
+    CA_ASSERT(v.Empty() == true);
+    CA_ASSERT(v.inqueue(10) == true);
+    CA_ASSERT(v.inqueue(20) == true);
+    CA_ASSERT(v.inqueue(30) == true);
+    CA_ASSERT(v.inqueue(40) == true);
+    CA_ASSERT(v.Size() == 4);
+    CA_ASSERT(v.At(u,0) == true);
+    CA_ASSERT(u==40);
+    CA_ASSERT(v.outqueue(u) == 3);
+    CA_ASSERT(u==40);
+    
+    CA_ASSERT(v.Size() == 3);
+    CA_ASSERT(v.At(u,0) == true);
+    CA_ASSERT(u==30);
+    CA_ASSERT(v.outqueue(u) == 2);
+    CA_ASSERT(u==30);
+    
+    CA_ASSERT(v.Size() == 2);
+    CA_ASSERT(v.At(u,0) == true);
+    CA_ASSERT(u==20);
+    CA_ASSERT(v.outqueue(u) == 1);
+    CA_ASSERT(u==20);
+    
+    CA_ASSERT(v.Size() == 1);
+    CA_ASSERT(v.At(u,0) == true);
+    CA_ASSERT(u==10);
+    CA_ASSERT(v.outqueue(u) == 0);
+    CA_ASSERT(u==10);
+    
+    CA_ASSERT(v.Size() == 0);    
 }

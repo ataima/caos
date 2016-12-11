@@ -67,7 +67,6 @@ public:
     u32 rdSize;
     u32 readed;
 
-
 public:
     bool IsValidHandle(void);
 };

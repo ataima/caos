@@ -29,13 +29,15 @@ protected:
     T *buff;
 public:
     //T
+
     caArray(void) {
         buff = NULL;
         good = false;
         size = capacity = 0;
     }
-    
+
     //T
+
     void Init(T* ebuff, s_t esize) {
         if (ebuff)
             buff = ebuff;
@@ -44,47 +46,53 @@ public:
             buff = NULL;
             capacity = 0;
             good = false;
-            // TO DO ThrowExceptionLittlebuffer
         } else
             good = true;
         size = 0;
     }
 
     //T
+
     inline s_t Size(void) {
         return size;
     }
 
     //T
+
     inline s_t Capacity(void) {
         return capacity;
     }
 
     //T
+
     inline bool Good(void) {
         return good;
     }
-    
+
     //T
+
     inline T* Start(void) {
         return buff;
     }
-    
+
     //T
+
     inline T* Stop(void) {
         if (buff)
             return &buff[capacity - 1];
         else
             return NULL;
     }
-    
+
     //T
+
     inline bool Empty(void) {
         return size == 0;
     }
-    
+
     //T
-    s_t PushBack( T  obj ) {
+
+    s_t PushBack(T obj) {
         s_t res = -1; // check !=-1
         if (size < capacity) {
             res = size;
@@ -95,20 +103,23 @@ public:
         }
         return res;
     }
-    
+
     //T    
+
     s_t PopBack(T & obj) {
         s_t res = -1; // check !=-1
         if (Empty() == false) {
             size--;
             obj = buff[size];
             good = true;
-            res=size;
+            res = size;
         } else {
             good = false;
         }
         return res;
     }
+
+    // T 
 
     bool At(T & obj, s_t index) {
         bool res = false;
@@ -116,12 +127,11 @@ public:
             obj = buff[index];
             res = true;
         }
+        good=res;
         return res;
     }
 
-    T End(void) {
-        return buff[size - 1];
-    }
+    //T 
 
     bool SetAt(T obj, s_t index) {
         bool res = false;
@@ -129,9 +139,18 @@ public:
             buff[index] = obj;
             res = true;
         }
+        good=res;
         return res;
     }
 
+    //T
+
+    T End(void) {
+        return buff[size - 1];
+    }
+
+    // T
+    
     bool Swap(s_t h, s_t k) {
         bool res = false;
         if (h < size && k < size) {
@@ -142,9 +161,12 @@ public:
             }
             res = true;
         }
+        good=res;
         return res;
     }
 
+    // T
+    
     bool Remove(s_t index) {
         // caARRAY : remove invalidate Sort...
         bool res = false;
@@ -153,6 +175,7 @@ public:
             size--;
             res = true;
         }
+        good=res;
         return res;
     }
 };

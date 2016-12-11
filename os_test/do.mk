@@ -41,7 +41,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH) $(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 
@@ -51,7 +51,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH) $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 #double pass : first create dependences with compile command so build it
@@ -62,14 +62,14 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CPP) $(CPP_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo -e $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo -e $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
 
 
@@ -108,29 +108,29 @@ all_cpp_file: 	$(OBJ_CPP)
 	
 link_file:
 	$(LD) $(OBJ_CPP)  $(OBJ_C) $(OBJ_ASM)  $(LK_OPT) -o $(BUILDIR)/test.exe
-	@echo -e $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/test.exe">/dev/stderr
+	@echo $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/test.exe">/dev/stderr
 	
 
 all :   depend  all_c_file all_cpp_file  link_file 
 
 info:	
-	@echo -e $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
-	@echo -e $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
-	@echo -e $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
-	@echo -e $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
-	@echo -e $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
-	@echo -e $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPT)
-	@echo -e $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
-	@echo -e $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
-	@echo -e $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)
-	@echo -e $(C_YELLOW)"C source = "$(C_RESET)$(SRC_C)
-	@echo -e $(C_YELLOW)"CPP source = "$(C_RESET)$(SRC_CPP) 
-	@echo -e $(C_YELLOW)"C objs = "$(C_RESET)$(OBJ_C)
-	@echo -e $(C_YELLOW)"CPP objs = "$(C_RESET)$(OBJ_CPP) 
-	@echo -e $(C_YELLOW)"All objs = "$(C_RESET)$(OBJS)
-	@echo -e $(C_YELLOW)"All dep = "$(C_RESET)$(DEP_OBJ)
-	@echo -e $(C_YELLOW)"MAIN ROOT = "$(C_RESET)$(ROOT)
-	@echo -e $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
+	@echo $(EH) $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
+	@echo $(EH) $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
+	@echo $(EH) $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
+	@echo $(EH) $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
+	@echo $(EH) $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
+	@echo $(EH) $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPT)
+	@echo $(EH) $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
+	@echo $(EH) $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
+	@echo $(EH) $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)
+	@echo $(EH) $(C_YELLOW)"C source = "$(C_RESET)$(SRC_C)
+	@echo $(EH) $(C_YELLOW)"CPP source = "$(C_RESET)$(SRC_CPP) 
+	@echo $(EH) $(C_YELLOW)"C objs = "$(C_RESET)$(OBJ_C)
+	@echo $(EH) $(C_YELLOW)"CPP objs = "$(C_RESET)$(OBJ_CPP) 
+	@echo $(EH) $(C_YELLOW)"All objs = "$(C_RESET)$(OBJS)
+	@echo $(EH) $(C_YELLOW)"All dep = "$(C_RESET)$(DEP_OBJ)
+	@echo $(EH) $(C_YELLOW)"MAIN ROOT = "$(C_RESET)$(ROOT)
+	@echo $(EH) $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
 	
 
 test:

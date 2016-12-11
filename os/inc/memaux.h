@@ -20,23 +20,40 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-
 class caMemAux {
 public:
+
+    //T
     static void* MemCpy(u32 *dest, u32 *src, u32 size);
+    //T
+    static void* MemCpy(u16 *dest, u16 *src, u32 size);
+    //T
+    static void* MemCpy(u8 *dest, u8 *src, u32 size);
+    //T
     static void* MemSet(u32 *dest, u32 pat, u32 size);
-    static void* MemZero(u32 *dest, u32 size);
-    static void* MemMove(u32 *dest, u32 *src, u32 size);
-    static void* MemMove(u16 *dest, u16 *src, u32 size);
-    static void* MemMove(u8 *dest, u8 *src, u32 size);
-    static u32 StrICmp(const char *s1, const char *s2);
-    static u32 StrCmp(const char *s1, const char *s2);
-    static u32 StrNCmp(char *s1, const char *s2, u32 max);
-    static s8* StrCpy(char *s1, const char *s2);
-    static s8* StrNCpy(char *s1, const char *s2, u32 max);
-    static u32 StrLen(const char *s1);
+    //T
+    static void* MemSet(u16 *dest, u16 pat, u32 size);
+    //T    
+    static void* MemSet(u8 *dest, u8 pat, u32 size);
+    //
 };
 
+class caStrAux
+{
+    public:
+            
+    static u32 StrCmp(const s8 *s1, const s8 *s2);
+
+    static u32 StrICmp(const s8 *s1, const s8 *s2);
+    
+    static u32 StrNCmp(const s8 *s1, const s8 *s2, u32 max);
+    
+    static s8* StrCpy(s8 *s1, const s8 *s2);
+    
+    static s8* StrNCpy(s8 *s1, const s8 *s2, u32 max);
+    
+    static u32 StrLen(const s8 *s1);
+};
 
 
 
