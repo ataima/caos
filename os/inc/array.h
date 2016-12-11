@@ -20,16 +20,22 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "softreq.h"
-
 template <typename T>
 class caArray {
 protected:
     s_t capacity;
     s_t size;
+    bool good;
     T *buff;
 public:
-
+    //T
+    caArray(void) {
+        buff = NULL;
+        good = false;
+        size = capacity = 0;
+    }
+    
+    //T
     void Init(T* ebuff, s_t esize) {
         if (ebuff)
             buff = ebuff;
@@ -37,89 +43,84 @@ public:
         if (capacity < 2) {
             buff = NULL;
             capacity = 0;
+            good = false;
             // TO DO ThrowExceptionLittlebuffer
-        }
+        } else
+            good = true;
         size = 0;
     }
 
+    //T
     inline s_t Size(void) {
         return size;
     }
 
+    //T
     inline s_t Capacity(void) {
         return capacity;
     }
 
+    //T
+    inline bool Good(void) {
+        return good;
+    }
+    
+    //T
+    inline T* Start(void) {
+        return buff;
+    }
+    
+    //T
+    inline T* Stop(void) {
+        if (buff)
+            return &buff[capacity - 1];
+        else
+            return NULL;
+    }
+    
+    //T
     inline bool Empty(void) {
         return size == 0;
     }
-
-    s_t PushBack(T obj) {
+    
+    //T
+    s_t PushBack( T  obj ) {
         s_t res = -1; // check !=-1
         if (size < capacity) {
             res = size;
             buff[size++] = obj;
+            good = true;
         } else {
-            u32 pc, tres;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionObjectFull(&pc, __func__, &tres);
+            good = false;
+        }
+        return res;
+    }
+    
+    //T    
+    s_t PopBack(T & obj) {
+        s_t res = -1; // check !=-1
+        if (Empty() == false) {
+            size--;
+            obj = buff[size];
+            good = true;
+            res=size;
+        } else {
+            good = false;
         }
         return res;
     }
 
-    T PopBack(void) {
-        T obj;
-        if (Empty() == false) {
-            size--;
-            obj = buff[size];
-        } else {
-            u32 pc, res;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionObjectEmpty(&pc, __func__, &res);
-        }
-        return obj;
-    }
-
-    T PopFront(void) {
-        T obj;
-        if (Empty() == false) {
-            size--;
-            obj = buff[0];
-            buff[0] = buff[size];
-        } else {
-            u32 pc, res;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionObjectEmpty(&pc, __func__, &res);
-        }
-        return obj;
-    }
-
-    T At(s_t index) {
-        T obj = NULL;
+    bool At(T & obj, s_t index) {
+        bool res = false;
         if (index < size) {
             obj = buff[index];
-        } else {
-            u32 pc, res;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionOutOfRange(&pc, __func__, &res);
+            res = true;
         }
-        return obj;
+        return res;
     }
 
-    T AtEnd(void) {
+    T End(void) {
         return buff[size - 1];
-    }
-
-    T operator[](const s_t index) {
-        T obj = NULL;
-        if (index < size) {
-            obj = buff[index];
-        } else {
-            u32 pc, res;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionOutOfRange(&pc, __func__, &res);
-        }
-        return obj;
     }
 
     bool SetAt(T obj, s_t index) {
@@ -127,10 +128,6 @@ public:
         if (index < size) {
             buff[index] = obj;
             res = true;
-        } else {
-            u32 pc, tres;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionOutOfRange(&pc, __func__, &tres);
         }
         return res;
     }
@@ -144,10 +141,6 @@ public:
                 buff[k] = p;
             }
             res = true;
-        } else {
-            u32 pc, tres;
-            asm("mov %0,pc" : "=r" (pc));
-            ThrowExceptionOutOfRange(&pc, __func__, &tres);
         }
         return res;
     }
@@ -156,7 +149,7 @@ public:
         // caARRAY : remove invalidate Sort...
         bool res = false;
         if (index < size) {
-            buff[index] = AtEnd();
+            buff[index] = End();
             size--;
             res = true;
         }

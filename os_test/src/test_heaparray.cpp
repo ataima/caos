@@ -46,9 +46,5 @@ void caHeapArray_test_class::test1(void)
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
-    _STOP();
-    
-    CA_ASSERT(a.str!=NULL);
-    CA_ASSERT(strcmp(a.str,"Pippo")==0);
-    CA_ASSERT(a.len==6);    
+    _STOP();  
 }
