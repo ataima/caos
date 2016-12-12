@@ -4,14 +4,11 @@
     <df root="../os_test" name="0">
       <df name="src">
         <in>mainApp.cpp</in>
-        <in>memaux.cpp</in>
         <in>memoryvalidator.cpp</in>
         <in>test_array.cpp</in>
         <in>test_circular_buffer.cpp</in>
         <in>test_cstr.cpp</in>
         <in>test_heaparray.cpp</in>
-        <in>test_memaux.cpp</in>
-        <in>test_straux.cpp</in>
         <in>test_string_stream.cpp</in>
         <in>test_token_string.cpp</in>
       </df>
@@ -115,18 +112,6 @@
           <standard>8</standard>
         </ccTool>
       </folder>
-      <item path="src/memaux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test_memaux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test_straux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

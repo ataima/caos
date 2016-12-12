@@ -52,6 +52,13 @@ test:
 	@echo test ...done
 	@echo "----------------------------------------------------------------------"
 
+prepare:
+	@echo "----------------------------------------------------------------------"
+	@make   $(V) -f do.mk prepare
+	@echo prepare ...done
+	@echo "----------------------------------------------------------------------"
 
-.PHONY:  distclean clean asm all depend info
+
+
+.PHONY:  distclean clean asm all depend info prepare
 

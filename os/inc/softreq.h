@@ -21,13 +21,13 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
+#if SYS_SOFT_REQ_ENABLED
 
 #include "idevice.h"
 
 class caSoftRequest {
 public:
 
-#if SYS_SOFT_REQ_ENABLED
 
 static inline  void SVC_IOCTL(register u32 /*R0= ioctl*/, 
         register u32 */*R1=input */, 
@@ -49,15 +49,7 @@ static inline  void SVC_IOCTL(register u32 /*R0= ioctl*/,
         asm volatile ("bx lr"); 
         asm volatile ("bx lr"); 
     }
-#else
-static  inline void SVC_IOCTL(
-            register u32 ioctl, 
-            register u32 *input ,
-            register u32 *output, 
-            register u32 *res )__attribute__((naked)) {
-    ISR_Software(ioctl,input,output,res);
-    }
-#endif 
+
     static void DumpSvc(const char *name,const char *file, u32 line);
 };
 
@@ -505,6 +497,15 @@ return caSoftRequest::SVC_IOCTL(ioCtrlRequest::Scheduler |
 
 
 
+
+
+
+
+
+#endif 
+
+
+
 #define SLEEP_FOR_EVER 0xffffffff
 
 u32 Sleep(u32 ms);
@@ -512,9 +513,6 @@ u32 Sleep(u32 ms);
 inline u32 WaitForSignal(void) {
     return Sleep(SLEEP_FOR_EVER);
 }
-
-
-
 
 #endif /* SOFTREQ_H */
 

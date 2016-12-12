@@ -128,7 +128,7 @@ public:
         asm volatile ("ISB"); //TOTEST
         //asm volatile ("STMFD SP!, {R0-R12}"); //PUSH r1-r3 
         asm volatile ("SVC 7961"); /// SWITCH CONTEXT
-        //asm volatile ("LDMFD SP!, {R0-R12}"); //PUSH r1-r3 
+        //asm volatile ("LDMFD SP!, {R0-R12}"); //POP r1-r3 
     }
 };
 

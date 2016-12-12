@@ -50,8 +50,9 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
     else
         a_stk = (((stack - header_mem_alloc) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
     u32 res, base;
-    MemoryAlloc(&a_stk, &base, &res);
-    if (res) {
+    //MemoryAlloc(&a_stk, &base, &res);
+    base=(u32)(caMemory::Allocate(a_stk));
+    if (base!=0) {
         a_stk += base;
         a_stk -= sizeof (caThreadContext);
         ctx = static_cast<caThreadContext *> ((void *) a_stk);
@@ -60,7 +61,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->status = caThreadStatus::thInit;
         ctx->priority = p;
         ctx->mode = mode;
-        caMemAux::MemZero((u32 *) ctx->pcb, 32);
+        caMemAux::MemSet((u32 *) ctx->pcb,0,32);
         ctx->pcb[0] = mode; //SPSR
         ctx->pcb[1] = (u32) caThread::LaunchThread;
         ctx->pcb[2] = (u32) func; //r0
@@ -76,7 +77,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->result = -1;
         ctx->cur_prio = ctx->priority;
         ctx->nswitch = 0;
-        caMemAux::StrNCpy(ctx->name, name, 64);
+        caStrAux::StrNCpy(ctx->name, name, 64);
         caScheduler::AddTask(ctx);
     }
     return ctx->index;

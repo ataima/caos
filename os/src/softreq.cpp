@@ -29,7 +29,7 @@
 
 
        
-
+#if SYS_SOFT_REQ_ENABLED
 void caSoftRequest::DumpSvc(const char *name,const char *file, u32 line){
     Dbg::Put("SVC : > ");
     Dbg::Put(name);
@@ -37,3 +37,4 @@ void caSoftRequest::DumpSvc(const char *name,const char *file, u32 line){
     Dbg::Put(file);
     Dbg::Put(" : ",line,Dbg::dec,1);    
 }
+#endif

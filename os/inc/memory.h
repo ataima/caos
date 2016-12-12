@@ -58,12 +58,12 @@ private:
     static blockMem *GetEndBlock(void);
     static void *SplitBlock(blockMem *free, u32 size);
     static void UnionBlock(blockMem * s);
-
+public:
     static u32 List(s8 *buff, u32 size);
     static u32 Dump(dumpAddrReq *req);
     static u32 Ascii(dumpAddrReq *req);
     static void Dump(caStringStream<s8> & ss, blockMem *s);
-public:
+
 
     static void Init(void);
 

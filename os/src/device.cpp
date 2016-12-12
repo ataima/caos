@@ -55,7 +55,7 @@ ioCtrlRequest caDevice::GetIoCtrlRequest(const char * name) {
     u32 i;
     u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) + 1;
     for (i = 0; i < mnDevices; i++) {
-        if (caMemAux::StrICmp(allDevices[i].name, name) == 0) {
+        if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {
             res = allDevices[i].device;
             break;
         }
@@ -82,26 +82,31 @@ deviceError caDevice::Open(const char * device,
             case ioCtrlRequest::Exception:
                 break;
             case ioCtrlRequest::Scheduler:
-                SchedulerOpenDevice(&in, &out, &res);
+                res=caSchedulerDevice::Open(&in,&out);
+                //SchedulerOpenDevice(&in, &out, &res);
                 break;
 #if COM1_DEVICE                 
             case ioCtrlRequest::Com1:
-                Com1OpenDevice(&in, &out, &res);
+                res=caComDevice::Open(&in,&out);
+                //Com1OpenDevice(&in, &out, &res);
                 break;
 #endif                
 #if MEM_PIPE_DEVICE                 
             case ioCtrlRequest::MemPipe:
-                MemPipeOpenDevice(&in, &out, &res);
+                res=caMemDevice::Open(&in,&out);
+                //MemPipeOpenDevice(&in, &out, &res);
                 break;
 #endif      
 #if SYS_TIMER_DEVICE                
             case ioCtrlRequest::SysTimer:
-                SysTimerOpenDevice(&in, &out, &res);
+                res=caSysTimerDevice::Open(&in,&out);
+                // SysTimerOpenDevice(&in, &out, &res);
                 break;
 #endif                
 #if CACHE_DEVICE                
             case ioCtrlRequest::Cache:
-                CacheOpenDevice(&in, &out, &res);
+                caCacheDevice::::Open(&in,&out);
+                //CacheOpenDevice(&in, &out, &res);
                 break;
 #endif                
             default:

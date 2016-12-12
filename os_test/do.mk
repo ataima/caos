@@ -73,9 +73,11 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 
 
 
-.PHONY:  all clean info dwload qemu asm
+.PHONY:  all clean info dwload qemu asm distclean prepare
 
-
+prepare:
+	@ln ../os/src/memaux.cpp src/memaux.cpp
+	
 
 distclean: clean 
 	@rm -rf $(BUILDIR)/$(DEPEND)

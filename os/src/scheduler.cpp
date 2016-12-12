@@ -68,10 +68,11 @@ bool caNextTaskManager::AddTask(caThreadContext *ctx) {
 
 bool caNextTaskManager::RemoveTask(s_t idx) {
     bool res = false;
+
     if (IsValidContext(idx)) {
         idx -= (BASE_HANDLE + 1);
-        caThreadContext *ctx = table.At(idx);
-        if (ctx != NULL) {
+        caThreadContext *ctx = NULL;
+        if (table.At(ctx, idx) && (ctx != NULL)) {
             ctx->status = caThreadStatus::thRemove;
             res = true;
         }
@@ -82,30 +83,29 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
 caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *current) {
     //TIN();
     //REFRESH  
-    caThreadContext * tmp;
+    caThreadContext * tmp = NULL;
     u32 i, max;
     for (i = 0; i < table.Size(); i++) {
-        tmp = table.At(i);
-        if (tmp != NULL)
+        if (table.At(tmp, i) && (tmp != NULL)) {
             tmp->time++; // always time ++ staus ignored also current
-        if (tmp->status == caThreadStatus::thRemove) {
-            table.Remove(i);
-            caMemory::Free(tmp);
-            if (table.Size() == i) {
-                break; // no more context 
-            } else {
-                tmp = table.At(i);
-                if (tmp != NULL)
-                    tmp->index = i;
-                i--; // re evaluate at index i
-                continue;
+            if (tmp->status == caThreadStatus::thRemove) {
+                table.Remove(i);
+                caMemory::Free(tmp);
+                if (table.Size() == i) {
+                    break; // no more context 
+                } else {
+                    if (table.At(tmp, i) && (tmp != NULL))
+                        tmp->index = i;
+                    i--; // re evaluate at index i
+                    continue;
+                }
             }
-        }
-        if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep) {
-            if (tmp->sleep != 0) {
-                tmp->sleep--;
-            } else {
-                tmp->status = caThreadStatus::thRun;
+            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep) {
+                if (tmp->sleep != 0) {
+                    tmp->sleep--;
+                } else {
+                    tmp->status = caThreadStatus::thRun;
+                }
             }
         }
     }
@@ -117,8 +117,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *curr
         i = 0;
     while (1) { // Round robin
         i = i % table.Size();
-        tmp = table.At(i);
-        if (tmp != NULL && (tmp->status & caThreadStatus::thRunning)) {
+        if (table.At(tmp, i) && (tmp != NULL) && (tmp->status & caThreadStatus::thRunning)) {
             tmp->nswitch++;
             break; // Year ... it's the next thread to
         }
@@ -139,35 +138,34 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
     //TIN();
     tmp = target = NULL;
     for (i = 0; i < table.Size(); i++) {
-        tmp = table.At(i);
-        if (tmp != NULL)
+        if (table.At(tmp, i) && (tmp != NULL)) {
             tmp->time++; // always time ++ staus ignored also current
-        if (tmp->status == caThreadStatus::thRemove) {
-            table.Remove(i);
-            caMemory::Free(tmp);
-            if (table.Size() == i) {
-                break; // no more context 
-            } else {
-                tmp = table.At(i);
-                if (tmp != NULL)
-                    tmp->index = i;
-                i--; // re evaluate at index i
-                continue;
+            if (tmp->status == caThreadStatus::thRemove) {
+                table.Remove(i);
+                caMemory::Free(tmp);
+                if (table.Size() == i) {
+                    break; // no more context 
+                } else {
+                    if( table.At(tmp,i) && (tmp != NULL) )
+                        tmp->index = i;
+                    i--; // re evaluate at index i
+                    continue;
+                }
             }
-        }
-        if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep) {
-            if (tmp->sleep != 0) {
-                tmp->sleep--;
-            } else {
-                tmp->status = caThreadStatus::thRun;
+            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep) {
+                if (tmp->sleep != 0) {
+                    tmp->sleep--;
+                } else {
+                    tmp->status = caThreadStatus::thRun;
+                }
             }
-        }
-        if (tmp != current && (tmp->status & caThreadStatus::thRunning)) {
-            if (target == NULL) {
-                target = tmp;
-            } else
-                if (less(target, tmp)) {
-                target = tmp;
+            if (tmp != current && (tmp->status & caThreadStatus::thRunning)) {
+                if (target == NULL) {
+                    target = tmp;
+                } else
+                    if (less(target, tmp)) {
+                    target = tmp;
+                }
             }
         }
     }
@@ -197,8 +195,8 @@ bool caNextTaskManager::IsValidContext(u32 thIdx) {
 void caNextTaskManager::WakeUp(u32 thid) {
     thid -= (BASE_HANDLE + 1);
     if (thid < table.Size()) {
-        caThreadContext * tmp = table.At(thid);
-        if (tmp != NULL && tmp->status == caThreadStatus::thSleep)
+        caThreadContext * tmp = NULL;
+        if( table.At(tmp,thid) && tmp != NULL && tmp->status == caThreadStatus::thSleep)
             tmp->status = caThreadStatus::thRun;
     }
 }
@@ -208,7 +206,8 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
     u32 res = deviceError::no_error;
     thid -= (BASE_HANDLE + 1);
     if (thid < table.Size()) {
-        caThreadContext * tmp = table.At(thid);
+        caThreadContext * tmp = NULL;
+        table.At(tmp,thid);
         while (caIrqCtrl::LockSwitchContext() == false) {
         };
         if (tmp != NULL && tmp->status == caThreadStatus::thRun) {
@@ -231,9 +230,9 @@ bool caScheduler::Init(caSchedulerMode req) {
     } else {
         getnextcontext = caNextTaskManager::PriorityNextContext;
     }
-    caMemAux::MemZero((u32 *) taskList, sizeof (taskList) / sizeof (u32));
-    caMemAux::MemZero((u32 *) & main_ctx, sizeof (caThreadContext) / sizeof (u32));
-    caMemAux::StrNCpy(main_ctx.name, "Default", 64);
+    caMemAux::MemSet((u32 *) taskList, 0, sizeof (taskList) / sizeof (u32));
+    caMemAux::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext) / sizeof (u32));
+    caStrAux::StrNCpy(main_ctx.name, "Default", 64);
     main_ctx.stack_start = 0x40000000;
     main_ctx.stack_end = 0x0;
     current_task = &main_ctx;
@@ -307,9 +306,10 @@ u32 caScheduler::Dump(caStringStream<s8> & ss) {
 }
 
 u32 Sleep(u32 ms) {
-    u32 res = 0;    
-    SchedulerIoCtrlSleep(&ms,(u32*)caScheduler::GetCurrentTaskId(),&res);
+    u32 res = 0;
+    //SchedulerIoCtrlSleep(&ms, (u32*) caScheduler::GetCurrentTaskId(), &res);
     // task was blocked here...
+    caScheduler::SetSleepMode(ms,caScheduler::GetCurrentTaskId());
     if (res == deviceError::okey) {
         caScheduler::SwitchContext();
     }

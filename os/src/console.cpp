@@ -36,6 +36,7 @@
 #include "cache.h"
 #include "smp.h"
 #include "mmu.h"
+#include "memory.h"
 
 
 s8 caConsole::buffio[2048];
@@ -175,7 +176,9 @@ deviceError caConsole::Command_PS(caDevicePort &port,
     u32 res = 0;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
-    SchedulerDump(buffio, sizeof (buffio), &res);
+    ss << " --- TASK ---\r\n";
+    res = caScheduler::Dump(ss);
+    //SchedulerDump(buffio, sizeof (buffio), &res);
     if (res) {
         ss.Forward(res);
         ss << ss.Endl(port);
@@ -192,7 +195,7 @@ deviceError caConsole::Command_HARDWARE(caDevicePort &port,
     TokenString<u8> opt;
     iss>>opt;
     if (opt.size > 0) {
-        if (caMemAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
+        if (caStrAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
             caComDeviceCtrl req;
             req.command = caComDeviceCtrl::IoCtrlDirect::comListHardware;
             req.ss = &ss;
@@ -203,7 +206,7 @@ deviceError caConsole::Command_HARDWARE(caDevicePort &port,
         }
 #if SYS_TIMER_DEVICE        
         else
-            if (caMemAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
+            if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caSysTimerDeviceConfigure in;
             caDevicePort portTimer;
             res = caDevice::Open("SYSTIMER", in, portTimer);
@@ -234,7 +237,7 @@ deviceError caConsole::Command_READ_DEVICE(caDevicePort &port,
     u8 rdbuff[128];
     iss>>opt;
     if (opt.size > 0) {
-        if (caMemAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
+        if (caStrAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
             port.rdBuff = rdbuff;
             port.rdSize = 64;
             port.readed = 0;
@@ -250,7 +253,7 @@ deviceError caConsole::Command_READ_DEVICE(caDevicePort &port,
         }
 #if SYS_TIMER_DEVICE                
         else
-            if (caMemAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
+            if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caSysTimerDeviceConfigure in;
             caDevicePort portTimer;
             res = caDevice::Open("SYSTIMER", in, portTimer);
@@ -285,7 +288,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
     TokenString<u8> opt;
     iss>>opt;
     if (opt.size > 0) {
-        if (caMemAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
+        if (caStrAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
             if (iss.Good()) {
                 port.wrBuff = iss.Position();
                 port.wrSize = iss.Remain();
@@ -297,7 +300,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
         }
 #if SYS_TIMER_DEVICE             
         else
-            if (caMemAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
+            if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caSysTimerDeviceConfigure in;
             caDevicePort portTimer;
             res = caDevice::Open("SYSTIMER", in, portTimer);
@@ -333,21 +336,23 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
     ss.Init(buffio, sizeof (buffio));
     TokenString<u8> opt;
     iss>>opt;
-    if (opt.size == 0 || caMemAux::StrNCmp((char *) opt.ptr, "list", 4) == 0) {
-        MemoryList(buffio, sizeof (buffio), &res);
+    if (opt.size == 0 || caStrAux::StrNCmp((char *) opt.ptr, "list", 4) == 0) {
+        //MemoryList(buffio, sizeof (buffio), &res);
+        res=caMemory::List(buffio, sizeof (buffio));
         if (res) {
             ss.Forward(res);
             ss << ss.Endl(port);
             res = deviceError::no_error;
         }
     } else
-        if (caMemAux::StrNCmp((char *) opt.ptr, "dump", 4) == 0) {
+        if (caStrAux::StrNCmp((char *) opt.ptr, "dump", 4) == 0) {
         dumpAddrReq req;
         req.buffo = buffio;
         req.size = sizeof (buffio);
         if (iss.Good()) {
             iss >> req.addr;
-            MemoryDump(&req, &res);
+            //MemoryDump(&req,&res);
+            res=caMemory::Dump(&req);
             if (res) {
                 ss.Forward(res);
                 ss << ss.Endl(port);
@@ -356,13 +361,14 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
         } else
             res = SyntaxError(port, iss);
     } else
-        if (caMemAux::StrNCmp((char *) opt.ptr, "ascii", 5) == 0) {
+        if (caStrAux::StrNCmp((char *) opt.ptr, "ascii", 5) == 0) {
         dumpAddrReq req;
         req.buffo = buffio;
         req.size = sizeof (buffio);
         if (iss.Good()) {
             iss >> req.addr;
-            MemoryAsciiDump(&req, &res);
+            //MemoryAsciiDump(&req, &res);
+            res=caMemory::Ascii(&req);
             if (res) {
                 ss.Forward(res);
                 ss << ss.Endl(port);
@@ -397,7 +403,7 @@ deviceError caConsole::Command_HELP(caDevicePort &port,
     iss>>opt;
     if (opt.size > 0) {
         for (i = 0; i < MAX_CONSOLE_COMMAND; i++) {
-            if (opt.size == commands[i].size && caMemAux::StrNCmp((char *) opt.ptr, commands[i].cmd, commands[i].size) == 0) {
+            if (opt.size == commands[i].size && caStrAux::StrNCmp((char *) opt.ptr, commands[i].cmd, commands[i].size) == 0) {
                 ss << commands[i].help;
                 break;
             }
@@ -454,7 +460,7 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDevicePort &port)
     iss>>tmp;
     if (iss.Good()) {
         for (i = 0; i < MAX_CONSOLE_COMMAND; i++) {
-            if (tmp.size == commands[i].size && caMemAux::StrNCmp((char *) tmp.ptr, commands[i].cmd, commands[i].size) == 0) {
+            if (tmp.size == commands[i].size && caStrAux::StrNCmp((char *) tmp.ptr, commands[i].cmd, commands[i].size) == 0) {
                 res = commands[i].func(port, iss);
                 break;
             }

@@ -70,7 +70,7 @@ u32 caSysTimerDevice::Open(caSysTimerDeviceConfigure *setup,
     if (setup != NULL && isOpen == 0) {
         isOpen++;
         if (port != NULL) {
-            caMemAux::MemZero((u32*) port, sizeof (caDevicePort) / sizeof (u32));
+            caMemAux::MemSet((u32*) port,0, sizeof (caDevicePort) / sizeof (u32));
             port->handle = ++guid;
             port->status = caDevicePort::statusPort::Open;
             port->tStart = caSysTimer::GetCount();

@@ -43,14 +43,14 @@
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
 // soft request interrupt true or simulated
-#define SYS_SOFT_REQ_ENABLED  1
+#define SYS_SOFT_REQ_ENABLED  0
 // soft request Debug
 #define SYS_SOFT_REQ_DEBUG  1
 
 ///////////////////////////// INCLUDE SEXCLUDE DEVICE FROM KERNEL
 
 #define COM1_DEVICE             1    
-#define MEM_PIPE_DEVICE         0    
+#define MEM_PIPE_DEVICE         1    
 #define SYS_TIMER_DEVICE        1
 #define CACHE_DEVICE            1
 #define SCHEDULER_DEVICE        1
