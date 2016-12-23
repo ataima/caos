@@ -22,9 +22,6 @@
 
 #include "array.h"
 
-
-
-
 template <typename T>
 class caHeapArray
 : public caArray<T> {
@@ -51,24 +48,21 @@ private:
         }
     }
 public:
-    
-    
 
     bool inqueue(T obj) {
-        bool res = ( this->PushBack(obj) != (s_t) - 1);
+        bool res = (this->PushBack(obj) != (s_t) - 1);
         if (res) {
             SortBottomUp();
         }
         return res;
     }
 
-
     s_t outqueue(T & out) {
-        s_t res = (s_t)(-1);
+        s_t res = (s_t) (-1);
         if (this->Size() > 0) {
             this->Swap(0, this->Size() - 1);
             res = this->PopBack(out);
-            if (res!=(s_t)(-1) && this->Size())
+            if (res != (s_t) (-1) && this->Size())
                 SortTopDown();
         }
         return res;

@@ -1,4 +1,5 @@
 #include "config.h"
+#include "caos_c_types.h"
 #include "test.h"
 #if TEST_COM1_DEVICE && TEST
 
@@ -10,7 +11,6 @@
 #include "interrupt.h"
 #include "miniuart.h"
 #include "memory.h"
-#include "softreq.h"
 #include "memaux.h"
 #include "thread.h"
 #include "scheduler.h"
@@ -40,7 +40,7 @@ u32 Task1(u32 /*p1*/, u32 /*p2*/) {
     in.data = 8;
     in.parity = 0;
     in.stop = 1;
-    res = caDevice::Open("COM1", in, port);
+    res = caOS::Open("COM1", in, port);
     Sleep(10);
     Dbg::Put("caDevice::Open=", res);
     if (res == deviceError::no_error) {
@@ -48,16 +48,16 @@ u32 Task1(u32 /*p1*/, u32 /*p2*/) {
             const char *msg = "TH1 HELLO\r\n\0";
             port.wrBuff = (u8*) msg;
             port.wrSize = 11;
-            res = caDevice::Write(port);
+            res = caOS::Write(port);
             Sleep(10);
             loop1++;
         }
         const char *msg = "B CLOSE\r\n\0";
         port.wrBuff = (u8*) msg;
         port.wrSize = 9;
-        res = caDevice::Write(port);
+        res = caOS::Write(port);
         Sleep(20);
-        res = caDevice::Close(port);
+        res = caOS::Close(port);
         Sleep(100);
         Dbg::Put("Close=", res);
     } else {
@@ -83,7 +83,7 @@ u32 Task3(u32 p1, u32 p2) {
     in.data = 8;
     in.parity = 0;
     in.stop = 1;
-    res = caDevice::Open("COM1", in, port);
+    res = caOS::Open("COM1", in, port);
     Sleep(10);
     if (res == deviceError::no_error) {
         while (loop < 100) {
@@ -92,7 +92,7 @@ u32 Task3(u32 p1, u32 p2) {
             Sleep(10);
             loop++;
         }
-        res = caDevice::Close(port);
+        res = caOS::Close(port);
         Sleep(100);
     } else {
         Dbg::Put("ERROR ON OPEN COM1\r\n");
@@ -113,7 +113,7 @@ u32 Task2(u32, u32) {
     in.data = 8;
     in.parity = 0;
     in.stop = 1;
-    res = caDevice::Open("COM1", in, port);
+    res = caOS::Open("COM1", in, port);
     ss.Clear();
     //DumpDevicePort(port, ss);
     //ss << "Port:" << res << ss.Endl(port);
@@ -125,7 +125,7 @@ u32 Task2(u32, u32) {
             loop1++;
         }
     }
-    res = caDevice::Close(port);
+    res = caOS::Close(port);
     TOUT();
     lock.UnLock();
     return 0;

@@ -17,10 +17,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "sysleds.h"
 #include "interrupt.h"  
 #include "miniuart.h"
@@ -52,7 +52,7 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
     Dbg::Put("---->LR SVC = ", lr_svc);
     Dbg::Put("---->LR IRQ = ", lr_irq);
     Dbg::Put("---->LR UND = ", lr_und);
-    
+
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -69,6 +69,7 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
 
 void caInterruptRequest::Software(u32 ioctl,
         u32 *p1, u32 *p2, u32 *res) {
+
     u32 type = (ioctl & ioCtrlRequest::maskIoCtrl);
     ioCtrlFunction request = (ioCtrlFunction) (ioctl & ioCtrlRequest::maskHandle);
 #if DEBUG_IOCTL_SVC_REQ    
@@ -84,35 +85,37 @@ void caInterruptRequest::Software(u32 ioctl,
     Dbg::Put("*RES    = ", *res);
     caInterruptRequest::EnableInt();
 #endif    
+    /*
     switch (type) {
         case ioCtrlRequest::Memory:
-            *res = caMemory::IoctlReq(request, p1, p2);
+     *res = caMemory::IoctlReq(request, p1, p2);
             break;
         case ioCtrlRequest::Scheduler:
-            *res = caSchedulerDevice::IoctlReq(request, p1, p2);
+     *res = caSchedulerDevice::IoctlReq(request, p1, p2);
             break;
         case ioCtrlRequest::Exception:
-            *res = caException::IoctlReq(request, p1, p2);
+     *res = caException::IoctlReq(request, p1, p2);
             break;
         case ioCtrlRequest::Com1:
-            *res = caComDevice::IoctlReq(request, p1, p2);
+     *res = caComDevice::IoctlReq(request, p1, p2);
             break;
 #if MEM_PIPE_DEVICE            
         case ioCtrlRequest::MemPipe:
-            *res = caMemDevice::IoctlReq(request, p1, p2);
+     *res = caMemDevice::IoctlReq(request, p1, p2);
             break;
 #endif            
 #if SYS_TIMER_DEVICE            
         case ioCtrlRequest::SysTimer:
-            *res = caSysTimerDevice::IoctlReq(request, p1, p2);
+     *res = caSysTimerDevice::IoctlReq(request, p1, p2);
             break;
 #endif            
 #if CACHE_DEVICE            
         case ioCtrlRequest::Cache:
-            *res = caCacheDevice::IoctlReq(request, p1, p2);
+     *res = caCacheDevice::IoctlReq(request, p1, p2);
             break;
 #endif            
     }
+     * */
 }
 
 void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,

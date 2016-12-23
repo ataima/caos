@@ -21,7 +21,7 @@
 
 
 
-typedef deviceError(*consoleFunc)(caDevicePort &port, caTokenizeSStream <u8> & iss);
+typedef deviceError(*consoleFunc)(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
 
 typedef struct tag_pair_str_func {
     const char * cmd;
@@ -40,19 +40,19 @@ private:
     static s8 buffio[2048];
 private:
     static void Dump(u8 * buff, u32 size, caStringStream<s8> &ss);
-    static void Error(caDevicePort &port, caTokenizeSStream <u8> & iss, u32 errno);
-    static u32 SyntaxError(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_PS(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_MEM(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_HELP(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_INFO(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_HARDWARE(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_READ_DEVICE(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_WRITE_DEVICE(caDevicePort &port, caTokenizeSStream <u8> & iss);
-    static deviceError Command_QUIT(caDevicePort &port, caTokenizeSStream <u8> & iss);
+    static void Error(caDeviceHandle &port, caTokenizeSStream <u8> & iss, u32 errno);
+    static u32 SyntaxError(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_PS(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_MEM(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_HELP(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_INFO(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_HARDWARE(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_READ_DEVICE(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_WRITE_DEVICE(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
+    static deviceError Command_QUIT(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
 public:
     static u32 Init(void);
-    static deviceError Execute(caTokenizeSStream <u8> & in, caDevicePort &out);
+    static deviceError Execute(caTokenizeSStream <u8> & in, caDeviceHandle &out);
 };
 
 

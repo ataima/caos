@@ -1,9 +1,9 @@
-	/*-------------------------------------------
-        |		ANGELO COPPI CASE REFACTOR		|
-        |       VERS.1.0	2005....			|
-        |	    angelogkcop@hotmail.com			|
-        |		coppi.angelo@virgilio.it		|
-        ----------------------------------------*/
+/*-------------------------------------------
+|		ANGELO COPPI CASE REFACTOR		|
+|       VERS.1.0	2005....			|
+|	    angelogkcop@hotmail.com			|
+|		coppi.angelo@virgilio.it		|
+----------------------------------------*/
 
 #ifndef __MEMORYVALIDATOR_H__
 #define __MEMORYVALIDATOR_H__
@@ -12,35 +12,29 @@
 
 
 #ifdef _SAFE_MEMORY_LEAK
-#define MAX_STR_REC				256
+#define MAX_STR_REC    256
 
-class _mn_Ident_Mem
-{
+class _mn_Ident_Mem {
 public:
 
-    ~_mn_Ident_Mem()
-    {
+    ~_mn_Ident_Mem() {
     }
     void Set(void * _ptr, size_t _size, const char *_file, int _line, int rel_alloc);
     void dump(int nm, FILE * file);
 
-    inline size_t getSize(void)
-    {
+    inline size_t getSize(void) {
         return size;
     }
 
-    inline void * getPtr(void)
-    {
+    inline void * getPtr(void) {
         return ptrMem;
     }
 
-    inline char * getFile(void)
-    {
+    inline char * getFile(void) {
         return file;
     }
 
-    inline int getLine(void)
-    {
+    inline int getLine(void) {
         return line;
     }
 private:
@@ -51,8 +45,7 @@ private:
     int numAlloc;
 };
 
-class MemoryValidator
-{
+class MemoryValidator {
 private:
     static std::map<void *, _mn_Ident_Mem *> _mn_alloc;
     static bool _mn_record;
@@ -67,13 +60,11 @@ public:
     static void EndRecordMem(void);
     static void exitProg(int value);
 
-    static int getLeakNum(void)
-    {
+    static int getLeakNum(void) {
         return _mnAlloc;
     }
 
-    static int getLeakMaxNum(void)
-    {
+    static int getLeakMaxNum(void) {
         return _mnAllocMax;
     }
     static void *Malloc(size_t len) throw ();
@@ -85,37 +76,33 @@ public:
     static int _mn_lastalloc_Rq;
     // ONLY FOR TEST
 
-    inline FILE* getFile(void)
-    {
+    inline FILE* getFile(void) {
         return _mn_file;
     }
 
-    inline std::map<void *, _mn_Ident_Mem *> *getMap(void)
-    {
+    inline std::map<void *, _mn_Ident_Mem *> *getMap(void) {
         return &_mn_alloc;
     }
 
-    static void enableRecordMem(void)
-    {
+    static void enableRecordMem(void) {
         _mn_record = false;
     }
 
-    static void disableRecordMem(void)
-    {
+    static void disableRecordMem(void) {
         _mn_record = true;
     }
 };
-#define START_RECORD_MEM(a)		MemoryValidator::startRecordMem(a)
-#define END_RECORD_MEM()		MemoryValidator::EndRecordMem()
-#define DUMP_MMEM()				MemoryValidator::dumpMemory()
-#define EXIT(a)					MemoryValidator::exitProg(a)
+#define START_RECORD_MEM(a)  MemoryValidator::startRecordMem(a)
+#define END_RECORD_MEM()  MemoryValidator::EndRecordMem()
+#define DUMP_MMEM()    MemoryValidator::dumpMemory()
+#define EXIT(a)     MemoryValidator::exitProg(a)
 #define GET_LEAK_NUM()          MemoryValidator::getLeakNum()
 #define GET_MAX_ALLOC_NUM()     MemoryValidator::getLeakMaxNum()
 #else
 #define START_RECORD_MEM(a)
 #define END_RECORD_MEM()
 #define DUMP_MMEM()
-#define EXIT(a)					exit(a)
+#define EXIT(a)     exit(a)
 #define GET_LEAK_NUM()
 #define GET_MAX_ALLOC_NUM()
 #endif
@@ -131,7 +118,7 @@ extern int _mn_line_Rq;
 
 #ifdef _SAFE_MEMORY_LEAK
 #define _safeNEW(a,b)  \
-	{\
+        {\
 	strncpy(MemoryValidator::_mn_file_Rq,__FILE__,MAX_STR_REC);\
 	strcat(MemoryValidator::_mn_file_Rq," :: _safeNEW(");\
 	strcat(MemoryValidator::_mn_file_Rq,#a);\
@@ -147,7 +134,7 @@ extern int _mn_line_Rq;
 
 #ifdef _SAFE_MEMORY_LEAK
 #define _safe_STD_NEW(a,b,c)  \
-	{\
+        {\
 	strncpy(MemoryValidator::_mn_file_Rq,__FILE__,MAX_STR_REC);\
 	strcat(MemoryValidator::_mn_file_Rq," :: _safe_STD_NEW(");\
 	strcat(MemoryValidator::_mn_file_Rq,#a);\
@@ -162,7 +149,7 @@ extern int _mn_line_Rq;
 	}
 #else
 #define _safe_STD_NEW(a,b,c)  \
-	a=reinterpret_cast<b*>(malloc(sizeof(c)));
+        a=reinterpret_cast<b*>(malloc(sizeof(c)));
 #endif
 
 
@@ -185,7 +172,7 @@ extern void * operator new[] (size_t len)throw (std::bad_alloc);
 extern void operator delete[] (void *ptr)throw ();
 
 extern void operator delete ( void *ptr)throw ();
-*/
+ */
 
 
 

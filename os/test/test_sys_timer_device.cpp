@@ -1,4 +1,5 @@
 #include "config.h"
+#include "caos_c_types.h"
 #include "test.h"
 
 #if SYS_TIMER_DEVICE && TEST
@@ -11,7 +12,6 @@
 #include "interrupt.h"
 #include "miniuart.h"
 #include "memory.h"
-#include "softreq.h"
 #include "memaux.h"
 #include "thread.h"
 #include "scheduler.h"
@@ -45,13 +45,13 @@ static u32 Task1(u32, u32) {
     ss << "TTY = ";
     DumpDevicePort(ttyport, ss);
     ss << "END " << ss.Endl(ttyport);
-    res = caDevice::Open("SYSTIMER", in, port);
+    res = caOS::Open("SYSTIMER", in, port);
     if (res == deviceError::no_error) {
         while (loop1 < 100) {
             port.rdBuff = (u8*) & st;
             port.readed = 0;
             port.rdSize = sizeof (sysTimerStatus);
-            res = caDevice::Read(port);
+            res = caOS::Read(port);
             ss.Clear();
             ss << "PORT = ";
             DumpDevicePort(port, ss);
@@ -66,7 +66,7 @@ static u32 Task1(u32, u32) {
         }
     }
     ss << "TRY CLOSE  TASK1 =" << res << ss.Endl(ttyport);
-    res = caDevice::Close(port);
+    res = caOS::Close(port);
     ss << "CLOSE  TASK1 =" << res << ss.Endl(ttyport);
     TOUT();
     return 0;
@@ -89,7 +89,7 @@ static void test_01(u32 & success, u32 &failed) {
     in.data = 8;
     in.parity = 0;
     in.stop = 1;
-    res = caDevice::Open("COM1", in, ttyport);
+    res = caOS::Open("COM1", in, ttyport);
     if (res == deviceError::no_error) {
 
         u32 th1 = caThread::CreateThread("reader1",
@@ -106,7 +106,7 @@ static void test_01(u32 & success, u32 &failed) {
         stop_system_timer();
         caThread::DestroyThread(th1);
         caThread::DestroyThread(th3);
-        res = caDevice::Close(ttyport);
+        res = caOS::Close(ttyport);
     }
     if (loop1 == 100 && loop2 == 100)
         success++;

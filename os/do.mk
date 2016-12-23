@@ -175,6 +175,14 @@ kernel7.img :   depend all_asm_file all_c_file all_cpp_file all_test_file link_f
 
 info:	
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN PATH= "$(C_RESET)$(ARMPATH)
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CC= "$(C_RESET)$(CROSS_CC)
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CPP= "$(C_RESET)$(CROSS_CPP) 
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN AS= "$(C_RESET)$(CROSS_AS) 
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN LD= "$(C_RESET)$(CROSS_LD)
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN OBJDUMP= "$(C_RESET)$(CROSS_OBJDUMP) 
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN OBJCOPY= "$(C_RESET)$(CROSS_OBJCOPY)
+	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN LD= "$(C_RESET)$(CROSS_GDB)
 	@echo  $(EH) $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
 	@echo  $(EH) $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
 	@echo  $(EH) $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)

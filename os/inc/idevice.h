@@ -20,7 +20,7 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#define BASE_HANDLE  0x1000
+#include "devicehandle.h"
 
 struct caIDeviceConfigure {
 };
@@ -28,48 +28,9 @@ struct caIDeviceConfigure {
 struct caIDeviceCtrl {
 };
 
-struct caIDevicePort {
-};
 
-typedef enum tag_device_action {
-    caActionOpen = 0x1000,
-    caActionClose,
-    caActionWrite,
-    caActionRead,
-    caActionIoCtrl,
-} caDeviceAction;
 
-struct caDevicePort
-: public caIDevicePort {
-public:
 
-    typedef enum tag_status_port {
-        Undef,
-        Close,
-        Open,
-    } statusPort;
-
-public:
-    // status 
-    u32 handle;
-    statusPort status;
-    u32 error;
-    u32 tStart;
-    u32 tStop;
-    u32 tLast;
-    caDeviceAction tLastCmd;
-    // Wr
-    u8* wrBuff;
-    u32 wrSize;
-    u32 writed;
-    // rd
-    u8* rdBuff;
-    u32 rdSize;
-    u32 readed;
-
-public:
-    bool IsValidHandle(void);
-};
 
 #define IO_UID(a)    ((a)<<20)
 
@@ -79,10 +40,19 @@ typedef enum tag_ioctrl_request {
     Scheduler = IO_UID(2),
     Exception = IO_UID(3),
     Task = IO_UID(4),
-    Com1 = IO_UID(5),
-    MemPipe = IO_UID(6),
-    SysTimer = IO_UID(7),
-    Cache = IO_UID(8),
+    MemPipe = IO_UID(5),
+    SysTimer = IO_UID(6),
+    Cache = IO_UID(7),
+    //COMS
+    Com1 = IO_UID(8),
+    Com2 = IO_UID(9),
+    Com3 = IO_UID(10),
+    Com4 = IO_UID(11),
+    Com5 = IO_UID(12),
+    Com6 = IO_UID(13),
+    Com7 = IO_UID(14),
+    Com8 = IO_UID(15),
+
     maskIoCtrl = 0xfff00000,
     maskHandle = 0x000fffff
 } ioCtrlRequest;
@@ -121,17 +91,38 @@ typedef struct tag_mem_dump_addr {
     s_t addr;
 } dumpAddrReq;
 
-/* AL DEVICE CLASSES ARE STATIC ... BUT IMPLEMENT ALL SAME METHOD AS VIRTUAL CLASSES*/
-
 class IDevice {
 public:
     // METHOD TO SYSTEM MODE
-    virtual u32 Open(caIDeviceConfigure *in, caIDevicePort *out) = 0;
-    virtual u32 Close(caIDevicePort *port) = 0;
-    virtual u32 Write(caIDevicePort *port) = 0;
-    virtual u32 Read(caIDevicePort *port) = 0;
-    virtual u32 IoCtrl(caIDevicePort *port, caIDeviceCtrl *in) = 0;
+
+    virtual u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port) = 0;
+
+    virtual u32 Close(caDeviceHandle *port) = 0; 
+
+    virtual u32 Write(caDeviceHandle *port)  = 0; 
+
+    virtual u32 Read(caDeviceHandle *port)  = 0; 
+
+    virtual u32 Flush(caDeviceHandle *port) = 0; 
+
+    virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0; 
+
+    virtual u32 GetOpenFlag(void) = 0; 
+
     // METHOD LAUNCHED BY SVC FROM USER MODE
+};
+
+class caHalDeviceRules {
+public:
+    static u32 Open(IDevice *dev, caIDeviceConfigure * setup, caDeviceHandle *port, u32 guid);
+    static u32 Close(IDevice *dev, caDeviceHandle *port, u32 guid);
+    static u32 Write(IDevice *dev, caDeviceHandle *port, u32 guid);
+    static u32 Read(IDevice *dev, caDeviceHandle *port, u32 guid);
+    static u32 IoCtrl(IDevice *dev, caDeviceHandle *port, caIDeviceCtrl *inp, u32 guid);
+    static u32 IoctlReq(IDevice *dev, ioCtrlFunction request, u32 *p1, u32 *p2);
+    static u32 Flush(IDevice *dev, caDeviceHandle *port, u32 guid);
+    static bool IsValidHandle(u32 handle, u32 mask);
+    static u32 isOpen(IDevice *device);
 };
 
 typedef enum tag_device_error {
@@ -156,6 +147,8 @@ typedef enum tag_device_error {
     error_pipe_port_not_guest,
     error_pipe_invalid_descriptor,
     error_invalid_null_port,
+    error_invalid_null_buffer_port,
+    error_invalid_null_device,
     error_invalid_handle_port,
     error_device_not_opened,
     error_read_less_data,
@@ -170,21 +163,12 @@ typedef enum tag_device_error {
     error_signal_already_set,
     error_log_already_set,
     error_log_not_set,
-    error_log_empthy
+    error_log_empthy,
+    error_stream_no_good,
+    error_hal_configure
 } deviceError;
 
-class caDevice {
-private:
-    static ioCtrlRequest GetIoCtrlRequest(const char * name);
-    static ioCtrlRequest GetIoCtrlRequest(u32 handle);
-public:
-    static deviceError Open(const char * device, caIDeviceConfigure & in, caDevicePort & out);
-    static deviceError Close(caDevicePort & port);
-    static deviceError Write(caDevicePort & port);
-    static deviceError Read(caDevicePort & port);
-    static deviceError IoCtrl(caDevicePort & port, caIDeviceCtrl &in);
-    static bool IsValidHandle(caDevicePort & port, ioCtrlRequest & req);
-};
+
 
 
 

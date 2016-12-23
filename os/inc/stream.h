@@ -24,29 +24,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Check GCC
 
-#if __x86_64__ 
-#define _IS_64_ 1
-#define _IS_32_ 0
-#else
-#define _IS_64_ 0
-#define _IS_32_ 1
-#endif
 
-#if _IS_64_
-
-inline u32 ptr_to_uint(void *p) {
-    long long int v64 = (long long int) (p);
-    u32 v = (u32) (v64 & 0xffffffff);
-    return v;
-}
-#endif        
-
-
-#if _IS_32_
-#define ptr_to_uint(PTR)  ((u32)(PTR))
-#endif        
-
-// CSTR simple and effcient string
+// CSTR simple and quick string
 
 struct caString {
     const s8* str;
@@ -562,27 +541,28 @@ public:
 
 
     //TO DO REMOVE IT ! to -> caDevicePort operator << (caStringStream...)
-
-    caStringStream<T> & operator<<(caDevicePort & port) {
-        if (port.IsValidHandle()) {
-            //Write Out + Clear Stream;
-            deviceError res;
-            port.wrBuff = (u8 *)this->Str();
-            port.wrSize = this->Size();
-            port.writed = 0;
-            res = caDevice::Write(port);
-            if (res == deviceError::no_error) {
-                this->Clear();
+    /*
+        caStringStream<T> & operator<<(caDevicePort & port) {
+            if (port.IsValidHandle()) {
+                //Write Out + Clear Stream;
+                deviceError res;
+                port.wrBuff = (u8 *)this->Str();
+                port.wrSize = this->Size();
+                port.writed = 0;
+                res = caDevice::Write(port);
+                if (res == deviceError::no_error) {
+                    this->Clear();
+                }
             }
+            return (*this);
         }
-        return (*this);
-    }
 
-    caDevicePort & Endl(caDevicePort &t) {
-        (*this) << caEnd::endl;
-        Stopper();
-        return t;
-    }
+        caDevicePort & Endl(caDevicePort &t) {
+            (*this) << caEnd::endl;
+            Stopper();
+            return t;
+        }
+     */
 
 };
 

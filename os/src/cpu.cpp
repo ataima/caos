@@ -17,11 +17,11 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
-#include "config.h"
+
+
 #include "interrupt.h"
 #include "miniuart.h"
 #include "cpu.h"

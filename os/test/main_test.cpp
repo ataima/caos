@@ -1,7 +1,4 @@
-#include "config.h"
-#include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+#include "hal.h"
 #include "auxmain.h"
 #include "gpio.h"
 #include "miniuart.h"

@@ -1,4 +1,5 @@
-#!/bin/sh  -x
+#!/bin/sh 
+
 VERSION=$(ls  $HOME/baremetal  | grep gcc-arm-none-eabi- | sed -e 's/gcc-arm-none-eabi-*//g')
 CROSSGCC=$HOME/baremetal/gcc-arm-none-eabi-$VERSION
 

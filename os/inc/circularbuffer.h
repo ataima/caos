@@ -34,7 +34,7 @@ protected:
         bool res = false;
         writed = 0;
         s_t i = Available();
-        s_t request=requested;
+        s_t request = requested;
         if (request > i)
             request = i;
         for (i = 0; i < request; i++) {
@@ -51,7 +51,7 @@ protected:
         bool res = false;
         removed = 0;
         s_t i = Size();
-        s_t request=requested;
+        s_t request = requested;
         if (request > i)
             request = i;
         for (i = 0; i < request; i++) {
@@ -164,10 +164,10 @@ public:
         start = stop = 0;
     }
 
-    inline T * GetBase(void){
+    inline T * GetBase(void) {
         return cBuff;
     }
-    
+
 };
 
 typedef caCircularBuffer<s8> caLogStream;

@@ -1,4 +1,5 @@
 #include "config.h"
+#include "caos_c_types.h"
 #include "test.h"
 
 #if TEST_TOKENIZE_SSTREAM    && TEST 
@@ -18,7 +19,7 @@ static void test_01(u32 & success, u32 &failed) {
     caTokenizeSStream<s8> iss;
     caStringStream<s8> ss;
     ss.Init(buffout, 1024);
-    iss.Init(buff8, 1024,0);
+    iss.Init(buff8, 1024, 0);
     if (iss.Size() == 0) {
         success++;
     } else {
@@ -106,7 +107,7 @@ static void test_02(u32 & success, u32 &failed) {
         Dbg::Put((const char *) ss.Str());
     }
     TokenString<s8> res;
-    iss >> res;    
+    iss >> res;
     u32 i = caMemAux::StrNCmp(res.ptr, "pippo", 5);
     if (i == 0) {
         success++;

@@ -17,16 +17,18 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "auxmain.h"
 #include "gpio.h"
 #include "miniuart.h"
 #include "interrupt.h"
 #include "sysirqctrl.h"
 #include "cpu.h"
+#include "comdevice.h"
+#include "systimer.h"
+
 
 
 
@@ -62,7 +64,6 @@ u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
             break;
         default: mu->baud = RATE_DIV(vel);
     }
-    Enable(1, 1);
     return TRUE;
 }
 
@@ -75,7 +76,8 @@ u32 caMiniUart::Stop(void) {
     return TRUE;
 }
 
-u32 caMiniUart::Dump(caStringStream<s8> & ss) {
+u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {
+    caStringStream<s8> & ss = *ptr_ss;
     u32 res = deviceError::no_error;
     system_aux_mini_uart(mu);
     ss << caStringFormat::hex;
@@ -96,6 +98,29 @@ u32 caMiniUart::Dump(caStringStream<s8> & ss) {
         res = deviceError::error_generic_fail_device;
     return res;
 }
+
+u32 caMiniUart::Configure(caIDeviceConfigure * in) {
+    u32 res = deviceError::error_hal_configure;
+    if (in) {
+        caComDeviceConfigure *setup = static_cast<caComDeviceConfigure *> (in);
+        if (caMiniUart::Init(setup->speed, setup->stop, setup->parity, setup->data)) {
+            caMiniUart::ClearFifos();
+            caMiniUart::Enable(0, 0);
+            caMiniUart::Enable(1, 1);
+            res = deviceError::no_error;
+        }
+    }
+    return res;
+}
+
+u32 caMiniUart::EnableInt(void) {
+    u32 res = 0;
+    if (caMiniUart::EnableIrqRx() != 0 &&
+            caIrqCtrl::EnableIrqAux())
+        res = 1;
+    return res;
+}
+
 
 
 #endif

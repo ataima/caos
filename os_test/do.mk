@@ -73,13 +73,40 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 
 
 
-.PHONY:  all clean info dwload qemu asm distclean prepare
+.PHONY:  all clean info dwload qemu asm distclean prepare unprepare
 
 prepare:
+	@ln ../os/inc/caos_c_types.h inc/caos_c_types.h
+	@ln ../os/inc/hal.h inc/hal.h
+	@ln ../os/inc/memaux.h inc/memaux.h	
+	@ln ../os/inc/idevice.h inc/idevice.h
+	@ln ../os/inc/syslog.h inc/syslog.h
+	@ln ../os/inc/memory.h inc/memory.h
 	@ln ../os/src/memaux.cpp src/memaux.cpp
+	@ln ../os/src/idevice.cpp src/idevice.cpp
+	@ln ../os/src/halcomdevice.cpp src/halcomdevice.cpp
+	@ln ../os/src/syslog.cpp src/syslog.cpp
+	@ln ../os/src/memory.cpp src/memory.cpp
+
+
+unprepare:
+	@rm -f inc/caos_c_types.h
+	@rm -f inc/hal.h
+	@rm -f inc/memaux.h
+	@rm -f inc/idevice.h
+	@rm -f inc/syslog.h
+	@rm -f inc/memory.h
+	@rm -f src/memaux.cpp
+	@rm -f src/idevice.cpp
+	@rm -f src/halcomdevice.cpp
+	@rm -f src/syslog.cpp
+	@rm -f src/memory.cpp
+
+	
 	
 
-distclean: clean 
+
+distclean: clean unprepare prepare 	
 	@rm -rf $(BUILDIR)/$(DEPEND)
 	@rm -rf $(BUILDIR)
 

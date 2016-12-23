@@ -20,11 +20,11 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#include "hal.h"
 #include "circularbuffer.h"
 
 
-#define BLOCKSIZE sizeof(blockMem)
+#define BLOCKSIZE ((u32)(sizeof(caMemory::blockMem)))
 #define MIN_SLICE 256-BLOCKSIZE  /* min alloC SIZE */
 
 class caMemory {
@@ -37,12 +37,18 @@ private:
         busy_lbl = 0xa55a8420,
     } statusBlock;
 
+public: 
     typedef struct tag_block_mem {
         tag_block_mem* addr; // this block
         tag_block_mem* prev; // this block
         tag_block_mem* next; // this block
         u32 size; // size of block        
         statusBlock status;
+// TO DO TO CHECK MEMORY LEACKS        
+#if CONFIG_CHK_MEMORY_ALLOC
+        s8 filename[64];
+        u32 line;
+#endif        
     } blockMem;
 
 
@@ -75,7 +81,7 @@ public:
 
     static u32 Free(void * p, u32 *size = NULL);
 
-    static void DumpAvail(void);
+    static s8* DumpAvail(s8* buff, s_t size);
 
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 
@@ -179,16 +185,16 @@ private:
     static caMemDeviceDescriptor * FindDescriptor(caMemDeviceConfigure* setup);
 
     static bool IsValidHandle(u32 handle);
-    static u32 Resize(caDevicePort *port, u32 size);
-    static u32 Reset(caDevicePort *port);
-    static u32 Dump(caDevicePort *port, caStringStream<s8> *ss);
+    static u32 Resize(caDeviceHandle *port, u32 size);
+    static u32 Reset(caDeviceHandle *port);
+    static u32 Dump(caDeviceHandle *port, caStringStream<s8> *ss);
     static caMemDeviceDescriptor *GetDescriptor(u32 handle);
 public:
-    static u32 Open(caMemDeviceConfigure *in, caDevicePort *out);
-    static u32 Close(caDevicePort *port);
-    static u32 Write(caDevicePort *port);
-    static u32 Read(caDevicePort *port);
-    static u32 IoCtrl(caDevicePort *port, caMemDeviceCtrl *in);
+    static u32 Open(caIDeviceConfigure * in, caDeviceHandle *out);
+    static u32 Close(caDeviceHandle *port);
+    static u32 Write(caDeviceHandle *port);
+    static u32 Read(caDeviceHandle *port);
+    static u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 };
 

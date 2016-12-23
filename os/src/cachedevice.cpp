@@ -17,12 +17,12 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
 #if CACHE_DEVICE
 
-#include "idevice.h"
-#include "stream.h"
+
 #include "interrupt.h"
 #include "systimer.h"
 #include "cache.h"
@@ -42,16 +42,16 @@ bool caCacheDevice::IsValidHandle(u32 handle) {
     return res;
 }
 
-u32 caCacheDevice::Open(caCacheDeviceConfigure *setup,
-        caDevicePort *port) {
+u32 caCacheDevice::Open(caIDeviceConfigure *setup,
+        caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (setup != NULL) {
         isOpen++;
         if (port != NULL) {
-            caMemAux::MemSet((u32*) port, 0,sizeof (caDevicePort) / sizeof (u32));
+            caMemAux::MemSet((u32*) port, 0, sizeof (caDeviceHandle) / sizeof (u32));
             port->handle = ++guid;
-            port->status = caDevicePort::statusPort::Open;
+            port->status = caDeviceHandle::statusHandle::Open;
             port->tStart = caSysTimer::GetCount();
             port->tLast = port->tStart;
             port->tStop = 0;
@@ -64,7 +64,7 @@ u32 caCacheDevice::Open(caCacheDeviceConfigure *setup,
     return res;
 }
 
-u32 caCacheDevice::Close(caDevicePort *port) {
+u32 caCacheDevice::Close(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -77,7 +77,7 @@ u32 caCacheDevice::Close(caDevicePort *port) {
         res = deviceError::error_invalid_handle_port;
     } else {
         isOpen--;
-        port->status = caDevicePort::statusPort::Close;
+        port->status = caDeviceHandle::statusHandle::Close;
         port->tStop = caSysTimer::GetCount();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
@@ -87,7 +87,7 @@ u32 caCacheDevice::Close(caDevicePort *port) {
     return res;
 }
 
-u32 caCacheDevice::Write(caDevicePort *port) {
+u32 caCacheDevice::Write(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -117,7 +117,7 @@ u32 caCacheDevice::Write(caDevicePort *port) {
     return res;
 }
 
-u32 caCacheDevice::Read(caDevicePort *port) {
+u32 caCacheDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -147,12 +147,15 @@ u32 caCacheDevice::Read(caDevicePort *port) {
 
 }
 
-u32 caCacheDevice::IoCtrl(caDevicePort *port,
-        caCacheDeviceCtrl *in) {
+u32 caCacheDevice::IoCtrl(caDeviceHandle *port,
+        caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
+    } else
+        if (inp == NULL) {
+        res = deviceError::error_device_config_param;
     } else
         if (isOpen == 0) {
         res = deviceError::error_device_not_opened;
@@ -160,6 +163,7 @@ u32 caCacheDevice::IoCtrl(caDevicePort *port,
         if (!IsValidHandle(port->handle)) {
         res = deviceError::error_invalid_handle_port;
     } else {
+        caCacheDeviceCtrl * in = static_cast<caCacheDeviceCtrl *> (inp);
         switch (in->command) {
             case caCacheDeviceCtrl::IoCtrlDirect::cacheInvalidate:
                 break;
@@ -183,19 +187,19 @@ u32 caCacheDevice::IoctlReq(ioCtrlFunction request,
     //TIN();
     switch (request) {
         case ioCtrlFunction::caOpenDevice:
-            res = Open((caCacheDeviceConfigure *) p1, (caDevicePort *) p2);
+            res = Open((caIDeviceConfigure *) p1, (caDeviceHandle *) p2);
             break;
         case ioCtrlFunction::caCloseDevice:
-            res = Close((caDevicePort *) p1);
+            res = Close((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caWriteDevice:
-            res = Write((caDevicePort *) p1);
+            res = Write((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caReadDevice:
-            res = Read((caDevicePort *) p1);
+            res = Read((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDevicePort *) p1, (caCacheDeviceCtrl *) p2);
+            res = IoCtrl((caDeviceHandle *) p1, (caCacheDeviceCtrl *) p2);
             break;
         default:
             break;

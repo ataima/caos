@@ -16,15 +16,11 @@
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
-
-#include "config.h"
-#include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
-#include "memaux.h"
 #include "syslog.h"
-#include "circularbuffer.h"
+#include "memaux.h"
 #include "memory.h"
+
+
 
 #define a1mb (1024*1024)
 

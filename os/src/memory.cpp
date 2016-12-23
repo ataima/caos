@@ -17,14 +17,11 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
-#include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
-#include "interrupt.h"
-#include "miniuart.h"
+#include "hal.h"
+#include "kdebug.h"
+
+
 #include "memory.h"
-#include "softreq.h"
 
 
 extern u8 __heap_base__[];
@@ -36,8 +33,8 @@ u32 caMemory::end_mem;
 u32 caMemory::avail_mem;
 
 void caMemory::Init(void) {
-    start_mem = (u32) __heap_base__;
-    end_mem = (u32) __heap_end__;
+    start_mem = ptr_to_uint(__heap_base__);
+    end_mem = ptr_to_uint(__heap_end__);
     avail_mem = end_mem - start_mem;
     blockMem *start = reinterpret_cast<blockMem *> (start_mem);
     start->addr = start;
@@ -50,7 +47,7 @@ void caMemory::Init(void) {
     free->addr = free;
     avail_mem -= (2 * BLOCKSIZE);
     free->size = avail_mem;
-    free->next = reinterpret_cast<blockMem *> ((u32) (free->addr) + avail_mem);
+    free->next = reinterpret_cast<blockMem *> (ptr_to_uint(free->addr) + avail_mem);
     free->prev = start;
     free->status = statusBlock::free_lbl;
     blockMem *end = free->next;
@@ -95,9 +92,9 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
         if ((s->size - size) < MIN_SLICE) {
             s->status = statusBlock::busy_lbl;
             avail_mem -= size;
-            p = reinterpret_cast<void *> ((u32) (s->addr) + BLOCKSIZE);
+            p = reinterpret_cast<void *> (ptr_to_uint(s->addr) + BLOCKSIZE);
         } else {
-            blockMem *nb = reinterpret_cast<blockMem *> ((u32) (s->addr)+(s->size - size));
+            blockMem *nb = reinterpret_cast<blockMem *> (ptr_to_uint(s->addr)+(s->size - size));
             nb->prev = s;
             nb->next = s->next;
             nb->addr = nb;
@@ -109,7 +106,7 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
             }
             nb->status = statusBlock::busy_lbl;
             avail_mem -= size;
-            p = reinterpret_cast<void *> ((u32) (nb->addr) + BLOCKSIZE);
+            p = reinterpret_cast<void *> (ptr_to_uint(nb->addr) + BLOCKSIZE);
         }
     }
     return p;
@@ -164,8 +161,8 @@ u32 caMemory::Free(void * p, u32 *size) {
     u32 res = FALSE;
     if (size != NULL)
         *size = 0;
-    if ((u32) (p) > 0x8000) {
-        blockMem *s = reinterpret_cast<blockMem *> ((u32) (p) - BLOCKSIZE);
+    if (ptr_to_uint(p) > hal_ll_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_ll_mem.hll_mem_max_phy()) {
+        blockMem *s = reinterpret_cast<blockMem *> (ptr_to_uint(p) - BLOCKSIZE);
         if (s != NULL && s->status == statusBlock::busy_lbl) {
             // Ok
             s->status = statusBlock::free_lbl;
@@ -181,7 +178,7 @@ u32 caMemory::Free(void * p, u32 *size) {
 }
 
 void caMemory::Dump(caStringStream<s8> & ss, blockMem *start) {
-    ss << ":" << (u32) start->addr;
+    ss << ":" << ptr_to_uint(start->addr);
     ss << " Size :";
     caStringFiller p(' ', 12);
     ss << caStringFormat::dec;
@@ -233,23 +230,24 @@ u32 caMemory::List(s8 *buff, u32 size) {
     return ss.Size();
 }
 
-void caMemory::DumpAvail(void) {
-    Dbg::Put("> c.a.O.S. : [ Avaiable memory  ",
-            caMemory::GetAvailMemory(),
-            Dbg::kformat::dec, FALSE);
-    Dbg::Put(" bytes ]\r\n");
+s8* caMemory::DumpAvail(s8 * buff, s_t size) {
+    caStringStream<s8> ss;
+    ss.Init(buff, size);
+    ss << "> c.a.O.S. : [ Avaiable memory  " <<
+            caMemory::GetAvailMemory() << " bytes ]\r\n";
+    return buff;
 }
 
 u32 caMemory::Dump(dumpAddrReq *req) {
     caStringStream<s8> ss;
     if (req != NULL) {
-        u32 i, u, *ptr = (u32*) req->addr;
+        u32 i, u, *ptr = static_cast<u32 *> (uint_to_ptr(req->addr));
         ss.Init(req->buffo, req->size);
         ss << " --- MEMORY DUMP ---\r\n";
         ss << caStringFormat::hex;
         for (i = 0; i < 16; i++) {
             if (!ss.Good())break;
-            ss << (u32) ptr << " - ";
+            ss << ptr_to_uint(ptr) << " - ";
             for (u = 0; u < 4; u++) {
                 if (!ss.Good())break;
                 ss << *ptr++ << "  ";
@@ -267,13 +265,13 @@ u32 caMemory::Ascii(dumpAddrReq *req) {
     caStringStream<s8> ss;
     if (req != NULL) {
         u32 i, u;
-        s8 *ptr = (s8*) req->addr;
+        s8 *ptr = static_cast<s8 *> (uint_to_ptr(req->addr));
         ss.Init(req->buffo, req->size);
         ss << " --- MEMORY ASCII DUMP ---\r\n";
         ss << caStringFormat::hex;
         for (i = 0; i < 32; i++) {
             if (!ss.Good())break;
-            ss << (u32) ptr << " - ";
+            ss << ptr_to_uint(ptr) << " - ";
             for (u = 0; u < 8; u++) {
                 if (!ss.Good())break;
                 u32 ch = (u32) * ptr++;
@@ -297,14 +295,14 @@ u32 caMemory::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
     u32 res = FALSE;
     switch (request) {
         case caMemoryAlloc:
-            *p2 = (u32) caMemory::Allocate(*p1);
+            *p2 = ptr_to_uint(caMemory::Allocate(*p1));
             res = (*p2 != NULL);
             break;
         case caMemoryFree:
             res = caMemory::Free((void *) p1, p2);
             break;
         case caMemoryListAll:
-            res = caMemory::List((s8*) p1, (u32) p2);
+            res = caMemory::List(reinterpret_cast<s8*> (p1), ptr_to_uint(p2));
             break;
         case caMemoryDump:
         {

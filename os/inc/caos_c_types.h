@@ -36,14 +36,76 @@ typedef u32 s_t;
 #define FALSE   0
 
 #ifndef NULL
-    #define NULL   ((0))
+#define NULL   ((0))
 #endif
+
+
+
+#if __x86_64__ 
+#define _IS_64_ 1
+#define _IS_32_ 0
+#endif
+
+#if __x86__ 
+#define _IS_64_ 0
+#define _IS_32_ 1
+#endif
+
+
+#if __aarch64__ 
+#define _IS_64_ 1
+#define _IS_32_ 0
+#endif
+
+#if __arm__ 
+#define _IS_64_ 0
+#define _IS_32_ 1
+#endif
+
+
+
+
+#if _IS_64_
+
+inline u32 ptr_to_uint(void *p) {
+    long long int v64 = (long long int) (p);
+    u32 v = (u32) (v64 & 0xffffffff);
+    return v;
+}
+
+inline void * uint_to_ptr(u32 v) {
+    long long int v64 = (long long int) (v);
+    return (void *) v64;
+}
+#endif        
+
+
+#if _IS_32_
+
+inline u32 ptr_to_uint(void *p) {
+    return (u32) (p);
+}
+
+inline void * uint_to_ptr(u32 v) {
+    return (void *) v;
+}
+#endif      
+
+
+
+#if !_IS_64_ && !_IS_32_
+#error "You must define platform 32/64 bit on caos_c_types.h"
+#endif 
+
+
+
+
 /* READ ONLY !*/
 #define _R_  
 /* WRITE ONLY !*/
 #define _W_   
 /* READ AND WRITE  !*/
-#define _RW_   
+#define _RW_  
 
 
 #endif

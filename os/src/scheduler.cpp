@@ -17,10 +17,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "atomiclock.h"
 #include "interrupt.h"
 #include "miniuart.h"
@@ -30,8 +30,8 @@
 #include "thread.h"
 #include "cpu.h"
 #include "scheduler.h"
-#include "softreq.h"
 #include "sysirqctrl.h"
+#include "softreq.h"
 
 extern u32 __heap_base__;
 extern u32 __svc_stack_pos__;
@@ -146,7 +146,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
                 if (table.Size() == i) {
                     break; // no more context 
                 } else {
-                    if( table.At(tmp,i) && (tmp != NULL) )
+                    if (table.At(tmp, i) && (tmp != NULL))
                         tmp->index = i;
                     i--; // re evaluate at index i
                     continue;
@@ -196,7 +196,7 @@ void caNextTaskManager::WakeUp(u32 thid) {
     thid -= (BASE_HANDLE + 1);
     if (thid < table.Size()) {
         caThreadContext * tmp = NULL;
-        if( table.At(tmp,thid) && tmp != NULL && tmp->status == caThreadStatus::thSleep)
+        if (table.At(tmp, thid) && tmp != NULL && tmp->status == caThreadStatus::thSleep)
             tmp->status = caThreadStatus::thRun;
     }
 }
@@ -207,7 +207,7 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
     thid -= (BASE_HANDLE + 1);
     if (thid < table.Size()) {
         caThreadContext * tmp = NULL;
-        table.At(tmp,thid);
+        table.At(tmp, thid);
         while (caIrqCtrl::LockSwitchContext() == false) {
         };
         if (tmp != NULL && tmp->status == caThreadStatus::thRun) {
@@ -309,7 +309,7 @@ u32 Sleep(u32 ms) {
     u32 res = 0;
     //SchedulerIoCtrlSleep(&ms, (u32*) caScheduler::GetCurrentTaskId(), &res);
     // task was blocked here...
-    caScheduler::SetSleepMode(ms,caScheduler::GetCurrentTaskId());
+    caScheduler::SetSleepMode(ms, caScheduler::GetCurrentTaskId());
     if (res == deviceError::okey) {
         caScheduler::SwitchContext();
     }
@@ -444,3 +444,6 @@ u32 caScheduler::GetCurrentTaskId(void) {
         return current_task->index;
     }
 }
+
+
+

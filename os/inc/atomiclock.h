@@ -29,6 +29,7 @@ class caAtomicLock {
     static inline u32 AtomicSwap(u32 *ptr, u32 v_old, u32 v_new) {
         u32 oldval;
         u32 res;
+#if __arm__ 
 #if HAVE_ATOMIC_LOCK
         asm volatile("pldw %a0"::"p" (ptr));
 
@@ -43,10 +44,16 @@ class caAtomicLock {
                     : "cc");
         } while (res);
 #else
-        *ptr=v_new;
-        res=oldval=v_old;
+        *ptr = v_new;
+        res = oldval = v_old;
         return res;
-#endif
+#endif  
+#else        
+        *ptr = v_new;
+        res = oldval = v_old;
+        return res;
+#endif // ARM
+
         return oldval;
     }
 
@@ -58,21 +65,11 @@ public:
 
     inline u32 Lock(void) {
         u32 register res = AtomicSwap(&key, 0, LOCK_V);
-#if DEBUG_ATOMIC_LOCK         
-        if (res != 0) {
-            Dbg::Put("LOCK fail! = ", key);
-        }
-#endif        
         return res == 0;
     }
 
     inline u32 UnLock(void) {
         u32 register res = AtomicSwap(&key, LOCK_V, 0);
-#if DEBUG_ATOMIC_LOCK         
-        if (res != LOCK_V) {
-            Dbg::Put("UNLOCK fail! = ", key);
-        }
-#endif        
         return res == LOCK_V;
     }
 

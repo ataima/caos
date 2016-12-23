@@ -17,10 +17,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "miniuart.h"
 #include "sysirqctrl.h"
 #include "cpu.h"
@@ -140,6 +140,7 @@ void caLowLevelDebug::Dec(s32 d) {
 void caLowLevelDebug::Welcome(void) {
     caIrqCtrl::Init(); // start all fiq/irq disabled 
     caMiniUart::Init(115200, 8, 1, 8);
+    caMiniUart::Enable(1, 1);
     Msg("> c.a.O.S. : [ ");
     caArmCpu::DumpCPSR();
     Msg(" ]\r\n");

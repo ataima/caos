@@ -21,23 +21,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "bcm2836.h"
+#include "hal.h"
 #include "circularbuffer.h"
-#include "stream.h"
 #include "atomiclock.h"
 
 
 
 #ifdef HAVE_SYS_LOG
 
-
-
 class caSysLog {
     caLogStream mn_CBuffer;
     s8 *mn_Base;
     u32 enable;
 public:
-    u32 Init(u32 total_size=0);
+    u32 Init(u32 total_size = 0);
     void doLog(caStringStream<s8> & ss);
     void getLog(caStringStream<s8> & ss);
     u32 Destroy();

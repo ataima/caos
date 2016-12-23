@@ -17,15 +17,13 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "interrupt.h"
 #include "miniuart.h"
 #include "console.h"
 #include "memaux.h"
-#include "softreq.h"
 #include "stream.h"
 #include "thread.h"
 #include "heaparray.h"
@@ -37,7 +35,7 @@
 #include "smp.h"
 #include "mmu.h"
 #include "memory.h"
-
+#include "caos.h"
 
 s8 caConsole::buffio[2048];
 pairCmd caConsole::commands[MAX_CONSOLE_COMMAND];
@@ -133,12 +131,13 @@ static const char * deviceMsgError[] = {
     "error_signal_already_set",
 };
 
-u32 caConsole::SyntaxError(caDevicePort &port, caTokenizeSStream <u8> & iss) {
+u32 caConsole::SyntaxError(caDeviceHandle &port, caTokenizeSStream <u8> & iss) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     ss << "ciao! : " << (const char *) iss.Str();
     iss.Dump(ss);
-    ss << " .. see help..." << ss.Endl(port);
+    ss << " .. see help..." << caEnd::endl;
+    caOS::Write(port, ss);
     return deviceError::error_generic_fail_device;
 }
 
@@ -159,35 +158,35 @@ void caConsole::Dump(u8 * buff, u32 readed, caStringStream<s8> &ss) {
     ss.Str();
 }
 
-void caConsole::Error(caDevicePort &port, caTokenizeSStream <u8> & iss, u32 errno) {
+void caConsole::Error(caDeviceHandle &port, caTokenizeSStream <u8> & iss, u32 errno) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     u32 idx = errno - 1000;
     ss << "Command ' " << (const char *) iss.Str() <<
             " ' return error n." << errno
-            << " ( " << deviceMsgError[idx] << " ) " << ss.Endl(port);
-    // to do errno -> to string
+            << " ( " << deviceMsgError[idx] << " ) " << caEnd::endl;
+    caOS::Write(port, ss);
 }
 
 ///////////////////////////////////////////// COMMANDS
 
-deviceError caConsole::Command_PS(caDevicePort &port,
+deviceError caConsole::Command_PS(caDeviceHandle &port,
         caTokenizeSStream <u8> & /*iss*/) {
     u32 res = 0;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     ss << " --- TASK ---\r\n";
     res = caScheduler::Dump(ss);
-    //SchedulerDump(buffio, sizeof (buffio), &res);
     if (res) {
         ss.Forward(res);
-        ss << ss.Endl(port);
-        return deviceError::no_error;
+        ss << caEnd::endl;
+        res = caOS::Write(port, ss);
+        return (deviceError) (res);
     }
     return deviceError::error_generic_fail_device;
 }
 
-deviceError caConsole::Command_HARDWARE(caDevicePort &port,
+deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,
         caTokenizeSStream <u8> & iss) {
     u32 res = deviceError::no_error;
     caStringStream<s8> ss;
@@ -199,26 +198,26 @@ deviceError caConsole::Command_HARDWARE(caDevicePort &port,
             caComDeviceCtrl req;
             req.command = caComDeviceCtrl::IoCtrlDirect::comListHardware;
             req.ss = &ss;
-            res = caDevice::IoCtrl(port, req);
+            res = caOS::IoCtrl(port, req);
             if (res == deviceError::no_error) {
-                ss << ss.Endl(port);
+                res = caOS::Write(port, ss);
             }
         }
 #if SYS_TIMER_DEVICE        
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
-            caSysTimerDeviceConfigure in;
-            caDevicePort portTimer;
-            res = caDevice::Open("SYSTIMER", in, portTimer);
+            caIDeviceConfigure in;
+            caDeviceHandle portTimer;
+            res = caOS::Open("SYSTIMER", in, portTimer);
             if (res == deviceError::no_error) {
                 caSysTimerDeviceCtrl req;
                 req.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware;
                 req.ss = &ss;
-                res = caDevice::IoCtrl(portTimer, req);
+                res = caOS::IoCtrl(portTimer, req);
                 if (res == deviceError::no_error) {
-                    ss << ss.Endl(port);
+                    res = caOS::Write(port, ss);
                 }
-                res = caDevice::Close(portTimer);
+                res = caOS::Close(portTimer);
             }
         }
 #endif        
@@ -228,7 +227,7 @@ deviceError caConsole::Command_HARDWARE(caDevicePort &port,
     return (deviceError) res;
 }
 
-deviceError caConsole::Command_READ_DEVICE(caDevicePort &port,
+deviceError caConsole::Command_READ_DEVICE(caDeviceHandle &port,
         caTokenizeSStream <u8> & iss) {
     u32 res = deviceError::no_error;
     caStringStream<s8> ss;
@@ -241,36 +240,36 @@ deviceError caConsole::Command_READ_DEVICE(caDevicePort &port,
             port.rdBuff = rdbuff;
             port.rdSize = 64;
             port.readed = 0;
-            res = caDevice::Read(port);
+            res = caOS::Read(port);
             if (res == deviceError::no_error) {
                 if (port.readed > 0) {
                     Dump(rdbuff, port.readed, ss);
                 } else {
                     ss << " No Data from " << opt.ptr << caEnd::endl;
                 }
-                ss << ss.Endl(port);
+                res = caOS::Write(port, ss);
             }
         }
 #if SYS_TIMER_DEVICE                
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
-            caSysTimerDeviceConfigure in;
-            caDevicePort portTimer;
-            res = caDevice::Open("SYSTIMER", in, portTimer);
+            caIDeviceConfigure in;
+            caDeviceHandle portTimer;
+            res = caOS::Open("SYSTIMER", in, portTimer);
             if (res == deviceError::no_error) {
                 portTimer.rdBuff = rdbuff;
                 portTimer.rdSize = 64;
                 portTimer.readed = 0;
-                res = caDevice::Read(portTimer);
+                res = caOS::Read(portTimer);
                 if (res == deviceError::no_error) {
                     if (portTimer.readed > 0) {
                         Dump(rdbuff, portTimer.readed, ss);
                     } else {
                         ss << " No Data from " << opt.ptr << caEnd::endl;
                     }
-                    ss << ss.Endl(port);
+                    caOS::Write(port, ss);
                 }
-                res = caDevice::Close(portTimer);
+                res = caOS::Close(portTimer);
             }
         }
 #endif        
@@ -280,7 +279,7 @@ deviceError caConsole::Command_READ_DEVICE(caDevicePort &port,
     return (deviceError) res;
 }
 
-deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
+deviceError caConsole::Command_WRITE_DEVICE(caDeviceHandle &port,
         caTokenizeSStream <u8> & iss) {
     u32 res = deviceError::no_error;
     caStringStream<s8> ss;
@@ -293,7 +292,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
                 port.wrBuff = iss.Position();
                 port.wrSize = iss.Remain();
                 port.writed = 0;
-                res = caDevice::Write(port);
+                res = caOS::Write(port);
             } else {
                 res = deviceError::error_read_less_data;
             }
@@ -301,9 +300,9 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
 #if SYS_TIMER_DEVICE             
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
-            caSysTimerDeviceConfigure in;
-            caDevicePort portTimer;
-            res = caDevice::Open("SYSTIMER", in, portTimer);
+            caIDeviceConfigure in;
+            caDeviceHandle portTimer;
+            res = caOS::Open("SYSTIMER", in, portTimer);
             if (res == deviceError::no_error) {
                 u32 day, min, hour, sec;
                 iss >> day;
@@ -318,8 +317,8 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
                 portTimer.wrBuff = (u8*) & st;
                 portTimer.wrSize = sizeof (sysTimerSet);
                 portTimer.writed = 0;
-                res = caDevice::Write(portTimer);
-                res = caDevice::Close(portTimer);
+                res = caOS::Write(portTimer);
+                res = caOS::Close(portTimer);
             }
         }
 #endif        
@@ -329,7 +328,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDevicePort &port,
     return (deviceError) res;
 }
 
-deviceError caConsole::Command_MEM(caDevicePort &port,
+deviceError caConsole::Command_MEM(caDeviceHandle &port,
         caTokenizeSStream <u8> & iss) {
     u32 res = deviceError::no_error;
     caStringStream<s8> ss;
@@ -338,11 +337,10 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
     iss>>opt;
     if (opt.size == 0 || caStrAux::StrNCmp((char *) opt.ptr, "list", 4) == 0) {
         //MemoryList(buffio, sizeof (buffio), &res);
-        res=caMemory::List(buffio, sizeof (buffio));
+        res = caMemory::List(buffio, sizeof (buffio));
         if (res) {
             ss.Forward(res);
-            ss << ss.Endl(port);
-            res = deviceError::no_error;
+            res = caOS::Write(port, ss);
         }
     } else
         if (caStrAux::StrNCmp((char *) opt.ptr, "dump", 4) == 0) {
@@ -352,11 +350,10 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
         if (iss.Good()) {
             iss >> req.addr;
             //MemoryDump(&req,&res);
-            res=caMemory::Dump(&req);
+            res = caMemory::Dump(&req);
             if (res) {
                 ss.Forward(res);
-                ss << ss.Endl(port);
-                res = deviceError::no_error;
+                res = caOS::Write(port, ss);
             }
         } else
             res = SyntaxError(port, iss);
@@ -368,11 +365,10 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
         if (iss.Good()) {
             iss >> req.addr;
             //MemoryAsciiDump(&req, &res);
-            res=caMemory::Ascii(&req);
+            res = caMemory::Ascii(&req);
             if (res) {
                 ss.Forward(res);
-                ss << ss.Endl(port);
-                res = deviceError::no_error;
+                res = caOS::Write(port, ss);
             }
         } else
             res = SyntaxError(port, iss);
@@ -381,7 +377,7 @@ deviceError caConsole::Command_MEM(caDevicePort &port,
     return (deviceError) res;
 }
 
-deviceError caConsole::Command_INFO(caDevicePort &port,
+deviceError caConsole::Command_INFO(caDeviceHandle &port,
         caTokenizeSStream <u8> & /*iss*/) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
@@ -390,11 +386,11 @@ deviceError caConsole::Command_INFO(caDevicePort &port,
     ss << "\t a. ->  Angelo" << caEnd::endl;
     ss << "\t O. ->  Operating" << caEnd::endl;
     ss << "\t S. ->  System" << caEnd::endl;
-    ss << "\t Contacts : coppi.angelo@virgilio.it, angelogkcop@hotmail.com" << ss.Endl(port);
-    return deviceError::no_error;
+    ss << "\t Contacts : coppi.angelo@virgilio.it, angelogkcop@hotmail.com" << caEnd::endl;
+    return caOS::Write(port, ss);
 }
 
-deviceError caConsole::Command_HELP(caDevicePort &port,
+deviceError caConsole::Command_HELP(caDeviceHandle &port,
         caTokenizeSStream <u8> & iss) {
     u32 u, i = 0;
     caStringStream<s8> ss;
@@ -424,17 +420,17 @@ deviceError caConsole::Command_HELP(caDevicePort &port,
             ss << caEnd::endl;
         }
     }
-    ss << ss.Endl(port);
-    return deviceError::no_error;
+    return caOS::Write(port, ss);
 }
 
 extern u32 stop_system_timer(void);
 extern "C" void jump_to(u32 address);
 
-deviceError caConsole::Command_QUIT(caDevicePort &port, caTokenizeSStream <u8> & /*iss*/) {
+deviceError caConsole::Command_QUIT(caDeviceHandle &port, caTokenizeSStream <u8> & /*iss*/) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
-    ss << " Shutdown system, and reload bootloader. bye bye" << ss.Endl(port);
+    ss << " Shutdown system, and reload bootloader. bye bye" << caEnd::endl;
+    caOS::Write(port, ss);
     stop_system_timer();
     caCache::Stop();
     caSMP::Disable();
@@ -448,14 +444,15 @@ deviceError caConsole::Command_QUIT(caDevicePort &port, caTokenizeSStream <u8> &
     return deviceError::no_error;
 }
 
-deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDevicePort &port) {
+deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &port) {
     u32 i;
     deviceError res = deviceError::no_error;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     ss << "[" << caSysTimer::GetDay() << ":" << caSysTimer::GetHour();
     ss << ":" << caSysTimer::GetMin() << ":" << caSysTimer::GetSec();
-    ss << ":" << caSysTimer::GetMsec() << "] : c.a.O.S >" << ss.Endl(port);
+    ss << ":" << caSysTimer::GetMsec() << "] : c.a.O.S >" << caEnd::endl;
+    res = caOS::Write(port, ss);
     TokenString<u8> tmp;
     iss>>tmp;
     if (iss.Good()) {

@@ -18,23 +18,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
-#include "interrupt.h"
 
 #include "interrupt.h"
-#include "softreq.h"
 
 
-       
+
+
 #if SYS_SOFT_REQ_ENABLED
-void caSoftRequest::DumpSvc(const char *name,const char *file, u32 line){
+
+void caSoftRequest::DumpSvc(const char *name, const char *file, u32 line) {
     Dbg::Put("SVC : > ");
     Dbg::Put(name);
     Dbg::Put(" < - ");
     Dbg::Put(file);
-    Dbg::Put(" : ",line,Dbg::dec,1);    
+    Dbg::Put(" : ", line, Dbg::dec, 1);
 }
 #endif

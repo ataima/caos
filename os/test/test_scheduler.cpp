@@ -1,4 +1,5 @@
 #include "config.h"
+#include "caos_c_types.h"
 #include "test.h"
 
 #if TEST_SCHEDULER    && TEST 
@@ -10,7 +11,6 @@
 #include "interrupt.h"
 #include "miniuart.h"
 #include "memory.h"
-#include "softreq.h"
 #include "memaux.h"
 #include "thread.h"
 #include "scheduler.h"

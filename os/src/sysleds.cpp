@@ -18,6 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"
+#include "caos_c_types.h"
 #include "bcm2836.h"
 #include "gpio.h"
 #include "sysleds.h"

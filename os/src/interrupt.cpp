@@ -17,14 +17,13 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "interrupt.h"
 #include "miniuart.h"
 #include "cpu.h"
-#include "softreq.h"
 #include "thread.h"
 #include "scheduler.h"
 
@@ -103,7 +102,7 @@ extern "C" {
         asm volatile ("LDMIA R0, {R0-R14}^"); //Load from PCB R0-R14
 
         asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
-        
+
         asm volatile ("ERET");
     }
 

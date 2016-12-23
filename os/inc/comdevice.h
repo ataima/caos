@@ -35,14 +35,14 @@ public:
     u32 data;
 
     void Dump(caStringStream<s8> & ss) {
-        caCSTR(cs_speed,    "SETUP SPEED  = ");
-        caCSTR(cs_stop,     "SETUP STOP   = ");
-        caCSTR(cs_parity,   "SETUP PARITY = ");
-        caCSTR(cs_data,     "SETUP DATA   = ");
-        ss << cs_speed   << speed << caEnd::endl;
-        ss << cs_stop    << stop << caEnd::endl;
-        ss << cs_parity  << parity << caEnd::endl;
-        ss << cs_data    << data << caEnd::endl;
+        caCSTR(cs_speed, "SETUP SPEED  = ");
+        caCSTR(cs_stop, "SETUP STOP   = ");
+        caCSTR(cs_parity, "SETUP PARITY = ");
+        caCSTR(cs_data, "SETUP DATA   = ");
+        ss << cs_speed << speed << caEnd::endl;
+        ss << cs_stop << stop << caEnd::endl;
+        ss << cs_parity << parity << caEnd::endl;
+        ss << cs_data << data << caEnd::endl;
         ss.Str();
     }
 
@@ -74,7 +74,8 @@ public:
     u32 st_tx;
 };
 
-class caComDevice {
+class caComDevice
+{
 private:
     static const u32 QUEUESIZE = 0x4000;
     static u32 guid;
@@ -88,15 +89,15 @@ private:
     static u8 TxBuffer[QUEUESIZE];
     static caAtomicLock RxLock;
     static caAtomicLock TxLock;
-    static u32 Flush(caDevicePort *port);
+    static u32 Flush(caDeviceHandle *port);
     static bool IsValidHandle(u32 handle);
     static caSysLog caLog;
 public:
-    static u32 Open(caComDeviceConfigure *in, caDevicePort *out);
-    static u32 Close(caDevicePort *port);
-    static u32 Write(caDevicePort *port);
-    static u32 Read(caDevicePort *port);
-    static u32 IoCtrl(caDevicePort *port, caComDeviceCtrl *in);
+    static u32 Open(caIDeviceConfigure * in, caDeviceHandle *out);
+    static u32 Close(caDeviceHandle *port);
+    static u32 Write(caDeviceHandle *port);
+    static u32 Read(caDeviceHandle *port);
+    static u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
     static void IrqService(void);
 };

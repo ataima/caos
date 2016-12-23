@@ -1,4 +1,5 @@
 #include "config.h"
+#include "caos_c_types.h"
 #include "test.h"
 
 #if TEST_CIRCULAR_BUFFER && TEST

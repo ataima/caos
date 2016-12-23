@@ -131,7 +131,9 @@ public:
         while (!mu->lsr.asBit.txempty);
     }
 
-    static u32 Dump(caStringStream<s8> & ss);
+    static u32 Dump(caStringStream<s8> * ss);
+    static u32 Configure(caIDeviceConfigure * in);
+    static u32 EnableInt(void);
 };
 
 #endif

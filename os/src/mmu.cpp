@@ -17,7 +17,8 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
 #include "cpu.h"
 #include "coprocessor.h"

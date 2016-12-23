@@ -19,8 +19,8 @@
 
 #include "CPPtester.h"
 #include "docMacro.h"
-#include "arm_c_types.h"
-#include "idevice.h"
+#include "hal.h"
+
 #include "heaparray.h"
 
 class caHeapArray_test_class
@@ -31,20 +31,21 @@ class caHeapArray_test_class
     CA_TEST(caHeapArray_test_class::test2, "init test");
     CA_TEST(caHeapArray_test_class::test3, "add test");
     CA_TEST_SUITE_END();
-    void setUp(void)    {
+
+    void setUp(void)
+    {
     }
     void test1(void);
     void test2(void);
     void test3(void);
 
-    void tearDown(void){
+    void tearDown(void)
+    {
     }
 
 };
 
 REGISTER_CLASS(caHeapArray_test_class);
-
-
 
 void caHeapArray_test_class::test1(void)
 {
@@ -52,7 +53,7 @@ void caHeapArray_test_class::test1(void)
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
-    _STOP();  
+    _STOP();
     caHeapArray<int> v;
     CA_ASSERT(v.Capacity() == 0);
     CA_ASSERT(v.Size() == 0);
@@ -62,15 +63,13 @@ void caHeapArray_test_class::test1(void)
     CA_ASSERT(v.Empty() == true);
 }
 
-
-
 void caHeapArray_test_class::test2(void)
 {
     _START();
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
-    _STOP();  
+    _STOP();
     caHeapArray<int> v;
     CA_ASSERT(v.Capacity() == 0);
     CA_ASSERT(v.Size() == 0);
@@ -88,14 +87,13 @@ void caHeapArray_test_class::test2(void)
     CA_ASSERT(v.Empty() == true);
 }
 
-
 void caHeapArray_test_class::test3(void)
 {
     _START();
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
-    _STOP();  
+    _STOP();
     caHeapArray<int> v;
     int buff[100];
     int u;
@@ -111,28 +109,28 @@ void caHeapArray_test_class::test3(void)
     CA_ASSERT(v.inqueue(30) == true);
     CA_ASSERT(v.inqueue(40) == true);
     CA_ASSERT(v.Size() == 4);
-    CA_ASSERT(v.At(u,0) == true);
-    CA_ASSERT(u==40);
+    CA_ASSERT(v.At(u, 0) == true);
+    CA_ASSERT(u == 40);
     CA_ASSERT(v.outqueue(u) == 3);
-    CA_ASSERT(u==40);
-    
+    CA_ASSERT(u == 40);
+
     CA_ASSERT(v.Size() == 3);
-    CA_ASSERT(v.At(u,0) == true);
-    CA_ASSERT(u==30);
+    CA_ASSERT(v.At(u, 0) == true);
+    CA_ASSERT(u == 30);
     CA_ASSERT(v.outqueue(u) == 2);
-    CA_ASSERT(u==30);
-    
+    CA_ASSERT(u == 30);
+
     CA_ASSERT(v.Size() == 2);
-    CA_ASSERT(v.At(u,0) == true);
-    CA_ASSERT(u==20);
+    CA_ASSERT(v.At(u, 0) == true);
+    CA_ASSERT(u == 20);
     CA_ASSERT(v.outqueue(u) == 1);
-    CA_ASSERT(u==20);
-    
+    CA_ASSERT(u == 20);
+
     CA_ASSERT(v.Size() == 1);
-    CA_ASSERT(v.At(u,0) == true);
-    CA_ASSERT(u==10);
+    CA_ASSERT(v.At(u, 0) == true);
+    CA_ASSERT(u == 10);
     CA_ASSERT(v.outqueue(u) == 0);
-    CA_ASSERT(u==10);
-    
-    CA_ASSERT(v.Size() == 0);    
+    CA_ASSERT(u == 10);
+
+    CA_ASSERT(v.Size() == 0);
 }

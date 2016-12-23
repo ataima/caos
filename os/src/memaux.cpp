@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"
-#include "arm_c_types.h"
+#include "caos_c_types.h"
 #include "memaux.h"
 
 void* caMemAux::MemCpy(u32 *dest, u32 *src, u32 size) {
@@ -108,7 +108,7 @@ u32 caStrAux::StrNCmp(const s8 *s1, const s8 *s2, u32 max) {
 }
 
 u32 caStrAux::StrCmp(const s8 *s1, const s8 *s2) {
-    while (*s1 != '\0' && (*s1 == *s2 )) {
+    while (*s1 != '\0' && (*s1 == *s2)) {
         s1++;
         s2++;
     }

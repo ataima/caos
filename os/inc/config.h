@@ -31,7 +31,7 @@
 //LEDS 
 #define HAVE_LEDS               1
 // ATOMIC LOCK
-#define  HAVE_ATOMIC_LOCK       0
+#define  HAVE_ATOMIC_LOCK       1
 // ARM AP804 SYSTEM TIMER
 #define HAVE_AP804_SYS_TIMER    1
 // SYSTEM MEROY LOG
@@ -48,8 +48,16 @@
 #define SYS_SOFT_REQ_DEBUG  1
 
 ///////////////////////////// INCLUDE SEXCLUDE DEVICE FROM KERNEL
-
+// COMS
 #define COM1_DEVICE             1    
+#define COM2_DEVICE             0    
+#define COM3_DEVICE             0    
+#define COM4_DEVICE             0    
+#define COM5_DEVICE             0    
+#define COM6_DEVICE             0    
+#define COM7_DEVICE             0    
+#define COM8_DEVICE             0    
+//
 #define MEM_PIPE_DEVICE         1    
 #define SYS_TIMER_DEVICE        1
 #define CACHE_DEVICE            1
@@ -64,8 +72,10 @@
 #define DEBUG_IOCTL_SVC_REQ     1
 // DUMP IO COM1 DEVICE
 #define DEBUG_ALLOC_MEM         0
-// DUMP atomicLOck
-#define DEBUG_ATOMIC_LOCK       0
+
+// to check memory list 
+#define CONFIG_CHK_MEMORY_ALLOC  0
+
 
 // TO EXECUTE TESTS
 #define TEST                    0

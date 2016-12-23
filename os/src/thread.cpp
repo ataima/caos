@@ -17,15 +17,14 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
+
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
+
 #include "config.h"
 #include "interrupt.h"
 #include "atomiclock.h"
 #include "miniuart.h"
-#include "softreq.h"
 #include "thread.h"
 #include "cpu.h"
 #include "systimer.h"
@@ -43,16 +42,14 @@
 
 u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriority p, thFunc func, u32 par1, u32 par2, u32 stack) {
     caThreadContext * ctx = NULL;
-    u32 pst, a_stk;
+    u32 pst, a_stk, base;
     u32 header_mem_alloc = caMemory::GetHeaderBlock();
     if (stack <= TH_MIN_STACK_BLK)
         a_stk = TH_MIN_STACK_BLK - header_mem_alloc;
     else
         a_stk = (((stack - header_mem_alloc) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
-    u32 res, base;
-    //MemoryAlloc(&a_stk, &base, &res);
-    base=(u32)(caMemory::Allocate(a_stk));
-    if (base!=0) {
+    base = (u32) (caMemory::Allocate(a_stk));
+    if (base != 0) {
         a_stk += base;
         a_stk -= sizeof (caThreadContext);
         ctx = static_cast<caThreadContext *> ((void *) a_stk);
@@ -61,7 +58,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->status = caThreadStatus::thInit;
         ctx->priority = p;
         ctx->mode = mode;
-        caMemAux::MemSet((u32 *) ctx->pcb,0,32);
+        caMemAux::MemSet((u32 *) ctx->pcb, 0, 32);
         ctx->pcb[0] = mode; //SPSR
         ctx->pcb[1] = (u32) caThread::LaunchThread;
         ctx->pcb[2] = (u32) func; //r0

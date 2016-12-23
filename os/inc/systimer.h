@@ -38,25 +38,25 @@ typedef struct tag_sys_timer_status {
     volatile u32 mn_FreeRunning;
 
     void Dump(caStringStream<s8> & ss) {
-        caCSTR(cs_clock,    "CLOCK HZ  =");
-        caCSTR(cs_irq,      "IRQ   HZ  =");
-        caCSTR(cs_milli,    "MILLISEC  =");
-        caCSTR(cs_sec,      "SECOND    =");
-        caCSTR(cs_min,      "MINUTE    =");
-        caCSTR(cs_hour,     "MINUTE    =");
-        caCSTR(cs_day ,     "DAY       =");
-        caCSTR(cs_tot ,     "IRQ TOTAL =");
-        caCSTR(cs_free ,    "FREE COUNT=");
+        caCSTR(cs_clock, "CLOCK HZ  =");
+        caCSTR(cs_irq, "IRQ   HZ  =");
+        caCSTR(cs_milli, "MILLISEC  =");
+        caCSTR(cs_sec, "SECOND    =");
+        caCSTR(cs_min, "MINUTE    =");
+        caCSTR(cs_hour, "MINUTE    =");
+        caCSTR(cs_day, "DAY       =");
+        caCSTR(cs_tot, "IRQ TOTAL =");
+        caCSTR(cs_free, "FREE COUNT=");
         ss << caStringFormat::dec;
         ss << cs_clock << mn_ClkHz << caEnd::endl;
-        ss << cs_irq   << mn_IrqHz << caEnd::endl;
+        ss << cs_irq << mn_IrqHz << caEnd::endl;
         ss << cs_milli << mn_Msec << caEnd::endl;
-        ss << cs_sec   << mn_Sec << caEnd::endl;
-        ss << cs_min   << mn_Min << caEnd::endl;
-        ss << cs_hour  << mn_Hour << caEnd::endl;
-        ss << cs_day   << mn_Day << caEnd::endl;
-        ss << cs_tot   << mn_IrqCount << caEnd::endl;
-        ss << cs_free  << mn_FreeRunning << caEnd::endl;
+        ss << cs_sec << mn_Sec << caEnd::endl;
+        ss << cs_min << mn_Min << caEnd::endl;
+        ss << cs_hour << mn_Hour << caEnd::endl;
+        ss << cs_day << mn_Day << caEnd::endl;
+        ss << cs_tot << mn_IrqCount << caEnd::endl;
+        ss << cs_free << mn_FreeRunning << caEnd::endl;
         ss.Str();
     }
 } sysTimerStatus;

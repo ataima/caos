@@ -2,16 +2,26 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="inc">
+        <in>caos.h</in>
+        <in>devicehandle.h</in>
+        <in>hal.h</in>
+        <in>halcomdevice.h</in>
+      </df>
       <df name="src">
         <in>atomiclock.cpp</in>
+        <in>caOS.cpp</in>
         <in>cache.cpp</in>
         <in>cachedevice.cpp</in>
         <in>comdevice.cpp</in>
         <in>console.cpp</in>
         <in>cpu.cpp</in>
-        <in>device.cpp</in>
+        <in>devicehandle.cpp</in>
         <in>exception.cpp</in>
         <in>gpio.cpp</in>
+        <in>hal.cpp</in>
+        <in>halcomdevice.cpp</in>
+        <in>idevice.cpp</in>
         <in>int_request.cpp</in>
         <in>interrupt.cpp</in>
         <in>kdebug.cpp</in>
@@ -93,7 +103,19 @@
           <preBuildCommand>make distclean</preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="inc/caos.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/devicehandle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/hal.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/halcomdevice.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/atomiclock.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/caOS.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -117,9 +139,7 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="src/device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/devicehandle.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/exception.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
@@ -128,6 +148,12 @@
       <item path="src/gpio.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/hal.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/halcomdevice.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/idevice.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/int_request.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">

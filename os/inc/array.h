@@ -127,7 +127,7 @@ public:
             obj = buff[index];
             res = true;
         }
-        good=res;
+        good = res;
         return res;
     }
 
@@ -139,7 +139,7 @@ public:
             buff[index] = obj;
             res = true;
         }
-        good=res;
+        good = res;
         return res;
     }
 
@@ -150,7 +150,7 @@ public:
     }
 
     // T
-    
+
     bool Swap(s_t h, s_t k) {
         bool res = false;
         if (h < size && k < size) {
@@ -161,12 +161,12 @@ public:
             }
             res = true;
         }
-        good=res;
+        good = res;
         return res;
     }
 
     // T
-    
+
     bool Remove(s_t index) {
         // caARRAY : remove invalidate Sort...
         bool res = false;
@@ -175,7 +175,7 @@ public:
             size--;
             res = true;
         }
-        good=res;
+        good = res;
         return res;
     }
 };

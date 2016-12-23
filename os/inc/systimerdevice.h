@@ -24,12 +24,6 @@
 #if SYS_TIMER_DEVICE
 #include "idevice.h"
 
-struct caSysTimerDeviceConfigure
-: public caIDeviceConfigure {
-public:
-    //TO DO
-};
-
 struct caSysTimerDeviceCtrl
 : public caIDeviceCtrl {
 public:
@@ -46,14 +40,14 @@ class caSysTimerDevice {
 private:
     static u32 guid;
     static u32 isOpen;
-    static u32 Flush(caDevicePort *port);
+    static u32 Flush(caDeviceHandle *port);
     static bool IsValidHandle(u32 handle);
 public:
-    static u32 Open(caSysTimerDeviceConfigure *in, caDevicePort *out);
-    static u32 Close(caDevicePort *port);
-    static u32 Write(caDevicePort *port);
-    static u32 Read(caDevicePort *port);
-    static u32 IoCtrl(caDevicePort *port, caSysTimerDeviceCtrl *in);
+    static u32 Open(caIDeviceConfigure *in, caDeviceHandle *out);
+    static u32 Close(caDeviceHandle *port);
+    static u32 Write(caDeviceHandle *port);
+    static u32 Read(caDeviceHandle *port);
+    static u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 };
 

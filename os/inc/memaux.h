@@ -38,20 +38,19 @@ public:
     //
 };
 
-class caStrAux
-{
-    public:
-            
+class caStrAux {
+public:
+
     static u32 StrCmp(const s8 *s1, const s8 *s2);
 
     static u32 StrICmp(const s8 *s1, const s8 *s2);
-    
+
     static u32 StrNCmp(const s8 *s1, const s8 *s2, u32 max);
-    
+
     static s8* StrCpy(s8 *s1, const s8 *s2);
-    
+
     static s8* StrNCpy(s8 *s1, const s8 *s2, u32 max);
-    
+
     static u32 StrLen(const s8 *s1);
 };
 

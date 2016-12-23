@@ -17,13 +17,12 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
-#include "bcm2836.h"
+#include "hal.h"
+#include "caos_c_types.h"
+
 #if MEM_PIPE_DEVICE    
-#include "idevice.h"
-#include "stream.h"
+
 #include "interrupt.h"
-#include "miniuart.h"
 #include "systimer.h"
 #include "memory.h"
 #include "memaux.h"
@@ -46,7 +45,7 @@ caMemDeviceDescriptor * caMemDevice::FindDescriptor(caMemDeviceConfigure* setup)
     caMemDeviceDescriptor *desc = NULL;
     u32 i;
     for (i = 0; i < MAX_SHARED_MEM_BLOCK; i++) {
-        if (caMemAux::StrICmp(descriptors[i].name, setup->name) == 0) {
+        if (caStrAux::StrICmp(descriptors[i].name, setup->name) == 0) {
             desc = &descriptors[i];
             break;
         }
@@ -60,13 +59,15 @@ caMemDeviceDescriptor * caMemDevice::GetDescriptor(u32 handle) {
 }
 ////////////////////////////  DEVICE CTRL 
 
-u32 caMemDevice::Open(caMemDeviceConfigure *setup, caDevicePort *port) {
+u32 caMemDevice::Open(caIDeviceConfigure * in,
+        caDeviceHandle *port) {
     u32 i;
     u32 res = deviceError::no_error;
     //TIN();
-    if (setup != NULL && port != NULL) {
+    if (in != NULL && port != NULL) {
+        caMemDeviceConfigure *setup = static_cast<caMemDeviceConfigure *> (in);
         // already exist or is a new mem block
-        if (caMemAux::StrLen(setup->name) == 0) {
+        if (caStrAux::StrLen(setup->name) == 0) {
             res = deviceError::error_pipe_invalid_name;
         } else {
             caMemDeviceDescriptor * desc = FindDescriptor(setup);
@@ -80,14 +81,14 @@ u32 caMemDevice::Open(caMemDeviceConfigure *setup, caDevicePort *port) {
                 desc = &descriptors[i];
                 desc->index = i;
                 //copy name block
-                caMemAux::MemMove((u32*) desc->name,
+                caMemAux::MemCpy((u32*) desc->name,
                         (u32*) setup->name,
                         sizeof (desc->name) / sizeof (u32));
                 desc->size = (setup->size / sizeof (u32)) + 1;
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {
                     res = deviceError::error_pipe_no_memory;
-                    caMemAux::MemZero((u32*) desc,
+                    caMemAux::MemSet((u32*) desc, 0,
                             sizeof (caMemDeviceDescriptor) / sizeof (u32));
                 } else {
                     desc->queue.Init(buff, desc->size);
@@ -102,7 +103,7 @@ u32 caMemDevice::Open(caMemDeviceConfigure *setup, caDevicePort *port) {
             if (desc != NULL) {
                 guid += MAX_SHARED_MEM_BLOCK;
                 port->handle = guid + desc->index;
-                port->status = caDevicePort::statusPort::Open;
+                port->status = caDeviceHandle::statusHandle::Open;
                 port->tStart = caSysTimer::GetCount();
                 port->tLast = port->tStart;
                 port->tStop = 0;
@@ -115,16 +116,16 @@ u32 caMemDevice::Open(caMemDeviceConfigure *setup, caDevicePort *port) {
             }
         }
     } else
-        if (setup == NULL)
+        if (in == NULL)
         res = deviceError::error_device_config_param;
     else
         if (port == NULL)
-        res = deviceError::error_port_out_config;
+        res = deviceError::error_invalid_null_port;
     //TOUT();
     return res;
 }
 
-u32 caMemDevice::Close(caDevicePort *port) {
+u32 caMemDevice::Close(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     u32 size = 0;
     //TIN();
@@ -143,7 +144,7 @@ u32 caMemDevice::Close(caDevicePort *port) {
             if (desc->guest == port->handle) {
                 desc->guest = 0;
                 isOpen--;
-                port->status = caDevicePort::statusPort::Close;
+                port->status = caDeviceHandle::statusHandle::Close;
                 port->tStop = caSysTimer::GetCount();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
@@ -151,9 +152,9 @@ u32 caMemDevice::Close(caDevicePort *port) {
             } else
                 if (desc->host == port->handle) {
                 caMemory::Free(desc->queue.GetBase(), &size);
-                caMemAux::MemZero((u32*) desc, sizeof (caMemDeviceDescriptor));
+                caMemAux::MemSet((u32*) desc, 0, sizeof (caMemDeviceDescriptor));
                 isOpen--;
-                port->status = caDevicePort::statusPort::Close;
+                port->status = caDeviceHandle::statusHandle::Close;
                 port->tStop = caSysTimer::GetCount();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
@@ -169,7 +170,7 @@ u32 caMemDevice::Close(caDevicePort *port) {
     return res;
 }
 
-u32 caMemDevice::Write(caDevicePort *port) {
+u32 caMemDevice::Write(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -223,7 +224,7 @@ u32 caMemDevice::Write(caDevicePort *port) {
     return res;
 }
 
-u32 caMemDevice::Read(caDevicePort *port) {
+u32 caMemDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -271,7 +272,7 @@ u32 caMemDevice::Read(caDevicePort *port) {
     return res;
 }
 
-u32 caMemDevice::Resize(caDevicePort *port, u32 size) {
+u32 caMemDevice::Resize(caDeviceHandle *port, u32 size) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -286,13 +287,13 @@ u32 caMemDevice::Resize(caDevicePort *port, u32 size) {
         u32 old_size;
         caMemDeviceDescriptor * desc = GetDescriptor(port->handle);
         if (desc != NULL) {
-                  
+
             if (caMemory::Free(desc->queue.GetBase(), &old_size)) {
                 desc->size = (size / sizeof (u32)) + 1;
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {
                     res = deviceError::error_pipe_no_memory;
-                    caMemAux::MemZero((u32*) desc,
+                    caMemAux::MemSet((u32*) desc, 0,
                             sizeof (caMemDeviceDescriptor) / sizeof (u32));
                 } else {
                     desc->queue.Init(buff, desc->size);
@@ -307,7 +308,7 @@ u32 caMemDevice::Resize(caDevicePort *port, u32 size) {
     return res;
 }
 
-u32 caMemDevice::Reset(caDevicePort *port) {
+u32 caMemDevice::Reset(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -329,7 +330,7 @@ u32 caMemDevice::Reset(caDevicePort *port) {
     return res;
 }
 
-u32 caMemDevice::Dump(caDevicePort *port, caStringStream<s8> *ss) {
+u32 caMemDevice::Dump(caDeviceHandle *port, caStringStream<s8> *ss) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -358,11 +359,14 @@ u32 caMemDevice::Dump(caDevicePort *port, caStringStream<s8> *ss) {
     return res;
 }
 
-u32 caMemDevice::IoCtrl(caDevicePort *port, caMemDeviceCtrl *in) {
+u32 caMemDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
+    } else
+        if (inp == NULL) {
+        res = deviceError::error_device_config_param;
     } else
         if (isOpen == 0) {
         res = deviceError::error_device_not_opened;
@@ -370,6 +374,7 @@ u32 caMemDevice::IoCtrl(caDevicePort *port, caMemDeviceCtrl *in) {
         if (!IsValidHandle(port->handle)) {
         res = deviceError::error_invalid_handle_port;
     } else {
+        caMemDeviceCtrl *in = static_cast<caMemDeviceCtrl *> (inp);
         switch (in->command) {
             case caMemDeviceCtrl::IoCtrlDirect::Resize:
             {
@@ -401,19 +406,19 @@ u32 caMemDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
     //TIN();
     switch (request) {
         case ioCtrlFunction::caOpenDevice:
-            res = Open((caMemDeviceConfigure *) p1, (caDevicePort *) p2);
+            res = Open((caMemDeviceConfigure *) p1, (caDeviceHandle *) p2);
             break;
         case ioCtrlFunction::caCloseDevice:
-            res = Close((caDevicePort *) p1);
+            res = Close((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caWriteDevice:
-            res = Write((caDevicePort *) p1);
+            res = Write((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caReadDevice:
-            res = Read((caDevicePort *) p1);
+            res = Read((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDevicePort *) p1, (caMemDeviceCtrl *) p2);
+            res = IoCtrl((caDeviceHandle *) p1, (caMemDeviceCtrl *) p2);
             break;
         default:
             break;

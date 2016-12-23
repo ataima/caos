@@ -1,4 +1,6 @@
 #include "config.h"
+#include "caos_c_types.h"
+
 #include "test.h"
 
 #if TEST_MINI_UART && TEST

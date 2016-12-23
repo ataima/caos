@@ -18,12 +18,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
-#include "bcm2836.h"
-#if COM1_DEVICE
+#include "hal.h"
 
-#include "idevice.h"
-#include "stream.h"
+#include "bcm2836.h"
+
 #include "miniuart.h"
 #include "interrupt.h"
 #include "comdevice.h"
@@ -34,10 +32,14 @@
 #include "thread.h"
 #include "scheduler.h"
 #include "syslog.h"
+#include "caos.h"
+
 
 
 
 u32 caComDevice::guid = (u32) ioCtrlRequest::Com1 + BASE_HANDLE;
+
+
 u32 caComDevice::isOpen = 0;
 u32 caComDevice::eOverrun = 0;
 caCircularBuffer<u8> caComDevice::Rx;
@@ -58,44 +60,53 @@ bool caComDevice::IsValidHandle(u32 handle) {
     return res;
 }
 
-u32 caComDevice::Open(caComDeviceConfigure *setup, caDevicePort *port) {
+u32 caComDevice::Open(caIDeviceConfigure * in,
+        caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
-    if (setup != NULL && isOpen == 0) {
-        if (caMiniUart::Init(setup->speed, setup->stop, setup->parity, setup->data)) {
-            caMiniUart::ClearFifos();
-            caMiniUart::Enable(0, 0);
-            caMiniUart::Enable(1, 1);
-            Rx.Init(RxBuffer, QUEUESIZE);
-            Tx.Init(TxBuffer, QUEUESIZE);
-            isOpen++;
-            if (port != NULL) {
-                signalTx = signalRx = eOverrun = 0;
-                caMemAux::MemSet((u32*) port,0, sizeof (caDevicePort) / sizeof (u32));
-                port->handle = ++guid;
-                port->status = caDevicePort::statusPort::Open;
-                port->tStart = caSysTimer::GetCount();
-                port->tLast = port->tStart;
-                port->tStop = 0;
-                port->tLastCmd = caDeviceAction::caActionOpen;
-                if (!((caMiniUart::EnableIrqRx()
-                        & caIrqCtrl::EnableIrqAux()) == 1)) {
-                    res = deviceError::error_configure_irq_serial_port;
+    if (in != NULL) {
+        if (isOpen == 0) {
+            caComDeviceConfigure *setup = static_cast<caComDeviceConfigure *> (in);
+            if (caMiniUart::Init(setup->speed, setup->stop, setup->parity, setup->data)) {
+                caMiniUart::ClearFifos();
+                caMiniUart::Enable(0, 0);
+                caMiniUart::Enable(1, 1);
+                Rx.Init(RxBuffer, QUEUESIZE);
+                Tx.Init(TxBuffer, QUEUESIZE);
+                isOpen++;
+                if (port != NULL) {
+                    signalTx = signalRx = eOverrun = 0;
+                    caMemAux::MemSet((u32*) port, 0, sizeof (caDeviceHandle) / sizeof (u32));
+                    port->handle = ++guid;
+                    port->status = caDeviceHandle::statusHandle::Open;
+                    port->tStart = caSysTimer::GetCount();
+                    port->tLast = port->tStart;
+                    port->tStop = 0;
+                    port->tLastCmd = caDeviceAction::caActionOpen;
+                    if (!((caMiniUart::EnableIrqRx()
+                            & caIrqCtrl::EnableIrqAux()) == 1)) {
+                        res = deviceError::error_configure_irq_serial_port;
+                    }
+                } else {
+                    res = deviceError::error_invalid_null_port;
                 }
             } else {
-                res = deviceError::error_invalid_null_port;
+                res = deviceError::error_configure_serial_port;
             }
         } else {
-            res = deviceError::error_configure_serial_port;
+            isOpen++;
         }
-    } else {
-        isOpen++;
-    }
+    } else
+        if (in == NULL)
+        res = deviceError::error_device_config_param;
+    else
+        if (port == NULL)
+        res = deviceError::error_invalid_null_port;
     //TOUT();
     return res;
 }
 
-u32 caComDevice::Close(caDevicePort *port) {
+u32 caComDevice::Close(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -108,7 +119,7 @@ u32 caComDevice::Close(caDevicePort *port) {
         res = deviceError::error_invalid_handle_port;
     } else {
         isOpen--;
-        port->status = caDevicePort::statusPort::Close;
+        port->status = caDeviceHandle::statusHandle::Close;
         port->tStop = caSysTimer::GetCount();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
@@ -121,7 +132,7 @@ u32 caComDevice::Close(caDevicePort *port) {
     return res;
 }
 
-u32 caComDevice::Write(caDevicePort *port) {
+u32 caComDevice::Write(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -137,7 +148,7 @@ u32 caComDevice::Write(caDevicePort *port) {
             if (TxLock.Get() != 0) {
                 res = deviceError::error_device_is_busy;
             } else {
-                u32 wSize, writed=0;
+                u32 wSize, writed = 0;
                 u32 maxWr = Tx.Available();
                 if (maxWr > 0) {
                     if (maxWr > port->wrSize)
@@ -172,7 +183,7 @@ u32 caComDevice::Write(caDevicePort *port) {
     return res;
 }
 
-u32 caComDevice::Read(caDevicePort *port) {
+u32 caComDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -188,7 +199,7 @@ u32 caComDevice::Read(caDevicePort *port) {
             if (RxLock.Get() != 0) {
                 res = deviceError::error_device_is_busy;
             } else {
-                u32 rSize, pSize=0;
+                u32 rSize, pSize = 0;
                 if (Rx.Empty() == false) {
                     if (Rx.Size() < port->rdSize)
                         rSize = Rx.Size();
@@ -221,7 +232,7 @@ u32 caComDevice::Read(caDevicePort *port) {
     return res;
 }
 
-u32 caComDevice::Flush(caDevicePort *port) {
+u32 caComDevice::Flush(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
@@ -240,11 +251,14 @@ u32 caComDevice::Flush(caDevicePort *port) {
     return res;
 }
 
-u32 caComDevice::IoCtrl(caDevicePort *port, caComDeviceCtrl *in) {
+u32 caComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
     //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
+    } else
+        if (inp == NULL) {
+        res = deviceError::error_device_config_param;
     } else
         if (isOpen == 0) {
         res = deviceError::error_device_not_opened;
@@ -254,7 +268,7 @@ u32 caComDevice::IoCtrl(caDevicePort *port, caComDeviceCtrl *in) {
     } else {
         port->tLast = caSysTimer::GetCount();
         port->error = eOverrun;
-
+        caComDeviceCtrl *in = static_cast<caComDeviceCtrl *> (inp);
         switch (in->command) {
             case caComDeviceCtrl::IoCtrlDirect::comFlush:
                 res = Flush(port);
@@ -269,7 +283,7 @@ u32 caComDevice::IoCtrl(caDevicePort *port, caComDeviceCtrl *in) {
                 if (in->ss != NULL) {
                     in->ss->Clear();
                     *in->ss << " --- COM1 LIST ---" << caEnd::endl;
-                    res = caMiniUart::Dump(*in->ss);
+                    res = caMiniUart::Dump(in->ss);
                 } else
                     res = deviceError::error_invalid_null_destination;
                 break;
@@ -329,7 +343,7 @@ u32 caComDevice::IoCtrl(caDevicePort *port, caComDeviceCtrl *in) {
                 break;
             case caComDeviceCtrl::IoCtrlDirect::comGetLog:
                 if (caLog.isEnabled() != 0) {
-                    
+
                 } else {
                     res = deviceError::error_log_empthy;
                 }
@@ -347,19 +361,19 @@ u32 caComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
     //TIN();
     switch (request) {
         case ioCtrlFunction::caOpenDevice:
-            res = Open((caComDeviceConfigure *) p1, (caDevicePort *) p2);
+            res = Open((caComDeviceConfigure *) p1, (caDeviceHandle *) p2);
             break;
         case ioCtrlFunction::caCloseDevice:
-            res = Close((caDevicePort *) p1);
+            res = Close((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caWriteDevice:
-            res = Write((caDevicePort *) p1);
+            res = Write((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caReadDevice:
-            res = Read((caDevicePort *) p1);
+            res = Read((caDeviceHandle *) p1);
             break;
         case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDevicePort *) p1, (caComDeviceCtrl *) p2);
+            res = IoCtrl((caDeviceHandle *) p1, (caComDeviceCtrl *) p2);
             break;
         default:
             break;
@@ -376,6 +390,7 @@ void caComDevice::IrqService(void) {
     muStatReg stat;
     u8 c = 0;
     u32 symbol;
+    caComDevice com1;
     iir.asReg = caMiniUart::GetIIR();
     stat.asReg = caMiniUart::GetStat();
     if (iir.asRdBit.pending == 0) {
@@ -383,15 +398,15 @@ void caComDevice::IrqService(void) {
         if (irq == 1) // TX
         {
             //if TX.empty is false there are some char in queue to transmit
-            if (Tx.Empty() == false) {
+            if (com1.Tx.Empty() == false) {
                 symbol = 7 - stat.asBit.txfifo;
                 while (symbol != 0) {
                     lsr.asReg = caMiniUart::GetLsr();
-                    if (lsr.asBit.overrun)eOverrun++;
+                    if (lsr.asBit.overrun)com1.eOverrun++;
                     if (lsr.asBit.txempty == 0)break;
-                    if (Tx.Empty() == false) {
+                    if (com1.Tx.Empty() == false) {
                         s_t removed = 0;
-                        Tx.Pop(&c, 1, removed);
+                        com1.Tx.Pop(&c, 1, removed);
                         caMiniUart::SetIO(c);
                     } else {
                         caMiniUart::DisableIrqTx();
@@ -402,24 +417,24 @@ void caComDevice::IrqService(void) {
             } else {
                 caMiniUart::DisableIrqTx();
             }
-            if (signalTx != 0)
-                caScheduler::WakeUp(signalTx);
+            if (com1.signalTx != 0)
+                caScheduler::WakeUp(com1.signalTx);
         } else
             if (irq == 2) // RX
         {
             symbol = stat.asBit.rxfifo;
             while (symbol != 0) {
                 lsr.asReg = caMiniUart::GetLsr();
-                if (lsr.asBit.overrun)eOverrun++;
+                if (lsr.asBit.overrun)com1.eOverrun++;
                 if (lsr.asBit.rxready == 0) break;
                 c = caMiniUart::GetIO();
                 s_t inserted = 0;
-                Rx.Push(&c, 1, inserted);
+                com1.Rx.Push(&c, 1, inserted);
                 symbol--;
             }
-            if (signalRx != 0)
-                caScheduler::WakeUp(signalRx);
+            if (com1.signalRx != 0)
+                caScheduler::WakeUp(com1.signalRx);
         }
     }
 }
-#endif
+

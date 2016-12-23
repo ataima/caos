@@ -29,7 +29,7 @@ CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
 #CROSS TOOLS 
-ARMGNU:= arm-none-eabi
+ARMGNU:=arm-none-eabi
 # CURRENT DEBUG LEVEL
 DBG:= -O2 
 # C LANGUAGE OPTIONS
@@ -45,19 +45,21 @@ DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
     PUTTY:= putty -load "pi-tty" 
-    EH:=	  
+    ARMPATH:="/home/finsoft/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"
+    EH:= -e	  
 else	    
-    PUTTY:= putty.exe -load "pi-tty" 
+    PUTTY:= putty.exe -load "pi-tty"  
+    ARMPATH:="/home/Finsoft/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"
     EH:=-e	
 endif
 # CROSS TOOOL PROGRAMS
-CROSS_CC:= $(ARMGNU)-gcc 
-CROSS_CPP:= $(ARMGNU)-g++ 
-CROSS_AS:= $(ARMGNU)-as 
-CROSS_LD:= $(ARMGNU)-ld 
-CROSS_OBJDUMP:= $(ARMGNU)-objdump 
-CROSS_OBJCOPY:= $(ARMGNU)-objcopy 
-CROSS_GDB:= $(ARMGNU)-gdb 
+CROSS_CC:=$(ARMPATH)/$(ARMGNU)-gcc 
+CROSS_CPP:=$(ARMPATH)/$(ARMGNU)-g++ 
+CROSS_AS:=$(ARMPATH)/$(ARMGNU)-as 
+CROSS_LD:=$(ARMPATH)/$(ARMGNU)-ld 
+CROSS_OBJDUMP:=$(ARMPATH)/$(ARMGNU)-objdump 
+CROSS_OBJCOPY:=$(ARMPATH)/$(ARMGNU)-objcopy 
+CROSS_GDB:=$(ARMPATH)/$(ARMGNU)-gdb 
 #OUTPUT BUILD DIR
 BUILDIR:=build
 DEPEND:=depend

@@ -17,16 +17,13 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config.h"
+#include "hal.h"
 #include "bcm2836.h"
-#include "idevice.h"
-#include "stream.h"
 #include "miniuart.h"
 #include "systimer.h"
 #include "cpu.h"
 #include "interrupt.h"
 #include "memory.h"
-#include "softreq.h"
 #include "thread.h"
 #include "sysirqctrl.h"
 #include "systimer.h"
@@ -84,10 +81,10 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
                 caComDevice::IrqService();
             } else
                 if (aux->irq.asBit.spi_m_1) {
-            //Dbg::Put("SP1 = ", irq->basepending.asReg);
+                //Dbg::Put("SP1 = ", irq->basepending.asReg);
             } else
                 if (aux->irq.asBit.spi_m_2) {
-                   Dbg::Put("SP2 = ", irq->basepending.asReg);
+                Dbg::Put("SP2 = ", irq->basepending.asReg);
             }
         } else {
             Dbg::Put("BASE = ", irq->basepending.asReg);

@@ -58,7 +58,12 @@ prepare:
 	@echo prepare ...done
 	@echo "----------------------------------------------------------------------"
 
+unprepare:
+	@echo "----------------------------------------------------------------------"
+	@make   $(V) -f do.mk unprepare
+	@echo unprepare ...done
+	@echo "----------------------------------------------------------------------"
 
 
-.PHONY:  distclean clean asm all depend info prepare
+.PHONY:  distclean clean asm all depend info prepare unprepare
 
