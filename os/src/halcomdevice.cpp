@@ -50,12 +50,11 @@ u32 caHalComDevice::Open(caIDeviceConfigure * in,
             isOpen++;
             signalTx = signalRx = eOverrun = 0;
             port->handle = addHandle();
-            ;
             port->status = caDeviceHandle::statusHandle::Open;
             port->tStart = link->hll_time();
             port->tStop = 0;
             port->tLastCmd = caDeviceAction::caActionOpen;
-            res = link->hll_en_int();
+            res = link->hll_en_int_rx();
         } else {
             res = deviceError::error_configure_serial_port;
         }

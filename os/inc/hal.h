@@ -65,7 +65,7 @@ typedef struct tag_hal_ll_com_io {
     abstract_functor_com_write hll_write;
     abstract_functor_com_read hll_read;
     abstract_functor_com_void hll_time;
-    abstract_functor_com_void hll_en_int;
+    abstract_functor_com_void hll_en_int_rx;
     abstract_functor_com_void hll_start_tx;
     abstract_functor_com_void hll_stop;
     abstract_functor_com_enable hll_enable;

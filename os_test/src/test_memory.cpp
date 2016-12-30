@@ -105,7 +105,7 @@ void caMemory_test_class::test2(void)
 void caMemory_test_class::test3(void)
 {
     _START();
-    _INFO("to check caMemory");
+    _INFO("to check Allocate free function of caMemory");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();

@@ -11,9 +11,11 @@
         <in>memoryvalidator.cpp</in>
         <in>syslog.cpp</in>
         <in>test_array.cpp</in>
+        <in>test_atomiclock.cpp</in>
         <in>test_caHalDeviceRules.cpp</in>
         <in>test_circular_buffer.cpp</in>
         <in>test_cstr.cpp</in>
+        <in>test_halcomdevice.cpp</in>
         <in>test_heaparray.cpp</in>
         <in>test_memaux.cpp</in>
         <in>test_memory.cpp</in>
@@ -161,6 +163,14 @@
         </ccTool>
       </item>
       <item path="src/syslog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/test_atomiclock.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/test_halcomdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
