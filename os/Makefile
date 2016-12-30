@@ -1,6 +1,6 @@
 include rules.mk
 # --silent
-V=--silent
+V=
 
 
 

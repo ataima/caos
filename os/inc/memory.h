@@ -29,7 +29,6 @@
 
 class caMemory {
 private:
-
     typedef enum tag_status_block {
         start_lbl = 0x12341234,
         end_lbl = 0x43212413,
@@ -53,8 +52,8 @@ public:
 
 
 private:
-    static u32 start_mem;
-    static u32 end_mem;
+    static u32* start_mem;
+    static u32* end_mem;
     static u32 avail_mem;
 
 private:
@@ -70,12 +69,10 @@ public:
     static u32 Ascii(dumpAddrReq *req);
     static void Dump(caStringStream<s8> & ss, blockMem *s);
 
-
+    //T
     static void Init(void);
-
-    static inline u32 GetHeaderBlock(void) {
-        return BLOCKSIZE;
-    }
+    
+    static void Clean(void);
 
     static void * Allocate(u32 size);
 
@@ -85,21 +82,36 @@ public:
 
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 
-    static inline u32 GetStartAddress() {
+    //T
+    static inline u32* GetStartAddress() {
         return start_mem;
     }
 
-    static inline u32 GetEndAddress() {
+    //T
+    static inline u32* GetEndAddress() {
         return end_mem;
     }
 
+    //T
     static inline u32 GetTotalSize() {
-        return end_mem - start_mem;
+        return ptr_to_uint(end_mem) -  ptr_to_uint(start_mem);
     }
 
+    //T
     static inline u32 GetAvailMemory() {
         return avail_mem;
     }
+    
+     //T   
+    static inline u32 Good() {
+        return (avail_mem > MIN_SLICE);
+    }
+    
+    //T
+    static inline u32 GetHeaderBlock(void) {
+        return BLOCKSIZE;
+    }
+    
 #ifdef TEST_SVC_MEMORY
     static void TestMemoryIoctl(void);
 #else

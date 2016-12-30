@@ -162,8 +162,6 @@ u32 caHalComDevice::Flush(caDeviceHandle *port) {
 
 u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
-    //TIN();
-
     port->tLast = link->hll_time();
     port->error = eOverrun;
     caComDeviceCtrl *in = static_cast<caComDeviceCtrl *> (inp);
@@ -254,7 +252,6 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
 u32 caHalComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
     u32 res = deviceError::no_error;
     ;
-    //TIN();
     switch (request) {
         case ioCtrlFunction::caOpenDevice:
             res = Open((caComDeviceConfigure *) p1, (caDeviceHandle *) p2);
@@ -274,7 +271,6 @@ u32 caHalComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
         default:
             break;
     }
-    //TOUT();
     return res;
 }
 

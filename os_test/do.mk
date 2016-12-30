@@ -73,40 +73,37 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 
 
 
-.PHONY:  all clean info dwload qemu asm distclean prepare unprepare
+.PHONY:  all clean info dwload qemu asm distclean add_ext_src remove_ext_src
 
-prepare:
-	@ln ../os/inc/caos_c_types.h inc/caos_c_types.h
-	@ln ../os/inc/hal.h inc/hal.h
-	@ln ../os/inc/memaux.h inc/memaux.h	
-	@ln ../os/inc/idevice.h inc/idevice.h
-	@ln ../os/inc/syslog.h inc/syslog.h
-	@ln ../os/inc/memory.h inc/memory.h
-	@ln ../os/src/memaux.cpp src/memaux.cpp
-	@ln ../os/src/idevice.cpp src/idevice.cpp
-	@ln ../os/src/halcomdevice.cpp src/halcomdevice.cpp
-	@ln ../os/src/syslog.cpp src/syslog.cpp
-	@ln ../os/src/memory.cpp src/memory.cpp
+define link_ext_file
+    $(shell if [ ! -e src/$1 ]; then ln ../os/src/$1 src/$1 ; fi)
+endef
+
+define ulink_ext_file
+    $(shell if [ -e src/$1 ]; then rm -f src/$1 ; fi)
+endef
+
+add_ext_src:
+	$(call link_ext_file,memaux.cpp)
+	$(call link_ext_file,idevice.cpp)
+	$(call link_ext_file,halcomdevice.cpp)
+	$(call link_ext_file,syslog.cpp)
+	$(call link_ext_file,memory.cpp)
+	
 
 
-unprepare:
-	@rm -f inc/caos_c_types.h
-	@rm -f inc/hal.h
-	@rm -f inc/memaux.h
-	@rm -f inc/idevice.h
-	@rm -f inc/syslog.h
-	@rm -f inc/memory.h
-	@rm -f src/memaux.cpp
-	@rm -f src/idevice.cpp
-	@rm -f src/halcomdevice.cpp
-	@rm -f src/syslog.cpp
-	@rm -f src/memory.cpp
+remove_ext_src:
+	$(call ulink_ext_file,memaux.cpp)
+	$(call ulink_ext_file,idevice.cpp)
+	$(call ulink_ext_file,halcomdevice.cpp)
+	$(call ulink_ext_file,syslog.cpp)
+	$(call ulink_ext_file,memory.cpp)
 
 	
 	
 
 
-distclean: clean unprepare prepare 	
+distclean: clean   	
 	@rm -rf $(BUILDIR)/$(DEPEND)
 	@rm -rf $(BUILDIR)
 
@@ -124,6 +121,7 @@ clean :
 	@rm -f *.html
 	@rm -f *.xml
 	@rm -f *.txt
+	@mkdir $(BUILDIR)/$(OBJ_OUT)
 
 
 

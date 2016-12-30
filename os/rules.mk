@@ -45,8 +45,8 @@ DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
     PUTTY:= putty -load "pi-tty" 
-    ARMPATH:="/home/finsoft/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"
-    EH:= -e	  
+    ARMPATH:="/home/angelo/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"
+    EH:= 
 else	    
     PUTTY:= putty.exe -load "pi-tty"  
     ARMPATH:="/home/Finsoft/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"

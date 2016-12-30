@@ -21,9 +21,12 @@
 #include "docMacro.h"
 #include "hal.h"
 #include "memory.h"
+#include <iostream>
 
- u32 __heap_base__[100000];
- u32 *__heap_end__=&__heap_base__[100000];
+
+static u32 theHeap[100000];
+u32*  __heap_base__=&theHeap[0];
+u32* __heap_end__=&theHeap[100000];
 
 static u32 getstartmem(void){return ptr_to_uint(__heap_base__);}
 static u32 getstopmem(void){return ptr_to_uint(__heap_end__);}
@@ -36,12 +39,9 @@ class caMemory_test_class
 : public caTester
 {
     CA_TEST_SUITE(caMemory_test_class);
-    CA_TEST(caMemory_test_class::test1, "  test");
-    CA_TEST(caMemory_test_class::test2, "  test");
-    CA_TEST(caMemory_test_class::test3, "  test");
-    CA_TEST(caMemory_test_class::test4, "  test");
-    CA_TEST(caMemory_test_class::test5, "  test");
-    CA_TEST(caMemory_test_class::test6, "  test");
+    CA_TEST(caMemory_test_class::test1, " Init test");
+    CA_TEST(caMemory_test_class::test2, " Clean test");
+    CA_TEST(caMemory_test_class::test3, " Allocate/Free test");
     CA_TEST_SUITE_END();
 
     void setUp(void)
@@ -50,9 +50,7 @@ class caMemory_test_class
     void test1(void);
     void test2(void);
     void test3(void);
-    void test4(void);
-    void test5(void);
-    void test6(void);
+
 
     void tearDown(void)
     {
@@ -65,60 +63,68 @@ REGISTER_CLASS(caMemory_test_class);
 void caMemory_test_class::test1(void)
 {
     _START();
-    _INFO("to check MemCpy u32 of caMemAux");
+    _INFO("to check Init function of caMemory");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    
+    std::cout<<"HEAP BASE = "<<__heap_base__<<std::endl;
+    std::cout<<"HEAP END = "<<__heap_end__<<std::endl;
+    caMemory::Init();
+    CA_ASSERT(caMemory::Good()!=0);
+    CA_ASSERT(caMemory::GetStartAddress()==__heap_base__);
+    CA_ASSERT(caMemory::GetEndAddress()==__heap_end__);
+    CA_ASSERT(caMemory::GetTotalSize()==100000*sizeof(u32));
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetHeaderBlock()==BLOCKSIZE);       
 }
 
 void caMemory_test_class::test2(void)
 {
     _START();
-    _INFO("to check MemCpy u16 of caMemAux");
+    _INFO("to check Clean function caMemory");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    
+    std::cout<<"HEAP BASE = "<<__heap_base__<<std::endl;
+    std::cout<<"HEAP END = "<<__heap_end__<<std::endl;
+    CA_ASSERT(caMemory::Good()!=0);
+    CA_ASSERT(caMemory::GetStartAddress()==__heap_base__);
+    CA_ASSERT(caMemory::GetEndAddress()==__heap_end__);
+    CA_ASSERT(caMemory::GetTotalSize()==100000*sizeof(u32));
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetHeaderBlock()==BLOCKSIZE);
+    caMemory::Clean();
+    CA_ASSERT(caMemory::Good()==0);
+    CA_ASSERT(caMemory::GetStartAddress()==0);
+    CA_ASSERT(caMemory::GetEndAddress()==0);
+    CA_ASSERT(caMemory::GetTotalSize()==0);
+    CA_ASSERT(caMemory::GetAvailMemory()==0);
+    CA_ASSERT(caMemory::GetHeaderBlock()==BLOCKSIZE);
 }
 
 void caMemory_test_class::test3(void)
 {
     _START();
-    _INFO("to check MemCpy u8 of caMemAux");
+    _INFO("to check caMemory");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    
-
+    caMemory::Init();
+    CA_ASSERT(caMemory::Good()!=0);
+    CA_ASSERT(caMemory::GetStartAddress()==__heap_base__);
+    CA_ASSERT(caMemory::GetEndAddress()==__heap_end__);
+    CA_ASSERT(caMemory::GetTotalSize()==100000*sizeof(u32));
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetHeaderBlock()==BLOCKSIZE);      
+    void * p= caMemory::Allocate(caMemory::GetHeaderBlock()*100);
+    CA_ASSERT(p!=NULL);
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(5*BLOCKSIZE)-caMemory::GetHeaderBlock()*100));
+    u32 size=0;
+    u32 res=caMemory::Free(p,&size);
+    CA_ASSERT(res==TRUE);
+    CA_ASSERT(caMemory::GetHeaderBlock()*101==size);
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));   
+    caMemory::Clean();
 }
 
-void caMemory_test_class::test4(void)
-{
-    _START();
-    _INFO("to check MemSet u32 of caMemAux");
-    _AUTHOR("Coppi Angelo");
-    _PROJECT("C.A.O.S");
-    _STOP();
-    
-}
 
-void caMemory_test_class::test5(void)
-{
-    _START();
-    _INFO("to check MemSet u16 of caMemAux");
-    _AUTHOR("Coppi Angelo");
-    _PROJECT("C.A.O.S");
-    _STOP();
-    
-}
-
-void caMemory_test_class::test6(void)
-{
-    _START();
-    _INFO("to check MemSet u8 of caMemAux");
-    _AUTHOR("Coppi Angelo");
-    _PROJECT("C.A.O.S");
-    _STOP();
-    
-}

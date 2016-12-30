@@ -19,23 +19,21 @@
 
 #include "hal.h"
 #include "kdebug.h"
-
-
 #include "memory.h"
 
 
-extern u8 __heap_base__[];
-extern u8 __heap_end__[];
+extern u32* __heap_base__;
+extern u32* __heap_end__;
 
 
-u32 caMemory::start_mem;
-u32 caMemory::end_mem;
-u32 caMemory::avail_mem;
+u32* caMemory::start_mem;
+u32* caMemory::end_mem;
+u32  caMemory::avail_mem;
 
 void caMemory::Init(void) {
-    start_mem = ptr_to_uint(__heap_base__);
-    end_mem = ptr_to_uint(__heap_end__);
-    avail_mem = end_mem - start_mem;
+    start_mem = __heap_base__;
+    end_mem = __heap_end__;
+    avail_mem = (ptr_to_uint(end_mem) - ptr_to_uint(start_mem));
     blockMem *start = reinterpret_cast<blockMem *> (start_mem);
     start->addr = start;
     start->size = 0;
@@ -47,7 +45,7 @@ void caMemory::Init(void) {
     free->addr = free;
     avail_mem -= (2 * BLOCKSIZE);
     free->size = avail_mem;
-    free->next = reinterpret_cast<blockMem *> (ptr_to_uint(free->addr) + avail_mem);
+    free->next = reinterpret_cast<blockMem *> ((u8*)(free->addr) + avail_mem);
     free->prev = start;
     free->status = statusBlock::free_lbl;
     blockMem *end = free->next;
@@ -58,13 +56,18 @@ void caMemory::Init(void) {
     end->status = statusBlock::end_lbl;
 }
 
+void caMemory::Clean(void) {
+    start_mem =  end_mem =  NULL;
+    avail_mem = 0;
+}
+
 caMemory::blockMem *caMemory::GetStartBlock(void) {
     blockMem *s = reinterpret_cast<blockMem *> (start_mem);
     return s;
 }
 
 caMemory::blockMem *caMemory::GetEndBlock(void) {
-    blockMem *s = reinterpret_cast<blockMem *> (end_mem - (2 * BLOCKSIZE));
+    blockMem *s = reinterpret_cast<blockMem *> ((u8*)end_mem - (2 * BLOCKSIZE));
     return s;
 }
 
@@ -94,7 +97,7 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
             avail_mem -= size;
             p = reinterpret_cast<void *> (ptr_to_uint(s->addr) + BLOCKSIZE);
         } else {
-            blockMem *nb = reinterpret_cast<blockMem *> (ptr_to_uint(s->addr)+(s->size - size));
+            blockMem *nb = reinterpret_cast<blockMem *> ((u8*)(s->addr)+(s->size - size));
             nb->prev = s;
             nb->next = s->next;
             nb->addr = nb;
@@ -106,7 +109,7 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
             }
             nb->status = statusBlock::busy_lbl;
             avail_mem -= size;
-            p = reinterpret_cast<void *> (ptr_to_uint(nb->addr) + BLOCKSIZE);
+            p = reinterpret_cast<void *> ((u8*)(nb->addr) + BLOCKSIZE);
         }
     }
     return p;
@@ -128,9 +131,8 @@ void * caMemory::Allocate(u32 size) {
     void *p = 0;
     if (size < MIN_SLICE)
         size = MIN_SLICE;
-    else {
-        size += BLOCKSIZE;
-        size = ((size / BLOCKSIZE) + 1) * BLOCKSIZE;
+    else {        
+        size = ((size / BLOCKSIZE) + 2) * BLOCKSIZE;
     }
     if (avail_mem > size) {
         blockMem *dispPrev = GetEndBlock();
@@ -162,7 +164,7 @@ u32 caMemory::Free(void * p, u32 *size) {
     if (size != NULL)
         *size = 0;
     if (ptr_to_uint(p) > hal_ll_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_ll_mem.hll_mem_max_phy()) {
-        blockMem *s = reinterpret_cast<blockMem *> (ptr_to_uint(p) - BLOCKSIZE);
+        blockMem *s = reinterpret_cast<blockMem *> ((u8*)(p) - BLOCKSIZE);
         if (s != NULL && s->status == statusBlock::busy_lbl) {
             // Ok
             s->status = statusBlock::free_lbl;
@@ -222,10 +224,10 @@ u32 caMemory::List(s8 *buff, u32 size) {
     ss << GetAvailMemory() << p << " bytes" << caEnd::endl;
     ss << "Busy Memory  : ";
     ss.Fix(p);
-    ss << (end_mem - start_mem) - GetAvailMemory() << p << " bytes" << caEnd::endl;
+    ss << (ptr_to_uint(end_mem) - ptr_to_uint(start_mem)) - GetAvailMemory() << p << " bytes" << caEnd::endl;
     ss << "Total Memory : ";
     ss.Fix(p);
-    ss << (end_mem - start_mem) << p << " bytes" << caEnd::endl;
+    ss << (ptr_to_uint(end_mem) - ptr_to_uint(start_mem)) << p << " bytes" << caEnd::endl;
     ss.Str();
     return ss.Size();
 }

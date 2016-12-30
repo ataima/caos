@@ -1,6 +1,6 @@
 include rules.mk
 # --silent
-V= --silent
+V=--silent
 
 
 default: all
@@ -52,16 +52,16 @@ test:
 	@echo test ...done
 	@echo "----------------------------------------------------------------------"
 
-prepare:
+add_ext_src:
 	@echo "----------------------------------------------------------------------"
-	@make   $(V) -f do.mk prepare
-	@echo prepare ...done
+	@make   $(V) -f do.mk add_ext_src
+	@echo add extern caOS source ...done
 	@echo "----------------------------------------------------------------------"
 
-unprepare:
+remove_ext_src:
 	@echo "----------------------------------------------------------------------"
-	@make   $(V) -f do.mk unprepare
-	@echo unprepare ...done
+	@make   $(V) -f do.mk remove_ext_src
+	@echo remove estern caOS source ...done
 	@echo "----------------------------------------------------------------------"
 
 

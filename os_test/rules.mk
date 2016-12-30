@@ -49,7 +49,11 @@ OBJ_OUT:=obj
 SRC:=src
 DEP_OPTS:=-MM -MT
 ifeq ($(OS),Linux)  
-    EH:= -e	  
+    EH:=   
 else	    
     EH:= -e	
 endif
+LNK:=@ln  
+ULNK:=@rm -f  
+
+
