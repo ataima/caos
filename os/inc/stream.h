@@ -343,16 +343,18 @@ public:
     void Fix(caStringFiller & t) {
         t.end = size + t.width;
     }
+    //Tested
 
     bool operator==(const s8* msg) {
-        return caMemAux<s8>::MemCmp(Str(),msg,Size())==0;
+        return caMemAux<s8>::MemCmp(Str(), msg, Size()) == 0;
     }
+    //Tested
 
     bool operator==(caString & msg) {
-        if(Size()!=msg.len)
+        if (Size() != msg.len)
             return false;
         else
-            return caMemAux<s8>::MemCmp(Str(),msg.str,Size())==0;
+            return caMemAux<s8>::MemCmp(Str(), msg.str, Size()) == 0;
     }
 
     //Tested

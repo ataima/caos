@@ -1,1 +1,1 @@
-static const char *caos_version = "Version : 1.00.023 - Build 2623 ";
+static const char *caos_version = "Version : 1.00.023 - Build 2626 ";
