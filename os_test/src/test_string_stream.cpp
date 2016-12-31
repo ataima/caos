@@ -52,6 +52,7 @@ class caStringStream_test_class
     CA_TEST(caStringStream_test_class::test20, "filler test");
     CA_TEST(caStringStream_test_class::test21, "terminator test");
     CA_TEST(caStringStream_test_class::testPrefetch, "use case prefetch");
+    CA_TEST(caStringStream_test_class::test30, "== const s8* test");
     CA_TEST_SUITE_END();
 
     void setUp(void)
@@ -80,6 +81,7 @@ class caStringStream_test_class
     void test20(void);
     void test21(void);
     void testPrefetch(void);
+    void test30(void);
 
     void tearDown(void)
     {
@@ -1124,4 +1126,18 @@ void caStringStream_test_class::testPrefetch(void)
     ss << "ABT = " << lr_abt << caEnd::endl;
     std::cout << ss.Str();
     CA_ASSERT(ss.Str() != NULL);
+}
+
+void caStringStream_test_class::test30(void)
+{
+    _START();
+    _INFO("to check operator == const s8 *");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    s8 buffio[512];
+    caStringStream<s8> ss;
+    ss.Init(buffio, 512);
+    ss<<"Hello world";
+    CA_ASSERT((ss=="Hello world"));
 }

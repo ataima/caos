@@ -25,7 +25,6 @@ void caDeviceHandle::Dump(caDeviceHandle & port, caStringStream<s8> & ss) {
     ss << caStringFormat::hex;
     ss << "HANDLE    =" << port.handle << caEnd::endl;
     ss << "STATUS    =" << port.status << caEnd::endl;
-    ss << "ERROR     =" << port.error << caEnd::endl;
     ss << "TIME START=" << port.tStart << caEnd::endl;
     ss << "TIME STOP =" << port.tStop << caEnd::endl;
     ss << "TIME LAST =" << port.tLast << caEnd::endl;
@@ -33,8 +32,10 @@ void caDeviceHandle::Dump(caDeviceHandle & port, caStringStream<s8> & ss) {
     ss << "WR BUFF   =" << (u32) port.wrBuff << caEnd::endl;
     ss << "WR SIZE   =" << port.wrSize << caEnd::endl;
     ss << "WRITED    =" << port.writed << caEnd::endl;
+    ss << "WR ERROR  =" << port.wrError << caEnd::endl;
     ss << "RD BUFF   =" << (u32) port.rdBuff << caEnd::endl;
     ss << "RD SIZE   =" << port.rdSize << caEnd::endl;
     ss << "READED    =" << port.readed << caEnd::endl;
+    ss << "RD ERROR  =" << port.rdError << caEnd::endl;
     ss.Str();
 }

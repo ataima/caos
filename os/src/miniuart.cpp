@@ -26,8 +26,8 @@
 #include "interrupt.h"
 #include "sysirqctrl.h"
 #include "cpu.h"
-#include "comdevice.h"
-#include "systimer.h"
+#include "memaux.h"
+
 
 
 
@@ -38,6 +38,19 @@
 #define BAUD_115200  RATE_DIV(115200)
 #define BAUD_57600  RATE_DIV(57600)
 #define BAUD_9600  RATE_DIV(9600)
+
+// temp rx buffer for irq rx
+u8 caMiniUart::rxBuff[32];
+// buffer rx index
+u32 caMiniUart::rxPos = 0;
+// temp tx buffer for irq tx
+u8 caMiniUart::txBuff[32];
+// buffer tx index
+u32 caMiniUart::txPos = 0;
+// error tx overrun
+u32 caMiniUart::txOverrun = 0;
+// error rx overrun
+u32 caMiniUart::rxOverrun = 0;
 
 u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
     system_aux_mini_uart(mu);
@@ -64,6 +77,9 @@ u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
             break;
         default: mu->baud = RATE_DIV(vel);
     }
+    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff) );
+    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff) );
+    rxPos = txPos = rxOverrun = txOverrun = 0;
     return TRUE;
 }
 
@@ -73,6 +89,15 @@ u32 caMiniUart::Stop(void) {
     caAuxMain::DisableMiniUart();
     caGpio::SetIn(14);
     caGpio::SetIn(15);
+    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff) );
+    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff) );
+    rxPos = txPos = rxOverrun = txOverrun = 0;
+    return TRUE;
+}
+
+u32 caMiniUart::GetErrors(u32 &rxError, u32 & txError) {
+    rxError = rxOverrun;
+    txError = txOverrun;
     return TRUE;
 }
 
@@ -99,16 +124,13 @@ u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {
     return res;
 }
 
-u32 caMiniUart::Configure(caIDeviceConfigure * in) {
+u32 caMiniUart::Configure(u32 speed, u32 stop, u32 parity, u32 data) {
     u32 res = deviceError::error_hal_configure;
-    if (in) {
-        caComDeviceConfigure *setup = static_cast<caComDeviceConfigure *> (in);
-        if (caMiniUart::Init(setup->speed, setup->stop, setup->parity, setup->data)) {
-            caMiniUart::ClearFifos();
-            caMiniUart::Enable(0, 0);
-            caMiniUart::Enable(1, 1);
-            res = deviceError::no_error;
-        }
+    if (caMiniUart::Init(speed, stop, parity, data)) {
+        caMiniUart::ClearFifos();
+        caMiniUart::Enable(0, 0);
+        caMiniUart::Enable(1, 1);
+        res = deviceError::no_error;
     }
     return res;
 }
@@ -121,6 +143,64 @@ u32 caMiniUart::EnableInt(void) {
     return res;
 }
 
+void caMiniUart::IrqServiceTx(void) {
+    muStatReg stat;
+    muLsrReg lsr;
+    stat.asReg = caMiniUart::GetStat();
+    u32 writed, symbol = 7 - stat.asBit.txfifo;
+    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, txBuff, symbol, writed);
+    if (writed) {
+        for (txPos = 0; txPos < writed; txPos++) {
+            lsr.asReg = caMiniUart::GetLsr();
+            if (lsr.asBit.overrun)txOverrun++;
+            if (lsr.asBit.txempty == 0)break;
+            caMiniUart::SetIO(txBuff[txPos]);
+        }
+    } else {
+        caMiniUart::DisableIrqTx();
+    }
+}
+
+void caMiniUart::IrqServiceRx(void) {
+
+    muLsrReg lsr;
+    muStatReg stat;
+    u32 symbol, readed;
+    stat.asReg = caMiniUart::GetStat();
+    symbol = stat.asBit.rxfifo;
+    while (symbol != 0) {
+        lsr.asReg = caMiniUart::GetLsr();
+        if (lsr.asBit.overrun)rxOverrun++;
+        if (lsr.asBit.rxready == 0) break;
+        rxBuff[rxPos++] = caMiniUart::GetIO();
+        symbol--;
+    }
+    hal_ll_com1.hll_irq_rx(hal_ll_com1.hll_lnk_obj, rxBuff, rxPos, readed);
+    rxPos -= readed;
+    if (rxPos) { // ERROR INCOMPLETE COPY : TRY TO REALIGN BUFFER AT NEXT READ
+        symbol = 0;
+        while (symbol < rxPos) {
+            rxBuff[symbol] = rxBuff[symbol + readed];
+            symbol++;
+        }
+    }
+}
+
+void caMiniUart::IrqService(void) {
+    muIirReg iir;
+    iir.asReg = caMiniUart::GetIIR();
+    if (iir.asRdBit.pending == 0) {
+        register u32 irq = iir.asRdBit.irqid;
+        if ((irq & 1) == 1) // TX
+        {
+            caMiniUart::IrqServiceTx();
+        }
+        if ((irq & 2) == 2) // RX
+        {
+            caMiniUart::IrqServiceRx();
+        }
+    }
+}
 
 
 #endif

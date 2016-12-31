@@ -24,7 +24,6 @@
 
 #include "miniuart.h"
 #include "interrupt.h"
-#include "comdevice.h"
 #include "systimer.h"
 #include "sysirqctrl.h"
 #include "memaux.h"
@@ -34,40 +33,39 @@
 #include "schedulerdevice.h"
 #include "memory.h"
 #include "systimerdevice.h"
-#include "cachedevice.h"
 #include "caos.h"
 
 
 #if COM1_DEVICE
-caHalComDevice caOS::com1(&hal_ll_com1);
+caHalComDevice caOS::com1(&hal_ll_com1,ioCtrlRequest::Com1);
 #endif
 
 #if COM2_DEVICE
-caHalComDevice caOS::com2(&hal_ll_com2);
+caHalComDevice caOS::com2(&hal_ll_com2,ioCtrlRequest::Com2);
 #endif
 
 #if COM3_DEVICE
-caHalComDevice caOS::com3(&hal_ll_com3);
+caHalComDevice caOS::com3(&hal_ll_com3,ioCtrlRequest::Com3);
 #endif
 
 #if COM4_DEVICE
-caHalComDevice caOS::com4(&hal_ll_com4);
+caHalComDevice caOS::com4(&hal_ll_com4,ioCtrlRequest::Com4);
 #endif
 
 #if COM5_DEVICE
-caHalComDevice caOS::com5(&hal_ll_com5);
+caHalComDevice caOS::com5(&hal_ll_com5,ioCtrlRequest::Com5);
 #endif
 
 #if COM6_DEVICE
-caHalComDevice caOS::com6(&hal_ll_com6);
+caHalComDevice caOS::com6(&hal_ll_com6,ioCtrlRequest::Com6);
 #endif
 
 #if COM7_DEVICE
-caHalComDevice caOS::com7(&hal_ll_com7);
+caHalComDevice caOS::com7(&hal_ll_com7,ioCtrlRequest::Com7);
 #endif
 
 #if COM8_DEVICE
-caHalComDevice caOS::com8(&hal_ll_com8);
+caHalComDevice caOS::com8(&hal_ll_com8,ioCtrlRequest::Com8);
 #endif
 
 

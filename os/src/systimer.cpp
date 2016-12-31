@@ -34,7 +34,7 @@
 sysTimerStatus caSysTimer::st;
 
 u32 caSysTimer::Init(u32 tick_hz, u32 timer_hz) {
-    caMemAux::MemSet((u32*) & st, 0, sizeof (st));
+    caMemAux<u32>::MemSet((u32*) & st, 0, sizeof (st));
     system_ap804_timer(ap804);
     Ap804Control cntl;
     if (timer_hz > 0xffff)
@@ -149,8 +149,8 @@ u32 caSysTimer::GetStatus(sysTimerStatus * reqStatus, u32 reqSize) {
         res = deviceError::error_invalid_null_destination;
     } else {
         st.mn_FreeRunning = ReadFreeCounter();
-        caMemAux::MemCpy((u32*) reqStatus, (u32*) & st, reqSize);
-
+        reqSize=reqSize>sizeof(st)?sizeof(st):reqSize;
+        caMemAux<u32>::MemCpy( (u32*)(reqStatus),  (u32*)(& st), reqSize);
     }
     return res;
 }

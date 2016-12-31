@@ -61,7 +61,7 @@ void caMemAux_test_class::test1(void)
     _STOP();
     u32 b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     u32 e[10];
-    void * ptr = caMemAux::MemCpy(e, b, sizeof (b) / sizeof (u32));
+    void * ptr = caMemAux<u32>::MemCpy(e, b, sizeof (b) );
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
@@ -75,7 +75,7 @@ void caMemAux_test_class::test2(void)
     _STOP();
     u16 b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     u16 e[10];
-    void * ptr = caMemAux::MemCpy(e, b, sizeof (b) / sizeof (u16));
+    void * ptr = caMemAux<u16>::MemCpy(e, b, sizeof (b) );
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 
@@ -90,7 +90,7 @@ void caMemAux_test_class::test3(void)
     _STOP();
     u8 b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     u8 e[10];
-    void * ptr = caMemAux::MemCpy(e, b, sizeof (b));
+    void * ptr = caMemAux<u8>::MemCpy(e, b, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 
@@ -105,7 +105,7 @@ void caMemAux_test_class::test4(void)
     _STOP();
     u32 b[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     u32 e[10];
-    void * ptr = caMemAux::MemSet(e, 5, sizeof (b) / sizeof (u32));
+    void * ptr = caMemAux<u32>::MemSet(e, 5, sizeof (b) );
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
@@ -119,7 +119,7 @@ void caMemAux_test_class::test5(void)
     _STOP();
     u16 b[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     u16 e[10];
-    void * ptr = caMemAux::MemSet(e, 5, sizeof (b) / sizeof (u16));
+    void * ptr = caMemAux<u16>::MemSet(e, 5, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
@@ -133,7 +133,7 @@ void caMemAux_test_class::test6(void)
     _STOP();
     u8 b[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     u8 e[10];
-    void * ptr = caMemAux::MemSet(e, 5, sizeof (b));
+    void * ptr = caMemAux<u8>::MemSet(e, 5, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }

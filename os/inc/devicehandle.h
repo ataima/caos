@@ -48,7 +48,6 @@ public:
     // status 
     u32 handle;
     statusHandle status;
-    u32 error;
     u32 tStart;
     u32 tStop;
     u32 tLast;
@@ -57,10 +56,12 @@ public:
     u8* wrBuff;
     u32 wrSize;
     u32 writed;
+    u32 wrError;
     // Rd
     u8* rdBuff;
     u32 rdSize;
     u32 readed;
+    u32 rdError;
 
 public:
     static void Dump(caDeviceHandle & port, caStringStream<s8> & ss);

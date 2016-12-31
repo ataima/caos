@@ -29,7 +29,6 @@
 #include "cpu.h" 
 #include "memory.h"
 #include "exception.h"
-#include "comdevice.h"
 #include "heaparray.h"
 #include "thread.h"
 #include "scheduler.h"
@@ -37,7 +36,6 @@
 #include "systimer.h"
 #include "systimerdevice.h"
 #include "cache.h"
-#include "cachedevice.h"
 #include "coprocessor.h"
 
 extern CpuRegs cpu_reg;

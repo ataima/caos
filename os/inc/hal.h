@@ -53,56 +53,65 @@ extern const hal_ll_scheduler_io hal_ll_scheduler;
 
 
 /* interface to low level io  */
-typedef u32(* abstract_functor_com_setup)(caIDeviceConfigure * in);
-typedef u32(* abstract_functor_com_write)(u32 *buff, s_t size);
-typedef u32(* abstract_functor_com_read)(u32 *buff, s_t size);
+typedef u32(* abstract_functor_com_setup)(u32 speed, u32 stop, u32 parity, u32 data);
 typedef u32(* abstract_functor_com_void)(void);
 typedef u32(* abstract_functor_com_enable)(bool rx, bool tx);
 typedef u32(* abstract_functor_com_dump)(caStringStream<s8> *ss);
+typedef u32(* abstract_functor_com_irq_rx)(void *obj, u8 * rxbuff, s_t size, s_t & readed);
+typedef u32(* abstract_functor_com_irq_tx)(void *obj, u8 * txbuff, s_t size, s_t & writed);
+typedef u32(* abstract_functor_com_get_errors)(u32 & rxError, u32 & txError);
+typedef void(* abstract_functor_com_wakeup)(u32 thId);
 
 typedef struct tag_hal_ll_com_io {
-    abstract_functor_com_setup hll_config;
-    abstract_functor_com_write hll_write;
-    abstract_functor_com_read hll_read;
-    abstract_functor_com_void hll_time;
-    abstract_functor_com_void hll_en_int_rx;
-    abstract_functor_com_void hll_start_tx;
-    abstract_functor_com_void hll_stop;
-    abstract_functor_com_enable hll_enable;
-    abstract_functor_com_dump hll_dump;
+    void *hll_lnk_obj;
+    const abstract_functor_com_setup hll_config;
+    const abstract_functor_com_void hll_time;
+    const abstract_functor_com_void hll_en_int_rx;
+    const abstract_functor_com_void hll_start_tx;
+    const abstract_functor_com_void hll_stop;
+    const abstract_functor_com_enable hll_enable;
+    const abstract_functor_com_dump hll_dump;
+    const abstract_functor_com_get_errors hll_get_errors;
+    const abstract_functor_com_wakeup hll_wakeup_rx;
+    const abstract_functor_com_wakeup hll_wakeup_tx;
+    const abstract_functor_com_irq_rx hll_irq_rx;
+    const abstract_functor_com_irq_tx hll_irq_tx;
 } hal_ll_com_io;
+
+
+
 
 /* LINK to COM1 */
 #if COM1_DEVICE 
-extern const hal_ll_com_io hal_ll_com1;
+extern hal_ll_com_io hal_ll_com1;
 #endif
 /* LINK to COM2 */
 #if COM2_DEVICE 
-extern const hal_ll_com_io hal_ll_com2;
+extern hal_ll_com_io hal_ll_com2;
 #endif
 /* LINK to COM3 */
 #if COM3_DEVICE 
-extern const hal_ll_com_io hal_ll_com3;
+extern hal_ll_com_io hal_ll_com3;
 #endif
 /* LINK to COM4 */
 #if COM4_DEVICE 
-extern const hal_ll_com_io hal_ll_com4;
+extern hal_ll_com_io hal_ll_com4;
 #endif
 /* LINK to COM5 */
 #if COM5_DEVICE 
-extern const hal_ll_com_io hal_ll_com5;
+extern hal_ll_com_io hal_ll_com5;
 #endif
 /* LINK to COM6 */
 #if COM6_DEVICE 
-extern const hal_ll_com_io hal_ll_com6;
+extern hal_ll_com_io hal_ll_com6;
 #endif
 /* LINK to COM7 */
 #if COM7_DEVICE 
-extern const hal_ll_com_io hal_ll_com7;
+extern hal_ll_com_io hal_ll_com7;
 #endif
 /* LINK to COM8 */
 #if COM8_DEVICE 
-extern const hal_ll_com_io hal_ll_com8;
+extern hal_ll_com_io hal_ll_com8;
 #endif
 
 

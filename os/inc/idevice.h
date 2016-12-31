@@ -108,7 +108,11 @@ public:
     virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0; 
 
     virtual u32 GetOpenFlag(void) = 0; 
-
+    
+    virtual u32 IrqServiceTx( u8 * txbuff, s_t size,s_t & writed)= 0;    
+    
+    virtual u32 IrqServiceRx( u8 * rxbuff, s_t size,s_t & readed)= 0;
+    
     // METHOD LAUNCHED BY SVC FROM USER MODE
 };
 
@@ -123,6 +127,8 @@ public:
     static u32 Flush(IDevice *dev, caDeviceHandle *port, u32 guid);
     static bool IsValidHandle(u32 handle, u32 mask);
     static u32 isOpen(IDevice *device);
+    static u32 IrqServiceTx (void *obj, u8 * txbuff, s_t size,s_t & writed);
+    static u32 IrqServiceRx (void *obj, u8 * rxbuff, s_t size,s_t & readed);
 };
 
 typedef enum tag_device_error {

@@ -29,7 +29,6 @@
 #include "heaparray.h"
 #include "scheduler.h"
 #include "systimer.h"
-#include "comdevice.h"
 #include "systimerdevice.h"
 #include "cache.h"
 #include "smp.h"

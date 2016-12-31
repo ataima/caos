@@ -13,7 +13,6 @@
         <in>caOS.cpp</in>
         <in>cache.cpp</in>
         <in>cachedevice.cpp</in>
-        <in>comdevice.cpp</in>
         <in>console.cpp</in>
         <in>cpu.cpp</in>
         <in>devicehandle.cpp</in>
@@ -124,10 +123,6 @@
         </ccTool>
       </item>
       <item path="src/cachedevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/comdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

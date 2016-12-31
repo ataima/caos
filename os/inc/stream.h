@@ -2,7 +2,7 @@
 #define STREAM_H
 
 #include "circularbuffer.h"
-
+#include "memaux.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
@@ -342,6 +342,17 @@ public:
 
     void Fix(caStringFiller & t) {
         t.end = size + t.width;
+    }
+
+    bool operator==(const s8* msg) {
+        return caMemAux<s8>::MemCmp(Str(),msg,Size())==0;
+    }
+
+    bool operator==(caString & msg) {
+        if(Size()!=msg.len)
+            return false;
+        else
+            return caMemAux<s8>::MemCmp(Str(),msg.str,Size())==0;
     }
 
     //Tested

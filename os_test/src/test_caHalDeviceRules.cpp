@@ -41,7 +41,7 @@ public:
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port)
     {
         std::cout << "Call to : testDevice::Open( " << conf << " , " << port << " );" << std::endl;
-        if(port)port->handle=0xfff01002;
+        if (port)port->handle = 0xfff01002;
         return 0;
     }
 
@@ -79,6 +79,22 @@ public:
     {
         return isOpen;
     }
+
+    u32 IrqServiceTx(u8 * txbuff, s_t size,s_t & writed)
+    {
+        CA_ASSERT(txbuff != NULL);
+        CA_ASSERT(size == 1);
+        writed=size;
+        return 0;
+    }
+
+    u32 IrqServiceRx(u8 * rxbuff, s_t size,s_t & readed)
+    {
+        CA_ASSERT(rxbuff != NULL);
+        CA_ASSERT(size == 1);
+        readed=size;
+        return 0;
+    };
 };
 
 class testDevice_test_class
@@ -92,6 +108,8 @@ class testDevice_test_class
     CA_TEST(testDevice_test_class::test5, "Flush test");
     CA_TEST(testDevice_test_class::test6, "Ioctrl test");
     CA_TEST(testDevice_test_class::test7, "GetOpenFlag test");
+    CA_TEST(testDevice_test_class::test8, "IrqRx test");
+    CA_TEST(testDevice_test_class::test9, "IrqTx test");
     CA_TEST_SUITE_END();
 
     void setUp(void)
@@ -140,6 +158,25 @@ class testDevice_test_class
         CA_ASSERT(t.GetOpenFlag() == 0);
         t.setIsOpen(12734);
         CA_ASSERT(t.GetOpenFlag() == 12734);
+    }
+
+    void test8(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t readed;
+        CA_ASSERT(t.IrqServiceRx(&buff, 1,readed) == 0);
+        CA_ASSERT(readed == 1);
+        
+    }
+
+    void test9(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqServiceTx(&buff, 1,writed) == 0);
+        CA_ASSERT(writed == 1);
     }
 
     void tearDown(void)
@@ -202,7 +239,7 @@ void caHalDeviceRules_test_class::test1(void)
     CA_ASSERT(caHalDeviceRules::Open(&t, NULL, NULL, 0) == deviceError::error_device_config_param);
     CA_ASSERT(caHalDeviceRules::Open(&t, &setup, NULL, 0) == deviceError::error_invalid_null_port);
     CA_ASSERT(caHalDeviceRules::Open(&t, &setup, &port, guid) == deviceError::no_error);
-    CA_ASSERT(port.handle=0xfff01002);
+    CA_ASSERT(port.handle = 0xfff01002);
 }
 
 void caHalDeviceRules_test_class::test2(void)
@@ -226,7 +263,7 @@ void caHalDeviceRules_test_class::test2(void)
     t.setIsOpen(1);
     port.handle = 0xfff00000;
     CA_ASSERT(caHalDeviceRules::Close(&t, &port, guid) == deviceError::error_invalid_handle_port);
-    port.handle = BASE_HANDLE +1;
+    port.handle = BASE_HANDLE + 1;
     CA_ASSERT(caHalDeviceRules::Close(&t, &port, guid) == deviceError::error_invalid_handle_port);
 
 }

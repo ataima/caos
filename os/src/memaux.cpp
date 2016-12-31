@@ -21,73 +21,6 @@
 #include "caos_c_types.h"
 #include "memaux.h"
 
-void* caMemAux::MemCpy(u32 *dest, u32 *src, u32 size) {
-    if (!dest)
-        return dest;
-    if (!src)
-        return dest;
-    while (size > 0) {
-        *dest++ = *src++;
-        size--;
-    }
-    return dest;
-}
-
-void* caMemAux::MemCpy(u16 *dest, u16 *src, u32 size) {
-    if (!dest)
-        return dest;
-    if (!src)
-        return dest;
-    while (size > 0) {
-        *dest++ = *src++;
-        size--;
-    }
-    return dest;
-}
-
-void* caMemAux::MemCpy(u8 *dest, u8 *src, u32 size) {
-    if (!dest)
-        return dest;
-    if (!src)
-        return dest;
-    while (size > 0) {
-        *dest++ = *src++;
-        size--;
-    }
-    return dest;
-}
-
-void* caMemAux::MemSet(u32 *dest, u32 pat, u32 size) {
-    if (!dest)
-        return FALSE;
-    while (size > 0) {
-        *dest++ = pat;
-        size--;
-    }
-    return dest;
-}
-
-void* caMemAux::MemSet(u16 *dest, u16 pat, u32 size) {
-    if (!dest)
-        return FALSE;
-    while (size > 0) {
-        *dest++ = pat;
-        size--;
-    }
-    return dest;
-}
-
-void* caMemAux::MemSet(u8 *dest, u8 pat, u32 size) {
-    if (!dest)
-        return FALSE;
-    while (size > 0) {
-        *dest++ = pat;
-        size--;
-    }
-    return dest;
-}
-
-
 #define TOUPPER(CH)  (((CH) >= 'a' && (CH) <= 'z') ? ((CH) - 'a' + 'A') : (CH))
 
 u32 caStrAux::StrICmp(const s8 *s1, const s8 *s2) {
@@ -97,7 +30,7 @@ u32 caStrAux::StrICmp(const s8 *s1, const s8 *s2) {
     return (u32) (TOUPPER(*s1) - TOUPPER(*s2));
 }
 
-u32 caStrAux::StrNCmp(const s8 *s1, const s8 *s2, u32 max) {
+u32 caStrAux::StrNCmp(const s8 *s1, const s8 *s2, s_t max) {
 
     while (max--) {
         if (*s1 != *s2)
@@ -122,7 +55,7 @@ s8* caStrAux::StrCpy(s8 *s1, const s8 *s2) {
     return s1;
 }
 
-s8* caStrAux::StrNCpy(s8 *s1, const s8 *s2, u32 max) {
+s8* caStrAux::StrNCpy(s8 *s1, const s8 *s2, s_t max) {
     u32 len = 0;
     while (*s2 != '\0' && len++<max)
         *s1++ = *s2++;

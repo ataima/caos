@@ -31,7 +31,6 @@
 #include "scheduler.h"
 #include "memory.h"
 #include "memaux.h"
-#include "comdevice.h"
 
 /*
  |---------------------------------------------------------------|
@@ -57,8 +56,8 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->thid = (u32) ctx;
         ctx->status = caThreadStatus::thInit;
         ctx->priority = p;
-        ctx->mode = mode;
-        caMemAux::MemSet((u32 *) ctx->pcb, 0, 32);
+        ctx->mode = mode;;
+        caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, 32);
         ctx->pcb[0] = mode; //SPSR
         ctx->pcb[1] = (u32) caThread::LaunchThread;
         ctx->pcb[2] = (u32) func; //r0

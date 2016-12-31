@@ -36,7 +36,6 @@ u32 caSysTimerDevice::isOpen = 0;
 
 u32 caSysTimerDevice::Flush(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
     } else
@@ -49,9 +48,8 @@ u32 caSysTimerDevice::Flush(caDeviceHandle *port) {
         //Rx.Clean();
         //Tx.Clean();
         port->tLast = caSysTimer::GetCount();
-        port->error = 0;
+        port->wrError=port->rdError=0;
     }
-    //TOUT();
     return res;
 }
 
@@ -71,7 +69,7 @@ u32 caSysTimerDevice::Open(caIDeviceConfigure * setup,
         if (isOpen == 0) {
             isOpen++;
             if (port != NULL) {
-                caMemAux::MemSet((u32*) port, 0, sizeof (caDeviceHandle) / sizeof (u32));
+                caMemAux<u32>::MemSet((u32*) port, 0, sizeof (caDeviceHandle));
                 port->handle = ++guid;
                 port->status = caDeviceHandle::statusHandle::Open;
                 port->tStart = caSysTimer::GetCount();
@@ -111,7 +109,7 @@ u32 caSysTimerDevice::Close(caDeviceHandle *port) {
         port->tStop = caSysTimer::GetCount();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
-        port->error = 0;
+        port->wrError=port->rdError=0;
     }
     //TOUT();
     return res;
@@ -138,7 +136,7 @@ u32 caSysTimerDevice::Write(caDeviceHandle *port) {
             port->wrSize -= writed;
             port->tLast = caSysTimer::GetCount();
             port->tLastCmd = caDeviceAction::caActionWrite;
-            port->error = 0;
+            port->wrError=port->rdError=0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }
@@ -171,7 +169,7 @@ u32 caSysTimerDevice::Read(caDeviceHandle *port) {
             port->rdSize -= pSize;
             port->tLast = caSysTimer::GetCount();
             port->tLastCmd = caDeviceAction::caActionRead;
-            port->error = 0;
+            port->wrError=port->rdError=0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }

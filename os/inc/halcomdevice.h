@@ -25,13 +25,63 @@
 #include "atomiclock.h"
 #include "syslog.h"
 
+struct caComDeviceConfigure
+: public caIDeviceConfigure {
+public:
+    u32 speed;
+    u32 stop;
+    u32 parity;
+    u32 data;
+
+    void Dump(caStringStream<s8> & ss) {
+        caCSTR(cs_speed, "SETUP SPEED  = ");
+        caCSTR(cs_stop, "SETUP STOP   = ");
+        caCSTR(cs_parity, "SETUP PARITY = ");
+        caCSTR(cs_data, "SETUP DATA   = ");
+        ss << cs_speed << speed << caEnd::endl;
+        ss << cs_stop << stop << caEnd::endl;
+        ss << cs_parity << parity << caEnd::endl;
+        ss << cs_data << data << caEnd::endl;
+        ss.Str();
+    }
+
+
+};
+
+struct caComDeviceCtrl
+: public caIDeviceCtrl {
+public:
+
+    typedef enum tag_io_ctrl_specific_request {
+        comFlush = 0x5000,
+        comStop,
+        comStart,
+        comListHardware,
+        comStatusBuffer,
+        comAddSignalRx,
+        comAddSignalTx,
+        comRemoveSignalRx,
+        comRemoveSignalTx,
+        comStartLog,
+        comStopLog,
+        comGetLog
+    } IoCtrlDirect;
+
+    IoCtrlDirect command;
+    caStringStream<s8> *ss;
+    u32 st_rx;
+    u32 st_tx;
+};
+
+
+
 class caHalComDevice
 : public IDevice {
 private:
     static const u32 QUEUESIZE = 0x4000;
-    static u32 guid;
+    u32 mask_guid;
+    u32 handle_guid;
     u32 isOpen;
-    u32 eOverrun;
     u32 signalRx;
     u32 signalTx;
     caCircularBuffer<u8> Rx;
@@ -42,11 +92,11 @@ private:
     caAtomicLock TxLock;
     bool IsValidHandle(u32 handle);
     caSysLog caLog;
-    const hal_ll_com_io *link;
+    hal_ll_com_io *link;
 private:
     u32 addHandle(void);
 public:
-    caHalComDevice(const hal_ll_com_io *com);
+    caHalComDevice( hal_ll_com_io *com,u32 mask_handle);
     u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);    
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
     u32 Close(caDeviceHandle *port);
@@ -54,7 +104,11 @@ public:
     u32 Read(caDeviceHandle *port);
     u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     u32 Flush(caDeviceHandle *port);
+    u32 IrqServiceTx( u8 * txbuff, s_t size,s_t & writed);    
+    u32 IrqServiceRx( u8 * rxbuff, s_t size,s_t & readed);
     inline u32 GetOpenFlag(void) {return isOpen;}
+    
+    
 };
 
 

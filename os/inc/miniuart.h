@@ -23,11 +23,25 @@
 #if   HAVE_MINIUART 
 
 class caMiniUart {
-public:
+private:
+    // temp rx buffer for irq rx
+    static u8 rxBuff[32];
+    // buffer rx index
+    static u32 rxPos;
+    // temp tx buffer for irq tx
+    static u8 txBuff[32];
+    // buffer tx index
+    static u32 txPos;
+    // error tx
+    static u32 txOverrun;
+    // error rx 
+    static u32 rxOverrun;
+    
+    static void IrqServiceTx(void);
 
+    static void IrqServiceRx(void);
 
 public:
-    static u32 Init(u32 vel, u32 stop, u32 parity, u32 data);
 
     static inline u32 Enable(bool rx, bool tx) {
         system_aux_mini_uart(mu);
@@ -111,9 +125,6 @@ public:
         return mu->stat.asBit.txfifo;
     }
 
-
-    static u32 Stop(void);
-
     static u32 Recv(void) {
         system_aux_mini_uart(mu);
         while (!mu->lsr.asBit.rxready);
@@ -132,8 +143,19 @@ public:
     }
 
     static u32 Dump(caStringStream<s8> * ss);
-    static u32 Configure(caIDeviceConfigure * in);
+
+    static u32 Configure(u32 speed,u32 stop , u32 parity, u32 data );
+
     static u32 EnableInt(void);
+
+    static void IrqService(void);
+
+    static u32 Stop(void);
+
+    static u32 Init(u32 vel, u32 stop, u32 parity, u32 data);
+
+    static u32 GetErrors(u32 &rxError, u32 & txError);
+
 };
 
 #endif

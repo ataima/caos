@@ -230,8 +230,8 @@ bool caScheduler::Init(caSchedulerMode req) {
     } else {
         getnextcontext = caNextTaskManager::PriorityNextContext;
     }
-    caMemAux::MemSet((u32 *) taskList, 0, sizeof (taskList) / sizeof (u32));
-    caMemAux::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext) / sizeof (u32));
+    caMemAux<u32>::MemSet((u32 *) taskList, 0, sizeof (taskList));
+    caMemAux<u32>::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext));
     caStrAux::StrNCpy(main_ctx.name, "Default", 64);
     main_ctx.stack_start = 0x40000000;
     main_ctx.stack_end = 0x0;

@@ -26,7 +26,6 @@
 #include "interrupt.h"
 #include "sysirqctrl.h"
 #include "cpu.h"
-#include "comdevice.h"
 #include "systimer.h"
 #include "thread.h"
 #include "scheduler.h"
@@ -54,16 +53,20 @@ const hal_ll_scheduler_io hal_ll_scheduler = {
     caScheduler::IsValidContext
 };
 
-const hal_ll_com_io hal_ll_com1 = {
-    caMiniUart::Configure, // hll_config
-    NULL, //hll_write
-    NULL, //hll_read
-    caSysTimer::GetCount, //hll_time
-    caMiniUart::EnableInt, //hll_en_int
-    caMiniUart::EnableIrqTx, //hll_start_tx
-    caMiniUart::Stop, //hll_stop
-    caMiniUart::Enable, //hll_enable
-    caMiniUart::Dump //hll_dump
+ hal_ll_com_io hal_ll_com1 = {
+    NULL, 
+    caMiniUart::Configure,          //hll_config
+    caSysTimer::GetCount,           //hll_time
+    caMiniUart::EnableInt,          //hll_en_int
+    caMiniUart::EnableIrqTx,        //hll_start_tx
+    caMiniUart::Stop,               //hll_stop
+    caMiniUart::Enable,             //hll_enable
+    caMiniUart::Dump,               //hll_dump
+    caMiniUart::GetErrors,          //hll_get_errors
+    caScheduler::WakeUp,            //hll_wakeuprx
+    caScheduler::WakeUp,            //hll_wakeuptx
+    caHalDeviceRules::IrqServiceRx, //hll_irq_rx : set from device obj
+    caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj    
 };
 
 

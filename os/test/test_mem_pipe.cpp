@@ -28,7 +28,7 @@ static u32 sourceTask(u32, u32) {
     TIN();
     caMemDeviceConfigure in1, in2;
     caDevicePort port1, port2;
-    caMemAux::MemCpy((u32*) in1.name, (u32*) "pippoSource\0", 3);
+    caMemAux::MemCpy((u32*) in1.name, (u32*) "pippoSource\0", 12);
     in1.size = 1024 * 1024 * 32; //1M
     in1.host_guest = caMemDeviceConfigure::requestMode::host;
     deviceError res;
@@ -38,7 +38,7 @@ static u32 sourceTask(u32, u32) {
     res = caOS::Open("MEMPIPE", in1, port1);
     Dbg::Put("OPEN HOST SOURCE TASK =", res);
     if (res == deviceError::no_error) {
-        caMemAux::MemCpy((u32*) in2.name, (u32*) "pippoDest\0\0\0", 3);
+        caMemAux::MemCpy((u32*) in2.name, (u32*) "pippoDest\0\0\0", 12);
         in2.host_guest = caMemDeviceConfigure::requestMode::guest;
         in2.size = 0;
         do {

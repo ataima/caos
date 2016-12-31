@@ -20,22 +20,63 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
+template <typename T>
 class caMemAux {
 public:
 
     //T
-    static void* MemCpy(u32 *dest, u32 *src, u32 size);
+
+    static void* MemCpy(T *dest, const T *src, s_t size) {
+        if (!dest)
+            return dest;
+        if (!src)
+            return dest;
+        size/=(s_t)(sizeof(T));
+        while (size > 0) {
+            *dest++ = *src++;
+            size--;
+        }
+        return dest;
+    }
     //T
-    static void* MemCpy(u16 *dest, u16 *src, u32 size);
-    //T
-    static void* MemCpy(u8 *dest, u8 *src, u32 size);
-    //T
-    static void* MemSet(u32 *dest, u32 pat, u32 size);
-    //T
-    static void* MemSet(u16 *dest, u16 pat, u32 size);
-    //T    
-    static void* MemSet(u8 *dest, u8 pat, u32 size);
+
+    static void* MemSet(T *dest, T pat, s_t size) {
+        if (!dest)
+            return FALSE;
+        size/=(s_t)(sizeof(T));
+        while (size > 0) {
+            *dest++ = pat;
+            size--;
+        }
+        return dest;
+    }
     //
+
+    static void* MemZero(T *dest, s_t size) {
+        if (!dest)
+            return FALSE;
+        size/=(s_t)(sizeof(T));
+        while (size > 0) {
+            *dest++ = 0;
+            size--;
+        }
+        return dest;
+    }
+
+    static s32 MemCmp(const T *dest, const T *src, s_t size) {
+        if (!dest)
+            return -1;
+        if (!src)
+            return -2;
+        size/=(s_t)(sizeof(T));
+        while (size > 0 && *dest == *src) {
+            dest++;
+            src++;
+            size--;
+        }
+        return (s32) (size == 0 ? 0 : (*dest - *src));
+    }
+
 };
 
 class caStrAux {
@@ -45,11 +86,11 @@ public:
 
     static u32 StrICmp(const s8 *s1, const s8 *s2);
 
-    static u32 StrNCmp(const s8 *s1, const s8 *s2, u32 max);
+    static u32 StrNCmp(const s8 *s1, const s8 *s2, s_t max);
 
     static s8* StrCpy(s8 *s1, const s8 *s2);
 
-    static s8* StrNCpy(s8 *s1, const s8 *s2, u32 max);
+    static s8* StrNCpy(s8 *s1, const s8 *s2, s_t max);
 
     static u32 StrLen(const s8 *s1);
 };

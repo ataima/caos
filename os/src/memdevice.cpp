@@ -81,15 +81,13 @@ u32 caMemDevice::Open(caIDeviceConfigure * in,
                 desc = &descriptors[i];
                 desc->index = i;
                 //copy name block
-                caMemAux::MemCpy((u32*) desc->name,
-                        (u32*) setup->name,
-                        sizeof (desc->name) / sizeof (u32));
+                caStrAux::StrCpy(desc->name, setup->name);
                 desc->size = (setup->size / sizeof (u32)) + 1;
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {
                     res = deviceError::error_pipe_no_memory;
-                    caMemAux::MemSet((u32*) desc, 0,
-                            sizeof (caMemDeviceDescriptor) / sizeof (u32));
+                    caMemAux<u32>::MemSet((u32*) desc, 0,
+                            sizeof (caMemDeviceDescriptor));
                 } else {
                     desc->queue.Init(buff, desc->size);
                     desc->action = caMemDeviceDescriptor::actionMem::opened;
@@ -148,17 +146,17 @@ u32 caMemDevice::Close(caDeviceHandle *port) {
                 port->tStop = caSysTimer::GetCount();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
-                port->error = 0;
+                port->wrError = port->rdError = 0;
             } else
                 if (desc->host == port->handle) {
                 caMemory::Free(desc->queue.GetBase(), &size);
-                caMemAux::MemSet((u32*) desc, 0, sizeof (caMemDeviceDescriptor));
+                caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caMemDeviceDescriptor));
                 isOpen--;
                 port->status = caDeviceHandle::statusHandle::Close;
                 port->tStop = caSysTimer::GetCount();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
-                port->error = 0;
+                port->wrError = port->rdError = 0;
             } else {
                 res = deviceError::error_invalid_handle_port;
             }
@@ -293,8 +291,7 @@ u32 caMemDevice::Resize(caDeviceHandle *port, u32 size) {
                 u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                 if (buff == NULL) {
                     res = deviceError::error_pipe_no_memory;
-                    caMemAux::MemSet((u32*) desc, 0,
-                            sizeof (caMemDeviceDescriptor) / sizeof (u32));
+                    caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caMemDeviceDescriptor));
                 } else {
                     desc->queue.Init(buff, desc->size);
                 }

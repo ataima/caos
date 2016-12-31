@@ -28,7 +28,7 @@
 #include "sysirqctrl.h"
 #include "systimer.h"
 #include "scheduler.h"
-#include "comdevice.h"
+
 
 
 caAtomicLock caIrqCtrl::Lock;
@@ -78,10 +78,10 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
             //Dbg::Put("AUX = ", irq->basepending.asReg);
             system_aux(aux);
             if (aux->irq.asBit.miniuart) {
-                caComDevice::IrqService();
+                caMiniUart::IrqService();
             } else
                 if (aux->irq.asBit.spi_m_1) {
-                //Dbg::Put("SP1 = ", irq->basepending.asReg);
+                Dbg::Put("SP1 = ", irq->basepending.asReg);
             } else
                 if (aux->irq.asBit.spi_m_2) {
                 Dbg::Put("SP2 = ", irq->basepending.asReg);
