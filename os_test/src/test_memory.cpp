@@ -42,15 +42,17 @@ class caMemory_test_class
     CA_TEST(caMemory_test_class::test1, " Init test");
     CA_TEST(caMemory_test_class::test2, " Clean test");
     CA_TEST(caMemory_test_class::test3, " Allocate/Free test");
+    CA_TEST(caMemory_test_class::test4, " Find test");
     CA_TEST_SUITE_END();
 
     void setUp(void)
     {
     }
+    
     void test1(void);
     void test2(void);
     void test3(void);
-
+    void test4(void);
 
     void tearDown(void)
     {
@@ -127,4 +129,31 @@ void caMemory_test_class::test3(void)
     caMemory::Clean();
 }
 
+
+void caMemory_test_class::test4(void)
+{
+    _START();
+    _INFO("to check Find function of caMemory");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    caMemory::Init();
+    CA_ASSERT(caMemory::Good()!=0);
+    CA_ASSERT(caMemory::GetStartAddress()==__heap_base__);
+    CA_ASSERT(caMemory::GetEndAddress()==__heap_end__);
+    CA_ASSERT(caMemory::GetTotalSize()==100000*sizeof(u32));
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetHeaderBlock()==BLOCKSIZE);      
+    void * p= caMemory::Allocate(caMemory::GetHeaderBlock()*100);
+    CA_ASSERT(p!=NULL);
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(5*BLOCKSIZE)-caMemory::GetHeaderBlock()*100));
+    u32 res=caMemory::Find(p);
+    CA_ASSERT(caMemory::GetHeaderBlock()*101==res);
+    u32 size=0;
+    res=caMemory::Free(p,&size);
+    CA_ASSERT(res==TRUE);
+    CA_ASSERT(caMemory::GetHeaderBlock()*101==size);
+    CA_ASSERT(caMemory::GetAvailMemory()==((100000*sizeof(u32))-(3*BLOCKSIZE)));   
+    caMemory::Clean();
+}
 

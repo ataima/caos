@@ -77,6 +77,8 @@ public:
     static void * Allocate(u32 size);
 
     static u32 Free(void * p, u32 *size = NULL);
+    
+    static u32 Find(void *p);
 
     static s8* DumpAvail(s8* buff, s_t size);
 

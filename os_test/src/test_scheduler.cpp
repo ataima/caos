@@ -21,7 +21,11 @@
 #include "docMacro.h"
 #include "hal.h"
 
-static bool isvalidcontext(u32) {
+static bool isvalidcontext(u32 num) {
+    if(num == 12345678)
+        return false;    
+    if(num == 0)
+        return false;    
     return true;
 }
 

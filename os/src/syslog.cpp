@@ -22,18 +22,16 @@
 
 
 
-#define a1mb (1024*1024)
-
 #if HAVE_SYS_LOG
 
-u32 caSysLog::Init(u32 total_size) {
+u32 caSysLog::Init(s_t _total_size) {
     u32 res = FALSE;
-    if (total_size < a1mb)
-        total_size = a1mb;
+    total_size = _total_size;
     mn_Base = static_cast<s8*> (caMemory::Allocate(total_size));
     if (mn_Base != NULL) {
-        mn_CBuffer.Init(mn_Base, total_size);
-        res = TRUE;
+        cbuff.Init(mn_Base, total_size);
+        mn_Stream = static_cast<s8*> (caMemory::Allocate(2048));
+        res = ss.Init(mn_Stream, 2048);
     }
     return res;
 }
@@ -41,27 +39,25 @@ u32 caSysLog::Init(u32 total_size) {
 u32 caSysLog::Destroy(void) {
     u32 res = FALSE;
     if (mn_Base != NULL) {
-        mn_CBuffer.Init(NULL, 0);
+        cbuff.Init(NULL, 0);
         res = caMemory::Free(mn_Base);
+        ss.Init(NULL, 0);
+        res = caMemory::Free(mn_Stream);
     }
     return res;
 }
 
-void caSysLog::doLog(caStringStream<s8> & ss) {
-    u32 writed = 0;
-    mn_CBuffer.Push(ss.Str(), ss.Size(), writed);
+caStringStream<s8> & caSysLog::operator<<(caEnd & t) {
+    u32 writed;
+    if (enable == 0x1000) {
+        ss << t.endl;
+        cbuff.Push(ss.Str(), ss.Size(), writed);
+    }
+    ss.Clear();
+    return ss;
 }
 
-void caSysLog::getLog(caStringStream<s8> & ss) {
-    s_t s = mn_CBuffer.Size();
-    if (s) {
-        s8 v = 0;
-        while (s--) {
-            mn_CBuffer.Pop(v);
-            ss << v;
-        }
-    }
-}
+
 
 
 

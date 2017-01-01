@@ -29,18 +29,43 @@
 
 #ifdef HAVE_SYS_LOG
 
+/**
+ * 
+ * simple log class not blocking and not interrupt safe...
+ * TO DO work to add features
+ **/
+
+
+
+
 class caSysLog {
-    caLogStream mn_CBuffer;
+    // I can add strdeam of 2048 byte max at once
+    static const u32 max_string = 2048;
+    s_t total_size;
+    // Circular buffer of size total_size attached to mn_base dinamically allocated
+    caCircularBuffer<s8> cbuff;
+    // string stream attached to mn_stream
+    caStringStream<s8> ss;
+    // circular buffer base
     s8 *mn_Base;
+    // stream base
+    s8 *mn_Stream;
+    // log is enabled
     u32 enable;
 public:
-    u32 Init(u32 total_size = 0);
-    void doLog(caStringStream<s8> & ss);
-    void getLog(caStringStream<s8> & ss);
+    u32 Init(s_t _total_size = 0);
     u32 Destroy();
 
-    inline u32 isEnabled(void) {
-        return enable;
+    inline caStringStream<s8> & GetStream(void) {
+        return ss;
+    }
+
+    inline caCircularBuffer<s8> & GetCBuffer(void) {
+        return cbuff;
+    }
+
+    inline bool IsEnabled(void) {
+        return (enable == 0x1000);
     }
 
     inline void Enable(void) {
@@ -50,7 +75,83 @@ public:
     inline void Disable(void) {
         enable = 0;
     }
+
+    inline caStringStream<s8> & operator<<(caStringFiller t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(caStringFormat t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s8 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u8 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s16 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u16 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s32 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u32 t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(caStringStream<s8> & t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(const char * t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(const caString & t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s8 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u8 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s16 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u16 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(s32 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(u32 *t) {
+        return ss << t;
+    }
+
+    inline caStringStream<s8> & operator<<(caStringStream<s8> *t) {
+        return ss << t;
+    }
+
+    caStringStream<s8> & operator<<(caEnd & t);
+
 };
+
 
 #endif
 

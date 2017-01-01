@@ -62,6 +62,8 @@ public:
         comAddSignalTx,
         comRemoveSignalRx,
         comRemoveSignalTx,
+        comGetSignalRx,
+        comGetSignalTx,
         comStartLog,
         comStopLog,
         comGetLog

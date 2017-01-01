@@ -20,3 +20,7 @@
 #include "hal.h"
 
 const char *caEnd::endl = "\r\n";
+const char* caEnd::tab  = "\t";
+const char* caEnd::newl = "\n";
+const char* caEnd::cret = "\r";
+const char* caEnd::bel  = "\b";

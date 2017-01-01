@@ -56,11 +56,13 @@ typedef struct tag_ss_fill_req {
     }
 } caStringFiller;
 
-// TO UNIFORM ON ASINGLE OBJECT THE CR+LF ( OR  ANY IF NEED!)
-// HAVE TO DO ss<<caEnd::endl o ss<<ss.Endl(Port))
-
 typedef struct tag_ss_end_line {
     static const char* endl;
+    static const char* tab;
+    static const char* newl;
+    static const char* cret;
+    static const char* bel;
+    static tag_ss_end_line obj;
 } caEnd;
 
 template <typename T>
@@ -228,7 +230,7 @@ protected:
 
     //Tested
 
-    inline void Add(const T *ptr, s_t num) {
+    void Add(const T *ptr, s_t num) {
         s_t i, avail = Available();
         if (num > avail)num = avail;
         i = num;
@@ -262,17 +264,25 @@ public:
 
     u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
-        capacity = a_size - 1;
-        cBuff = base;
-        start = cBuff;
-        stop = &cBuff[capacity];
-        size = 0;
-        mode_dec = true;
-        mode_hex = false;
-        mode_bin = false;
-        if (cBuff != NULL && capacity > 0) {
-            cBuff[0] = '\0';
-            res = TRUE;
+        if (base != NULL) {
+            if (a_size > 0)
+                capacity = a_size - 1;
+            else
+                capacity = 0;
+            cBuff = base;
+            start = cBuff;
+            stop = &cBuff[capacity];
+            size = 0;
+            mode_dec = true;
+            mode_hex = false;
+            mode_bin = false;
+            if (cBuff != NULL && capacity > 0) {
+                cBuff[0] = '\0';
+                res = TRUE;
+            }
+        } else {
+            start = stop = cBuff = NULL;
+            size = capacity = 0;
         }
         return res;
     }
@@ -553,31 +563,36 @@ public:
     }
 
 
-    //TO DO REMOVE IT ! to -> caDevicePort operator << (caStringStream...)
-    /*
-        caStringStream<T> & operator<<(caDevicePort & port) {
-            if (port.IsValidHandle()) {
-                //Write Out + Clear Stream;
-                deviceError res;
-                port.wrBuff = (u8 *)this->Str();
-                port.wrSize = this->Size();
-                port.writed = 0;
-                res = caDevice::Write(port);
-                if (res == deviceError::no_error) {
-                    this->Clear();
-                }
-            }
-            return (*this);
-        }
-
-        caDevicePort & Endl(caDevicePort &t) {
-            (*this) << caEnd::endl;
-            Stopper();
-            return t;
-        }
-     */
-
 };
+
+/*
+template <typename T>
+class caCircularStringStream
+: public caStringStream <T> {
+protected:
+
+    inline void Add(T v) {
+        if (stop == &cBuff[capacity])
+            stop = cBuff;
+        if (start == &cBuff[capacity])
+            start = cBuff;
+        *stop = v;
+        stop++;
+        //stop = stop % WIDTH;        
+        return true;
+    }
+
+    void Add(const T *ptr, s_t num) {
+        while (num) {
+            Add(*ptr)
+            num--;
+        }
+    }
+};
+*/
+
+
+
 
 template <typename T>
 class TokenString {

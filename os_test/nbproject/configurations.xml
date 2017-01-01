@@ -22,6 +22,7 @@
         <in>test_scheduler.cpp</in>
         <in>test_straux.cpp</in>
         <in>test_string_stream.cpp</in>
+        <in>test_syslog.cpp</in>
         <in>test_token_string.cpp</in>
       </df>
     </df>
@@ -171,6 +172,10 @@
         </ccTool>
       </item>
       <item path="src/test_halcomdevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/test_syslog.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
