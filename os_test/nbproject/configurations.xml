@@ -14,6 +14,7 @@
         <in>test_atomiclock.cpp</in>
         <in>test_caHalDeviceRules.cpp</in>
         <in>test_circular_buffer.cpp</in>
+        <in>test_circular_string_stream.cpp</in>
         <in>test_cstr.cpp</in>
         <in>test_halcomdevice.cpp</in>
         <in>test_heaparray.cpp</in>
@@ -71,7 +72,23 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="../os_test/src/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/idevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="../os_test/src/mainApp.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/memaux.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/memory.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -79,7 +96,15 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="../os_test/src/syslog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="../os_test/src/test_array.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/test_atomiclock.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -97,7 +122,21 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="../os_test/src/test_circular_string_stream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="../os_test/src/test_cstr.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../os_test/src/test_halcomdevice.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -128,6 +167,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="../os_test/src/test_syslog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="../os_test/src/test_token_string.cpp"
             ex="false"
             tool="1"
@@ -147,38 +190,6 @@
           <standard>8</standard>
         </ccTool>
       </folder>
-      <item path="src/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/idevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/memaux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/memory.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/syslog.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test_atomiclock.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test_halcomdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test_syslog.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>
