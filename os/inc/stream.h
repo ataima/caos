@@ -647,7 +647,7 @@ public:
     u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         if (base != NULL && a_size > 0) {
-            capacity = a_size - 1;
+            capacity = a_size;
             cBuff = base;
             start = stop = 0;
             mode_dec = true;

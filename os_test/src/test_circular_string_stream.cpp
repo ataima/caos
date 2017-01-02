@@ -52,6 +52,7 @@ class caCircularStringStream_test_class
     CA_TEST(caCircularStringStream_test_class::test20, "filler test");
     CA_TEST(caCircularStringStream_test_class::test21, "terminator test");
     CA_TEST(caCircularStringStream_test_class::testPrefetch, "use case prefetch");
+    CA_TEST(caCircularStringStream_test_class::test30, "rolling text");
     CA_TEST_SUITE_END();
 
     void setUp(void)
@@ -80,7 +81,7 @@ class caCircularStringStream_test_class
     void test20(void);
     void test21(void);
     void testPrefetch(void);
-
+    void test30(void);
 
     void tearDown(void)
     {
@@ -120,7 +121,7 @@ void caCircularStringStream_test_class::test2(void)
     CA_ASSERT(a.Empty() == true);
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(a.Empty() == true);
 }
@@ -136,19 +137,19 @@ void caCircularStringStream_test_class::test3(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(a.Empty() == true);
     a << 't';
     char obuff[20];
     CA_ASSERT(a.Size() == 1);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 1);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(obuff[0] == 't');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(a.Empty() == true);
@@ -167,14 +168,14 @@ void caCircularStringStream_test_class::test4(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(a.Empty() == true);
     u8 t = 126;
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 3);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 3);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(obuff[0] == '1');
@@ -182,13 +183,13 @@ void caCircularStringStream_test_class::test4(void)
     CA_ASSERT(obuff[2] == '6');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 10);
     CA_ASSERT(a.Good() == true);
@@ -206,7 +207,7 @@ void caCircularStringStream_test_class::test4(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 4);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 4);
     CA_ASSERT(a.Good() == true);
@@ -230,7 +231,7 @@ void caCircularStringStream_test_class::test5(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(a.Empty() == true);
@@ -238,7 +239,7 @@ void caCircularStringStream_test_class::test5(void)
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 5);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 5);
     CA_ASSERT(a.Good() == true);
@@ -249,14 +250,14 @@ void caCircularStringStream_test_class::test5(void)
     CA_ASSERT(obuff[4] == '5');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 18);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 18);
     CA_ASSERT(a.Good() == true);
@@ -282,7 +283,7 @@ void caCircularStringStream_test_class::test5(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 6);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 6);
     CA_ASSERT(a.Good() == true);
@@ -309,14 +310,14 @@ void caCircularStringStream_test_class::test6(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     s16 t = -12345; //0xcfc7
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 6);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 6);
     CA_ASSERT(a.Good() == true);
@@ -328,14 +329,14 @@ void caCircularStringStream_test_class::test6(void)
     CA_ASSERT(obuff[5] == '5');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 18);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 18);
     CA_ASSERT(a.Good() == true);
@@ -361,7 +362,7 @@ void caCircularStringStream_test_class::test6(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 6);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 6);
     CA_ASSERT(a.Good() == true);
@@ -387,14 +388,14 @@ void caCircularStringStream_test_class::test7(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     u16 t = 0x9123; //37155
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 5);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 5);
     CA_ASSERT(a.Good() == true);
@@ -405,14 +406,14 @@ void caCircularStringStream_test_class::test7(void)
     CA_ASSERT(obuff[4] == '5');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 18);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 18);
     CA_ASSERT(a.Good() == true);
@@ -438,7 +439,7 @@ void caCircularStringStream_test_class::test7(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 6);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 6);
     CA_ASSERT(a.Good() == true);
@@ -464,14 +465,14 @@ void caCircularStringStream_test_class::test8(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     s32 t = 1234567890; //0x499602D2
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 10);
     CA_ASSERT(a.Good() == true);
@@ -487,14 +488,14 @@ void caCircularStringStream_test_class::test8(void)
     CA_ASSERT(obuff[9] == '0');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 34);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 34);
     CA_ASSERT(a.Good() == true);
@@ -537,7 +538,7 @@ void caCircularStringStream_test_class::test8(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 20) == 10);
     CA_ASSERT(a.Good() == true);
@@ -568,14 +569,14 @@ void caCircularStringStream_test_class::test9(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 0);
     CA_ASSERT(a.Good() == true);
     s32 t = -1234567890; //0xB669FD2E
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 11);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 11);
     CA_ASSERT(a.Good() == true);
@@ -592,14 +593,14 @@ void caCircularStringStream_test_class::test9(void)
     CA_ASSERT(obuff[10] == '0');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 34);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 34);
     CA_ASSERT(a.Good() == true);
@@ -642,7 +643,7 @@ void caCircularStringStream_test_class::test9(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 10);
     CA_ASSERT(a.Good() == true);
@@ -672,14 +673,14 @@ void caCircularStringStream_test_class::test10(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 0);
     CA_ASSERT(a.Good() == true);
     u32 t = 3060399406; //0xB669FD2E
     a << caStringFormat::dec;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 10);
     CA_ASSERT(a.Good() == true);
@@ -695,14 +696,14 @@ void caCircularStringStream_test_class::test10(void)
     CA_ASSERT(obuff[9] == '6');
     a.Clear();
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 0);
     CA_ASSERT(a.Good() == true);
     a << caStringFormat::bin;
     a << t;
     CA_ASSERT(a.Size() == 34);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 40) == 34);
     CA_ASSERT(a.Good() == true);
@@ -745,7 +746,7 @@ void caCircularStringStream_test_class::test10(void)
     a << caStringFormat::hex;
     a << t;
     CA_ASSERT(a.Size() == 10);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 10);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(obuff[0] == '0');
@@ -774,63 +775,63 @@ void caCircularStringStream_test_class::test11(void)
     caCircularStringStream<char> a;
     a.Init(buff_a, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 100) == 0);
     CA_ASSERT(a.Good() == true);
     char buff_b[100];
     caCircularStringStream<char> b;
     b.Init(buff_b, 100);
     CA_ASSERT(b.Size() == 0);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 100) == 0);
     CA_ASSERT(b.Good() == true);
     caCSTR(f, "pippo  ");
     a << f;
     CA_ASSERT(a.Size() == 7);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 100) == 7);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  ") == 0);
     caCSTR(g, "pluto  ");
     b << g;
     CA_ASSERT(b.Size() == 7);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(b.Str(obuff, 100) == 7);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(strcmp(obuff, "pluto  ") == 0);
     a << b;
     CA_ASSERT(b.Size() == 7);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(b.Str(obuff, 100) == 7);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(strcmp(obuff, "pluto  ") == 0);
     CA_ASSERT(a.Size() == 14);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 100) == 14);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  pluto  ") == 0);
     a << a;
     CA_ASSERT(a.Size() == 28);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 100) == 28);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  pluto  pippo  pluto  ") == 0);
     a << a;
     CA_ASSERT(a.Size() == 56);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
     CA_ASSERT(a.Str(obuff, 100) == 56);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  ") == 0);
     a << a;
-    CA_ASSERT(a.Size() == 98);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Size() == 99);
+    CA_ASSERT(a.Capacity() == 100);
 
-    CA_ASSERT(a.Str(obuff, 100) == 98);
+    CA_ASSERT(a.Str(obuff, 100) == 99);
     CA_ASSERT(a.Good() == true);
-    CA_ASSERT(strcmp(obuff, "pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  ") == 0);
+    CA_ASSERT(strcmp(obuff, " pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  ") == 0);
 }
 
 void caCircularStringStream_test_class::test12(void)
@@ -846,23 +847,23 @@ void caCircularStringStream_test_class::test12(void)
     caCircularStringStream<char> a;
     a.Init(buff_a, sizeof (buff_a));
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Capacity() == 20);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     a << "12345678901234567";
     CA_ASSERT(a.Size() == 17);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Capacity() == 20);
 
     CA_ASSERT(a.Str(obuff, 20) == 17);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "12345678901234567") == 0);
     a << "12345678901234567";
-    CA_ASSERT(a.Size() == 18);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Size() == 19);
+    CA_ASSERT(a.Capacity() == 20);
 
-    CA_ASSERT(a.Str(obuff, 20) == 18);
+    CA_ASSERT(a.Str(obuff, 20) == 19);
     CA_ASSERT(a.Good() == true);
-    CA_ASSERT(strcmp(obuff, "712345678901234567") == 0);
+    CA_ASSERT(strcmp(obuff, "6712345678901234567") == 0);
 
 }
 
@@ -879,24 +880,24 @@ void caCircularStringStream_test_class::test12bis(void)
     caCircularStringStream<char> a;
     a.Init(buff_a, sizeof (buff_a));
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Capacity() == 20);
     CA_ASSERT(a.Str(obuff, 20) == 0);
     CA_ASSERT(a.Good() == true);
     caCSTR(f, "12345678901234567");
     a << f;
     CA_ASSERT(a.Size() == 17);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Capacity() == 20);
 
     CA_ASSERT(a.Str(obuff, 20) == 17);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "12345678901234567") == 0);
     a << f;
-    CA_ASSERT(a.Size() == 18);
-    CA_ASSERT(a.Capacity() == 19);
+    CA_ASSERT(a.Size() == 19);
+    CA_ASSERT(a.Capacity() == 20);
 
-    CA_ASSERT(a.Str(obuff, 20) == 18);
+    CA_ASSERT(a.Str(obuff, 20) == 19);
     CA_ASSERT(a.Good() == true);
-    CA_ASSERT(strcmp(obuff, "712345678901234567") == 0);
+    CA_ASSERT(strcmp(obuff, "6712345678901234567") == 0);
 
 }
 
@@ -1038,38 +1039,38 @@ void caCircularStringStream_test_class::test19(void)
     caCircularStringStream<char> a;
     a.Init(buff_a, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 0);
     CA_ASSERT(a.Good() == true);
     char buff_b[100];
     caCircularStringStream<char> b;
     b.Init(buff_b, 100);
     CA_ASSERT(b.Size() == 0);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(b.Str(obuff, 40) == 0);
     CA_ASSERT(b.Good() == true);
     caCSTR(f, "pippo  ");
     a << f;
     CA_ASSERT(a.Size() == 7);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 7);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  ") == 0);
     caCSTR(g, "pluto  ");
     b << g;
     CA_ASSERT(b.Size() == 7);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(b.Str(obuff, 40) == 7);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(strcmp(obuff, "pluto  ") == 0);
     a << &b;
     CA_ASSERT(b.Size() == 7);
-    CA_ASSERT(b.Capacity() == 99);
+    CA_ASSERT(b.Capacity() == 100);
     CA_ASSERT(b.Str(obuff, 40) == 7);
     CA_ASSERT(b.Good() == true);
     CA_ASSERT(strcmp(obuff, "pluto  ") == 0);
     CA_ASSERT(a.Size() == 14);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff, 40) == 14);
     CA_ASSERT(a.Good() == true);
     CA_ASSERT(strcmp(obuff, "pippo  pluto  ") == 0);
@@ -1087,7 +1088,7 @@ void caCircularStringStream_test_class::test20(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff,100) == 0);
     CA_ASSERT(a.Good() == true);
     caStringFiller v('a', 10);
@@ -1114,7 +1115,7 @@ void caCircularStringStream_test_class::test21(void)
     caCircularStringStream<char> a;
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
-    CA_ASSERT(a.Capacity() == 99);
+    CA_ASSERT(a.Capacity() == 100);
     CA_ASSERT(a.Str(obuff,100) == 0);
     CA_ASSERT(a.Good() == true);
     caCSTR(f, "pippo");
@@ -1149,3 +1150,32 @@ void caCircularStringStream_test_class::testPrefetch(void)
     std::cout << obuff;
 }
 
+void caCircularStringStream_test_class::test30(void)
+{
+    _START();
+    _INFO("to check roling text on circular buffer object");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    char buff[100];
+    char obuff[100];
+    caCircularStringStream<char> a;
+    a.Init(buff, 11);
+    CA_ASSERT(a.Size() == 0);
+    CA_ASSERT(a.Capacity() == 11);
+    CA_ASSERT(a.Str(obuff,100) == 0);
+    CA_ASSERT(a.Good() == true);
+    const char msg[]="01234567890123456789";
+    s_t i,u;
+    for(i=0;i<100;i++)
+    {
+      u=(i%10);
+      s8 t=msg[u];
+      a<<t;
+      if(i>=9)
+      {
+          CA_ASSERT(a.Str(obuff,100) == 10);
+          CA_ASSERT(memcmp(obuff,&msg[u+1],10)==0);
+      }
+    }
+}
