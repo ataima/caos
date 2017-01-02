@@ -581,7 +581,6 @@ protected:
     //Tested
 
     inline void Add(T v) {
-
         if (start == capacity)
             start = 0;
         cBuff[stop] = v;
@@ -592,6 +591,28 @@ protected:
             start++;
     }
 
+    inline bool Remove(T & out) {
+        bool res = start != stop;
+        if (res) {
+            out = cBuff[start];
+            start++;
+            if (start == capacity)
+                start = 0;
+        }
+        return res;
+    }
+
+    inline bool Get(T & out, s_t & index) {
+        s_t pos = index + start;
+        if (pos >= capacity)
+            pos -= capacity;
+        bool res = ((pos) != stop);
+        if (res) {
+            out = cBuff[pos];
+            index++;
+        }
+        return res;
+    }
     //Tested
 
     void Add(const T *ptr, s_t num) {
@@ -600,6 +621,8 @@ protected:
             num--;
         }
     }
+
+
 
     //Tested
 
@@ -624,7 +647,7 @@ public:
     u32 Init(T *base, s_t a_size) {
         u32 res = FALSE;
         if (base != NULL && a_size > 0) {
-            capacity = a_size-1;
+            capacity = a_size - 1;
             cBuff = base;
             start = stop = 0;
             mode_dec = true;
@@ -650,7 +673,7 @@ public:
 
     //Tested
 
-    inline s_t Size(void) {
+    s_t Size(void) {
         s_t size;
         if (stop >= start)
             size = (stop - start);
@@ -659,12 +682,13 @@ public:
         return size;
     }
 
-    //Tested
-
     inline s_t Capacity(void) {
         return capacity;
     }
 
+    inline s_t Available(void) {
+        return capacity;
+    }
 
     //Tested
 
@@ -672,37 +696,39 @@ public:
         return start == stop;
     }
 
+    s_t Remove(T *ptr, s_t num) {
+        s_t removed = 0;
+        bool res;
+        T out;
+        do {
+            if (Remove(out)) {
+                *ptr++ = out;
+                removed++;
+            } else {
+                break;
+            }
+            num--;
+        } while (num > 0);
+        return removed;
+    }
 
-
-    //Tested
-
-    inline s_t Str(T * buff, s_t size) {
-        s_t writed = 0;
+    s_t Str(T * buff, s_t size) {
+        s_t index, writed = 0;
         s_t w = Size();
         if (w > 0 && buff != NULL && size > 0) {
             if (w > size)
                 w = size;
-            if (stop > start) {
-                caMemAux<T>::MemCpy(buff, &cBuff[start], w);
-                writed = w;
-            } else {
-                s_t d = capacity - start;
-                if (d >= w) {
-                    caMemAux<T>::MemCpy(buff, &cBuff[start], w);
-                    writed = w;
+            index = 0;
+            T out;
+            do {
+                if (Get(out, index)) {
+                    buff[writed] = out;
+                    writed++;
                 } else {
-                    caMemAux<T>::MemCpy(buff, &cBuff[start], d);
-                    writed = d;
-                    w -= d;
-                    if (stop <= w) {
-                        caMemAux<T>::MemCpy(&buff[d], &cBuff[0], stop);
-                        writed += stop;
-                    } else {
-                        caMemAux<T>::MemCpy(&buff[d], &cBuff[0], w);
-                        writed += w;
-                    }
+                    break;
                 }
-            }
+                w--;
+            } while (w > 0);
             buff[writed] = '\0';
         }
         return writed;
@@ -830,13 +856,20 @@ public:
     //Tested
 
     inline caCircularStringStream<T> & operator<<(caCircularStringStream<T> & t) {
-        T buff[256];
-        s_t total = t.Size();
-        s_t wr = 0;
+        s_t old,index,total = t.Size();
+        T out;
+        index=0;
         do {
-            wr = t.Str(buff, 256);
-            Add(buff, wr);
-            total -= wr;
+            if (t.Get(out,index))
+            {
+                old=start;
+                Add(out);
+                if(old!=start)
+                    index--;  // a<<a if start++ index-- 
+            }
+            else
+                break;
+            total--;
         } while (total > 0);
         return *this;
     }
