@@ -1,7 +1,7 @@
 # set environment variables
 include rules.mk
 #define includes 
-INC=-I inc   -I ../os/inc
+INC=-I inc   -I ../os/inc -I ../os/inc/hal 
 
 #dependences and objs 
 
@@ -76,7 +76,7 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 .PHONY:  all clean info dwload qemu asm distclean add_ext_src remove_ext_src
 
 define link_ext_file
-    $(shell if [ ! -e src/$1 ]; then ln ../os/src/$1 src/$1 ; fi)
+    $(shell if [ ! -e src/$1 ]; then ln ../os/src/hal/$1 src/$1 ; fi)
 endef
 
 define ulink_ext_file
@@ -160,5 +160,5 @@ info:
 	@echo $(EH) $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
 	
 
-test:
+test: all
 	@./build/test.exe -f 15

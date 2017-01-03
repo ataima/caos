@@ -76,7 +76,6 @@ caHalComDevice caOS::com8(&hal_ll_com8,ioCtrlRequest::Com8);
 caOS::devicePair caOS::allDevices[] = {
     {"MEMORY", ioCtrlRequest::Memory, NULL},
     {"SCHEDULER", ioCtrlRequest::Scheduler, NULL},
-    {"EXCEPTION", ioCtrlRequest::Exception, NULL},
     {"TASK", ioCtrlRequest::Task, NULL},
     {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
     {"SYSTIMER", ioCtrlRequest::SysTimer, NULL},

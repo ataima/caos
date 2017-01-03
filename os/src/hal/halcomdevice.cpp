@@ -19,8 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "halcomdevice.h"
-#include "thread.h"
-#include "scheduler.h"
+
 
 
 
@@ -272,7 +271,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
             break;
         case caComDeviceCtrl::IoCtrlDirect::comLogCreate:            
             if (!caLog.IsValid()) {
-                if (caLog.Init(in->st_rx, (loglevels) in->st_tx) != TRUE)
+                if (caLog.Init(in->st_rx, (deviceloglevels) in->st_tx) != TRUE)
                     res = deviceError::error_cannot_create_log;
             } else {
                 res = deviceError::error_log_already_set;
@@ -303,7 +302,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
         case caComDeviceCtrl::IoCtrlDirect::comLogGet:
             if (caLog.IsValid()) {
                 if (in->ss != NULL) {
-                    caLog.Stream((loglevels) in->st_rx).Str(*in->ss);
+                    caLog.Stream((deviceloglevels) in->st_rx).Str(*in->ss);
                 } else
                     res = deviceError::error_invalid_null_destination;
             } else {
@@ -341,7 +340,7 @@ u32 caHalComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
 }
 
 u32 caHalComDevice::IrqServiceTx(u8 * txbuff, s_t size, s_t & writed) {
-    LOG(caLog,irq)<< " IrqServiceTx " << caEnd::endl;    
+    LOG(caLog,irq_tx)<< " IrqServiceTx S=" << size<<caEnd::endl;    
     Tx.Pop(txbuff, size, writed);
     if (signalTx != 0)
         link->hll_wakeup_tx(signalTx);
@@ -349,7 +348,7 @@ u32 caHalComDevice::IrqServiceTx(u8 * txbuff, s_t size, s_t & writed) {
 }
 
 u32 caHalComDevice::IrqServiceRx(u8 * rxbuff, s_t size, s_t & readed) {
-    LOG(caLog,irq)<< " IrqServiceRx "<< caEnd::endl;    
+    LOG(caLog,irq_rx)<< " IrqServiceRx S="<<size<< caEnd::endl;    
     Rx.Push(rxbuff, size, readed);
     if (signalRx != 0)
         link->hll_wakeup_rx(signalRx);

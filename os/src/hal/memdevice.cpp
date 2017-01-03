@@ -22,11 +22,12 @@
 
 #if MEM_PIPE_DEVICE    
 
-#include "interrupt.h"
-#include "systimer.h"
+
 #include "memory.h"
 #include "memaux.h"
 #include "circularbuffer.h"
+
+extern hal_ll_sys_time hal_ll_time;
 
 caMemDeviceDescriptor caMemDevice::descriptors[MAX_SHARED_MEM_BLOCK];
 u32 caMemDevice::guid = ioCtrlRequest::MemPipe + BASE_HANDLE;
@@ -102,7 +103,7 @@ u32 caMemDevice::Open(caIDeviceConfigure * in,
                 guid += MAX_SHARED_MEM_BLOCK;
                 port->handle = guid + desc->index;
                 port->status = caDeviceHandle::statusHandle::Open;
-                port->tStart = caSysTimer::GetCount();
+                port->tStart = hal_ll_time.hll_tick();
                 port->tLast = port->tStart;
                 port->tStop = 0;
                 port->tLastCmd = caDeviceAction::caActionOpen;
@@ -143,7 +144,7 @@ u32 caMemDevice::Close(caDeviceHandle *port) {
                 desc->guest = 0;
                 isOpen--;
                 port->status = caDeviceHandle::statusHandle::Close;
-                port->tStop = caSysTimer::GetCount();
+                port->tStop = hal_ll_time.hll_tick();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
                 port->wrError = port->rdError = 0;
@@ -153,7 +154,7 @@ u32 caMemDevice::Close(caDeviceHandle *port) {
                 caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caMemDeviceDescriptor));
                 isOpen--;
                 port->status = caDeviceHandle::statusHandle::Close;
-                port->tStop = caSysTimer::GetCount();
+                port->tStop = hal_ll_time.hll_tick();
                 port->tLast = port->tStop;
                 port->tLastCmd = caDeviceAction::caActionClose;
                 port->wrError = port->rdError = 0;
@@ -199,7 +200,7 @@ u32 caMemDevice::Write(caDeviceHandle *port) {
                             port->writed += pSize;
                             port->wrBuff += pSize;
                             port->wrSize -= pSize;
-                            port->tLast = caSysTimer::GetCount();
+                            port->tLast = hal_ll_time.hll_tick();
                             port->tLastCmd = caDeviceAction::caActionWrite;
                             //port->error = 0;
                             desc->action = caMemDeviceDescriptor::actionMem::writed;
@@ -251,7 +252,7 @@ u32 caMemDevice::Read(caDeviceHandle *port) {
                         port->readed += pSize;
                         port->rdBuff += pSize;
                         port->rdSize -= pSize;
-                        port->tLast = caSysTimer::GetCount();
+                        port->tLast = hal_ll_time.hll_tick();
                         port->tLastCmd = caDeviceAction::caActionRead;
                         //port->error = 0;
                         desc->action = caMemDeviceDescriptor::actionMem::readed;

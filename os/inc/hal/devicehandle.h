@@ -62,7 +62,6 @@ public:
     u32 rdSize;
     u32 readed;
     u32 rdError;
-
 public:
     static void Dump(caDeviceHandle & port, caStringStream<s8> & ss);
 };

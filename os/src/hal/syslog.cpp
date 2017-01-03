@@ -1,5 +1,3 @@
-#ifndef CACHEDEVICE_H
-#define CACHEDEVICE_H
 ////////////////////////////////////////////////////////////////////////////////
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
 //
@@ -18,40 +16,52 @@
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
-
-#if CACHE_DEVICE
-
-#include "idevice.h"
-
-struct caCacheDeviceCtrl
-: public caIDeviceCtrl {
-public:
-
-    typedef enum tag_io_ctrl_specific_request {
-        cacheInvalidate = 0x5000,
-        cacheStart,
-        cacheStop,
-    } IoCtrlDirect;
-    IoCtrlDirect command;
-};
-
-class caCacheDevice {
-private:
-    static u32 guid;
-    static u32 isOpen;
-    static bool IsValidHandle(u32 handle);
-public:
-    static u32 Open(caIDeviceConfigure *in, caDeviceHandle *out);
-    static u32 Close(caDeviceHandle *port);
-    static u32 Write(caDeviceHandle *port);
-    static u32 Read(caDeviceHandle *port);
-    static u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
-    static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
-};
+#include "syslog.h"
+#include "memaux.h"
+#include "memory.h"
 
 
-#endif 
+
+#if HAVE_SYS_LOG
+
+u32 caSysLog::Init(s_t total_size,deviceloglevels reqlev) {
+    u32 res = FALSE;
+    caMemAux<s8>::MemZero((s8*)mn_Base, sizeof (mn_Base));
+    s_t i;
+    if(reqlev>deviceloglevels::end_device_log_lev )reqlev=deviceloglevels::end_device_log_lev;
+    curlev=reqlev;
+    for (i = 0; i < curlev; i++) {
+        mn_Base[i] = static_cast<s8*> (caMemory::Allocate(total_size));
+        if (mn_Base[i] != NULL) {
+            res = ss[i].Init(mn_Base[i], total_size);
+        }
+        if (res == FALSE)break;
+    }
+    enable=false;
+    return res;
+}
+
+u32 caSysLog::Destroy(void) {
+    u32 res = FALSE;
+    s_t i;
+    for (i = 0; i < curlev; i++) {
+        if (mn_Base[i] != NULL) {
+            ss[i].Init(NULL, 0);
+            res = caMemory::Free(mn_Base[i]);
+            mn_Base[i] = NULL;
+        }
+    }
+    enable=false;
+    curlev=deviceloglevels::end_device_log_lev;
+    return res;
+}
 
 
-#endif 
 
+
+
+
+
+
+
+#endif

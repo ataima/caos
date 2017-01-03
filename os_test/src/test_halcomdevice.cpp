@@ -809,7 +809,7 @@ void caHalComDevice_test_class::test10(void)
     caDeviceHandle portIO;
     caComDeviceCtrl in;
     in.st_rx = 16512;
-    in.st_tx = (u32) end_log_lev;
+    in.st_tx = (u32) deviceloglevels::end_device_log_lev;
     in.command = caComDeviceCtrl::IoCtrlDirect::comLogCreate;
     u32 res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
@@ -894,7 +894,7 @@ void caHalComDevice_test_class::test10(void)
     char out[8000];
     caStringStream<s8> ss;
     u32 u=0;
-    for(u=0;u<end_log_lev;u++)
+    for(u=0;u<deviceloglevels::end_device_log_lev;u++)
     {
     ss.Init(out,8000);
     in.ss=&ss;

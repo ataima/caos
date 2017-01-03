@@ -28,7 +28,6 @@
 #include "sysirqctrl.h" 
 #include "cpu.h" 
 #include "memory.h"
-#include "exception.h"
 #include "heaparray.h"
 #include "thread.h"
 #include "scheduler.h"
@@ -90,9 +89,6 @@ void caInterruptRequest::Software(u32 ioctl,
             break;
         case ioCtrlRequest::Scheduler:
      *res = caSchedulerDevice::IoctlReq(request, p1, p2);
-            break;
-        case ioCtrlRequest::Exception:
-     *res = caException::IoctlReq(request, p1, p2);
             break;
         case ioCtrlRequest::Com1:
      *res = caComDevice::IoctlReq(request, p1, p2);

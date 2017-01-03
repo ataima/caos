@@ -65,6 +65,4 @@ BUILDIR:=build
 DEPEND:=depend
 GE_ASM:=r_asm
 OBJ_OUT:=obj
-SRC:=src
-TEST:=test
 DEP_OPTS:=-MM -MT

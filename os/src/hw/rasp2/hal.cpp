@@ -71,7 +71,7 @@ hal_ll_com_io hal_ll_com1 = {
     caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj    
 };
 
-// Hardware connectors to COM1 (usually debug)
+// Hardware connectors sys timer
 hal_ll_sys_time hal_ll_time{
     caSysTimer::GetCount, //system tick count
     caSysTimer::GetMsec,

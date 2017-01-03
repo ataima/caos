@@ -20,7 +20,6 @@
 #include "CPPtester.h"
 #include "docMacro.h"
 #include "hal.h"
-#include "systimer.h"
 #include "syslog.h"
 #include "memory.h"
 #include <iostream>
@@ -92,25 +91,22 @@ void caSysLog_test_class::test1(void)
     _PROJECT("C.A.O.S");
     _STOP();
     caSysLog a;
-    u32 res = a.Init(1000,end_log_lev);
+    u32 res = a.Init(1000,deviceloglevels::end_device_log_lev);
     CA_ASSERT(res == TRUE);
-    CA_ASSERT(a.GetBase(panic) != NULL);
-    CA_ASSERT(a.GetBase(kernel) != NULL);
-    CA_ASSERT(a.GetBase(irq) != NULL);
+    CA_ASSERT(a.GetBase(irq_rx) != NULL);
+    CA_ASSERT(a.GetBase(irq_tx) != NULL);
     CA_ASSERT(a.GetBase(device) != NULL);
     CA_ASSERT(a.GetBase(error) != NULL);
     CA_ASSERT(a.GetBase(info) != NULL);
-    CA_ASSERT(caMemory::Find(a.GetBase(panic)) > 1000);
-    CA_ASSERT(caMemory::Find(a.GetBase(kernel)) > 1000);
-    CA_ASSERT(caMemory::Find(a.GetBase(irq)) > 1000);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_rx)) > 1000);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_tx)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(device)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(error)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(info)) > 1000);
     res = a.Destroy();
     CA_ASSERT(res == TRUE);
-    CA_ASSERT(caMemory::Find(a.GetBase(panic)) == 0);
-    CA_ASSERT(caMemory::Find(a.GetBase(kernel)) == 0);
-    CA_ASSERT(caMemory::Find(a.GetBase(irq)) == 0);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_rx)) == 0);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_tx)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(device)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(error)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(info)) == 0);
@@ -124,44 +120,38 @@ void caSysLog_test_class::test2(void)
     _PROJECT("C.A.O.S");
     _STOP();
     caSysLog a;
-    u32 res = a.Init(1000,end_log_lev);
+    u32 res = a.Init(1000,deviceloglevels::end_device_log_lev);
     CA_ASSERT(res == TRUE);
-    CA_ASSERT(a.GetBase(panic) != NULL);
-    CA_ASSERT(a.GetBase(kernel) != NULL);
-    CA_ASSERT(a.GetBase(irq) != NULL);
+    CA_ASSERT(a.GetBase(irq_rx) != NULL);
+    CA_ASSERT(a.GetBase(irq_tx) != NULL);
     CA_ASSERT(a.GetBase(device) != NULL);
     CA_ASSERT(a.GetBase(error) != NULL);
     CA_ASSERT(a.GetBase(info) != NULL);
-    CA_ASSERT(caMemory::Find(a.GetBase(panic)) > 1000);
-    CA_ASSERT(caMemory::Find(a.GetBase(kernel)) > 1000);
-    CA_ASSERT(caMemory::Find(a.GetBase(irq)) > 1000);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_rx)) > 1000);
+        CA_ASSERT(caMemory::Find(a.GetBase(irq_tx)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(device)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(error)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(info)) > 1000);
     a.Enable();
-    LOG(a, panic) << "a panic error" << caEnd::endl;
-    LOG(a, kernel) << "a kernel error" << caEnd::endl;
-    LOG(a, irq) << "a irq error" << caEnd::endl;
+    LOG(a, irq_rx) << "a irq error" << caEnd::endl;
+    LOG(a, irq_tx) << "a irq error" << caEnd::endl;
     LOG(a, device) << "a drivers error" << caEnd::endl;
     LOG(a, error) << "a error error" << caEnd::endl;
     LOG(a, info) << "a info error" << caEnd::endl;
-    std::cout<<a.GetBase(panic);
-    std::cout<<a.GetBase(kernel);
-    std::cout<<a.GetBase(irq);
+    std::cout<<a.GetBase(irq_rx);
+    std::cout<<a.GetBase(irq_tx);
     std::cout<<a.GetBase(device);
     std::cout<<a.GetBase(error);
     std::cout<<a.GetBase(info);
-    CA_ASSERT(strlen(a.GetBase(panic))>0);
-    CA_ASSERT(strlen(a.GetBase(kernel))>0);
-    CA_ASSERT(strlen(a.GetBase(irq))>0);
+    CA_ASSERT(strlen(a.GetBase(irq_rx))>0);
+    CA_ASSERT(strlen(a.GetBase(irq_tx))>0);
     CA_ASSERT(strlen(a.GetBase(device))>0);
     CA_ASSERT(strlen(a.GetBase(error))>0);
     CA_ASSERT(strlen(a.GetBase(info))>0);
     res = a.Destroy();
     CA_ASSERT(res == TRUE);
-    CA_ASSERT(caMemory::Find(a.GetBase(panic)) == 0);
-    CA_ASSERT(caMemory::Find(a.GetBase(kernel)) == 0);
-    CA_ASSERT(caMemory::Find(a.GetBase(irq)) == 0);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_rx)) == 0);
+    CA_ASSERT(caMemory::Find(a.GetBase(irq_tx)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(device)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(error)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(info)) == 0);
