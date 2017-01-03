@@ -21,7 +21,8 @@
 #include "docMacro.h"
 #include "hal.h"
 #include "halcomdevice.h"
-
+#include "memory.h"
+#include <iostream>
 
 static struct timespec start_time = {0, 0};
 static u32 tcom_speed = 0;
@@ -156,6 +157,7 @@ class caHalComDevice_test_class
     CA_TEST(caHalComDevice_test_class::test7, " IoCtrl Flush test");
     CA_TEST(caHalComDevice_test_class::test8, " IoCtrl SignalRx test");
     CA_TEST(caHalComDevice_test_class::test9, " IoCtrl SignalTx test");
+    CA_TEST(caHalComDevice_test_class::test10, " IoCtrl Logs test");
     CA_TEST_SUITE_END();
 
     void setUp(void)
@@ -172,6 +174,7 @@ class caHalComDevice_test_class
     void test7(void);
     void test8(void);
     void test9(void);
+    void test10(void);
 
     void tearDown(void)
     {
@@ -786,4 +789,124 @@ void caHalComDevice_test_class::test9(void)
     CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
     CA_ASSERT(portIO.tStop == portIO.tLast);
     param_reset();
+}
+
+void caHalComDevice_test_class::test10(void)
+{
+    _START();
+    _INFO("to check IoCtrl Logs  function caHalComDevice");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    param_reset();
+    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caComDeviceConfigure setup;
+    setup.speed = 12345678;
+    setup.stop = 11223344;
+    setup.parity = 88776655;
+    setup.data = 12312312;
+    caMemory::Init();
+    caDeviceHandle portIO;
+    caComDeviceCtrl in;
+    in.st_rx = 16512;
+    in.st_tx = (u32) end_log_lev;
+    in.command = caComDeviceCtrl::IoCtrlDirect::comLogCreate;
+    u32 res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comLogStart;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    res = comDev.Open(&setup, &portIO);
+    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(tcom_speed == 12345678);
+    CA_ASSERT(tcom_stop == 11223344);
+    CA_ASSERT(tcom_parity == 88776655);
+    CA_ASSERT(tcom_data == 12312312);
+    CA_ASSERT(portIO.handle != 0);
+    CA_ASSERT((portIO.handle & ioCtrlRequest::Com6) == ioCtrlRequest::Com6);
+    CA_ASSERT((caHalDeviceRules::IsValidHandle(portIO.handle, ioCtrlRequest::Com6) == true));
+    CA_ASSERT(tcom_enable_int_rx == 1);
+    CA_ASSERT(tcom_stop_com == 0);
+    CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Open);
+    CA_ASSERT(portIO.tStart != 0);
+    CA_ASSERT(portIO.tStart == portIO.tLast);
+    CA_ASSERT(portIO.tStop == 0);
+    CA_ASSERT(portIO.wrError == 95);
+    CA_ASSERT(portIO.rdError == 127);
+    CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
+
+    in.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalTx;
+    in.st_tx = 12345678; // invalid handle from scheduler connector
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::error_invalid_handle_port);
+    CA_ASSERT(portIO.tLast >= portIO.tStart)
+    in.st_tx = 200; // ok
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(portIO.tLast >= portIO.tStart);
+    in.st_tx = 200; // already set
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::error_signal_already_set);
+    CA_ASSERT(portIO.tLast >= portIO.tStart);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comGetSignalTx;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(in.st_rx == 200);
+    u8 msg[] = "hello world";
+    portIO.wrBuff = msg;
+    portIO.wrSize = 12;
+    portIO.writed = 0;
+    res = comDev.Write(&portIO);
+    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(portIO.wrSize == 0);
+    CA_ASSERT(portIO.writed == 12);
+    CA_ASSERT(tcom_start_tx == 1);
+    u8 buff[100];
+    u32 rd;
+    //IRQ TX CALLBACK
+    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, buff, 100, rd);
+    CA_ASSERT(rd == 12);
+    CA_ASSERT(memcmp(buff, msg, 12) == 0);
+    CA_ASSERT(tcom_wakeup_tx == 200);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::error_invalid_handle_port);
+    res = comDev.Close(&portIO);
+    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(tcom_speed == 0);
+    CA_ASSERT(tcom_stop == 0);
+    CA_ASSERT(tcom_parity == 0);
+    CA_ASSERT(tcom_data == 0);
+    CA_ASSERT(tcom_enable_rx == 0);
+    CA_ASSERT(tcom_stop_com == 1);
+    CA_ASSERT(portIO.handle == (ioCtrlRequest::Com6 | BASE_HANDLE));
+    CA_ASSERT(portIO.tStop != 0);
+    CA_ASSERT(portIO.tStop >= portIO.tStart);
+    CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionClose);
+    CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
+    CA_ASSERT(portIO.tStop == portIO.tLast);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comLogStop;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    char out[8000];
+    caStringStream<s8> ss;
+    u32 u=0;
+    for(u=0;u<end_log_lev;u++)
+    {
+    ss.Init(out,8000);
+    in.ss=&ss;
+    in.st_rx=u;
+    in.command = caComDeviceCtrl::IoCtrlDirect::comLogGet;
+    res = comDev.IoCtrl(&portIO, &in);
+    std::cout<<out<<std::endl;
+    }
+    CA_ASSERT(res == deviceError::no_error);
+    in.command = caComDeviceCtrl::IoCtrlDirect::comLogDestroy;
+    res = comDev.IoCtrl(&portIO, &in);
+    CA_ASSERT(res == deviceError::no_error);
+    param_reset();
+
 }

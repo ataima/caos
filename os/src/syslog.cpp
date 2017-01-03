@@ -32,7 +32,7 @@ u32 caSysLog::Init(s_t total_size,loglevels reqlev) {
     curlev=reqlev;
     for (i = 0; i < curlev; i++) {
         mn_Base[i] = static_cast<s8*> (caMemory::Allocate(total_size));
-        if (mn_Base != NULL) {
+        if (mn_Base[i] != NULL) {
             res = ss[i].Init(mn_Base[i], total_size);
         }
         if (res == FALSE)break;
