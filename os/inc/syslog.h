@@ -22,136 +22,90 @@
 
 
 #include "hal.h"
-#include "circularbuffer.h"
-#include "atomiclock.h"
+#include "systimer.h"
+
 
 
 
 #ifdef HAVE_SYS_LOG
 
-/**
- * 
- * simple log class not blocking and not interrupt safe...
- * TO DO work to add features
- **/
-
-
-
+typedef enum tag_log_levels {
+    panic,
+    kernel,
+    irq,
+    device,
+    error,
+    info,
+    end_log_lev
+} loglevels;
 
 class caSysLog {
-    // I can add strdeam of 2048 byte max at once
-    static const u32 max_string = 2048;
-    s_t total_size;
-    // Circular buffer of size total_size attached to mn_base dinamically allocated
-    caCircularBuffer<s8> cbuff;
-    // string stream attached to mn_stream
-    caStringStream<s8> ss;
+    caCircularStringStream<s8> ss[end_log_lev];
     // circular buffer base
-    s8 *mn_Base;
-    // stream base
-    s8 *mn_Stream;
+    s8 *mn_Base[end_log_lev];
     // log is enabled
-    u32 enable;
+    bool enable;
+    // curr level for log ( l<=cur lev -> log )
+    loglevels curlev;
 public:
-    u32 Init(s_t _total_size = 0);
+    
+    caSysLog(){
+        enable=false;
+        curlev=end_log_lev;
+        caMemAux<s8>::MemZero((s8*)mn_Base,sizeof(mn_Base));
+    }
+    
+    u32 Init(s_t _total_size , loglevels reqlev);
     u32 Destroy();
 
-    inline caStringStream<s8> & GetStream(void) {
-        return ss;
-    }
-
-    inline caCircularBuffer<s8> & GetCBuffer(void) {
-        return cbuff;
+    
+    inline bool IsValid(void) {
+        return (curlev>0 && mn_Base[curlev-1]!=NULL);
     }
 
     inline bool IsEnabled(void) {
-        return (enable == 0x1000);
+        return enable ;
     }
-
+    
     inline void Enable(void) {
-        enable = 0x1000;
+        enable = true;
     }
 
     inline void Disable(void) {
-        enable = 0;
+        enable = false;
     }
-
-    inline caStringStream<s8> & operator<<(caStringFiller t) {
-        return ss << t;
+    
+    
+    inline loglevels GetCurLogLevel(void) {
+        return curlev;
     }
-
-    inline caStringStream<s8> & operator<<(caStringFormat t) {
-        return ss << t;
+    
+    inline caCircularStringStream<s8> & Stream(loglevels l){
+        if(l>info)l=info;
+        return ss[l];
     }
-
-    inline caStringStream<s8> & operator<<(s8 t) {
-        return ss << t;
+    
+    inline s8* GetBase(loglevels l){
+        if(l>info)l=info;
+        return mn_Base[l];
     }
-
-    inline caStringStream<s8> & operator<<(u8 t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(s16 t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(u16 t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(s32 t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(u32 t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(caStringStream<s8> & t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(const char * t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(const caString & t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(s8 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(u8 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(s16 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(u16 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(s32 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(u32 *t) {
-        return ss << t;
-    }
-
-    inline caStringStream<s8> & operator<<(caStringStream<s8> *t) {
-        return ss << t;
-    }
-
-    caStringStream<s8> & operator<<(caEnd & t);
-
 };
 
+
+extern hal_ll_sys_time hal_ll_time;
+
+#define LOGGIN 1
+
+#if LOGGIN
+
+#define LOG(LOG,LEVEL) if(LOG.IsEnabled() && LEVEL <= LOG.GetCurLogLevel()) \
+                        LOG.Stream(LEVEL)<<"["<<hal_ll_time.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
+
+
+#else
+#define LOG(LOG,LEVEL)
+
+#endif 
 
 #endif
 

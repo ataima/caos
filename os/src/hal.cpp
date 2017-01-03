@@ -53,22 +53,31 @@ const hal_ll_scheduler_io hal_ll_scheduler = {
     caScheduler::IsValidContext
 };
 
- hal_ll_com_io hal_ll_com1 = {
-    NULL, 
-    caMiniUart::Configure,          //hll_config
-    caSysTimer::GetCount,           //hll_time
-    caMiniUart::EnableInt,          //hll_en_int
-    caMiniUart::EnableIrqTx,        //hll_start_tx
-    caMiniUart::Stop,               //hll_stop
-    caMiniUart::Enable,             //hll_enable
-    caMiniUart::Dump,               //hll_dump
-    caMiniUart::GetErrors,          //hll_get_errors
-    caScheduler::WakeUp,            //hll_wakeuprx
-    caScheduler::WakeUp,            //hll_wakeuptx
+
+// Hardware connectors to COM1 (usually debug)
+hal_ll_com_io hal_ll_com1 = {
+    NULL,
+    caMiniUart::Configure, //hll_config
+    caSysTimer::GetCount, //hll_time
+    caMiniUart::EnableInt, //hll_en_int
+    caMiniUart::EnableIrqTx, //hll_start_tx
+    caMiniUart::Stop, //hll_stop
+    caMiniUart::Enable, //hll_enable
+    caMiniUart::Dump, //hll_dump
+    caMiniUart::GetErrors, //hll_get_errors
+    caScheduler::WakeUp, //hll_wakeuprx
+    caScheduler::WakeUp, //hll_wakeuptx
     caHalDeviceRules::IrqServiceRx, //hll_irq_rx : set from device obj
     caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj    
 };
 
-
-
+// Hardware connectors to COM1 (usually debug)
+hal_ll_sys_time hal_ll_time{
+    caSysTimer::GetCount, //system tick count
+    caSysTimer::GetMsec,
+    caSysTimer::GetSec,
+    caSysTimer::GetMin,
+    caSysTimer::GetHour,
+    caSysTimer::GetDay // TO DO mounth, year , millenium
+};
 

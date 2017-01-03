@@ -62,6 +62,8 @@ typedef u32(* abstract_functor_com_irq_tx)(void *obj, u8 * txbuff, s_t size, s_t
 typedef u32(* abstract_functor_com_get_errors)(u32 & rxError, u32 & txError);
 typedef void(* abstract_functor_com_wakeup)(u32 thId);
 
+
+//Hardware connector for coms
 typedef struct tag_hal_ll_com_io {
     void *hll_lnk_obj;
     const abstract_functor_com_setup hll_config;
@@ -78,8 +80,15 @@ typedef struct tag_hal_ll_com_io {
     const abstract_functor_com_irq_tx hll_irq_tx;
 } hal_ll_com_io;
 
-
-
+//Hardware connector  to system time ..
+typedef struct tag_hal_ll_sys_time {
+    const abstract_functor_com_void hll_tick;
+    const abstract_functor_com_void hll_ms;
+    const abstract_functor_com_void hll_sec;
+    const abstract_functor_com_void hll_min;
+    const abstract_functor_com_void hll_hour;
+    const abstract_functor_com_void hll_day;    
+} hal_ll_sys_time;
 
 /* LINK to COM1 */
 #if COM1_DEVICE 

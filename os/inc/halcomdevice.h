@@ -64,9 +64,11 @@ public:
         comRemoveSignalTx,
         comGetSignalRx,
         comGetSignalTx,
-        comStartLog,
-        comStopLog,
-        comGetLog
+        comLogCreate,
+        comLogDestroy,       
+        comLogStart,
+        comLogStop,
+        comLogGet
     } IoCtrlDirect;
 
     IoCtrlDirect command;

@@ -97,22 +97,22 @@ public:
 
     virtual u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port) = 0;
 
-    virtual u32 Close(caDeviceHandle *port) = 0; 
+    virtual u32 Close(caDeviceHandle *port) = 0;
 
-    virtual u32 Write(caDeviceHandle *port)  = 0; 
+    virtual u32 Write(caDeviceHandle *port) = 0;
 
-    virtual u32 Read(caDeviceHandle *port)  = 0; 
+    virtual u32 Read(caDeviceHandle *port) = 0;
 
-    virtual u32 Flush(caDeviceHandle *port) = 0; 
+    virtual u32 Flush(caDeviceHandle *port) = 0;
 
-    virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0; 
+    virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0;
 
-    virtual u32 GetOpenFlag(void) = 0; 
-    
-    virtual u32 IrqServiceTx( u8 * txbuff, s_t size,s_t & writed)= 0;    
-    
-    virtual u32 IrqServiceRx( u8 * rxbuff, s_t size,s_t & readed)= 0;
-    
+    virtual u32 GetOpenFlag(void) = 0;
+
+    virtual u32 IrqServiceTx(u8 * txbuff, s_t size, s_t & writed) = 0;
+
+    virtual u32 IrqServiceRx(u8 * rxbuff, s_t size, s_t & readed) = 0;
+
     // METHOD LAUNCHED BY SVC FROM USER MODE
 };
 
@@ -127,8 +127,8 @@ public:
     static u32 Flush(IDevice *dev, caDeviceHandle *port, u32 guid);
     static bool IsValidHandle(u32 handle, u32 mask);
     static u32 isOpen(IDevice *device);
-    static u32 IrqServiceTx (void *obj, u8 * txbuff, s_t size,s_t & writed);
-    static u32 IrqServiceRx (void *obj, u8 * rxbuff, s_t size,s_t & readed);
+    static u32 IrqServiceTx(void *obj, u8 * txbuff, s_t size, s_t & writed);
+    static u32 IrqServiceRx(void *obj, u8 * rxbuff, s_t size, s_t & readed);
 };
 
 typedef enum tag_device_error {
@@ -167,6 +167,8 @@ typedef enum tag_device_error {
     error_invalid_null_destination,
     error_device_is_busy,
     error_signal_already_set,
+    error_cannot_create_log,
+    error_cannot_destroy_log,
     error_log_already_set,
     error_log_not_set,
     error_log_empthy,
