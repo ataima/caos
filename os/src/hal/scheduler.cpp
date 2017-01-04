@@ -19,19 +19,15 @@
 
 #include "hal.h"
 
-#include "bcm2836.h"
+
 
 #include "atomiclock.h"
-#include "interrupt.h"
-#include "miniuart.h"
 #include "memory.h"
 #include "memaux.h"
-#include "systimer.h"
 #include "thread.h"
-#include "cpu.h"
 #include "scheduler.h"
-#include "sysirqctrl.h"
-#include "softreq.h"
+#include "kdebug.h"
+
 
 extern u32 __heap_base__;
 extern u32 __svc_stack_pos__;
@@ -208,14 +204,14 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
     if (thid < table.Size()) {
         caThreadContext * tmp = NULL;
         table.At(tmp, thid);
-        while (caIrqCtrl::LockSwitchContext() == false) {
+        while (hal_ll_switch_ctx.hll_lock() == false) {
         };
         if (tmp != NULL && tmp->status == caThreadStatus::thRun) {
             tmp->status = caThreadStatus::thSleep;
             tmp->sleep = tick;
             res = deviceError::okey;
         }
-        while (caIrqCtrl::UnLockSwitchContext() == false) {
+        while (hal_ll_switch_ctx.hll_unlock() == false) {
         };
     }
     return res;
@@ -241,20 +237,20 @@ bool caScheduler::Init(caSchedulerMode req) {
 
 bool caScheduler::AddTask(caThreadContext *ctx) {
     bool res = false;
-    while (caIrqCtrl::LockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
     res = mng.AddTask(ctx);
-    while (caIrqCtrl::UnLockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_unlock() == false) {
     };
     return res;
 }
 
 bool caScheduler::RemoveTask(u32 idx) {
     bool res = false;
-    while (caIrqCtrl::LockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
     res = mng.RemoveTask(idx);
-    while (caIrqCtrl::UnLockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_unlock() == false) {
     };
     return res;
 }
@@ -290,7 +286,7 @@ void caScheduler::GetNextContext(void) {
 u32 caScheduler::SetSleepMode(u32 ms, u32 thIdx) {
     u32 res = deviceError::no_error;
     if (IsValidContext(thIdx)) {
-        u32 tick = caSysTimer::ToTick(ms);
+        u32 tick = hal_ll_time.hll_to_tick(ms);
         res = mng.ToSleep(thIdx, tick);
     }
     return res;
@@ -305,7 +301,7 @@ u32 caScheduler::Dump(caStringStream<s8> & ss) {
     return ss.Size();
 }
 
-u32 Sleep(u32 ms) {
+u32 caScheduler::Sleep(u32 ms) {
     u32 res = 0;
     //SchedulerIoCtrlSleep(&ms, (u32*) caScheduler::GetCurrentTaskId(), &res);
     // task was blocked here...
@@ -318,25 +314,25 @@ u32 Sleep(u32 ms) {
 
 u32 caScheduler::StartTask(void) {
     u32 res = 0xffffffff;
-    while (caIrqCtrl::LockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
     if (current_task != NULL) {
         current_task->status = caThreadStatus::thRun;
         res = current_task->index;
     }
-    while (caIrqCtrl::UnLockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
     return res;
 }
 
 void caScheduler::EndTask(u32 result) {
-    while (caIrqCtrl::LockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
     if (current_task != NULL) {
         current_task->result = result;
         current_task->status = caThreadStatus::thStop;
     }
-    while (caIrqCtrl::UnLockSwitchContext() == false) {
+    while (hal_ll_switch_ctx.hll_lock() == false) {
     };
 }
 
@@ -346,8 +342,7 @@ void caScheduler::EndTask(u32 result) {
 void caScheduler::Panic(void) {
     s8 buff[512];
     caStringStream<s8> ss;
-    caInterruptRequest::DisableInt();
-    caArmCpu::DisableIrqFiq();
+    hal_ll_int_req.hll_disable();
     ss.Init(buff, 512);
     if (current_task != NULL)
         caThread::Dump(ss, current_task);

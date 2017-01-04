@@ -4,16 +4,11 @@
     <df root="../os_test" name="0">
       <df name="src">
         <in>halcomdevice.cpp</in>
-        <in>halcomdevice.cpp</in>
-        <in>idevice.cpp</in>
         <in>idevice.cpp</in>
         <in>mainApp.cpp</in>
         <in>memaux.cpp</in>
-        <in>memaux.cpp</in>
-        <in>memory.cpp</in>
         <in>memory.cpp</in>
         <in>memoryvalidator.cpp</in>
-        <in>syslog.cpp</in>
         <in>syslog.cpp</in>
         <in>test_array.cpp</in>
         <in>test_atomiclock.cpp</in>
@@ -65,6 +60,28 @@
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/test.exe</executablePath>
           <ccTool flags="0">
+            <incDir>
+              <pElem>inc</pElem>
+              <pElem>../os/inc</pElem>
+              <pElem>../os/inc/hal</pElem>
+              <pElem>.</pElem>
+              <pElem>inc</pElem>
+              <pElem>../os/inc</pElem>
+              <pElem>../os/inc/hal</pElem>
+              <pElem>.</pElem>
+              <pElem>inc</pElem>
+              <pElem>../os/inc</pElem>
+              <pElem>../os/inc/hal</pElem>
+              <pElem>.</pElem>
+              <pElem>inc</pElem>
+              <pElem>../os/inc</pElem>
+              <pElem>../os/inc/hal</pElem>
+              <pElem>.</pElem>
+              <pElem>inc</pElem>
+              <pElem>../os/inc</pElem>
+              <pElem>../os/inc/hal</pElem>
+              <pElem>.</pElem>
+            </incDir>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -292,56 +309,6 @@
           <standard>8</standard>
         </ccTool>
       </folder>
-      <item path="src/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/idevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/memaux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/memory.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/syslog.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

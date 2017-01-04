@@ -19,7 +19,7 @@
 
 #include "hal.h"
 #include "bcm2836.h"
-
+#include "hw_func.h"
 #include "auxmain.h"
 #include "gpio.h"
 #include "miniuart.h"
@@ -29,7 +29,7 @@
 #include "systimer.h"
 #include "thread.h"
 #include "scheduler.h"
-
+#include "sysleds.h"
 
 extern u32 __ram_start__;
 extern u32 __ram_end__;
@@ -68,16 +68,46 @@ hal_ll_com_io hal_ll_com1 = {
     caScheduler::WakeUp, //hll_wakeuprx
     caScheduler::WakeUp, //hll_wakeuptx
     caHalDeviceRules::IrqServiceRx, //hll_irq_rx : set from device obj
-    caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj    
+    caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj   
+    caMiniUart::Send,
+    caMiniUart::Recv
 };
 
 // Hardware connectors sys timer
-hal_ll_sys_time hal_ll_time{
+hal_ll_sys_time hal_ll_time={
     caSysTimer::GetCount, //system tick count
     caSysTimer::GetMsec,
     caSysTimer::GetSec,
     caSysTimer::GetMin,
     caSysTimer::GetHour,
-    caSysTimer::GetDay // TO DO mounth, year , millenium
+    caSysTimer::GetDay, // TO DO mounth, year , millenium
+    caSysTimer::SetTime,
+    caSysTimer::Dump,
+    caSysTimer::ToTick,
+    caSysTimer::Start,
+    caSysTimer::Stop
 };
 
+hal_ll_sw_ctx hal_ll_switch_ctx = {
+    caIrqCtrl::LockSwitchContext,
+    caIrqCtrl::UnLockSwitchContext
+};
+
+
+hal_ll_interrupt hal_ll_int_req={
+    caArmCpu::EnableAll,
+    caArmCpu::DisableAll,
+    caArmCpu::WaitForInterrupt
+};
+
+
+
+hal_ll_reset hal_ll_reset_req{
+    sysReset, //TODO FIX
+    sysShutDown,
+    sysRestart,
+    caSysLed::LedsOff,  
+    caSysLed::LedsOn,
+    caSysLed::LedOff,  
+    caSysLed::LedOn
+};

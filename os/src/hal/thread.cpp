@@ -19,15 +19,8 @@
 
 #include "hal.h"
 
-#include "bcm2836.h"
 
-#include "config.h"
-#include "interrupt.h"
-#include "atomiclock.h"
-#include "miniuart.h"
 #include "thread.h"
-#include "cpu.h"
-#include "systimer.h"
 #include "scheduler.h"
 #include "memory.h"
 #include "memaux.h"
@@ -65,7 +58,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->pcb[4] = par2;
         ctx->pcb[15] = (u32) pst; //r13
         ctx->pcb[16] = (u32) caThread::LaunchThread; //r14
-        ctx->count = caSysTimer::GetCount();
+        ctx->count = hal_ll_time.hll_tick();
         ctx->stack_start = (u32) pst;
         ctx->stack_end = (u32) base + 64; // 64 guard
         ctx->time = 0;

@@ -439,13 +439,6 @@ void inline SchedulerIoCtrlSleep(u32 *ms, u32 *taskid, u32 *res) {
 
 
 
-#define SLEEP_FOR_EVER 0xffffffff
-
-u32 Sleep(u32 ms);
-
-inline u32 WaitForSignal(void) {
-    return Sleep(SLEEP_FOR_EVER);
-}
 
 #endif /* SOFTREQ_H */
 

@@ -86,10 +86,10 @@ public:
     static u32 ToTick(u32 ms);
     static u32 ToTime(u32 tick);
     static void IrqService(void);
-    static u32 Dump(caStringStream<s8> & ss);
+    static u32 Dump(caStringStream<s8> * ss);
 
     static u32 GetStatus(sysTimerStatus * reqStatus, u32 reqSize);
-    static u32 SetTime(sysTimerSet * req);
+    static u32 SetTime(u32 day, u32 hour, u32 min,u32 sec);
 
     inline static u32 GetTickFreq(void) {
         return st.mn_ClkHz;
@@ -123,6 +123,9 @@ public:
         return st.mn_Day;
     }
 
+    static u32 Start(void);
+    static u32 Stop(void);
+    
 private:
     static void AckIrq(void);
     static void Load(u32 value);

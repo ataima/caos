@@ -58,9 +58,6 @@ u32 caCache::Start(void) {
         sysc.asBit.Z_e = 1;
         caArmCprs::SetSystemControl(sysc.asReg);
         res = IsEnabled();
-        if (res) {
-            msgCACHE();
-        }
     }
     TOUT();
     return res;
@@ -129,3 +126,4 @@ u32 caCache::IsEnabled(void) {
     sysc.asReg = caArmCprs::GetSystemControl();
     return (sysc.asBit.C_e && sysc.asBit.I_e);
 }
+

@@ -181,10 +181,7 @@ u32 caMMU::Enable(void) {
     Dbg::Put("SysControlRegister.reserved_1=",sysc.asBit.reserved_11);
      * */
     sysc.asReg = caArmCprs::GetSystemControl();
-    res = sysc.asBit.M_e;
-    if (res) {
-        msgMMU();
-    }
+    res = sysc.asBit.M_e;    
     TOUT();
     return res;
 }

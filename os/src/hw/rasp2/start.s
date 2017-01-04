@@ -11,8 +11,8 @@
 .extern ISR_FIQ
 .extern ISR_Hypervisor
 .extern ISR_Prefetch
-.extern msgWelcome
-.extern msgByeBye
+.extern sysInit
+.extern sysStop
 .extern switchContext
 .extern msgSchedule    
 
@@ -209,9 +209,9 @@ bssloop:
         mov r11,r0
         mov r12,r0
         mov r14,r0
-        bl      msgWelcome 
+        bl      sysInit 
         bl      main
-        bl      msgByeBye 
+        bl      sysStop 
         b       _main_exit_handler
 .loop1: b       .loop1
 

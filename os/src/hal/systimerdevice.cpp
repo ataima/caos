@@ -19,15 +19,14 @@
 
 #include "hal.h"
 
-#include "bcm2836.h"
+
 
 #if SYS_TIMER_DEVICE
 
-#include "interrupt.h"
-#include "systimer.h"
+
 #include "systimerdevice.h"
 #include "memaux.h"
-#include "miniuart.h"
+
 
 
 
@@ -47,8 +46,8 @@ u32 caSysTimerDevice::Flush(caDeviceHandle *port) {
     } else {
         //Rx.Clean();
         //Tx.Clean();
-        port->tLast = caSysTimer::GetCount();
-        port->wrError=port->rdError=0;
+        port->tLast = hal_ll_time.hll_tick();
+        port->wrError = port->rdError = 0;
     }
     return res;
 }
@@ -72,7 +71,7 @@ u32 caSysTimerDevice::Open(caIDeviceConfigure * setup,
                 caMemAux<u32>::MemSet((u32*) port, 0, sizeof (caDeviceHandle));
                 port->handle = ++guid;
                 port->status = caDeviceHandle::statusHandle::Open;
-                port->tStart = caSysTimer::GetCount();
+                port->tStart = hal_ll_time.hll_tick();
                 port->tLast = port->tStart;
                 port->tStop = 0;
                 port->tLastCmd = caDeviceAction::caActionOpen;
@@ -88,13 +87,12 @@ u32 caSysTimerDevice::Open(caIDeviceConfigure * setup,
     else
         if (port == NULL)
         res = deviceError::error_invalid_null_port;
-    TOUT();
+
     return res;
 }
 
 u32 caSysTimerDevice::Close(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
     } else
@@ -106,18 +104,16 @@ u32 caSysTimerDevice::Close(caDeviceHandle *port) {
     } else {
         isOpen--;
         port->status = caDeviceHandle::statusHandle::Close;
-        port->tStop = caSysTimer::GetCount();
+        port->tStop = hal_ll_time.hll_tick();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
-        port->wrError=port->rdError=0;
+        port->wrError = port->rdError = 0;
     }
-    //TOUT();
     return res;
 }
 
 u32 caSysTimerDevice::Write(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    //TIN();
     if (port == NULL) {
         res = deviceError::error_invalid_null_port;
     } else
@@ -128,20 +124,19 @@ u32 caSysTimerDevice::Write(caDeviceHandle *port) {
         res = deviceError::error_invalid_handle_port;
     } else {
         if (port->wrBuff != NULL && port->wrSize > 0) {
-            sysTimerSet *req = (sysTimerSet*) port->wrBuff;
-            u32 writed = sizeof (sysTimerSet);
-            caSysTimer::SetTime(req);
+            u32 * ptr = (u32*) port->wrBuff;
+            u32 writed = 4 * sizeof (u32);
+            res = hal_ll_time.hll_settime(ptr[0], ptr[1], ptr[2], ptr[3]);
             port->writed += writed;
             port->wrBuff += writed;
             port->wrSize -= writed;
-            port->tLast = caSysTimer::GetCount();
+            port->tLast = hal_ll_time.hll_tick();
             port->tLastCmd = caDeviceAction::caActionWrite;
-            port->wrError=port->rdError=0;
+            port->wrError = port->rdError = 0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }
     }
-    //TOUT();
     return res;
 }
 
@@ -158,23 +153,39 @@ u32 caSysTimerDevice::Read(caDeviceHandle *port) {
         res = deviceError::error_invalid_handle_port;
     } else {
         if (port->rdBuff != NULL && port->rdSize > 0) {
-            u32 pSize;
-            if (port->rdSize >= sizeof (sysTimerStatus))
-                pSize = sizeof (sysTimerStatus);
-            else
-                pSize = port->rdSize;
-            caSysTimer::GetStatus((sysTimerStatus *) port->rdBuff, pSize);
-            port->readed += pSize;
-            port->rdBuff += pSize;
-            port->rdSize -= pSize;
-            port->tLast = caSysTimer::GetCount();
+            u32 *ptr=(u32 *)port->rdBuff;
+            if(port->rdSize>=sizeof(u32))
+            {
+                *ptr++=hal_ll_time.hll_day();
+                port->rdSize-=sizeof(u32);
+                port->readed +=sizeof(u32);
+            }
+            if(port->rdSize>=sizeof(u32))
+            {
+                *ptr++=hal_ll_time.hll_hour();
+                port->rdSize-=sizeof(u32);
+                port->readed +=sizeof(u32);
+            }
+            if(port->rdSize>=sizeof(u32))
+            {
+                *ptr++=hal_ll_time.hll_min();
+                port->rdSize-=sizeof(u32);
+                port->readed +=sizeof(u32);
+            }
+            if(port->rdSize>=sizeof(u32))
+            {
+                *ptr++=hal_ll_time.hll_sec();
+                port->rdSize-=sizeof(u32);
+                port->readed +=sizeof(u32);
+            }
+            port->tLast = hal_ll_time.hll_tick();
             port->tLastCmd = caDeviceAction::caActionRead;
-            port->wrError=port->rdError=0;
+            port->wrError = port->rdError = 0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }
     }
-    //TOUT();
+    //
     return res;
 
 }
@@ -202,16 +213,15 @@ u32 caSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 break;
             case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware:
                 if (in->ss != NULL) {
-                    in->ss->Clear();
-                    *in->ss << " --- SYS TIMER LIST ---" << caEnd::endl;
-                    res = caSysTimer::Dump(*in->ss);
+                    in->ss->Clear();                   
+                    res = hal_ll_time.hll_dump(in->ss);
                 } else
                     res = deviceError::error_invalid_null_destination;
                 break;
         }
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
-    //TOUT();
+    //
     return res;
 }
 
@@ -238,7 +248,7 @@ u32 caSysTimerDevice::IoctlReq(ioCtrlFunction request,
         default:
             break;
     }
-    //TOUT();
+    //
     return res;
 }
 

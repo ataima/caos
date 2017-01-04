@@ -18,21 +18,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
-#include "bcm2836.h"
 
-#include "interrupt.h"
-#include "miniuart.h"
+
 #include "console.h"
 #include "memaux.h"
 #include "stream.h"
 #include "thread.h"
 #include "heaparray.h"
 #include "scheduler.h"
-#include "systimer.h"
 #include "systimerdevice.h"
-#include "cache.h"
-#include "smp.h"
-#include "mmu.h"
 #include "memory.h"
 #include "caos.h"
 
@@ -308,13 +302,13 @@ deviceError caConsole::Command_WRITE_DEVICE(caDeviceHandle &port,
                 iss >> hour;
                 iss >> min;
                 iss >> sec;
-                sysTimerSet st;
-                st.mn_Day = day;
-                st.mn_Hour = hour;
-                st.mn_Min = min;
-                st.mn_Sec = sec;
-                portTimer.wrBuff = (u8*) & st;
-                portTimer.wrSize = sizeof (sysTimerSet);
+                u32 data[4];
+                data[0] = day;
+                data[1] = hour;
+                data[2] = min;
+                data[3] = sec;
+                portTimer.wrBuff = (u8*)data;
+                portTimer.wrSize = sizeof (data);
                 portTimer.writed = 0;
                 res = caOS::Write(portTimer);
                 res = caOS::Close(portTimer);
@@ -422,24 +416,15 @@ deviceError caConsole::Command_HELP(caDeviceHandle &port,
     return caOS::Write(port, ss);
 }
 
-extern u32 stop_system_timer(void);
-extern "C" void jump_to(u32 address);
+
+
 
 deviceError caConsole::Command_QUIT(caDeviceHandle &port, caTokenizeSStream <u8> & /*iss*/) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     ss << " Shutdown system, and reload bootloader. bye bye" << caEnd::endl;
     caOS::Write(port, ss);
-    stop_system_timer();
-    caCache::Stop();
-    caSMP::Disable();
-    caMMU::Disable();
-    caCache::SetBPIALL(0);
-    caCache::SetICIALLU(0);
-    caCache::SetBPIALL(0);
-    u32 *ptr = (u32 *) 0x8000;
-    *ptr = 0xea1fbfff;
-    jump_to(0x8000);
+    hal_ll_reset_req.hll_reset();
     return deviceError::no_error;
 }
 
@@ -448,9 +433,9 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
     deviceError res = deviceError::no_error;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
-    ss << "[" << caSysTimer::GetDay() << ":" << caSysTimer::GetHour();
-    ss << ":" << caSysTimer::GetMin() << ":" << caSysTimer::GetSec();
-    ss << ":" << caSysTimer::GetMsec() << "] : c.a.O.S >" << caEnd::endl;
+    ss << "[" << hal_ll_time.hll_day() << ":" << hal_ll_time.hll_hour();
+    ss << ":" << hal_ll_time.hll_min() << ":" << hal_ll_time.hll_sec();
+    ss << ":" << hal_ll_time.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
     res = caOS::Write(port, ss);
     TokenString<u8> tmp;
     iss>>tmp;

@@ -79,8 +79,8 @@ public:
     }
     
     
-    inline deviceloglevels GetCurLogLevel(void) {
-        return curlev;
+    inline s32 GetCurLogLevel(void) {
+        return (s32)(curlev);
     }
     
     inline caCircularStringStream<s8> & Stream(deviceloglevels l){
@@ -101,7 +101,7 @@ extern hal_ll_sys_time hal_ll_time;
 
 #if LOGGIN
 
-#define LOG(LOG,LEVEL) if(LOG.IsEnabled() && LEVEL<=LOG.GetCurLogLevel()) \
+#define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(LEVEL)<=LOG.GetCurLogLevel()) \
                         LOG.Stream(LEVEL)<<"["<<hal_ll_time.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
 

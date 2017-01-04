@@ -1,7 +1,7 @@
 # set environment variables
 include rules.mk
 #define includes 
-INC=-I inc -I inc/hal  -I inc/hw/rasp2
+INC=-I inc -I inc/hal  
 
 #dependences and objs 
 

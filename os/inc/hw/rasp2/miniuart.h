@@ -131,7 +131,7 @@ public:
         return mu->io.asReg;
     }
 
-    static inline void Send(u32 c) {
+    static void Send(u32 c) {
         system_aux_mini_uart(mu);
         while (!mu->lsr.asBit.txempty);
         mu->io.asReg = c;

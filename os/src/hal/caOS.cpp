@@ -20,12 +20,6 @@
 
 
 #include "hal.h"
-#include "bcm2836.h"
-
-#include "miniuart.h"
-#include "interrupt.h"
-#include "systimer.h"
-#include "sysirqctrl.h"
 #include "memaux.h"
 
 #include "thread.h"

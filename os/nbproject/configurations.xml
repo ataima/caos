@@ -2,12 +2,6 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name="inc">
-        <in>caos.h</in>
-        <in>devicehandle.h</in>
-        <in>hal.h</in>
-        <in>halcomdevice.h</in>
-      </df>
       <df name="test">
         <in>main_test.cpp</in>
         <in>test_com_device.cpp</in>
@@ -54,12 +48,18 @@
             <incDir>
               <pElem>inc</pElem>
               <pElem>.</pElem>
+              <pElem>inc/hal</pElem>
+              <pElem>inc/hw</pElem>
+              <pElem>inc/hw/rasp2</pElem>
             </incDir>
           </cTool>
           <ccTool>
             <incDir>
               <pElem>inc</pElem>
               <pElem>.</pElem>
+              <pElem>inc/hal</pElem>
+              <pElem>inc/hw</pElem>
+              <pElem>inc/hw/rasp2</pElem>
             </incDir>
           </ccTool>
         </makeTool>
@@ -68,14 +68,6 @@
           <preBuildCommand>make distclean</preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="inc/caos.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="inc/devicehandle.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="inc/hal.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="inc/halcomdevice.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="test/main_test.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>

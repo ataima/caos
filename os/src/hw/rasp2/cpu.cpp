@@ -219,4 +219,3 @@ void caArmCpu::CopyRegsToStack(u32 *ptr, CpuRegs *regs) {
 }
 
 
-

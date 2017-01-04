@@ -18,13 +18,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
+#include "kdebug.h"
 
-#include "bcm2836.h"
-
-#include "miniuart.h"
-#include "sysirqctrl.h"
-#include "cpu.h"
-#include "caos_version.h"
 
 class caLowLevelDebug {
     /// TO DO USE STREAM....
@@ -35,14 +30,13 @@ public:
     static void Hex(u32 d);
     static void Dec(s32 d);
     static void Bin(u32 d);
-    static void Welcome(void);
     static void ByeBye(void);
     static void MMU(void);
     static void CACHE(void);
     static void START(void);
 
     static inline void uSend(u32 c) {
-        caMiniUart::Send(c);
+        hal_ll_com1.hll_send(c);
     }
 };
 
@@ -137,66 +131,8 @@ void caLowLevelDebug::Dec(s32 d) {
     }
 }
 
-void caLowLevelDebug::Welcome(void) {
-    caIrqCtrl::Init(); // start all fiq/irq disabled 
-    caMiniUart::Init(115200, 8, 1, 8);
-    caMiniUart::Enable(1, 1);
-    Msg("> c.a.O.S. : [ ");
-    caArmCpu::DumpCPSR();
-    Msg(" ]\r\n");
-}
-
-void caLowLevelDebug::ByeBye(void) {
-    Msg("bye. [ from c.a.O.S. main proc ! ]\r\n");
-}
-
-void caLowLevelDebug::MMU(void) {
-    Msg("> c.a.O.S. : [ ");
-    Msg("MMU : Flat Model Started Ok");
-    Msg(" ]\r\n");
-}
-
-void caLowLevelDebug::CACHE(void) {
-    Msg("> c.a.O.S. : [ ");
-    Msg("Cache : Instruction,Data And Branch Prediction is On ");
-    Msg(" ]\r\n");
-}
-
-void caLowLevelDebug::START(void) {
-    Msg("> c.a.O.S. : [ ");
-    Msg(caos_version);
-    Msg(" ]\r\n");
-}
-
-extern "C" {
-
-    void msgWelcome(void) {
-        caLowLevelDebug::Welcome();
-    }
-
-    void msgByeBye(void) {
-        caLowLevelDebug::ByeBye();
-    }
-
-    void msgMMU(void) {
-        caLowLevelDebug::MMU();
-    }
-
-    void msgCACHE(void) {
-        caLowLevelDebug::CACHE();
-    }
-
-    void msgSTART(void) {
-        caLowLevelDebug::START();
-    }
-
-    void msgSchedule(void) {
-        caLowLevelDebug::Msg("Reschedule\r\n");
-        ;
-    }
 
 
-}
 
 namespace Dbg {
 

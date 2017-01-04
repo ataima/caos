@@ -34,9 +34,7 @@ extern "C" {
     u32 ISR_FIQ(void);
     void ISR_Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt);
     void ISR_Hypervisor(void);
-    void Welcome(void);
-    void ByeBye(void);
-    void switchContext(void) __attribute__((naked));
+    void switchContext(void) __attribute__ ((naked));
 }
 
 class caInterruptRequest {
@@ -50,17 +48,6 @@ public:
     static void Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_fiq);
     static void Hypervisor(void);
 
-    static inline void EnableInt(void) {
-        asm volatile("cpsie iaf");
-    }
-
-    static inline void DisableInt(void) {
-        asm volatile("cpsid iaf");
-    }
-
-    static inline void WaitForInterrupt(void) {
-        asm volatile("wfi");
-    }
 
 
 };

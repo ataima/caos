@@ -34,6 +34,8 @@ public:
     static void LedRedOn(void);
     static void LedGreenOff(void);
     static void LedGreenOn(void);
+    static void LedOn(u32 led);
+    static void LedOff(u32 led);
 };
 
 #endif

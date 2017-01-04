@@ -324,6 +324,29 @@ public:
         asm volatile ("msr cpsr_c,r0");
     }
 
+    static inline void EnableInt(void) {
+        asm volatile("cpsie iaf");
+    }
+
+    static inline void DisableInt(void) {
+        asm volatile("cpsid iaf");
+    }
+
+    static inline void WaitForInterrupt(void) {
+        asm volatile("wfi");
+    }
+
+    static inline void DisableAll() {
+        caArmCpu::DisableInt();
+        caArmCpu::DisableIrqFiq();
+    }
+
+    static inline void EnableAll() {
+        caArmCpu::EnableInt();
+        caArmCpu::EnableIrqFiq();
+    }
+    
+
 };
 
 //// tempate to help 

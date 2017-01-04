@@ -29,13 +29,14 @@
 
 
 /* Hardware abstract layer access   */
-
-
-typedef u32(* abstract_functor_mem)(void);
+typedef void (* abstract_functor_void_func)(void);
+typedef u32(* abstract_functor_int_int_func)(u32 ms);
+typedef void(* abstract_functor_void_int)(u32 thId);
+typedef u32(* abstract_functor_int_void_func)(void);
 
 typedef struct tag_hal_ll_mem_io {
-    abstract_functor_mem hll_mem_min_phy;
-    abstract_functor_mem hll_mem_max_phy;
+    abstract_functor_int_void_func hll_mem_min_phy;
+    abstract_functor_int_void_func hll_mem_max_phy;
 } hal_ll_mem_io;
 
 /* MEM RAM BORDER */
@@ -60,7 +61,7 @@ typedef u32(* abstract_functor_com_dump)(caStringStream<s8> *ss);
 typedef u32(* abstract_functor_com_irq_rx)(void *obj, u8 * rxbuff, s_t size, s_t & readed);
 typedef u32(* abstract_functor_com_irq_tx)(void *obj, u8 * txbuff, s_t size, s_t & writed);
 typedef u32(* abstract_functor_com_get_errors)(u32 & rxError, u32 & txError);
-typedef void(* abstract_functor_com_wakeup)(u32 thId);
+
 
 
 //Hardware connector for coms
@@ -74,21 +75,61 @@ typedef struct tag_hal_ll_com_io {
     const abstract_functor_com_enable hll_enable;
     const abstract_functor_com_dump hll_dump;
     const abstract_functor_com_get_errors hll_get_errors;
-    const abstract_functor_com_wakeup hll_wakeup_rx;
-    const abstract_functor_com_wakeup hll_wakeup_tx;
+    const abstract_functor_void_int hll_wakeup_rx;
+    const abstract_functor_void_int hll_wakeup_tx;
     const abstract_functor_com_irq_rx hll_irq_rx;
     const abstract_functor_com_irq_tx hll_irq_tx;
+    const abstract_functor_void_int hll_send;
+    const abstract_functor_com_void hll_receive;
 } hal_ll_com_io;
 
 //Hardware connector  to system time ..
+typedef u32(* abstract_functor_set_time)(u32 day,u32 hour,u32 min, u32 sec);
+
 typedef struct tag_hal_ll_sys_time {
     const abstract_functor_com_void hll_tick;
     const abstract_functor_com_void hll_ms;
     const abstract_functor_com_void hll_sec;
     const abstract_functor_com_void hll_min;
     const abstract_functor_com_void hll_hour;
-    const abstract_functor_com_void hll_day;    
+    const abstract_functor_com_void hll_day; 
+    const abstract_functor_set_time hll_settime;
+    const abstract_functor_com_dump hll_dump;
+    const abstract_functor_int_int_func hll_to_tick;
+    const abstract_functor_int_void_func hll_start;
+    const abstract_functor_int_void_func hll_stop;    
 } hal_ll_sys_time;
+
+//Hardware connector to switch context
+typedef bool (* abstract_functor_lock_sw_ctx)(void);
+typedef struct tag_hal_ll_sw_ctx {
+    const abstract_functor_lock_sw_ctx hll_lock;
+    const abstract_functor_lock_sw_ctx hll_unlock;
+} hal_ll_sw_ctx;
+
+
+//Hardware connector to interrupt high level functions
+
+typedef struct tag_hal_ll_interrupt {
+    const abstract_functor_void_func hll_enable;
+    const abstract_functor_void_func hll_disable;
+    const abstract_functor_void_func hll_wait_for_interrupt;
+} hal_ll_interrupt;
+
+//Hardware connector to system reset
+typedef struct tag_hal_ll_reset {
+    const abstract_functor_void_func hll_reset;
+    const abstract_functor_void_func hll_shutdown;
+    const abstract_functor_void_func hll_restart;
+    const abstract_functor_void_func hll_leds_off;
+    const abstract_functor_void_func hll_leds_on;
+    const abstract_functor_void_int hll_led_off;    
+    const abstract_functor_void_int hll_led_on;
+} hal_ll_reset;
+
+
+
+
 
 /* LINK to COM1 */
 #if COM1_DEVICE 
@@ -123,7 +164,14 @@ extern hal_ll_com_io hal_ll_com7;
 extern hal_ll_com_io hal_ll_com8;
 #endif
 
+#if SYS_TIMER_DEVICE
+extern hal_ll_sys_time hal_ll_time;
+#endif
 
+extern hal_ll_sw_ctx hal_ll_switch_ctx;
 
+extern hal_ll_interrupt  hal_ll_int_req;
+
+extern hal_ll_reset hal_ll_reset_req;
 #endif /* HAL_H */
 

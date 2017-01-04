@@ -57,4 +57,20 @@ void caSysLed::LedGreenOn(void) {
     caGpio::Set(47);
 }
 
+void caSysLed::LedOn(u32 led) {
+    if (led == 1)
+        LedGreenOn();
+    else
+        if (led == 2)
+        LedRedOn();
+}
+
+void caSysLed::LedOff(u32 led) {
+    if (led == 1)
+        LedGreenOff();
+    else
+        if (led == 2)
+        LedRedOff();
+}
+
 #endif

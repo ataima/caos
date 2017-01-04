@@ -149,22 +149,21 @@ u32 caSysTimer::GetStatus(sysTimerStatus * reqStatus, u32 reqSize) {
         res = deviceError::error_invalid_null_destination;
     } else {
         st.mn_FreeRunning = ReadFreeCounter();
-        reqSize=reqSize>sizeof(st)?sizeof(st):reqSize;
-        caMemAux<u32>::MemCpy( (u32*)(reqStatus),  (u32*)(& st), reqSize);
+        reqSize = reqSize>sizeof (st) ? sizeof (st) : reqSize;
+        caMemAux<u32>::MemCpy((u32*) (reqStatus), (u32*) (& st), reqSize);
     }
     return res;
 }
 
-u32 caSysTimer::SetTime(sysTimerSet * req) {
+u32 caSysTimer::SetTime(u32 day, u32 hour, u32 min, u32 sec) {
     u32 res = deviceError::no_error;
-    if (req == NULL) {
-        res = deviceError::error_invalid_null_destination;
-    } else {
-        st.mn_Msec = req->mn_Sec;
-        st.mn_Min = req->mn_Min;
-        st.mn_Hour = req->mn_Hour;
-        st.mn_Day = req->mn_Day;
-    }
+    if (sec > 59)sec = 0;
+    if (min > 59)min = 0;
+    if (hour > 23)hour = 0;
+    st.mn_Msec = sec;
+    st.mn_Min = min;
+    st.mn_Hour = hour;
+    st.mn_Day = day;
     return res;
 }
 
@@ -210,23 +209,26 @@ u32 caSysTimer::ReadFreeCounter(void) {
     return ap804->Counter;
 }
 
-u32 caSysTimer::Dump(caStringStream<s8> & ss) {
+u32 caSysTimer::Dump(caStringStream<s8> * ss) {
     u32 res = deviceError::no_error;
-    system_ap804_timer(ap804);
-    ss << caStringFormat::hex;
-    ss << "bcm 2835/6 AP804 Timer :" << caEnd::endl;
-    ss << "LOAD     [" << (u32) & ap804->Load << "]=" << ap804->Load << caEnd::endl;
-    ss << "CONTROL  [" << (u32) & ap804->Control.asReg << "]=" << ap804->Control.asReg << caEnd::endl;
-    ss << "COUNTER  [" << (u32) & ap804->Counter << "]=" << ap804->Counter << caEnd::endl;
-    ss << "ACKIRQ   [" << (u32) & ap804->AckIrq << "]=" << ap804->AckIrq << caEnd::endl;
-    ss << "MASKIRQ  [" << (u32) & ap804->MaskIrq << "]=" << ap804->MaskIrq << caEnd::endl;
-    ss << "PREDIV   [" << (u32) & ap804->Predivider << "]=" << ap804->Predivider << caEnd::endl;
-    ss << "RAWIRQ   [" << (u32) & ap804->RawIrq << "]=" << ap804->RawIrq << caEnd::endl;
-    ss << "RELOAD   [" << (u32) & ap804->Reload << "]=" << ap804->Reload << caEnd::endl;
-    ss << "VALUE    [" << (u32) & ap804->Value << "]=" << ap804->Value << caEnd::endl;
-    ss.Str();
-    if (!ss.Good())
-        res = deviceError::error_generic_fail_device;
+    if (ss != NULL) {
+        system_ap804_timer(ap804);
+        (*ss) << " --- SYS TIMER LIST ---" << caEnd::endl;
+        (*ss) << caStringFormat::hex;
+        (*ss) << "bcm 2835/6 AP804 Timer :" << caEnd::endl;
+        (*ss) << "LOAD     [" << (u32) & ap804->Load << "]=" << ap804->Load << caEnd::endl;
+        (*ss) << "CONTROL  [" << (u32) & ap804->Control.asReg << "]=" << ap804->Control.asReg << caEnd::endl;
+        (*ss) << "COUNTER  [" << (u32) & ap804->Counter << "]=" << ap804->Counter << caEnd::endl;
+        (*ss) << "ACKIRQ   [" << (u32) & ap804->AckIrq << "]=" << ap804->AckIrq << caEnd::endl;
+        (*ss) << "MASKIRQ  [" << (u32) & ap804->MaskIrq << "]=" << ap804->MaskIrq << caEnd::endl;
+        (*ss) << "PREDIV   [" << (u32) & ap804->Predivider << "]=" << ap804->Predivider << caEnd::endl;
+        (*ss) << "RAWIRQ   [" << (u32) & ap804->RawIrq << "]=" << ap804->RawIrq << caEnd::endl;
+        (*ss) << "RELOAD   [" << (u32) & ap804->Reload << "]=" << ap804->Reload << caEnd::endl;
+        (*ss) << "VALUE    [" << (u32) & ap804->Value << "]=" << ap804->Value << caEnd::endl;
+        (*ss).Str();
+        if (!ss->Good())
+            res = deviceError::error_generic_fail_device;
+    }
     return res;
 }
 
@@ -262,6 +264,29 @@ u32 caSysTimer::ToTick(u32 ms) {
 u32 caSysTimer::ToTime(u32 tick) {
     return ((1000 * tick) / (st.mn_IrqHz));
 
+}
+
+u32 caSysTimer::Start(void) {
+    u32 res = FALSE;
+    if (caSysTimer::Init(SYS_CLOCK_TIMER, SYS_TIMER_TICK)) {
+        if (caSysTimer::EnableCounter(1)) {
+            if (caSysTimer::EnableTimer(1)) {
+                Dbg::Put("> c.a.O.S. : [ Start Schedule interrupt ... ]\r\n");
+                res = caSysTimer::IrqEnable();
+            }
+        }
+    }
+    return res;
+}
+
+u32 caSysTimer::Stop(void) {
+    u32 res = FALSE;
+    if (caSysTimer::EnableCounter(0)) {
+        if (caSysTimer::EnableTimer(0)) {
+            res = caSysTimer::IrqDisable();
+        }
+    }
+    return res;
 }
 
 

@@ -21,8 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "bcm2836.h"
-#include "cpu.h"
+
 
 typedef enum tag_ca_thread_mode {
     MODE_USR = 0x10,

@@ -18,53 +18,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
-#include "bcm2836.h"
-#include "sysleds.h"
-#include "gpio.h"
-#include "miniuart.h"
-#include "interrupt.h"
-#include "sysirqctrl.h"
-#include "systimer.h"
 #include "memory.h"
-#include "cpu.h"
 #include "thread.h"
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "console.h"
 #include "memaux.h"
-#include "cache.h"
 #include "test.h"
-#include "syslog.h"
-#include "softreq.h"
 #include "caos.h"
+#include "kdebug.h"
 
-u32 start_system_timer(void) {
-    u32 res = FALSE;
-    if (caSysTimer::Init(SYS_CLOCK_TIMER, SYS_TIMER_TICK)) {
-        if (caSysTimer::EnableCounter(1)) {
-            if (caSysTimer::EnableTimer(1)) {
-                Dbg::Put("> c.a.O.S. : [ Start Schedule interrupt ... ]\r\n");
-                res = caSysTimer::IrqEnable();
-            }
-        }
-    }
-    caArmCpu::EnableIrqFiq();
-    return res;
-}
-
-u32 stop_system_timer(void) {
-    u32 res = FALSE;
-    if (caSysTimer::EnableCounter(0)) {
-        if (caSysTimer::EnableTimer(0)) {
-            res = caSysTimer::IrqDisable();
-        }
-    }
-    caArmCpu::DisableIrqFiq();
-    return res;
-}
 
 u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    Dbg::Put("Idle live..\r\n");
     u32 idleCount = 1;
     for (;;) {
         idleCount++;
@@ -74,19 +39,18 @@ u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 }
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
-    Dbg::Put("Main live..\r\n");
     u32 st = 0;
-    caSysLed::LedsOff();
+    hal_ll_reset_req.hll_leds_off();
     while (1) {
         if (st) {
-            caSysLed::LedGreenOff();
-            caSysLed::LedRedOn();
+            hal_ll_reset_req.hll_led_off(1);
+            hal_ll_reset_req.hll_led_on(2);
         } else {
-            caSysLed::LedGreenOn();
-            caSysLed::LedRedOff();
+            hal_ll_reset_req.hll_led_off(2);
+            hal_ll_reset_req.hll_led_on(1);
         }
         st = !st;
-        Sleep(250);
+        caScheduler::Sleep(250);
     };
     return 0;
 }
@@ -116,7 +80,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
                 port.readed = 0;
                 do {
                     port.rdSize = 1;
-                    WaitForSignal();
+                    caScheduler::WaitForSignal();
                     res = caOS::Read(port);
                     if (res == deviceError::no_error) {
                         if (port.readed > 0) {
@@ -158,21 +122,10 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
 }
 
 int main(void) {
-    s8 buff[256];
     u32 thMainTask;
     u32 thNullTask;
     u32 thConsoleTask;
-    caIrqCtrl::Init();
-    caMemory::Init();
-    caMemory::DumpAvail(buff, sizeof (buff));
-    Dbg::Put(buff);
-    caArmCpu::GetMainIdCpuInfo();
-#if CACHE_DEVICE    
-    caCache::Start();
-#endif
-    msgSTART();
     caScheduler::Init(caSchedulerMode::Priority);
-
 #if TEST
     tmain();
 #endif    
@@ -190,16 +143,15 @@ int main(void) {
             caThreadPriority::caThLevel0,
             nullTask);
     // GO scheduler 
-    start_system_timer();
+    hal_ll_time.hll_start();
     //
-
-    //caInterruptRequest::WaitForInterrupt();
+    hal_ll_int_req.hll_wait_for_interrupt();
     while (1) {
         //leave this throw irq/fiq scheduler interrupt
         Dbg::Put("Wait\r\n");
     };
     //lbl_shutdown:
-    stop_system_timer();
+    hal_ll_time.hll_stop();
     caThread::DestroyThread(thMainTask);
     caThread::DestroyThread(thConsoleTask);
     caThread::DestroyThread(thNullTask);
