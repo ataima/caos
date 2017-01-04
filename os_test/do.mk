@@ -71,7 +71,7 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 	$(C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
 	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
-
+default: all
 
 .PHONY:  all clean info dwload qemu asm distclean add_ext_src remove_ext_src
 
@@ -138,7 +138,7 @@ link_file:
 	@echo $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/test.exe">/dev/stderr
 	
 
-all :   depend  all_c_file all_cpp_file  link_file 
+all :  add_ext_src depend  all_c_file all_cpp_file  link_file 
 
 info:	
 	@echo $(EH) $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
