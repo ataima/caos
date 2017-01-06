@@ -22,6 +22,7 @@
 
 
 #include "hal.h"
+#include "halsystimerdevice.h"
 #include "halcomdevice.h"
 
 class caOS {
@@ -35,7 +36,11 @@ private:
     } devicePair;
 
     static devicePair allDevices[];
-
+    
+#if SYS_TIMER_1 
+    static caHalSysTimerDevice timer1; // already present for task scheduler...  
+#endif
+    
 #if COM1_DEVICE
     static caHalComDevice com1;
 #endif

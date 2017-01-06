@@ -28,7 +28,6 @@
 #include "caos.h"
 #include "kdebug.h"
 
-
 u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
     u32 idleCount = 1;
     for (;;) {
@@ -40,14 +39,14 @@ u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
     u32 st = 0;
-    hal_ll_reset_req.hll_leds_off();
+    hal_llc_reset_req.hll_leds_off();
     while (1) {
         if (st) {
-            hal_ll_reset_req.hll_led_off(1);
-            hal_ll_reset_req.hll_led_on(2);
+            hal_llc_reset_req.hll_led_off(1);
+            hal_llc_reset_req.hll_led_on(2);
         } else {
-            hal_ll_reset_req.hll_led_off(2);
-            hal_ll_reset_req.hll_led_on(1);
+            hal_llc_reset_req.hll_led_off(2);
+            hal_llc_reset_req.hll_led_on(1);
         }
         st = !st;
         caScheduler::Sleep(250);
@@ -72,7 +71,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     if (res == deviceError::no_error) {
         caComDeviceCtrl comCtrl;
         comCtrl.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalRx;
-        comCtrl.st_rx = thIdx;
+        comCtrl.param_1 = thIdx;
         res = caOS::IoCtrl(port, comCtrl);
         if (res == deviceError::no_error) {
             while (1) {
@@ -143,15 +142,15 @@ int main(void) {
             caThreadPriority::caThLevel0,
             nullTask);
     // GO scheduler 
-    hal_ll_time.hll_start();
+    hal_llc_time.hll_start();
     //
-    hal_ll_int_req.hll_wait_for_interrupt();
+    hal_llc_int_req.hll_wait_for_interrupt();
     while (1) {
         //leave this throw irq/fiq scheduler interrupt
         Dbg::Put("Wait\r\n");
     };
     //lbl_shutdown:
-    hal_ll_time.hll_stop();
+    hal_llc_time.hll_stop();
     caThread::DestroyThread(thMainTask);
     caThread::DestroyThread(thConsoleTask);
     caThread::DestroyThread(thNullTask);

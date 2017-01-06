@@ -20,7 +20,6 @@
 #include "hal.h"
 #include "kdebug.h"
 
-
 class caLowLevelDebug {
     /// TO DO USE STREAM....
 public:
@@ -36,7 +35,7 @@ public:
     static void START(void);
 
     static inline void uSend(u32 c) {
-        hal_ll_com1.hll_send(c);
+        hal_llc_com1.hll_send(c);
     }
 };
 

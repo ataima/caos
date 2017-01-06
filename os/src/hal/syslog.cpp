@@ -24,12 +24,12 @@
 
 #if HAVE_SYS_LOG
 
-u32 caSysLog::Init(s_t total_size,deviceloglevels reqlev) {
+u32 caSysLog::Init(s_t total_size, deviceloglevels reqlev) {
     u32 res = FALSE;
-    caMemAux<s8>::MemZero((s8*)mn_Base, sizeof (mn_Base));
+    caMemAux<s8>::MemZero((s8*) mn_Base, sizeof (mn_Base));
     s_t i;
-    if(reqlev>deviceloglevels::end_device_log_lev )reqlev=deviceloglevels::end_device_log_lev;
-    curlev=reqlev;
+    if (reqlev > deviceloglevels::end_device_log_lev)reqlev = deviceloglevels::end_device_log_lev;
+    curlev = reqlev;
     for (i = 0; i < curlev; i++) {
         mn_Base[i] = static_cast<s8*> (caMemory::Allocate(total_size));
         if (mn_Base[i] != NULL) {
@@ -37,7 +37,7 @@ u32 caSysLog::Init(s_t total_size,deviceloglevels reqlev) {
         }
         if (res == FALSE)break;
     }
-    enable=false;
+    enable = false;
     return res;
 }
 
@@ -51,8 +51,8 @@ u32 caSysLog::Destroy(void) {
             mn_Base[i] = NULL;
         }
     }
-    enable=false;
-    curlev=deviceloglevels::end_device_log_lev;
+    enable = false;
+    curlev = deviceloglevels::end_device_log_lev;
     return res;
 }
 

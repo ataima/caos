@@ -26,40 +26,43 @@
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "memory.h"
-#include "systimerdevice.h"
+#include "halsystimerdevice.h"
 #include "caos.h"
 
+#if SYS_TIMER_1
+caHalSysTimerDevice caOS::timer1(&hal_llc_time, ioCtrlRequest::SysTimer);
+#endif
 
 #if COM1_DEVICE
-caHalComDevice caOS::com1(&hal_ll_com1,ioCtrlRequest::Com1);
+caHalComDevice caOS::com1(&hal_llc_com1, ioCtrlRequest::Com1);
 #endif
 
 #if COM2_DEVICE
-caHalComDevice caOS::com2(&hal_ll_com2,ioCtrlRequest::Com2);
+caHalComDevice caOS::com2(&hal_llc_com2, ioCtrlRequest::Com2);
 #endif
 
 #if COM3_DEVICE
-caHalComDevice caOS::com3(&hal_ll_com3,ioCtrlRequest::Com3);
+caHalComDevice caOS::com3(&hal_llc_com3, ioCtrlRequest::Com3);
 #endif
 
 #if COM4_DEVICE
-caHalComDevice caOS::com4(&hal_ll_com4,ioCtrlRequest::Com4);
+caHalComDevice caOS::com4(&hal_llc_com4, ioCtrlRequest::Com4);
 #endif
 
 #if COM5_DEVICE
-caHalComDevice caOS::com5(&hal_ll_com5,ioCtrlRequest::Com5);
+caHalComDevice caOS::com5(&hal_llc_com5, ioCtrlRequest::Com5);
 #endif
 
 #if COM6_DEVICE
-caHalComDevice caOS::com6(&hal_ll_com6,ioCtrlRequest::Com6);
+caHalComDevice caOS::com6(&hal_llc_com6, ioCtrlRequest::Com6);
 #endif
 
 #if COM7_DEVICE
-caHalComDevice caOS::com7(&hal_ll_com7,ioCtrlRequest::Com7);
+caHalComDevice caOS::com7(&hal_llc_com7, ioCtrlRequest::Com7);
 #endif
 
 #if COM8_DEVICE
-caHalComDevice caOS::com8(&hal_ll_com8,ioCtrlRequest::Com8);
+caHalComDevice caOS::com8(&hal_llc_com8, ioCtrlRequest::Com8);
 #endif
 
 
@@ -72,7 +75,9 @@ caOS::devicePair caOS::allDevices[] = {
     {"SCHEDULER", ioCtrlRequest::Scheduler, NULL},
     {"TASK", ioCtrlRequest::Task, NULL},
     {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
-    {"SYSTIMER", ioCtrlRequest::SysTimer, NULL},
+#if SYS_TIMER_1    
+    {"SYS_TIMER_1", ioCtrlRequest::SysTimer, &timer1},
+#endif    
     {"CACHE", ioCtrlRequest::Cache, NULL},
 #if COM1_DEVICE   
     {"TTY1", ioCtrlRequest::Com1, &com1},

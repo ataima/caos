@@ -345,7 +345,7 @@ public:
         caArmCpu::EnableInt();
         caArmCpu::EnableIrqFiq();
     }
-    
+
 
 };
 

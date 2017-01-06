@@ -95,14 +95,14 @@ public:
     static inline bool IsValidContext(u32 thid) {
         return mng.IsValidContext(thid);
     }
-    
+
 #define SLEEP_FOR_EVER 0xffffffff
 
-static u32 Sleep(u32 ms);
+    static u32 Sleep(u32 ms);
 
-static inline u32 WaitForSignal(void) {
-    return Sleep(SLEEP_FOR_EVER);
-}
+    static inline u32 WaitForSignal(void) {
+        return Sleep(SLEEP_FOR_EVER);
+    }
 };
 
 #endif /* SCHEDULER_H */

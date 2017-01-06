@@ -36,7 +36,7 @@ private:
     static u32 txOverrun;
     // error rx 
     static u32 rxOverrun;
-    
+
     static void IrqServiceTx(void);
 
     static void IrqServiceRx(void);
@@ -144,7 +144,7 @@ public:
 
     static u32 Dump(caStringStream<s8> * ss);
 
-    static u32 Configure(u32 speed,u32 stop , u32 parity, u32 data );
+    static u32 Configure(u32 speed, u32 stop, u32 parity, u32 data);
 
     static u32 EnableInt(void);
 

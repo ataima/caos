@@ -101,10 +101,21 @@ public:
 
     virtual u32 GetOpenFlag(void) = 0;
 
-    virtual u32 IrqServiceTx(u8 * txbuff, s_t size, s_t & writed) = 0;
+    virtual u32 IrqService1(u8 * buff, s_t size, s_t & iosize) = 0;
 
-    virtual u32 IrqServiceRx(u8 * rxbuff, s_t size, s_t & readed) = 0;
+    virtual u32 IrqService2(u8 * buff, s_t size, s_t & iosize) = 0;
 
+    virtual u32 IrqService3(u8 * buff, s_t size, s_t & iosize) = 0;
+
+    virtual u32 IrqService4(u8 * buff, s_t size, s_t & iosize) = 0;
+
+    virtual u32 IrqService5(u8 * buff, s_t size, s_t & iosize) = 0;
+
+    virtual u32 IrqService6(u8 * buff, s_t size, s_t & iosize) = 0;
+
+    virtual u32 IrqService7(u8 * buff, s_t size, s_t & iosize) = 0;
+
+    virtual u32 IrqService8(u8 * buff, s_t size, s_t & iosize) = 0;
     // METHOD LAUNCHED BY SVC FROM USER MODE
 };
 
@@ -119,8 +130,18 @@ public:
     static u32 Flush(IDevice *dev, caDeviceHandle *port, u32 guid);
     static bool IsValidHandle(u32 handle, u32 mask);
     static u32 isOpen(IDevice *device);
-    static u32 IrqServiceTx(void *obj, u8 * txbuff, s_t size, s_t & writed);
-    static u32 IrqServiceRx(void *obj, u8 * rxbuff, s_t size, s_t & readed);
+    static u32 IrqService1(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService2(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService3(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService4(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService5(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService6(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService7(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService8(void *obj, u8 * buff, s_t size, s_t & iosize);
+    static inline u32 addHandle(u32 & guid, u32 & mask) {
+        guid++;
+        return mask | guid;
+    }
 };
 
 typedef enum tag_device_error {
@@ -132,7 +153,7 @@ typedef enum tag_device_error {
     error_close_device,
     error_write_device,
     error_read_device,
-    error_Ioctrl_device,
+    error_ioctrl_device,
     error_generic_fail_device,
     error_device_config_param,
     error_port_out_config,
@@ -149,6 +170,7 @@ typedef enum tag_device_error {
     error_invalid_null_device,
     error_invalid_handle_port,
     error_device_not_opened,
+    error_device_already_opened,
     error_read_less_data,
     error_write_less_data,
     error_configure_serial_port,
@@ -165,6 +187,8 @@ typedef enum tag_device_error {
     error_log_not_set,
     error_log_empthy,
     error_stream_no_good,
+    error_systimer_configure_not_valid,
+    error_systimer_configure_error,
     error_hal_configure
 } deviceError;
 

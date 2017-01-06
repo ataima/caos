@@ -29,6 +29,6 @@ static bool isvalidcontext(u32 num) {
     return true;
 }
 
-const hal_ll_scheduler_io hal_ll_scheduler = {
-    isvalidcontext
+ hal_llc_scheduler_io hal_llc_scheduler = {
+    isvalidcontext,NULL,NULL
 };

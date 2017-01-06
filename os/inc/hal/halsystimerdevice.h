@@ -1,5 +1,5 @@
-#ifndef HALCOMDEVICE_H
-#define HALCOMDEVICE_H
+#ifndef _HAL_SYS_TIMER_DEVICE_H
+#define _HAL_SYS_TIMER_DEVICE_H
 
 ////////////////////////////////////////////////////////////////////////////////
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
@@ -20,83 +20,60 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
+
+#if SYS_TIMER_DEVICE
+
 #include "hal.h"
-#include "circularbuffer.h"
-#include "atomiclock.h"
 #include "syslog.h"
 
-struct caComDeviceConfigure
-: public caIDeviceConfigure {
-public:
-    u32 speed;
-    u32 stop;
-    u32 parity;
-    u32 data;
-
-    void Dump(caStringStream<s8> & ss) {
-        caCSTR(cs_speed, "SETUP SPEED  = ");
-        caCSTR(cs_stop, "SETUP STOP   = ");
-        caCSTR(cs_parity, "SETUP PARITY = ");
-        caCSTR(cs_data, "SETUP DATA   = ");
-        ss << cs_speed << speed << caEnd::endl;
-        ss << cs_stop << stop << caEnd::endl;
-        ss << cs_parity << parity << caEnd::endl;
-        ss << cs_data << data << caEnd::endl;
-        ss.Str();
-    }
-
-
-};
-
-struct caComDeviceCtrl
+struct caSysTimerDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
     typedef enum tag_io_ctrl_specific_request {
-        comFlush = 0x5000,
-        comStop,
-        comStart,
-        comListHardware,
-        comStatusBuffer,
-        comAddSignalRx,
-        comAddSignalTx,
-        comRemoveSignalRx,
-        comRemoveSignalTx,
-        comGetSignalRx,
-        comGetSignalTx,
-        comLogCreate,
-        comLogDestroy,
-        comLogStart,
-        comLogStop,
-        comLogGet
+        sysTimerFlush = 0x5000,
+        sysTimerListHardware,
+        sysTimerAddSignal_1,
+        sysTimerAddSignal_2,
+        sysTimerRemoveSignal_1,
+        sysTimerRemoveSignal_2,
+        sysTimerGetSignal_1,
+        sysTimerGetSignal_2,                
+        sysTimerLogCreate,
+        sysTimerLogDestroy,
+        sysTimerLogStart,
+        sysTimerLogStop,
+        sysTimerLogGet
     } IoCtrlDirect;
-
     IoCtrlDirect command;
-    caStringStream<s8> *ss;
     s_t param_1;
     s_t param_2;
+    caStringStream<s8> *ss;
 };
 
-class caHalComDevice
-: public IDevice {
+struct caSysTimerConfigure
+: public caIDeviceConfigure {
+public:
+    u32 tick_ps;
+    u32 clock_ps;
+    u32 prescaler_ps;
+    u32 irq_ps;
+    // add with high resolition timers...
+};
+
+
+class caHalSysTimerDevice 
+: public IDevice{
 private:
-    static const u32 QUEUESIZE = 0x4000;
     u32 mask_guid;
     u32 handle_guid;
     u32 isOpen;
-    u32 signalRx;
-    u32 signalTx;
-    caCircularBuffer<u8> Rx;
-    caCircularBuffer<u8> Tx;
-    u8 RxBuffer[QUEUESIZE];
-    u8 TxBuffer[QUEUESIZE];
-    caAtomicLock RxLock;
-    caAtomicLock TxLock;
+    u32 signal_1;
+    u32 signal_2;
     caSysLog caLog;
-    hal_llc_com_io *link;
-
-public:
-    caHalComDevice(hal_llc_com_io *com, u32 mask_handle);
+    hal_llc_sys_time *link;
+public:        
+    caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask_handle);
     u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
     u32 Close(caDeviceHandle *port);
@@ -104,23 +81,20 @@ public:
     u32 Read(caDeviceHandle *port);
     u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     u32 Flush(caDeviceHandle *port);
-    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed);
-    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed);
+    u32 IrqService1(u8 * buff, s_t size, s_t & iosize);
+    u32 IrqService2(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService3(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService4(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService5(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService6(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
-
+    u32 IrqService8(u8 * buff, s_t size, s_t & iosize);        
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }
-
-
 };
 
 
-
-#endif /* HALCOMDEVICE_H */
+#endif 
+#endif  //_HAL_SYS_TIMER_DEVICE_H
 

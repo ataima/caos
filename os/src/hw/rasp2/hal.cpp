@@ -42,20 +42,22 @@ static u32 mem_phy_max_addr(void) {
     return __ram_end__;
 }
 
-const hal_ll_mem_io hal_ll_mem = {
+hal_llc_mem_io hal_llc_mem = {
     mem_phy_min_addr,
     mem_phy_max_addr
 };
 
 
 
-const hal_ll_scheduler_io hal_ll_scheduler = {
-    caScheduler::IsValidContext
+hal_llc_scheduler_io hal_llc_scheduler = {
+    caScheduler::IsValidContext,
+    caIrqCtrl::LockSwitchContext,
+    caIrqCtrl::UnLockSwitchContext
 };
 
-
+#if COM1_DEVICE
 // Hardware connectors to COM1 (usually debug)
-hal_ll_com_io hal_ll_com1 = {
+hal_llc_com_io hal_llc_com1 = {
     NULL,
     caMiniUart::Configure, //hll_config
     caSysTimer::GetCount, //hll_time
@@ -67,15 +69,22 @@ hal_ll_com_io hal_ll_com1 = {
     caMiniUart::GetErrors, //hll_get_errors
     caScheduler::WakeUp, //hll_wakeuprx
     caScheduler::WakeUp, //hll_wakeuptx
-    caHalDeviceRules::IrqServiceRx, //hll_irq_rx : set from device obj
-    caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj   
+    caHalDeviceRules::IrqService1, //hll_irq_tx : set from device obj
+    caHalDeviceRules::IrqService2, //hll_irq_rx : set from device obj   
     caMiniUart::Send,
     caMiniUart::Recv
 };
+#endif
 
+#if SYS_TIMER_1
 // Hardware connectors sys timer
-hal_ll_sys_time hal_ll_time={
+hal_llc_sys_time hal_llc_time = {
+    NULL,
+    caSysTimer::Configure, // empthy funzion base timer fix conf to scheduler task
     caSysTimer::GetCount, //system tick count
+    caSysTimer::GetPsec,
+    caSysTimer::GetNsec,
+    caSysTimer::GetUsec,
     caSysTimer::GetMsec,
     caSysTimer::GetSec,
     caSysTimer::GetMin,
@@ -85,16 +94,15 @@ hal_ll_sys_time hal_ll_time={
     caSysTimer::Dump,
     caSysTimer::ToTick,
     caSysTimer::Start,
-    caSysTimer::Stop
+    caSysTimer::Stop,
+    caScheduler::WakeUp,
+    caScheduler::WakeUp,
+    caHalDeviceRules::IrqService1, 
+    caHalDeviceRules::IrqService2,    
 };
+#endif
 
-hal_ll_sw_ctx hal_ll_switch_ctx = {
-    caIrqCtrl::LockSwitchContext,
-    caIrqCtrl::UnLockSwitchContext
-};
-
-
-hal_ll_interrupt hal_ll_int_req={
+hal_llc_interrupt hal_llc_int_req = {
     caArmCpu::EnableAll,
     caArmCpu::DisableAll,
     caArmCpu::WaitForInterrupt
@@ -102,12 +110,11 @@ hal_ll_interrupt hal_ll_int_req={
 
 
 
-hal_ll_reset hal_ll_reset_req{
+hal_llc_reset hal_llc_reset_req{
     sysReset, //TODO FIX
     sysShutDown,
     sysRestart,
-    caSysLed::LedsOff,  
+    caSysLed::LedsOff,
     caSysLed::LedsOn,
-    caSysLed::LedOff,  
-    caSysLed::LedOn
-};
+    caSysLed::LedOff,
+    caSysLed::LedOn};

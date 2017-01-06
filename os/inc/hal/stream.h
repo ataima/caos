@@ -856,18 +856,16 @@ public:
     //Tested
 
     inline caCircularStringStream<T> & operator<<(caCircularStringStream<T> & t) {
-        s_t old,index,total = t.Size();
+        s_t old, index, total = t.Size();
         T out;
-        index=0;
+        index = 0;
         do {
-            if (t.Get(out,index))
-            {
-                old=start;
+            if (t.Get(out, index)) {
+                old = start;
                 Add(out);
-                if(old!=start)
-                    index--;  // a<<a if start++ index-- 
-            }
-            else
+                if (old != start)
+                    index--; // a<<a if start++ index-- 
+            } else
                 break;
             total--;
         } while (total > 0);

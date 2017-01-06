@@ -14,7 +14,7 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
-// History:        
+// History:
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "CPPtester.h"
@@ -80,21 +80,70 @@ public:
         return isOpen;
     }
 
-    u32 IrqServiceTx(u8 * txbuff, s_t size,s_t & writed)
+    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed)
     {
         CA_ASSERT(txbuff != NULL);
         CA_ASSERT(size == 1);
-        writed=size;
+        writed = size;
         return 0;
     }
 
-    u32 IrqServiceRx(u8 * rxbuff, s_t size,s_t & readed)
+    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed)
     {
         CA_ASSERT(rxbuff != NULL);
         CA_ASSERT(size == 1);
-        readed=size;
+        readed = size;
         return 0;
     };
+
+    u32 IrqService3(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
+    u32 IrqService4(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
+    u32 IrqService5(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
+    u32 IrqService6(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
+    u32 IrqService7(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
+    u32 IrqService8(u8 * buff, s_t size, s_t & iosize)
+    {
+        CA_ASSERT(buff != NULL);
+        CA_ASSERT(size == 1);
+        iosize = size;
+        return 0;
+    };
+
 };
 
 class testDevice_test_class
@@ -165,9 +214,9 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t readed;
-        CA_ASSERT(t.IrqServiceRx(&buff, 1,readed) == 0);
+        CA_ASSERT(t.IrqService1(&buff, 1, readed) == 0);
         CA_ASSERT(readed == 1);
-        
+
     }
 
     void test9(void)
@@ -175,7 +224,61 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqServiceTx(&buff, 1,writed) == 0);
+        CA_ASSERT(t.IrqService2(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test10(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService3(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test11(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService4(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test12(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService5(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test13(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService6(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test14(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService7(&buff, 1, writed) == 0);
+        CA_ASSERT(writed == 1);
+    }
+
+    void test15(void)
+    {
+        u8 buff;
+        testDevice t;
+        s_t writed;
+        CA_ASSERT(t.IrqService8(&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 

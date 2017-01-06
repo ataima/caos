@@ -52,7 +52,7 @@ u32 caSchedulerDevice::Open(caIDeviceConfigure * setup,
             caMemAux<u32>::MemSet((u32*) port, 0, sizeof (caDeviceHandle));
             port->handle = ++guid;
             port->status = caDeviceHandle::statusHandle::Open;
-            port->tStart = hal_ll_time.hll_tick();
+            port->tStart = hal_llc_time.hll_tick();
             port->tLast = port->tStart;
             port->tStop = 0;
             port->tLastCmd = caDeviceAction::caActionOpen;
@@ -83,10 +83,10 @@ u32 caSchedulerDevice::Close(caDeviceHandle *port) {
     } else {
         isOpen--;
         port->status = caDeviceHandle::statusHandle::Close;
-        port->tStop = hal_ll_time.hll_tick();
+        port->tStop = hal_llc_time.hll_tick();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
-         port->wrError=port->rdError=0;
+        port->wrError = port->rdError = 0;
     }
     //TOUT();
     return res;
@@ -111,9 +111,9 @@ u32 caSchedulerDevice::Write(caDeviceHandle *port) {
             port->writed += writed;
             port->wrBuff += writed;
             port->wrSize -= writed;
-            port->tLast = hal_ll_time.hll_tick();
+            port->tLast = hal_llc_time.hll_tick();
             port->tLastCmd = caDeviceAction::caActionWrite;
-             port->wrError=port->rdError=0;
+            port->wrError = port->rdError = 0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }
@@ -140,9 +140,9 @@ u32 caSchedulerDevice::Read(caDeviceHandle *port) {
             port->readed += pSize;
             port->rdBuff += pSize;
             port->rdSize -= pSize;
-            port->tLast = hal_ll_time.hll_tick();
+            port->tLast = hal_llc_time.hll_tick();
             port->tLastCmd = caDeviceAction::caActionRead;
-             port->wrError=port->rdError=0;
+            port->wrError = port->rdError = 0;
         } else {
             res = deviceError::error_invalid_handle_port;
         }
@@ -176,7 +176,7 @@ u32 caSchedulerDevice::IoCtrl(caDeviceHandle *port,
         }
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
-    port->tLast = hal_ll_time.hll_tick();
+    port->tLast = hal_llc_time.hll_tick();
     //TOUT();
     return res;
 }

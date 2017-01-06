@@ -33,7 +33,6 @@
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "systimer.h"
-#include "systimerdevice.h"
 #include "cache.h"
 #include "coprocessor.h"
 
@@ -60,7 +59,7 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "UND = " << lr_und << caEnd::endl;
     Dbg::Put(ss.Str());
-    while (1);    
+    while (1);
 }
 
 void caInterruptRequest::Software(u32 ioctl,

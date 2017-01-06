@@ -115,7 +115,7 @@ clean:
 	
 
 
-all: doversion kernel7.img
+all:  kernel7.img doversion
 	
 	
 qemu:

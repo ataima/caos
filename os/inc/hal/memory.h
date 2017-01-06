@@ -29,6 +29,7 @@
 
 class caMemory {
 private:
+
     typedef enum tag_status_block {
         start_lbl = 0x12341234,
         end_lbl = 0x43212413,
@@ -36,14 +37,15 @@ private:
         busy_lbl = 0xa55a8420,
     } statusBlock;
 
-public: 
+public:
+
     typedef struct tag_block_mem {
         tag_block_mem* addr; // this block
         tag_block_mem* prev; // this block
         tag_block_mem* next; // this block
         u32 size; // size of block        
         statusBlock status;
-// TO DO TO CHECK MEMORY LEACKS        
+        // TO DO TO CHECK MEMORY LEACKS        
 #if CONFIG_CHK_MEMORY_ALLOC
         s8 filename[64];
         u32 line;
@@ -71,13 +73,13 @@ public:
 
     //T
     static void Init(void);
-    
+
     static void Clean(void);
 
     static void * Allocate(u32 size);
 
     static u32 Free(void * p, u32 *size = NULL);
-    
+
     static u32 Find(void *p);
 
     static s8* DumpAvail(s8* buff, s_t size);
@@ -85,35 +87,41 @@ public:
     static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 
     //T
+
     static inline u32* GetStartAddress() {
         return start_mem;
     }
 
     //T
+
     static inline u32* GetEndAddress() {
         return end_mem;
     }
 
     //T
+
     static inline u32 GetTotalSize() {
-        return ptr_to_uint(end_mem) -  ptr_to_uint(start_mem);
+        return ptr_to_uint(end_mem) - ptr_to_uint(start_mem);
     }
 
     //T
+
     static inline u32 GetAvailMemory() {
         return avail_mem;
     }
-    
-     //T   
+
+    //T   
+
     static inline u32 Good() {
         return (avail_mem > MIN_SLICE);
     }
-    
+
     //T
+
     static inline u32 GetHeaderBlock(void) {
         return BLOCKSIZE;
     }
-    
+
 #ifdef TEST_SVC_MEMORY
     static void TestMemoryIoctl(void);
 #else

@@ -31,7 +31,7 @@ public:
     static inline void SVC_IOCTL(register u32 /*R0= ioctl*/,
             register u32 */*R1=input */,
             register u32 */*R2=output*/,
-            register u32 * /*R3=res*/)__attribute__((naked)) {
+            register u32 * /*R3=res*/)__attribute__ ((naked)) {
         asm volatile ("DSB"); //TOTEST
         asm volatile ("ISB"); //TOTEST
         asm volatile ("SVC #1");

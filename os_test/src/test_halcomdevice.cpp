@@ -89,7 +89,7 @@ static u32 hll_stop(void)
     return 0;
 }
 
-static u32 hll_get_errors(u32 &rxErr, u32 &txErr)
+static u32 hll_get_errors(u32 & rxErr, u32 & txErr)
 {
     rxErr = 127;
     txErr = 95;
@@ -128,7 +128,7 @@ static void hll_wakeup_tx(u32 num)
 
 
 // connector to virtual hardware
-hal_ll_com_io hal_ll_com1 = {
+hal_llc_com_io hal_llc_com1 = {
     NULL,
     hll_config, //hll_config   -> Open
     hll_time, //hll_time      -> Open
@@ -138,10 +138,12 @@ hal_ll_com_io hal_ll_com1 = {
     hll_enable, //hll_enable
     hll_dump, //hll_dump
     hll_get_errors, //hll_get_errors
-    hll_wakeup_rx, //hll_wakeup_rx
     hll_wakeup_tx, //hll_wakeup_tx
-    caHalDeviceRules::IrqServiceRx, //hll_irq_rx : set from device obj
-    caHalDeviceRules::IrqServiceTx, //hll_irq_tx : set from device obj 
+    hll_wakeup_rx, //hll_wakeup_rx
+    caHalDeviceRules::IrqService1,
+    caHalDeviceRules::IrqService2,
+    NULL,
+    NULL,
 };
 
 class caHalComDevice_test_class
@@ -193,7 +195,7 @@ void caHalComDevice_test_class::test1(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com1);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com1);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -229,7 +231,7 @@ void caHalComDevice_test_class::test2(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -280,7 +282,7 @@ void caHalComDevice_test_class::test3(void)
     _STOP();
     param_reset();
     u32 rd;
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -307,7 +309,7 @@ void caHalComDevice_test_class::test3(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     //IRQ CALLBACK
     u8 msg[] = "hello world";
-    hal_ll_com1.hll_irq_rx(hal_ll_com1.hll_lnk_obj, msg, 12, rd);
+    hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, msg, 12, rd);
     CA_ASSERT(rd == 12);
     u8 buff[100];
     portIO.rdBuff = buff;
@@ -343,7 +345,7 @@ void caHalComDevice_test_class::test4(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -381,7 +383,7 @@ void caHalComDevice_test_class::test4(void)
     u8 buff[100];
     u32 rd;
     //IRQ TX CALLBACK
-    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, buff, 100, rd);
+    hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, buff, 100, rd);
     CA_ASSERT(rd == 12);
     CA_ASSERT(memcmp(buff, msg, 12) == 0);
     res = comDev.Close(&portIO);
@@ -409,7 +411,7 @@ void caHalComDevice_test_class::test5(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -476,7 +478,7 @@ void caHalComDevice_test_class::test6(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -543,7 +545,7 @@ void caHalComDevice_test_class::test7(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -582,15 +584,15 @@ void caHalComDevice_test_class::test7(void)
     //RXBUFF=12
     //IRQ CALLBACK
     u32 rd;
-    hal_ll_com1.hll_irq_rx(hal_ll_com1.hll_lnk_obj, msg, 12, rd);
+    hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, msg, 12, rd);
     CA_ASSERT(rd == 12);
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoCtrlDirect::comStatusBuffer;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    CA_ASSERT(in.st_rx == 12);
-    CA_ASSERT(in.st_tx == 12);
+    CA_ASSERT(in.param_1 == 12);
+    CA_ASSERT(in.param_2 == 12);
     // IOCTRL     
     in.command = caComDeviceCtrl::IoCtrlDirect::comFlush;
     res = comDev.IoCtrl(&portIO, &in);
@@ -602,8 +604,8 @@ void caHalComDevice_test_class::test7(void)
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    CA_ASSERT(in.st_rx == 0);
-    CA_ASSERT(in.st_tx == 0);
+    CA_ASSERT(in.param_1 == 0);
+    CA_ASSERT(in.param_2 == 0);
     res = comDev.Close(&portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(tcom_speed == 0);
@@ -629,7 +631,7 @@ void caHalComDevice_test_class::test8(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -656,26 +658,26 @@ void caHalComDevice_test_class::test8(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalRx;
-    in.st_rx = 12345678; // invalid handle from scheduler connector
+    in.param_1 = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.st_rx = 100; // ok
+    in.param_1 = 100; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.st_rx = 100; // already set
+    in.param_1 = 100; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoCtrlDirect::comGetSignalRx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.st_rx == 100);
+    CA_ASSERT(in.param_1 == 100);
     //IRQ CALLBACK
     u8 msg[] = "hello world";
     u32 rd;
-    hal_ll_com1.hll_irq_rx(hal_ll_com1.hll_lnk_obj, msg, 12, rd);
+    hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, msg, 12, rd);
     CA_ASSERT(rd == 12);
     CA_ASSERT(tcom_wakeup_rx == 100);
     in.command = caComDeviceCtrl::IoCtrlDirect::comRemoveSignalRx;
@@ -709,7 +711,7 @@ void caHalComDevice_test_class::test9(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -736,22 +738,22 @@ void caHalComDevice_test_class::test9(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalTx;
-    in.st_tx = 12345678; // invalid handle from scheduler connector
+    in.param_2 = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.st_tx = 200; // ok
+    in.param_2 = 200; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.st_tx = 200; // already set
+    in.param_2 = 200; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoCtrlDirect::comGetSignalTx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.st_rx == 200);
+    CA_ASSERT(in.param_1 == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 12;
@@ -764,7 +766,7 @@ void caHalComDevice_test_class::test9(void)
     u8 buff[100];
     u32 rd;
     //IRQ TX CALLBACK
-    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, buff, 100, rd);
+    hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, buff, 100, rd);
     CA_ASSERT(rd == 12);
     CA_ASSERT(memcmp(buff, msg, 12) == 0);
     CA_ASSERT(tcom_wakeup_tx == 200);
@@ -799,7 +801,7 @@ void caHalComDevice_test_class::test10(void)
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_ll_com1, ioCtrlRequest::Com6);
+    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com6);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -808,8 +810,8 @@ void caHalComDevice_test_class::test10(void)
     caMemory::Init();
     caDeviceHandle portIO;
     caComDeviceCtrl in;
-    in.st_rx = 16512;
-    in.st_tx = (u32) deviceloglevels::end_device_log_lev;
+    in.param_1 = 16512;
+    in.param_2 = (u32) deviceloglevels::end_device_log_lev;
     in.command = caComDeviceCtrl::IoCtrlDirect::comLogCreate;
     u32 res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
@@ -836,22 +838,22 @@ void caHalComDevice_test_class::test10(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
 
     in.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalTx;
-    in.st_tx = 12345678; // invalid handle from scheduler connector
+    in.param_2 = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.st_tx = 200; // ok
+    in.param_2 = 200; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.st_tx = 200; // already set
+    in.param_2 = 200; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoCtrlDirect::comGetSignalTx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.st_rx == 200);
+    CA_ASSERT(in.param_1 == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 12;
@@ -864,7 +866,7 @@ void caHalComDevice_test_class::test10(void)
     u8 buff[100];
     u32 rd;
     //IRQ TX CALLBACK
-    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, buff, 100, rd);
+    hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, buff, 100, rd);
     CA_ASSERT(rd == 12);
     CA_ASSERT(memcmp(buff, msg, 12) == 0);
     CA_ASSERT(tcom_wakeup_tx == 200);
@@ -893,15 +895,15 @@ void caHalComDevice_test_class::test10(void)
     CA_ASSERT(res == deviceError::no_error);
     char out[8000];
     caStringStream<s8> ss;
-    u32 u=0;
-    for(u=0;u<deviceloglevels::end_device_log_lev;u++)
+    u32 u = 0;
+    for (u = 0; u < deviceloglevels::end_device_log_lev; u++)
     {
-    ss.Init(out,8000);
-    in.ss=&ss;
-    in.st_rx=u;
-    in.command = caComDeviceCtrl::IoCtrlDirect::comLogGet;
-    res = comDev.IoCtrl(&portIO, &in);
-    std::cout<<out<<std::endl;
+        ss.Init(out, 8000);
+        in.ss = &ss;
+        in.param_1 = u;
+        in.command = caComDeviceCtrl::IoCtrlDirect::comLogGet;
+        res = comDev.IoCtrl(&portIO, &in);
+        std::cout << out << std::endl;
     }
     CA_ASSERT(res == deviceError::no_error);
     in.command = caComDeviceCtrl::IoCtrlDirect::comLogDestroy;

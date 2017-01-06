@@ -48,6 +48,8 @@
 #define SYS_SOFT_REQ_DEBUG  1
 
 ///////////////////////////// INCLUDE SEXCLUDE DEVICE FROM KERNEL
+// SYSTEM TIMER
+#define SYS_TIMER_1             1 
 // COMS
 #define COM1_DEVICE             1    
 #define COM2_DEVICE             0    

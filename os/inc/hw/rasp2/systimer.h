@@ -29,17 +29,18 @@
 typedef struct tag_sys_timer_status {
     u32 mn_ClkHz;
     u32 mn_IrqHz;
+    volatile u32 mn_Usec;
     volatile u32 mn_Msec;
     volatile u32 mn_Sec;
     volatile u32 mn_Min;
     volatile u32 mn_Hour;
     volatile u32 mn_Day;
     volatile u32 mn_IrqCount;
-    volatile u32 mn_FreeRunning;
 
     void Dump(caStringStream<s8> & ss) {
         caCSTR(cs_clock, "CLOCK HZ  =");
         caCSTR(cs_irq, "IRQ   HZ  =");
+        caCSTR(cs_micro, "MICROSEC  =");
         caCSTR(cs_milli, "MILLISEC  =");
         caCSTR(cs_sec, "SECOND    =");
         caCSTR(cs_min, "MINUTE    =");
@@ -50,29 +51,24 @@ typedef struct tag_sys_timer_status {
         ss << caStringFormat::dec;
         ss << cs_clock << mn_ClkHz << caEnd::endl;
         ss << cs_irq << mn_IrqHz << caEnd::endl;
+        ss << cs_micro << mn_Usec << caEnd::endl;
         ss << cs_milli << mn_Msec << caEnd::endl;
         ss << cs_sec << mn_Sec << caEnd::endl;
         ss << cs_min << mn_Min << caEnd::endl;
         ss << cs_hour << mn_Hour << caEnd::endl;
         ss << cs_day << mn_Day << caEnd::endl;
-        ss << cs_tot << mn_IrqCount << caEnd::endl;
-        ss << cs_free << mn_FreeRunning << caEnd::endl;
+        ss << cs_tot << mn_IrqCount << caEnd::endl;        
         ss.Str();
     }
 } sysTimerStatus;
 
-typedef struct tag_sys_timer_set {
-    u32 mn_Sec;
-    u32 mn_Min;
-    u32 mn_Hour;
-    u32 mn_Day;
-} sysTimerSet;
 
 class caSysTimer {
 private:
     static sysTimerStatus st;
 public:
     static u32 Init(u32 tick_hz, u32 timer_hz);
+    static inline u32 Configure(u32 , u32 ,u32, u32) {return TRUE;}
     static u32 EnableTimer(u32 status);
     static u32 EnableCounter(u32 status);
     static u32 TimerRunnig(void);
@@ -87,9 +83,8 @@ public:
     static u32 ToTime(u32 tick);
     static void IrqService(void);
     static u32 Dump(caStringStream<s8> * ss);
-
-    static u32 GetStatus(sysTimerStatus * reqStatus, u32 reqSize);
-    static u32 SetTime(u32 day, u32 hour, u32 min,u32 sec);
+    
+    static u32 SetTime(u32 day, u32 hour, u32 min, u32 sec);
 
     inline static u32 GetTickFreq(void) {
         return st.mn_ClkHz;
@@ -103,6 +98,18 @@ public:
         return st.mn_IrqCount;
     }
 
+    inline static u32 GetPsec(void) {
+        return 0;
+    }
+    
+    inline static u32 GetNsec(void) {
+        return 0;
+    }
+    
+    inline static u32 GetUsec(void) {
+        return st.mn_Usec;
+    }
+    
     inline static u32 GetMsec(void) {
         return st.mn_Msec;
     }
@@ -125,7 +132,7 @@ public:
 
     static u32 Start(void);
     static u32 Stop(void);
-    
+
 private:
     static void AckIrq(void);
     static void Load(u32 value);

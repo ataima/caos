@@ -31,7 +31,7 @@ public:
             return dest;
         if (!src)
             return dest;
-        size/=(s_t)(sizeof(T));
+        size /= (s_t) (sizeof (T));
         while (size > 0) {
             *dest++ = *src++;
             size--;
@@ -43,7 +43,7 @@ public:
     static void* MemSet(T *dest, T pat, s_t size) {
         if (!dest)
             return FALSE;
-        size/=(s_t)(sizeof(T));
+        size /= (s_t) (sizeof (T));
         while (size > 0) {
             *dest++ = pat;
             size--;
@@ -55,7 +55,7 @@ public:
     static void* MemZero(T *dest, s_t size) {
         if (!dest)
             return FALSE;
-        size/=(s_t)(sizeof(T));
+        size /= (s_t) (sizeof (T));
         while (size > 0) {
             *dest++ = 0;
             size--;
@@ -68,7 +68,7 @@ public:
             return -1;
         if (!src)
             return -2;
-        size/=(s_t)(sizeof(T));
+        size /= (s_t) (sizeof (T));
         while (size > 0 && *dest == *src) {
             dest++;
             src++;

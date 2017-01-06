@@ -77,8 +77,8 @@ u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
             break;
         default: mu->baud = RATE_DIV(vel);
     }
-    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff) );
-    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff) );
+    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff));
+    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff));
     rxPos = txPos = rxOverrun = txOverrun = 0;
     return TRUE;
 }
@@ -89,8 +89,8 @@ u32 caMiniUart::Stop(void) {
     caAuxMain::DisableMiniUart();
     caGpio::SetIn(14);
     caGpio::SetIn(15);
-    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff) );
-    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff) );
+    caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff));
+    caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff));
     rxPos = txPos = rxOverrun = txOverrun = 0;
     return TRUE;
 }
@@ -148,7 +148,7 @@ void caMiniUart::IrqServiceTx(void) {
     muLsrReg lsr;
     stat.asReg = caMiniUart::GetStat();
     u32 writed, symbol = 7 - stat.asBit.txfifo;
-    hal_ll_com1.hll_irq_tx(hal_ll_com1.hll_lnk_obj, txBuff, symbol, writed);
+    hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, txBuff, symbol, writed);
     if (writed) {
         for (txPos = 0; txPos < writed; txPos++) {
             lsr.asReg = caMiniUart::GetLsr();
@@ -175,7 +175,7 @@ void caMiniUart::IrqServiceRx(void) {
         rxBuff[rxPos++] = caMiniUart::GetIO();
         symbol--;
     }
-    hal_ll_com1.hll_irq_rx(hal_ll_com1.hll_lnk_obj, rxBuff, rxPos, readed);
+    hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, rxBuff, rxPos, readed);
     rxPos -= readed;
     if (rxPos) { // ERROR INCOMPLETE COPY : TRY TO REALIGN BUFFER AT NEXT READ
         symbol = 0;

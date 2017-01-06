@@ -143,17 +143,7 @@ u32 caSysTimer::FastIrqEnable(void) {
     return 0;
 }
 
-u32 caSysTimer::GetStatus(sysTimerStatus * reqStatus, u32 reqSize) {
-    u32 res = deviceError::no_error;
-    if (reqStatus == NULL) {
-        res = deviceError::error_invalid_null_destination;
-    } else {
-        st.mn_FreeRunning = ReadFreeCounter();
-        reqSize = reqSize>sizeof (st) ? sizeof (st) : reqSize;
-        caMemAux<u32>::MemCpy((u32*) (reqStatus), (u32*) (& st), reqSize);
-    }
-    return res;
-}
+
 
 u32 caSysTimer::SetTime(u32 day, u32 hour, u32 min, u32 sec) {
     u32 res = deviceError::no_error;

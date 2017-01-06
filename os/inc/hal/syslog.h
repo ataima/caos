@@ -29,13 +29,15 @@
 
 #ifdef HAVE_SYS_LOG
 
-
-
-
-
 typedef enum tag_device_log_levels {
-    irq_rx,    
-    irq_tx,
+    irq_1,
+    irq_2,
+    irq_3,
+    irq_4,
+    irq_5,
+    irq_6,
+    irq_7,
+    irq_8,
     device,
     error,
     info,
@@ -51,25 +53,24 @@ class caSysLog {
     // curr level for log ( l<=cur lev -> log )
     deviceloglevels curlev;
 public:
-    
-    caSysLog(){
-        enable=false;
-        curlev=deviceloglevels::end_device_log_lev;
-        caMemAux<s8>::MemZero((s8*)mn_Base,sizeof(mn_Base));
+
+    caSysLog() {
+        enable = false;
+        curlev = deviceloglevels::end_device_log_lev;
+        caMemAux<s8>::MemZero((s8*) mn_Base, sizeof (mn_Base));
     }
-    
-    u32 Init(s_t _total_size , deviceloglevels reqlev);
+
+    u32 Init(s_t _total_size, deviceloglevels reqlev);
     u32 Destroy();
 
-    
     inline bool IsValid(void) {
-        return (curlev>0 && mn_Base[curlev-1]!=NULL);
+        return (curlev > 0 && mn_Base[curlev - 1] != NULL);
     }
 
     inline bool IsEnabled(void) {
-        return enable ;
+        return enable;
     }
-    
+
     inline void Enable(void) {
         enable = true;
     }
@@ -77,32 +78,30 @@ public:
     inline void Disable(void) {
         enable = false;
     }
-    
-    
+
     inline s32 GetCurLogLevel(void) {
-        return (s32)(curlev);
+        return (s32) (curlev);
     }
-    
-    inline caCircularStringStream<s8> & Stream(deviceloglevels l){
-        if(l>deviceloglevels::info)l=deviceloglevels::info;
+
+    inline caCircularStringStream<s8> & Stream(deviceloglevels l) {
+        if (l > deviceloglevels::info)l = deviceloglevels::info;
         return ss[l];
     }
-    
-    inline s8* GetBase(deviceloglevels l){
-        if(l>deviceloglevels::info)l=deviceloglevels::info;
+
+    inline s8* GetBase(deviceloglevels l) {
+        if (l > deviceloglevels::info)l = deviceloglevels::info;
         return mn_Base[l];
     }
 };
 
 
-extern hal_ll_sys_time hal_ll_time;
 
 #define LOGGIN 1
 
 #if LOGGIN
 
 #define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(LEVEL)<=LOG.GetCurLogLevel()) \
-                        LOG.Stream(LEVEL)<<"["<<hal_ll_time.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
+                        LOG.Stream(LEVEL)<<"["<<hal_llc_time.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
 
 #else

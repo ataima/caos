@@ -31,7 +31,7 @@ u32* __heap_end__=&theHeap[100000];
 static u32 getstartmem(void){return ptr_to_uint(__heap_base__);}
 static u32 getstopmem(void){return ptr_to_uint(__heap_end__);}
 
-const hal_ll_mem_io hal_ll_mem={getstartmem,getstopmem};
+ hal_llc_mem_io hal_llc_mem={getstartmem,getstopmem};
 
 
 

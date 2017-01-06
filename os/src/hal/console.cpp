@@ -26,7 +26,6 @@
 #include "thread.h"
 #include "heaparray.h"
 #include "scheduler.h"
-#include "systimerdevice.h"
 #include "memory.h"
 #include "caos.h"
 
@@ -307,7 +306,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDeviceHandle &port,
                 data[1] = hour;
                 data[2] = min;
                 data[3] = sec;
-                portTimer.wrBuff = (u8*)data;
+                portTimer.wrBuff = (u8*) data;
                 portTimer.wrSize = sizeof (data);
                 portTimer.writed = 0;
                 res = caOS::Write(portTimer);
@@ -416,15 +415,12 @@ deviceError caConsole::Command_HELP(caDeviceHandle &port,
     return caOS::Write(port, ss);
 }
 
-
-
-
 deviceError caConsole::Command_QUIT(caDeviceHandle &port, caTokenizeSStream <u8> & /*iss*/) {
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
     ss << " Shutdown system, and reload bootloader. bye bye" << caEnd::endl;
     caOS::Write(port, ss);
-    hal_ll_reset_req.hll_reset();
+    hal_llc_reset_req.hll_reset();
     return deviceError::no_error;
 }
 
@@ -433,9 +429,9 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
     deviceError res = deviceError::no_error;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
-    ss << "[" << hal_ll_time.hll_day() << ":" << hal_ll_time.hll_hour();
-    ss << ":" << hal_ll_time.hll_min() << ":" << hal_ll_time.hll_sec();
-    ss << ":" << hal_ll_time.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
+    ss << "[" << hal_llc_time.hll_day() << ":" << hal_llc_time.hll_hour();
+    ss << ":" << hal_llc_time.hll_min() << ":" << hal_llc_time.hll_sec();
+    ss << ":" << hal_llc_time.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
     res = caOS::Write(port, ss);
     TokenString<u8> tmp;
     iss>>tmp;
