@@ -504,6 +504,7 @@ void caHalComDevice_test_class::test6(void)
     CA_ASSERT(portIO.rdError == 127);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     // IOCTRL 
+
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoCtrlDirect::comListHardware;
     res = comDev.IoCtrl(&portIO, &in);

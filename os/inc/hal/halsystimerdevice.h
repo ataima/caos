@@ -21,7 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#if SYS_TIMER_DEVICE
+
 
 #include "hal.h"
 #include "syslog.h"
@@ -31,14 +31,17 @@ struct caSysTimerDeviceCtrl
 public:
 
     typedef enum tag_io_ctrl_specific_request {
+        sysTimer_none = 0,
         sysTimerFlush = 0x5000,
         sysTimerListHardware,
+        sysTimerStart,
+        sysTimerStop,
         sysTimerAddSignal_1,
         sysTimerAddSignal_2,
         sysTimerRemoveSignal_1,
         sysTimerRemoveSignal_2,
         sysTimerGetSignal_1,
-        sysTimerGetSignal_2,                
+        sysTimerGetSignal_2,
         sysTimerLogCreate,
         sysTimerLogDestroy,
         sysTimerLogStart,
@@ -49,6 +52,12 @@ public:
     s_t param_1;
     s_t param_2;
     caStringStream<s8> *ss;
+    
+    caSysTimerDeviceCtrl(){
+        param_1=param_2=0;
+        ss=NULL;
+        command=sysTimer_none;
+    };
 };
 
 struct caSysTimerConfigure
@@ -61,9 +70,8 @@ public:
     // add with high resolition timers...
 };
 
-
-class caHalSysTimerDevice 
-: public IDevice{
+class caHalSysTimerDevice
+: public IDevice {
 private:
     u32 mask_guid;
     u32 handle_guid;
@@ -72,7 +80,7 @@ private:
     u32 signal_2;
     caSysLog caLog;
     hal_llc_sys_time *link;
-public:        
+public:
     caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask_handle);
     u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
@@ -88,13 +96,14 @@ public:
     u32 IrqService5(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService6(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService8(u8 * buff, s_t size, s_t & iosize);        
+    u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
+
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }
 };
 
 
-#endif 
+
 #endif  //_HAL_SYS_TIMER_DEVICE_H
 

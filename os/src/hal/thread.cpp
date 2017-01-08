@@ -59,7 +59,7 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         ctx->pcb[4] = par2;
         ctx->pcb[15] = (u32) pst; //r13
         ctx->pcb[16] = (u32) caThread::LaunchThread; //r14
-        ctx->count = hal_llc_time.hll_tick();
+        ctx->count = hal_llc_time_1.hll_tick();
         ctx->stack_start = (u32) pst;
         ctx->stack_end = (u32) base + 64; // 64 guard
         ctx->time = 0;

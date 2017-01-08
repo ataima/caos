@@ -18,6 +18,7 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "hal.h"
 #include "halcomdevice.h"
 
 caHalComDevice::caHalComDevice(hal_llc_com_io *com, u32 mask)
@@ -45,7 +46,7 @@ u32 caHalComDevice::Open(caIDeviceConfigure * in,
         signalTx = signalRx = 0;
         port->handle = caHalDeviceRules::addHandle(handle_guid, mask_guid);
         port->status = caDeviceHandle::statusHandle::Open;
-        port->tStart = link->hll_time();
+        port->tStart = link->hll_tick();
         port->tLast = port->tStart;
         port->tStop = 0;
         port->tLastCmd = caDeviceAction::caActionOpen;
@@ -67,7 +68,7 @@ u32 caHalComDevice::Close(caDeviceHandle *port)
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     isOpen = 0;
     port->status = caDeviceHandle::statusHandle::Close;
-    port->tStop = link->hll_time();
+    port->tStop = link->hll_tick();
     port->tLast = port->tStop;
     port->tLastCmd = caDeviceAction::caActionClose;
     link->hll_get_errors(port->rdError, port->wrError);
@@ -118,7 +119,7 @@ u32 caHalComDevice::Write(caDeviceHandle *port)
                     port->writed += writed;
                     port->wrBuff += writed;
                     port->wrSize -= writed;
-                    port->tLast = link->hll_time();
+                    port->tLast = link->hll_tick();
                     port->tLastCmd = caDeviceAction::caActionWrite;
                     link->hll_get_errors(port->rdError, port->wrError);
                     res = link->hll_start_tx();
@@ -174,7 +175,7 @@ u32 caHalComDevice::Read(caDeviceHandle *port)
                     port->readed += pSize;
                     port->rdBuff += pSize;
                     port->rdSize -= pSize;
-                    port->tLast = link->hll_time();
+                    port->tLast = link->hll_tick();
                     port->tLastCmd = caDeviceAction::caActionRead;
                     link->hll_get_errors(port->rdError, port->wrError);
                 }
@@ -198,7 +199,7 @@ u32 caHalComDevice::Read(caDeviceHandle *port)
 u32 caHalComDevice::Flush(caDeviceHandle *port)
 {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_time();
+    port->tLast = link->hll_tick();
     port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionFlush;
     Rx.Clean();
@@ -209,12 +210,16 @@ u32 caHalComDevice::Flush(caDeviceHandle *port)
 u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp)
 {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_time();
+    port->tLast = link->hll_tick();
     link->hll_get_errors(port->rdError, port->wrError);
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     caComDeviceCtrl *in = static_cast<caComDeviceCtrl *> (inp);
     switch (in->command)
     {
+    default:
+        LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
+        res =deviceError::error_ioctrl_command_error;
+        break;        
     case caComDeviceCtrl::IoCtrlDirect::comFlush:
         LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comFlush" << caEnd::endl;
         res = Flush(port);

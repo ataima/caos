@@ -37,7 +37,7 @@ private:
 
     static devicePair allDevices[];
     
-#if SYS_TIMER_1 
+#if SYS_TIMER_1_DEVICE 
     static caHalSysTimerDevice timer1; // already present for task scheduler...  
 #endif
     

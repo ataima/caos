@@ -50,6 +50,8 @@ hal_llc_mem_io hal_llc_mem = {
 
 
 hal_llc_scheduler_io hal_llc_scheduler = {
+    caSysTimer::GetCount,
+    caSysTimer::ToTick,
     caScheduler::IsValidContext,
     caIrqCtrl::LockSwitchContext,
     caIrqCtrl::UnLockSwitchContext
@@ -76,9 +78,9 @@ hal_llc_com_io hal_llc_com1 = {
 };
 #endif
 
-#if SYS_TIMER_1
+#if SYS_TIMER_1_DEVICE
 // Hardware connectors sys timer
-hal_llc_sys_time hal_llc_time = {
+hal_llc_sys_time hal_llc_time_1 = {
     NULL,
     caSysTimer::Configure, // empthy funzion base timer fix conf to scheduler task
     caSysTimer::GetCount, //system tick count
@@ -93,8 +95,8 @@ hal_llc_sys_time hal_llc_time = {
     caSysTimer::SetTime,
     caSysTimer::Dump,
     caSysTimer::ToTick,
-    caSysTimer::Start,
-    caSysTimer::Stop,
+    not_implemented_base, // systimer 1 alway run...
+    not_implemented_base,
     caScheduler::WakeUp,
     caScheduler::WakeUp,
     caHalDeviceRules::IrqService1, 
@@ -117,4 +119,5 @@ hal_llc_reset hal_llc_reset_req{
     caSysLed::LedsOff,
     caSysLed::LedsOn,
     caSysLed::LedOff,
-    caSysLed::LedOn};
+    caSysLed::LedOn
+};

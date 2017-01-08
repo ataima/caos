@@ -4,6 +4,7 @@
     <df root="../os_test" name="0">
       <df name="src">
         <in>halcomdevice.cpp</in>
+        <in>halsystimerdevice.cpp</in>
         <in>idevice.cpp</in>
         <in>mainApp.cpp</in>
         <in>memaux.cpp</in>
@@ -17,6 +18,7 @@
         <in>test_circular_string_stream.cpp</in>
         <in>test_cstr.cpp</in>
         <in>test_halcomdevice.cpp</in>
+        <in>test_halsystimerdevice.cpp</in>
         <in>test_heaparray.cpp</in>
         <in>test_memaux.cpp</in>
         <in>test_memory.cpp</in>
@@ -65,22 +67,6 @@
               <pElem>../os/inc</pElem>
               <pElem>../os/inc/hal</pElem>
               <pElem>.</pElem>
-              <pElem>inc</pElem>
-              <pElem>../os/inc</pElem>
-              <pElem>../os/inc/hal</pElem>
-              <pElem>.</pElem>
-              <pElem>inc</pElem>
-              <pElem>../os/inc</pElem>
-              <pElem>../os/inc/hal</pElem>
-              <pElem>.</pElem>
-              <pElem>inc</pElem>
-              <pElem>../os/inc</pElem>
-              <pElem>../os/inc/hal</pElem>
-              <pElem>.</pElem>
-              <pElem>inc</pElem>
-              <pElem>../os/inc</pElem>
-              <pElem>../os/inc/hal</pElem>
-              <pElem>.</pElem>
             </incDir>
           </ccTool>
         </makeTool>
@@ -99,12 +85,6 @@
       </item>
       <item path="../os_test/src/mainApp.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/memaux.cpp" ex="false" tool="1" flavor2="8">
@@ -117,12 +97,6 @@
       </item>
       <item path="../os_test/src/memoryvalidator.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/syslog.cpp" ex="false" tool="1" flavor2="8">
@@ -131,22 +105,10 @@
       </item>
       <item path="../os_test/src/test_array.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_atomiclock.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_caHalDeviceRules.cpp"
@@ -154,12 +116,6 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_circular_buffer.cpp"
@@ -167,12 +123,6 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_circular_string_stream.cpp"
@@ -180,22 +130,10 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_cstr.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_halcomdevice.cpp"
@@ -203,62 +141,33 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        </ccTool>
+      </item>
+      <item path="../os_test/src/test_halsystimerdevice.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="../os_test/src/test_heaparray.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_memaux.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_memory.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_scheduler.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_straux.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_string_stream.cpp"
@@ -266,22 +175,10 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_syslog.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="../os_test/src/test_token_string.cpp"
@@ -289,12 +186,6 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>../os/inc</pElem>
-            <pElem>../os/inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <folder path="0">
@@ -309,6 +200,10 @@
           <standard>8</standard>
         </ccTool>
       </folder>
+      <item path="src/halsystimerdevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

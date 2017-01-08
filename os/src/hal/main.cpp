@@ -142,7 +142,7 @@ int main(void) {
             caThreadPriority::caThLevel0,
             nullTask);
     // GO scheduler 
-    hal_llc_time.hll_start();
+    hal_llc_time_1.hll_start();
     //
     hal_llc_int_req.hll_wait_for_interrupt();
     while (1) {
@@ -150,7 +150,7 @@ int main(void) {
         Dbg::Put("Wait\r\n");
     };
     //lbl_shutdown:
-    hal_llc_time.hll_stop();
+    hal_llc_time_1.hll_stop();
     caThread::DestroyThread(thMainTask);
     caThread::DestroyThread(thConsoleTask);
     caThread::DestroyThread(thNullTask);

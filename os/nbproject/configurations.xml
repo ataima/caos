@@ -46,20 +46,19 @@
           <executablePath>build/caOS.elf</executablePath>
           <cTool>
             <incDir>
-              <pElem>inc</pElem>
-              <pElem>.</pElem>
-              <pElem>inc/hal</pElem>
-              <pElem>inc/hw</pElem>
-              <pElem>inc/hw/rasp2</pElem>
+              <pElem>os/inc</pElem>
+              <pElem>os/inc/hal</pElem>
+              <pElem>os/inc/hw</pElem>
+              <pElem>os/inc/hw/rasp2</pElem>
             </incDir>
           </cTool>
           <ccTool>
+            <standard>8</standard>
             <incDir>
-              <pElem>inc</pElem>
-              <pElem>.</pElem>
-              <pElem>inc/hal</pElem>
-              <pElem>inc/hw</pElem>
-              <pElem>inc/hw/rasp2</pElem>
+              <pElem>os/inc</pElem>
+              <pElem>os/inc/hal</pElem>
+              <pElem>os/inc/hw</pElem>
+              <pElem>os/inc/hw/rasp2</pElem>
             </incDir>
           </ccTool>
         </makeTool>

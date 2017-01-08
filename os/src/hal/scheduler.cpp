@@ -286,7 +286,7 @@ void caScheduler::GetNextContext(void) {
 u32 caScheduler::SetSleepMode(u32 ms, u32 thIdx) {
     u32 res = deviceError::no_error;
     if (IsValidContext(thIdx)) {
-        u32 tick = hal_llc_time.hll_to_tick(ms);
+        u32 tick = hal_llc_scheduler.hll_to_tick(ms);
         res = mng.ToSleep(thIdx, tick);
     }
     return res;

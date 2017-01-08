@@ -87,6 +87,7 @@ add_ext_src:
 	$(call link_ext_file,memaux.cpp)
 	$(call link_ext_file,idevice.cpp)
 	$(call link_ext_file,halcomdevice.cpp)
+	$(call link_ext_file,halsystimerdevice.cpp)
 	$(call link_ext_file,syslog.cpp)
 	$(call link_ext_file,memory.cpp)
 	
@@ -96,6 +97,7 @@ remove_ext_src:
 	$(call ulink_ext_file,memaux.cpp)
 	$(call ulink_ext_file,idevice.cpp)
 	$(call ulink_ext_file,halcomdevice.cpp)
+	$(call ulink_ext_file,halsystimerdevice.cpp)
 	$(call ulink_ext_file,syslog.cpp)
 	$(call ulink_ext_file,memory.cpp)
 

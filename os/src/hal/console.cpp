@@ -429,9 +429,9 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
     deviceError res = deviceError::no_error;
     caStringStream<s8> ss;
     ss.Init(buffio, sizeof (buffio));
-    ss << "[" << hal_llc_time.hll_day() << ":" << hal_llc_time.hll_hour();
-    ss << ":" << hal_llc_time.hll_min() << ":" << hal_llc_time.hll_sec();
-    ss << ":" << hal_llc_time.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
+    ss << "[" << hal_llc_time_1.hll_day() << ":" << hal_llc_time_1.hll_hour();
+    ss << ":" << hal_llc_time_1.hll_min() << ":" << hal_llc_time_1.hll_sec();
+    ss << ":" << hal_llc_time_1.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
     res = caOS::Write(port, ss);
     TokenString<u8> tmp;
     iss>>tmp;

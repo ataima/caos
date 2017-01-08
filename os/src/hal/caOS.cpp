@@ -29,9 +29,10 @@
 #include "halsystimerdevice.h"
 #include "caos.h"
 
-#if SYS_TIMER_1
-caHalSysTimerDevice caOS::timer1(&hal_llc_time, ioCtrlRequest::SysTimer);
+#if SYS_TIMER_1_DEVICE
+caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
 #endif
+
 
 #if COM1_DEVICE
 caHalComDevice caOS::com1(&hal_llc_com1, ioCtrlRequest::Com1);
@@ -75,8 +76,8 @@ caOS::devicePair caOS::allDevices[] = {
     {"SCHEDULER", ioCtrlRequest::Scheduler, NULL},
     {"TASK", ioCtrlRequest::Task, NULL},
     {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
-#if SYS_TIMER_1    
-    {"SYS_TIMER_1", ioCtrlRequest::SysTimer, &timer1},
+#if SYS_TIMER_1_DEVICE    
+    {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
 #endif    
     {"CACHE", ioCtrlRequest::Cache, NULL},
 #if COM1_DEVICE   

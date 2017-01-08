@@ -44,8 +44,7 @@ typedef u32(* abstract_functor_int_2_int_ref_func)(u32 &, u32 &);
 typedef bool(* abstract_functor_bool_void_func)(void);
 typedef bool(* abstract_functor_bool_int_func)(u32);
 typedef u32(* abstract_functor_spec_dump)(caStringStream<s8> *ss);
-typedef u32(* abstract_functor_spec_irq_rx)(void *obj, u8 * rxbuff, s_t size, s_t & readed);
-typedef u32(* abstract_functor_spec_irq_tx)(void *obj, u8 * txbuff, s_t size, s_t & writed);
+typedef u32(* abstract_functor_spec_irq)(void *obj, u8 * buff, s_t size, s_t & iosize);
 
 typedef struct tag_hal_llc_mem_io {
     const abstract_functor_int_void_func hll_mem_min_phy;
@@ -58,6 +57,8 @@ typedef struct tag_hal_llc_mem_io {
 typedef bool ( * abstract_functor_bool_int_func)(u32 t);
 
 typedef struct tag_hal_llc_scheduler_io {
+    const abstract_functor_int_void_func hll_tick;
+    const abstract_functor_int_int_func hll_to_tick;
     const abstract_functor_bool_int_func hll_scheduler_valid_handle;
     const abstract_functor_bool_void_func hll_lock;
     const abstract_functor_bool_void_func hll_unlock;
@@ -70,7 +71,7 @@ typedef struct tag_hal_llc_scheduler_io {
 typedef struct tag_hal_llc_com_io {
     void *hll_lnk_obj;
     const abstract_functor_int_4_int_func hll_config;
-    const abstract_functor_int_void_func hll_time;
+    const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_void_func hll_en_int_rx;
     const abstract_functor_int_void_func hll_start_tx;
     const abstract_functor_int_void_func hll_stop;
@@ -79,8 +80,8 @@ typedef struct tag_hal_llc_com_io {
     const abstract_functor_int_2_int_ref_func hll_get_errors;
     const abstract_functor_void_int hll_wakeup_1;
     const abstract_functor_void_int hll_wakeup_2;
-    const abstract_functor_spec_irq_tx hll_irq_tx;
-    const abstract_functor_spec_irq_rx hll_irq_rx;
+    const abstract_functor_spec_irq hll_irq_tx;
+    const abstract_functor_spec_irq hll_irq_rx;
     const abstract_functor_void_int hll_send;
     const abstract_functor_int_void_func hll_receive;
 } hal_llc_com_io;
@@ -106,8 +107,8 @@ typedef struct tag_hal_llc_sys_time {
     const abstract_functor_int_void_func hll_stop;
     const abstract_functor_void_int hll_wakeup_1;
     const abstract_functor_void_int hll_wakeup_2;
-    const abstract_functor_spec_irq_rx hll_irq_1;
-    const abstract_functor_spec_irq_tx hll_irq_2;
+    const abstract_functor_spec_irq hll_irq_1;
+    const abstract_functor_spec_irq hll_irq_2;
 } hal_llc_sys_time;
 
 
@@ -168,8 +169,8 @@ extern hal_llc_com_io hal_llc_com7;
 extern hal_llc_com_io hal_llc_com8;
 #endif
 
-#if SYS_TIMER_DEVICE
-extern hal_llc_sys_time hal_llc_time;
+#if SYS_TIMER_1_DEVICE
+extern hal_llc_sys_time hal_llc_time_1;
 #endif
 
 /* MEM RAM BORDER */
@@ -181,5 +182,12 @@ extern hal_llc_scheduler_io hal_llc_scheduler;
 extern hal_llc_interrupt hal_llc_int_req;
 
 extern hal_llc_reset hal_llc_reset_req;
+
+
+// NOT IMPLEMENTED
+
+extern "C" inline u32 not_implemented_base(void) {
+    return 0;
+}
 #endif /* HAL_H */
 

@@ -36,21 +36,28 @@ struct caIDeviceCtrl {
 
 typedef enum tag_ioctrl_request {
     no_ioctrl = 0,
-    Memory = IO_UID(1),
-    Scheduler = IO_UID(2),
-    Task = IO_UID(3),
-    MemPipe = IO_UID(4),
-    SysTimer = IO_UID(5),
-    Cache = IO_UID(6),
+    Memory = IO_UID(100),
+    Scheduler = IO_UID(200),
+    Task = IO_UID(300),
+    MemPipe = IO_UID(400),
+    SysTimer1 = IO_UID(500),
+    SysTimer2 = IO_UID(501),
+    SysTimer3 = IO_UID(502),
+    SysTimer4 = IO_UID(503),
+    SysTimer5 = IO_UID(504),
+    SysTimer6 = IO_UID(505),
+    SysTimer7 = IO_UID(506),
+    SysTimer8 = IO_UID(507),
+    Cache = IO_UID(600),
     //COMS
-    Com1 = IO_UID(7),
-    Com2 = IO_UID(8),
-    Com3 = IO_UID(9),
-    Com4 = IO_UID(10),
-    Com5 = IO_UID(11),
-    Com6 = IO_UID(12),
-    Com7 = IO_UID(13),
-    Com8 = IO_UID(14),
+    Com1 = IO_UID(700),
+    Com2 = IO_UID(701),
+    Com3 = IO_UID(702),
+    Com4 = IO_UID(703),
+    Com5 = IO_UID(704),
+    Com6 = IO_UID(705),
+    Com7 = IO_UID(706),
+    Com8 = IO_UID(707),
 
     maskIoCtrl = 0xfff00000,
     maskHandle = 0x000fffff
@@ -138,6 +145,7 @@ public:
     static u32 IrqService6(void *obj, u8 * buff, s_t size, s_t & iosize);
     static u32 IrqService7(void *obj, u8 * buff, s_t size, s_t & iosize);
     static u32 IrqService8(void *obj, u8 * buff, s_t size, s_t & iosize);
+
     static inline u32 addHandle(u32 & guid, u32 & mask) {
         guid++;
         return mask | guid;
@@ -189,7 +197,8 @@ typedef enum tag_device_error {
     error_stream_no_good,
     error_systimer_configure_not_valid,
     error_systimer_configure_error,
-    error_hal_configure
+            error_ioctrl_command_error,
+    error_hal_configure,
 } deviceError;
 
 

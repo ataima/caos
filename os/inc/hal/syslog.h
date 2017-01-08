@@ -101,7 +101,7 @@ public:
 #if LOGGIN
 
 #define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(LEVEL)<=LOG.GetCurLogLevel()) \
-                        LOG.Stream(LEVEL)<<"["<<hal_llc_time.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
+                        LOG.Stream(LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
 
 #else
