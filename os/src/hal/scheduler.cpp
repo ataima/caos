@@ -64,9 +64,8 @@ bool caNextTaskManager::AddTask(caThreadContext *ctx)
     ctx->index = table.PushBack(ctx);
     res = (ctx->index != (s_t) - 1);
     if (res)
-    {
-        ctx->index += (BASE_HANDLE + 1);
-        res = IsValidContext(ctx->index);
+    {        
+        res = IsValidContext(ctx->index+BASE_HANDLE + 1);
     }
     return res;
 }

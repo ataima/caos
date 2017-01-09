@@ -239,12 +239,13 @@ protected:
             i--;
         }
         size += num;
+        Stopper();
     }
 
     //Tested
 
     inline void Stopper(void) {
-        if (start != stop) {
+        if (start <= stop) {
             *start = 0;
         }
     }

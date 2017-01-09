@@ -142,8 +142,8 @@ hal_llc_com_io hal_llc_com1 = {
     hll_wakeup_rx, //hll_wakeup_rx
     caHalDeviceRules::IrqService1,
     caHalDeviceRules::IrqService2,
-    NULL,
-    NULL,
+    (abstract_functor_void_int)::putchar,
+    (abstract_functor_int_void_func)::getchar,
 };
 
 class caHalComDevice_test_class

@@ -123,7 +123,8 @@ void caStrAux_test_class::test5(void)
     const s8* p1 = "pippopippopippo";
     s8 dest[10];
     CA_ASSERT(caStrAux::StrNCpy(dest, p1, sizeof (dest)) == &dest[10]);
-    CA_ASSERT(memcmp(dest, p1, 10) == 0);
+    u32 res =memcmp(dest, p1, 10);
+    CA_ASSERT( res== 0);
 }
 
 void caStrAux_test_class::test6(void)

@@ -26,14 +26,20 @@ I_CPURPLE=-e "\"\033[1;35m\""
 OS=$(shell uname -s)
 # CURRENT DEBUG LEVEL
 DBG:= -O0 -g 
+# 32 or 64 bit compiler mode
+C_MODE:=-m32
 # C LANGUAGE OPTIONS
-C_OPTS:= -m32 -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99  -ffreestanding  -c
+C_OPTS:= $(C_MODE) -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99  -ffreestanding  -c
 # CPP LANGUAGE OPTIONS
-CPP_OPTS := -m32 -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -fno-rtti  -fexceptions  -ffreestanding  -fverbose-asm   -c
+CPP_OPTS := $(C_MODE) -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -fno-rtti  -fexceptions  -ffreestanding  -fverbose-asm   -c
 # ASM LANGUAGE OPTIONS
-ASM_OPTS:= -m32 -g
+ASM_OPTS:= $(C_MODE) -g
 #LINK OPTIONS
-LK_OPT= -lc -lstdc++  -lgcc_s  -L /usr/lib/gcc/x86_64-linux-gnu/6/
+ifeq ($(C_MODE),-m32)
+LK_OPT= -m32 -lc -lstdc++  -lgcc_s  -L /usr/lib/gcc/x86_64-linux-gnu/6/32
+else
+LK_OPT= -m32 -lc -lstdc++  -lgcc_s  -L /usr/lib/gcc/x86_64-linux-gnu/6/
+endif
 # CROSS TOOOL PROGRAMS
 CC:= gcc 
 CPP:= g++ 
@@ -49,7 +55,7 @@ OBJ_OUT:=obj
 SRC:=src
 DEP_OPTS:=-MM -MT
 ifeq ($(OS),Linux)  
-    EH:=   
+    EH:= -e   
 else	    
     EH:= -e	
 endif
