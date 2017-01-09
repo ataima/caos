@@ -2,14 +2,58 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="build">
+        <in>caOS.s</in>
+      </df>
+      <df name="src">
+        <df name="hal">
+          <in>caOS.cpp</in>
+          <in>console.cpp</in>
+          <in>devicehandle.cpp</in>
+          <in>halcomdevice.cpp</in>
+          <in>halsystimerdevice.cpp</in>
+          <in>idevice.cpp</in>
+          <in>kdebug.cpp</in>
+          <in>main.cpp</in>
+          <in>memaux.cpp</in>
+          <in>memdevice.cpp</in>
+          <in>memory.cpp</in>
+          <in>scheduler.cpp</in>
+          <in>schedulerdevice.cpp</in>
+          <in>stream.cpp</in>
+          <in>syslog.cpp</in>
+          <in>thread.cpp</in>
+        </df>
+        <df name="hw">
+          <df name="rasp2">
+            <in>cache.cpp</in>
+            <in>cpu.cpp</in>
+            <in>gpio.cpp</in>
+            <in>hal.cpp</in>
+            <in>hw_func.cpp</in>
+            <in>int_request.cpp</in>
+            <in>interrupt.cpp</in>
+            <in>miniuart.cpp</in>
+            <in>mmu.cpp</in>
+            <in>smp.cpp</in>
+            <in>softreq.cpp</in>
+            <in>start.s</in>
+            <in>sysirqctrl.cpp</in>
+            <in>sysleds.cpp</in>
+            <in>systimer.cpp</in>
+          </df>
+        </df>
+      </df>
       <df name="test">
         <in>main_test.cpp</in>
+        <in>test_circular_buffer.cpp</in>
         <in>test_com_device.cpp</in>
         <in>test_locking.cpp</in>
         <in>test_mem_pipe.cpp</in>
         <in>test_miniuart.cpp</in>
         <in>test_scheduler.cpp</in>
         <in>test_sys_timer_device.cpp</in>
+        <in>test_token_sstream.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -32,10 +76,6 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
-      <flagsDictionary>
-        <element flagsID="0"
-                 commonFlags="-Wpedantic -O2 -std=c++11 -nostdlib -fno-rtti -fno-exceptions -ffreestanding -march=armv7ve -mtune=cortex-a7"/>
-      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -43,57 +83,94 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/caOS.elf</executablePath>
-          <cTool>
-            <incDir>
-              <pElem>os/inc</pElem>
-              <pElem>os/inc/hal</pElem>
-              <pElem>os/inc/hw</pElem>
-              <pElem>os/inc/hw/rasp2</pElem>
-            </incDir>
-          </cTool>
-          <ccTool>
-            <standard>8</standard>
-            <incDir>
-              <pElem>os/inc</pElem>
-              <pElem>os/inc/hal</pElem>
-              <pElem>os/inc/hw</pElem>
-              <pElem>os/inc/hw/rasp2</pElem>
-            </incDir>
-          </ccTool>
+          <executablePath></executablePath>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
-          <preBuildCommand>make distclean</preBuildCommand>
+          <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="test/main_test.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="build/caOS.s" ex="false" tool="4" flavor2="0">
       </item>
-      <item path="test/test_com_device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/caOS.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="test/test_locking.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/console.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="test/test_mem_pipe.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/devicehandle.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="test/test_miniuart.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/halcomdevice.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="test/test_scheduler.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/halsystimerdevice.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="test/test_sys_timer_device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
+      <item path="src/hal/idevice.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/kdebug.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/memaux.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/memdevice.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/memory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/scheduler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/schedulerdevice.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/syslog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hal/thread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/cache.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/cpu.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/gpio.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/hal.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/hw_func.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/int_request.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/interrupt.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/miniuart.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/mmu.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/smp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/softreq.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/start.s" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/sysirqctrl.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/sysleds.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/hw/rasp2/systimer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/main_test.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_circular_buffer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_com_device.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_locking.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_mem_pipe.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_miniuart.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_scheduler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_sys_timer_device.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/test_token_sstream.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

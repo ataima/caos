@@ -41,31 +41,16 @@ typedef u32 s_t;
 
 
 
-#if __x86_64__ 
+#if __LP64__
 #define _IS_64_ 1
 #define _IS_32_ 0
-#endif
-
-#if __x86__ 
+#else
 #define _IS_64_ 0
 #define _IS_32_ 1
 #endif
-
-
-#if __aarch64__ 
-#define _IS_64_ 1
-#define _IS_32_ 0
-#endif
-
-#if __arm__ 
-#define _IS_64_ 0
-#define _IS_32_ 1
-#endif
-
-
-
 
 #if _IS_64_
+
 
 inline u32 ptr_to_uint(void *p) {
     long long int v64 = (long long int) (p);

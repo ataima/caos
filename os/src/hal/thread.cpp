@@ -40,26 +40,26 @@ u32 caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriorit
         a_stk = TH_MIN_STACK_BLK - header_mem_alloc;
     else
         a_stk = (((stack - header_mem_alloc) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
-    base = (u32) (caMemory::Allocate(a_stk));
+    base = ptr_to_uint(caMemory::Allocate(a_stk));
     if (base != 0) {
         a_stk += base;
-        a_stk -= sizeof (caThreadContext);
-        ctx = static_cast<caThreadContext *> ((void *) a_stk);
-        pst = ((u32) ctx - 64); //64 guard
-        ctx->thid = (u32) ctx;
+        a_stk -= (u32)(sizeof (caThreadContext));
+        ctx = static_cast<caThreadContext *> (uint_to_ptr(a_stk));
+        pst = ptr_to_uint(ctx - 64); //64 guard
+        ctx->thid = ptr_to_uint(ctx);
         ctx->status = caThreadStatus::thInit;
         ctx->priority = p;
         ctx->mode = mode;
         ;
         caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, 32);
         ctx->pcb[0] = mode; //SPSR
-        ctx->pcb[1] = (u32) caThread::LaunchThread;
-        ctx->pcb[2] = (u32) func; //r0
+        ctx->pcb[1] = ptr_to_uint((void *)caThread::LaunchThread);
+        ctx->pcb[2] = ptr_to_uint((void *)func); //r0
         ctx->pcb[3] = par1;
         ctx->pcb[4] = par2;
-        ctx->pcb[15] = (u32) pst; //r13
-        ctx->pcb[16] = (u32) caThread::LaunchThread; //r14
-        ctx->count = hal_llc_time_1.hll_tick();
+        ctx->pcb[15] = pst; //r13
+        ctx->pcb[16] = ptr_to_uint((void *)caThread::LaunchThread); //r14
+        ctx->count = hal_llc_scheduler.hll_tick();
         ctx->stack_start = (u32) pst;
         ctx->stack_end = (u32) base + 64; // 64 guard
         ctx->time = 0;

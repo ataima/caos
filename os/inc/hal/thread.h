@@ -59,7 +59,7 @@ typedef struct tag_ca_thread_context {
     u32 index; //index over taskList array
     u32 stack_start;
     u32 stack_end;
-    caThreadMode mode; // th pripority
+    caThreadMode mode; // th mode
     caThreadPriority priority; // th pripority
     volatile u32 cur_prio; // temporary priority from priority to lowest 
     volatile caThreadStatus status; // th status
@@ -120,11 +120,7 @@ public:
     static void Dump(caStringStream<s8> & ss, caThreadContext *ctx);
 
     static inline void ReqSchedule(void) {
-        asm volatile ("DSB"); //TOTEST
-        asm volatile ("ISB"); //TOTEST
-        //asm volatile ("STMFD SP!, {R0-R12}"); //PUSH r1-r3 
-        asm volatile ("SVC 7961"); /// SWITCH CONTEXT
-        //asm volatile ("LDMFD SP!, {R0-R12}"); //POP r1-r3 
+        hal_llc_scheduler.hll_req_scheduler();
     }
 };
 

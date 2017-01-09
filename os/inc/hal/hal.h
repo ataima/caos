@@ -62,6 +62,7 @@ typedef struct tag_hal_llc_scheduler_io {
     const abstract_functor_bool_int_func hll_scheduler_valid_handle;
     const abstract_functor_bool_void_func hll_lock;
     const abstract_functor_bool_void_func hll_unlock;
+    const abstract_functor_void_func hll_req_scheduler;  // call software req cpu dependent
 } hal_llc_scheduler_io;
 
 

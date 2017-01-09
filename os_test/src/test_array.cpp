@@ -31,6 +31,7 @@ class caArray_test_class
     CA_TEST(caArray_test_class::test4, "at test");
     CA_TEST(caArray_test_class::test5, "swap test");
     CA_TEST(caArray_test_class::test6, "remove test");
+    CA_TEST(caArray_test_class::test7, "Detach test");
     CA_TEST_SUITE_END();
 
     void setUp(void) {
@@ -41,7 +42,7 @@ class caArray_test_class
     void test4(void);
     void test5(void);
     void test6(void);
-
+    void test7(void);
     void tearDown(void) {
     }
 
@@ -237,4 +238,44 @@ void caArray_test_class::test6(void) {
     CA_ASSERT(v.At(u, 1) == true);
     CA_ASSERT(u == 20);
 
+}
+
+
+void caArray_test_class::test7(void) {
+    _START();
+    _INFO("to check detach procedure of caArray");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    int buff[100];
+    caArray<int> v;
+    //
+    v.Init(buff, sizeof (buff) / sizeof (int));
+    CA_ASSERT(v.Capacity() == 100);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == &buff[0]);
+    CA_ASSERT(v.Stop() == &buff[99]);
+    CA_ASSERT(v.Good() == true);
+    CA_ASSERT(v.Empty() == true);
+    int u;
+    CA_ASSERT(v.PushBack(5) == 0); // size++
+    CA_ASSERT(v.PushBack(10) == 1); // size++
+    CA_ASSERT(v.PushBack(15) == 2); // size++
+    CA_ASSERT(v.PushBack(20) == 3); // size++
+    CA_ASSERT(v.Size() == 4); // size++
+    CA_ASSERT(v.Good() == true);
+    CA_ASSERT(v.Empty() == false);
+    CA_ASSERT(v.Remove(1) == true);
+    CA_ASSERT(v.Size() == 3); // size++
+    CA_ASSERT(v.Good() == true);
+    CA_ASSERT(v.Empty() == false);
+    CA_ASSERT(v.At(u, 1) == true);
+    CA_ASSERT(u == 20);
+    v.Detach();
+    CA_ASSERT(v.Capacity() == 0);
+    CA_ASSERT(v.Size() == 0);
+    CA_ASSERT(v.Start() == NULL);
+    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Good() == false);
+    CA_ASSERT(v.Empty() == true);
 }

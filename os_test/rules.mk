@@ -27,11 +27,11 @@ OS=$(shell uname -s)
 # CURRENT DEBUG LEVEL
 DBG:= -O0 -g 
 # C LANGUAGE OPTIONS
-C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99  -ffreestanding  -c
+C_OPTS:= -m32 -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99  -ffreestanding  -c
 # CPP LANGUAGE OPTIONS
-CPP_OPTS := -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -fno-rtti  -fexceptions  -ffreestanding  -fverbose-asm   -c
+CPP_OPTS := -m32 -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -fno-rtti  -fexceptions  -ffreestanding  -fverbose-asm   -c
 # ASM LANGUAGE OPTIONS
-ASM_OPTS:= -g
+ASM_OPTS:= -m32 -g
 #LINK OPTIONS
 LK_OPT= -lc -lstdc++  -lgcc_s  -L /usr/lib/gcc/x86_64-linux-gnu/6/
 # CROSS TOOOL PROGRAMS

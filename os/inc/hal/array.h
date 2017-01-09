@@ -51,6 +51,12 @@ public:
         size = 0;
     }
 
+    void Detach(void) {
+        buff = NULL;
+        good = false;
+        size = capacity = 0;
+    }
+    
     //T
 
     inline s_t Size(void) {

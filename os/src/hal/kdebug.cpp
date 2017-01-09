@@ -58,7 +58,7 @@ void caLowLevelDebug::Msg(const char *s, u32 v, Dbg::kformat f, u32 cr) {
 }
 
 void caLowLevelDebug::Msg(const char *s, void *p, u32 v, Dbg::kformat f, u32 cr) {
-    u32 t = (u32) (p);
+    u32 t = ptr_to_uint(p);
     caLowLevelDebug::Msg("[");
     caLowLevelDebug::Hex(t);
     caLowLevelDebug::Msg("] - ");

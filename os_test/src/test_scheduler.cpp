@@ -31,5 +31,5 @@ static bool isvalidcontext(u32 num) {
 
  hal_llc_scheduler_io hal_llc_scheduler = {
      NULL,NULL,
-    isvalidcontext,NULL,NULL
+    isvalidcontext,NULL,NULL,NULL
 };

@@ -54,7 +54,8 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     caSysTimer::ToTick,
     caScheduler::IsValidContext,
     caIrqCtrl::LockSwitchContext,
-    caIrqCtrl::UnLockSwitchContext
+    caIrqCtrl::UnLockSwitchContext,
+    caArmCpu::SVC_7961
 };
 
 #if COM1_DEVICE

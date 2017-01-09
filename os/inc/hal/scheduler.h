@@ -38,6 +38,7 @@ private:
     static caArray<caThreadContext *> table;
 public:
     static bool Init(caThreadContext ** ebuff, s_t max_task);
+    static bool Detach(void);
     static bool AddTask(caThreadContext *ctx);
     static bool RemoveTask(s_t idx);
     static caThreadContext * RoundRobinNextContext(caThreadContext *current);
@@ -73,10 +74,12 @@ private:
     //static u32 IoCtrl(caDevicePort *port, caSchedulerDeviceCtrl *in);
 public:
     static bool Init(caSchedulerMode req);
+    static bool Destroy(void);
     static bool AddTask(caThreadContext *ctx);
     static bool RemoveTask(u32 idx);
     static bool RemoveAllTask(void);
     static void GetNextContext(void);
+    static inline caThreadContext *GetCurrentContext(void){return current_task;}
     static void SwitchContext(void);
     static u32 GetCurrentTaskId(void);
     static u32 SetSleepMode(u32 tick, u32 thIdx);
