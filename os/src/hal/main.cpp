@@ -19,7 +19,6 @@
 
 #include "hal.h"
 #include "memory.h"
-#include "thread.h"
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "console.h"
@@ -121,24 +120,21 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
 }
 
 int main(void) {
-    u32 thMainTask;
-    u32 thNullTask;
-    u32 thConsoleTask;
     caScheduler::Init(caSchedulerMode::Priority);
 #if TEST
     tmain();
 #endif    
     // MAIN TASK SVC MODE TO RUN  ALL SERVICES    
-    thMainTask = caThread::CreateSystemThread("main",
+    caScheduler::AddSystemJob("main",
             caThreadPriority::caThLevel3,
             mainTask);
-    thConsoleTask = caThread::CreateThread("TTY",
+    caScheduler::AddJob("TTY",
             caThreadPriority::caThLevel6,
             consoleTask, 0, 0, 0x4000);
     // idle task always two task in scheduler : alway nullTASK running
     // will be  the priority scheduler to unswitcjh to null task with 
     // have the lowest priority of all threads: no cpu load for null task
-    thNullTask = caThread::CreateThread("idle",
+    caScheduler::AddJob("idle",
             caThreadPriority::caThLevel0,
             nullTask);
     // GO scheduler 
@@ -151,8 +147,6 @@ int main(void) {
     };
     //lbl_shutdown:
     hal_llc_time_1.hll_stop();
-    caThread::DestroyThread(thMainTask);
-    caThread::DestroyThread(thConsoleTask);
-    caThread::DestroyThread(thNullTask);
+    caScheduler::RemoveAllJobs();
     return 0;
 }

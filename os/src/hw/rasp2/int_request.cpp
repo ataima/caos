@@ -29,7 +29,6 @@
 #include "cpu.h" 
 #include "memory.h"
 #include "heaparray.h"
-#include "thread.h"
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "systimer.h"

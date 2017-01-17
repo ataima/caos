@@ -24,7 +24,6 @@
 #include "interrupt.h"
 #include "miniuart.h"
 #include "cpu.h"
-#include "thread.h"
 #include "scheduler.h"
 
 

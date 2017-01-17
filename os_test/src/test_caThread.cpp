@@ -21,7 +21,6 @@
 #include "docMacro.h"
 #include "hal.h"
 #include <iostream>
-#include "thread.h"
 #include "scheduler.h"
 #include "memory.h"
 
@@ -57,6 +56,7 @@ class test_caThread_class
     CA_TEST(test_caThread_class::test1, "createThread 1");
     CA_TEST(test_caThread_class::test2, "createThread 2");
     CA_TEST(test_caThread_class::test3, "createThread 3");
+    CA_TEST(test_caThread_class::test3, "createThread & removeThread");
     CA_TEST_SUITE_END();
 
     void setUp(void) {
@@ -71,6 +71,7 @@ class test_caThread_class
     void test1(void);
     void test2(void);
     void test3(void);
+    void test4(void);
 
 };
 
@@ -90,7 +91,7 @@ void test_caThread_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
-    u32 index = caThread::CreateThread("PROVA", caThreadPriority::caThLevel6,
+    u32 index = caScheduler::AddJob("PROVA", caThreadPriority::caThLevel6,
             dummy, 1000, 2000, 0x4000);
     CA_ASSERT(index == (BASE_HANDLE + 1));
     caScheduler::GetNextContext();
@@ -111,9 +112,9 @@ void test_caThread_class::test2(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
-    u32 index1 = caThread::CreateThread("PROVA1", caThreadPriority::caThLevel6,
+    u32 index1 = caScheduler::AddJob("PROVA1", caThreadPriority::caThLevel6,
             dummy, 1000, 2000, 0x4000);
-    u32 index2 = caThread::CreateThread("PROVA2", caThreadPriority::caThLevel1,
+    u32 index2 = caScheduler::AddJob("PROVA2", caThreadPriority::caThLevel1,
             dummy, 1000, 2000, 0x4000);
     CA_ASSERT(index1 == (BASE_HANDLE + 1));
     CA_ASSERT(index2 == (BASE_HANDLE + 2));
@@ -148,11 +149,54 @@ void test_caThread_class::test3(void) {
 
     for (i = 0; i < 20; i++) {
         sprintf(buff, "PROVA%03d", i);
-        u32 index1 = caThread::CreateThread(buff, caThreadPriority::caThLevel6,
+        u32 index1 = caScheduler::AddJob(buff, caThreadPriority::caThLevel6,
                 dummy, 1000, 2000);
         CA_ASSERT(index1 == (BASE_HANDLE + 1 + i));
     }
+    CA_ASSERT(caScheduler::Size()==20);
+    for (i = 0; i < 100; i++) {
+        sprintf(buff, "PROVA%03d", i%20);
+        caScheduler::GetNextContext();
+        caThreadContext *ctx = caScheduler::GetCurrentContext();
+        CA_ASSERT(ctx->cur_prio == caThreadPriority::caThLevel6);
+        CA_ASSERT(memcmp(ctx->name, buff, 8) == 0);
+        CA_ASSERT(ctx->pcb[3] == 1000);
+        CA_ASSERT(ctx->pcb[4] == 2000);
+    }
+    caScheduler::Destroy();
+}
+
+
+void test_caThread_class::test4(void) {
+    _START();
+    _INFO("to check CreateThread function of class caThread with 100 and remove  thread");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    caScheduler::Init(caSchedulerMode::RoundRobin);
+    u32 i;
+    s8 buff[100];
+    caThreadContext *ctxs[20];
     for (i = 0; i < 20; i++) {
+        sprintf(buff, "PROVA%03d", i);
+        u32 index1 = caScheduler::AddJob(buff, caThreadPriority::caThLevel6,
+                dummy, 1000, 2000);
+        CA_ASSERT(index1 == (BASE_HANDLE + 1 + i));
+    }
+    CA_ASSERT(caScheduler::Size()==20);
+    for (i = 0; i < 100; i++) {
+        sprintf(buff, "PROVA%03d", i%20);
+        caScheduler::GetNextContext();
+        caThreadContext *ctx = caScheduler::GetCurrentContext();
+        ctxs[i%20]=ctx;
+        CA_ASSERT(ctx->cur_prio == caThreadPriority::caThLevel6);
+        CA_ASSERT(memcmp(ctx->name, buff, 8) == 0);
+        CA_ASSERT(ctx->pcb[3] == 1000);
+        CA_ASSERT(ctx->pcb[4] == 2000);
+    }
+    caScheduler::RemoveJob(ctxs[0]->index);
+    CA_ASSERT(caScheduler::Size()==19);
+    for (i = 0; i < 19; i++) {
         sprintf(buff, "PROVA%03d", i);
         caScheduler::GetNextContext();
         caThreadContext *ctx = caScheduler::GetCurrentContext();

@@ -1,6 +1,6 @@
 include rules.mk
 # --silent
-V=--silent
+V=
 
 HAL:=src/hal/do.mk
 HW:=src/hw/rasp2/do.mk

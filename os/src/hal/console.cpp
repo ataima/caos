@@ -23,7 +23,6 @@
 #include "console.h"
 #include "memaux.h"
 #include "stream.h"
-#include "thread.h"
 #include "heaparray.h"
 #include "scheduler.h"
 #include "memory.h"

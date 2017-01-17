@@ -27,7 +27,6 @@
 #include "sysirqctrl.h"
 #include "cpu.h"
 #include "systimer.h"
-#include "thread.h"
 #include "scheduler.h"
 #include "sysleds.h"
 

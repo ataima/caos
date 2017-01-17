@@ -24,7 +24,6 @@
 #include "atomiclock.h"
 #include "memory.h"
 #include "memaux.h"
-#include "thread.h"
 #include "scheduler.h"
 #include "kdebug.h"
 
@@ -37,9 +36,163 @@ caArray<caThreadContext *> caNextTaskManager::table;
 
 ptrGetNextContext caScheduler::getnextcontext;
 caNextTaskManager caScheduler::mng;
-caThreadContext *caScheduler::taskList[MAX_TASK];
-caThreadContext caScheduler::main_ctx;
 caThreadContext *caScheduler::current_task;
+caThreadContext caScheduler::main_ctx;
+caThreadContext *caScheduler::taskList[MAX_TASK];
+
+///////////////////////////////////////////////////////////////////////
+//////    THREAD  MANAGER
+///////////////////////////////////////////////////////////////////////
+
+/*
+ |---------------------------------------------------------------|
+ | ?64/                  FREE STACK                 sp| 64 | CTX |
+ |---------------------------------------------------------------|     
+ */
+
+
+u32 caScheduler::caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriority p, thFunc func, u32 par1, u32 par2, u32 stack) {
+    caThreadContext * ctx = NULL;
+    u32 pst, a_stk, base;
+    u32 header_mem_alloc = caMemory::GetHeaderBlock();
+    if (stack <= TH_MIN_STACK_BLK)
+        a_stk = TH_MIN_STACK_BLK - header_mem_alloc;
+    else
+        a_stk = (((stack ) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
+    base = ptr_to_uint(caMemory::Allocate(a_stk));
+    if (base != 0) {
+        ctx = static_cast<caThreadContext *> (uint_to_ptr(a_stk+base-sizeof (caThreadContext)));
+        pst = ptr_to_uint(ctx)- 64; //64 guard
+        ctx->thid = ptr_to_uint(ctx);
+        ctx->status = caThreadStatus::thInit;
+        ctx->priority = p;
+        ctx->mode = mode;
+        caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, 32);
+        ctx->pcb[0] = mode; //SPSR
+        ctx->pcb[1] = ptr_to_uint((void *)caThread::LaunchThread);
+        ctx->pcb[2] = ptr_to_uint((void *)func); //r0
+        ctx->pcb[3] = par1;
+        ctx->pcb[4] = par2;
+        ctx->pcb[15] = pst; //r13
+        ctx->pcb[16] = ptr_to_uint((void *)caThread::LaunchThread); //r14
+        ctx->count = hal_llc_scheduler.hll_tick();
+        ctx->stack_start = (u32) pst;
+        ctx->stack_end = base + 64; // 64 guard
+        ctx->time = 0;
+        ctx->sleep = 0;
+        ctx->result = -1;
+        ctx->cur_prio = ctx->priority;
+        ctx->nswitch = 0;
+        caStrAux::StrNCpy(ctx->name, name, 64);
+        caScheduler::AddTask(ctx);
+        return ctx->index+BASE_HANDLE+1;
+    }
+    return BASE_HANDLE;
+}
+
+void caScheduler::caThread::LaunchThread(thFunc f, u32 p1, u32 p2) {
+    u32 res, idx;
+    idx = caScheduler::StartTask();
+    res = f(idx, p1, p2);
+    caScheduler::EndTask(res);
+    while (1); // wait cancellation from scheduler
+}
+
+
+void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) {
+    if (ctx != NULL) {
+        ss << caStringFormat::hex << ctx->index << caStringFormat::dec << ") ";
+        caStringFiller p(' ', 18);
+        ss.Fix(p);
+        ss << (const char *) ctx->name << p;
+        ss << " : ";
+        switch (ctx->mode) {
+            case caThreadMode::MODE_USR:
+                ss << "USR : ";
+                break;
+            case caThreadMode::MODE_FIQ:
+                ss << "FIQ : ";
+                break;
+            case caThreadMode::MODE_IRQ:
+                ss << "IRQ : ";
+                break;
+            case caThreadMode::MODE_SVC:
+                ss << "SVC : ";
+                break;
+            case caThreadMode::MODE_MON:
+                ss << "MON : ";
+                break;
+            case caThreadMode::MODE_ABT:
+                ss << "ABT : ";
+                break;
+            case caThreadMode::MODE_HYP:
+                ss << "HYP : ";
+                break;
+            case caThreadMode::MODE_UND:
+                ss << "UND : ";
+                break;
+            case caThreadMode::MODE_SYS:
+                ss << "SYS : ";
+                break;
+        }
+        switch (ctx->priority) {
+            case caThreadPriority::caThLevel0:
+                ss << "Pri0 : ";
+                break;
+            case caThreadPriority::caThLevel1:
+                ss << "Pri1 : ";
+                break;
+            case caThreadPriority::caThLevel2:
+                ss << "Pri2 : ";
+                break;
+            case caThreadPriority::caThLevel3:
+                ss << "Pri3 : ";
+                break;
+            case caThreadPriority::caThLevel4:
+                ss << "Pri4 : ";
+                break;
+            case caThreadPriority::caThLevel5:
+                ss << "Pri5 : ";
+                break;
+            case caThreadPriority::caThLevel6:
+                ss << "Pri6 : ";
+                break;
+            default:
+                ss << "Pri" << (u32) ctx->priority << ": ";
+                break;
+        }
+        p.width = 12;
+        ss.Fix(p);
+        switch (ctx->status) {
+            case caThreadStatus::thInit:
+                ss << "INIT";
+                break;
+            case caThreadStatus::thStop:
+                ss << "STOP";
+                break;
+            case caThreadStatus::thRun:
+                ss << "RUN";
+                break;
+            case caThreadStatus::thSleep:
+                ss << "SLEEP (" << ctx->sleep << ")";
+                break;
+            default:
+                ss << "?";
+                ss << (u32) (ctx->status);
+                ss << " : ";
+                break;
+        }
+        ss << p << ": CPU : ";
+        u32 cpu;
+        if (ctx->nswitch < 0x00020000)
+            cpu = (ctx->nswitch * 10000) / ctx->time;
+        else
+            cpu = ((ctx->nswitch >> 8) * 10000) / (ctx->time >> 8);
+        u32 p1 = cpu / 100;
+        u32 p2 = cpu % 100;
+        ss << caStringFormat::dec << p1 << "." << p2 << "%\r\n";
+    }
+}
 
 
 
@@ -293,7 +446,7 @@ bool caScheduler::Init(caSchedulerMode req)
 bool caScheduler::Destroy(void)
 {
     bool res = false;
-    if (caScheduler::RemoveAllTask())
+    if (caScheduler::RemoveAllJobs())
     {
         caMemAux<u32>::MemSet((u32 *) taskList, 0, sizeof (taskList));
         caMemAux<u32>::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext));
@@ -317,7 +470,7 @@ bool caScheduler::AddTask(caThreadContext *ctx)
     return res;
 }
 
-bool caScheduler::RemoveTask(u32 idx)
+bool caScheduler::RemoveJob(u32 idx)
 {
     bool res = false;
     while (hal_llc_scheduler.hll_lock() == false)
@@ -330,7 +483,7 @@ bool caScheduler::RemoveTask(u32 idx)
     return res;
 }
 
-bool caScheduler::RemoveAllTask(void)
+bool caScheduler::RemoveAllJobs(void)
 {
     bool res = false;
     u32 size = mng.Size();
@@ -338,7 +491,7 @@ bool caScheduler::RemoveAllTask(void)
     do
     {
         idx--;
-        res = RemoveTask(idx);
+        res = RemoveJob(idx);
     }
     while (idx != 0 && res == true);
     return res;

@@ -22,7 +22,6 @@
 #include "hal.h"
 #include "memaux.h"
 
-#include "thread.h"
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "memory.h"

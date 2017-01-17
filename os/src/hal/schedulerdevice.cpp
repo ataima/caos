@@ -24,7 +24,7 @@
 #if SCHEDULER_DEVICE
 
 
-#include "thread.h"
+
 #include "scheduler.h"
 #include "schedulerdevice.h"
 #include "memaux.h"
