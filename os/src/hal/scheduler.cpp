@@ -51,7 +51,7 @@ caThreadContext *caScheduler::taskList[MAX_TASK];
  */
 
 
-u32 caScheduler::caThread::CreateThread(const char * name, caThreadMode mode, caThreadPriority p, thFunc func, u32 par1, u32 par2, u32 stack) {
+u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJobPriority p, thFunc func, u32 par1, u32 par2, u32 stack) {
     caThreadContext * ctx = NULL;
     u32 pst, a_stk, base;
     u32 header_mem_alloc = caMemory::GetHeaderBlock();
@@ -64,7 +64,7 @@ u32 caScheduler::caThread::CreateThread(const char * name, caThreadMode mode, ca
         ctx = static_cast<caThreadContext *> (uint_to_ptr(a_stk+base-sizeof (caThreadContext)));
         pst = ptr_to_uint(ctx)- 64; //64 guard
         ctx->thid = ptr_to_uint(ctx);
-        ctx->status = caThreadStatus::thInit;
+        ctx->status = caJobStatus::thInit;
         ctx->priority = p;
         ctx->mode = mode;
         caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, 32);
@@ -107,54 +107,54 @@ void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) 
         ss << (const char *) ctx->name << p;
         ss << " : ";
         switch (ctx->mode) {
-            case caThreadMode::MODE_USR:
+            case caJobMode::MODE_USR:
                 ss << "USR : ";
                 break;
-            case caThreadMode::MODE_FIQ:
+            case caJobMode::MODE_FIQ:
                 ss << "FIQ : ";
                 break;
-            case caThreadMode::MODE_IRQ:
+            case caJobMode::MODE_IRQ:
                 ss << "IRQ : ";
                 break;
-            case caThreadMode::MODE_SVC:
+            case caJobMode::MODE_SVC:
                 ss << "SVC : ";
                 break;
-            case caThreadMode::MODE_MON:
+            case caJobMode::MODE_MON:
                 ss << "MON : ";
                 break;
-            case caThreadMode::MODE_ABT:
+            case caJobMode::MODE_ABT:
                 ss << "ABT : ";
                 break;
-            case caThreadMode::MODE_HYP:
+            case caJobMode::MODE_HYP:
                 ss << "HYP : ";
                 break;
-            case caThreadMode::MODE_UND:
+            case caJobMode::MODE_UND:
                 ss << "UND : ";
                 break;
-            case caThreadMode::MODE_SYS:
+            case caJobMode::MODE_SYS:
                 ss << "SYS : ";
                 break;
         }
         switch (ctx->priority) {
-            case caThreadPriority::caThLevel0:
+            case caJobPriority::caThLevel0:
                 ss << "Pri0 : ";
                 break;
-            case caThreadPriority::caThLevel1:
+            case caJobPriority::caThLevel1:
                 ss << "Pri1 : ";
                 break;
-            case caThreadPriority::caThLevel2:
+            case caJobPriority::caThLevel2:
                 ss << "Pri2 : ";
                 break;
-            case caThreadPriority::caThLevel3:
+            case caJobPriority::caThLevel3:
                 ss << "Pri3 : ";
                 break;
-            case caThreadPriority::caThLevel4:
+            case caJobPriority::caThLevel4:
                 ss << "Pri4 : ";
                 break;
-            case caThreadPriority::caThLevel5:
+            case caJobPriority::caThLevel5:
                 ss << "Pri5 : ";
                 break;
-            case caThreadPriority::caThLevel6:
+            case caJobPriority::caThLevel6:
                 ss << "Pri6 : ";
                 break;
             default:
@@ -164,16 +164,16 @@ void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) 
         p.width = 12;
         ss.Fix(p);
         switch (ctx->status) {
-            case caThreadStatus::thInit:
+            case caJobStatus::thInit:
                 ss << "INIT";
                 break;
-            case caThreadStatus::thStop:
+            case caJobStatus::thStop:
                 ss << "STOP";
                 break;
-            case caThreadStatus::thRun:
+            case caJobStatus::thRun:
                 ss << "RUN";
                 break;
-            case caThreadStatus::thSleep:
+            case caJobStatus::thSleep:
                 ss << "SLEEP (" << ctx->sleep << ")";
                 break;
             default:
@@ -233,7 +233,7 @@ bool caNextTaskManager::RemoveTask(s_t idx)
         caThreadContext *ctx = NULL;
         if (table.At(ctx, idx) && (ctx != NULL))
         {
-            ctx->status = caThreadStatus::thRemove;
+            ctx->status = caJobStatus::thRemove;
             res = true;
         }
     }
@@ -251,7 +251,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *curr
         if (table.At(tmp, i) && (tmp != NULL))
         {
             tmp->time++; // always time ++ staus ignored also current
-            if (tmp->status == caThreadStatus::thRemove)
+            if (tmp->status == caJobStatus::thRemove)
             {
                 table.Remove(i);
                 caMemory::Free(tmp);
@@ -267,7 +267,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *curr
                     continue;
                 }
             }
-            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep)
+            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caJobStatus::thSleep)
             {
                 if (tmp->sleep != 0)
                 {
@@ -275,7 +275,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *curr
                 }
                 else
                 {
-                    tmp->status = caThreadStatus::thRun;
+                    tmp->status = caJobStatus::thRun;
                 }
             }
         }
@@ -289,7 +289,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *curr
     while (1)
     { // Round robin
         i = i % table.Size();
-        if (table.At(tmp, i) && (tmp != NULL) && (tmp->status & caThreadStatus::thRunning))
+        if (table.At(tmp, i) && (tmp != NULL) && (tmp->status & caJobStatus::thRunning))
         {
             tmp->nswitch++;
             break; // Year ... it's the next thread to
@@ -317,7 +317,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
         if (table.At(tmp, i) && (tmp != NULL))
         {
             tmp->time++; // always time ++ staus ignored also current
-            if (tmp->status == caThreadStatus::thRemove)
+            if (tmp->status == caJobStatus::thRemove)
             {
                 table.Remove(i);
                 caMemory::Free(tmp);
@@ -333,7 +333,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
                     continue;
                 }
             }
-            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caThreadStatus::thSleep)
+            if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caJobStatus::thSleep)
             {
                 if (tmp->sleep != 0)
                 {
@@ -341,10 +341,10 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
                 }
                 else
                 {
-                    tmp->status = caThreadStatus::thRun;
+                    tmp->status = caJobStatus::thRun;
                 }
             }
-            if (tmp != current && (tmp->status & caThreadStatus::thRunning))
+            if (tmp != current && (tmp->status & caJobStatus::thRunning))
             {
                 if (target == NULL)
                 {
@@ -391,8 +391,8 @@ void caNextTaskManager::WakeUp(u32 thid)
     if (thid < table.Size())
     {
         caThreadContext * tmp = NULL;
-        if (table.At(tmp, thid) && tmp != NULL && tmp->status == caThreadStatus::thSleep)
-            tmp->status = caThreadStatus::thRun;
+        if (table.At(tmp, thid) && tmp != NULL && tmp->status == caJobStatus::thSleep)
+            tmp->status = caJobStatus::thRun;
     }
 }
 
@@ -408,9 +408,9 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick)
         while (hal_llc_scheduler.hll_lock() == false)
         {
         };
-        if (tmp != NULL && tmp->status == caThreadStatus::thRun)
+        if (tmp != NULL && tmp->status == caJobStatus::thRun)
         {
-            tmp->status = caThreadStatus::thSleep;
+            tmp->status = caJobStatus::thSleep;
             tmp->sleep = tick;
             res = deviceError::okey;
         }
@@ -558,7 +558,7 @@ u32 caScheduler::StartTask(void)
     };
     if (current_task != NULL)
     {
-        current_task->status = caThreadStatus::thRun;
+        current_task->status = caJobStatus::thRun;
         res = current_task->index;
     }
     while (hal_llc_scheduler.hll_lock() == false)
@@ -575,7 +575,7 @@ void caScheduler::EndTask(u32 result)
     if (current_task != NULL)
     {
         current_task->result = result;
-        current_task->status = caThreadStatus::thStop;
+        current_task->status = caJobStatus::thStop;
     }
     while (hal_llc_scheduler.hll_lock() == false)
     {
@@ -682,7 +682,7 @@ void caScheduler::CheckValid(u32 p)
 void caScheduler::SwitchContext(void)
 {
     caThread::ReqSchedule();
-    while (current_task->status != caThreadStatus::thRun)
+    while (current_task->status != caJobStatus::thRun)
     {
     };
 }

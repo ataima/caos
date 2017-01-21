@@ -90,7 +90,6 @@ add_ext_src:
 	$(call link_ext_file,halsystimerdevice.cpp)
 	$(call link_ext_file,syslog.cpp)
 	$(call link_ext_file,memory.cpp)
-	$(call link_ext_file,thread.cpp)
 	$(call link_ext_file,scheduler.cpp)
 	$(call link_ext_file,kdebug.cpp)
 
@@ -102,7 +101,6 @@ remove_ext_src:
 	$(call ulink_ext_file,halsystimerdevice.cpp)
 	$(call ulink_ext_file,syslog.cpp)
 	$(call ulink_ext_file,memory.cpp)
-	$(call ulink_ext_file,thread.cpp)
 	$(call ulink_ext_file,scheduler.cpp)
 	$(call ulink_ext_file,kdebug.cpp)
 

@@ -93,10 +93,10 @@ static void test_01(u32 & success, u32 &failed) {
     if (res == deviceError::no_error) {
 
         u32 th1 = caThread::CreateThread("reader1",
-                caThreadPriority::caThLevel2,
+                caJobPriority::caThLevel2,
                 Task1);
         u32 th3 = caThread::CreateThread("iddle",
-                caThreadPriority::caThLevel2,
+                caJobPriority::caThLevel2,
                 Idle);
         start_system_timer();
         //

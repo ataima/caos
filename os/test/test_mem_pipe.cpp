@@ -121,10 +121,10 @@ static u32 destTask(u32, u32) {
 static void test_01(u32 & success, u32 &failed) {
     //TEST MEM PIPE      
     u32 th1 = caThread::CreateThread("source",
-            caThreadPriority::caThLevel6,
+            caJobPriority::caThLevel6,
             sourceTask);
     u32 th2 = caThread::CreateThread("dest",
-            caThreadPriority::caThLevel6,
+            caJobPriority::caThLevel6,
             destTask);
     start_system_timer();
     //

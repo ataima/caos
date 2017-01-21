@@ -49,7 +49,7 @@ static void test_02(u32 & success, u32 &failed) {
     if (caScheduler::Init(caSchedulerMode::RoundRobin)) {
         success++;
         u32 t1 = caThread::CreateSystemThread("main",
-                caThreadPriority::caThLevel3,
+                caJobPriority::caThLevel3,
                 mainTask);
         if (t1 == (u32) (-1)) {
             failed++;
@@ -61,7 +61,7 @@ static void test_02(u32 & success, u32 &failed) {
         }
 
         u32 t2 = caThread::CreateThread("TTY",
-                caThreadPriority::caThLevel6,
+                caJobPriority::caThLevel6,
                 consoleTask, 0, 0, 0x4000);
         if (t2 == (u32) (-1)) {
             failed++;
@@ -72,7 +72,7 @@ static void test_02(u32 & success, u32 &failed) {
             success++;
         }
         u32 t3 = caThread::CreateThread("idle",
-                caThreadPriority::caThLevel0,
+                caJobPriority::caThLevel0,
                 nullTask);
         if (t3 == (u32) (-1)) {
             failed++;
@@ -157,7 +157,7 @@ static void test_03(u32 & success, u32 &failed) {
     if (caScheduler::Init(caSchedulerMode::Priority)) {
         success++;
         u32 t1 = caThread::CreateSystemThread("main",
-                caThreadPriority::caThLevel3,
+                caJobPriority::caThLevel3,
                 mainTask);
         if (t1 == (u32) (-1)) {
             failed++;
@@ -168,7 +168,7 @@ static void test_03(u32 & success, u32 &failed) {
             success++;
         }
         u32 t2 = caThread::CreateThread("TTY",
-                caThreadPriority::caThLevel6,
+                caJobPriority::caThLevel6,
                 consoleTask, 0, 0, 0x4000);
         if (t2 == (u32) (-1)) {
             failed++;
@@ -179,7 +179,7 @@ static void test_03(u32 & success, u32 &failed) {
             success++;
         }
         u32 t3 = caThread::CreateThread("idle",
-                caThreadPriority::caThLevel0,
+                caJobPriority::caThLevel0,
                 nullTask);
         if (t3 == (u32) (-1)) {
             failed++;

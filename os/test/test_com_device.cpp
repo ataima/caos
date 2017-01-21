@@ -147,11 +147,11 @@ u32 Idle(u32, u32) {
 static void test_02(u32 & success, u32 &failed) {
     lock.Lock();
     u32 th0 = caThread::CreateThread("iddle",
-            caThreadPriority::caThLevel1,
+            caJobPriority::caThLevel1,
             Idle);
 
     u32 th1 = caThread::CreateThread("tty1",
-            caThreadPriority::caThLevel4,
+            caJobPriority::caThLevel4,
             Task1);
     Dbg::Put("th1 =", th1);
     Dbg::Put("th0 =", th0);
@@ -177,13 +177,13 @@ static void test_02(u32 & success, u32 &failed) {
 static void test_03(u32 & success, u32 &failed) {
     lock.Lock();
     u32 th2 = caThread::CreateThread("iddle",
-            caThreadPriority::caThLevel1,
+            caJobPriority::caThLevel1,
             Idle, 0, 0, 0x4000);
     u32 th1 = caThread::CreateThread("tty1",
-            caThreadPriority::caThLevel6,
+            caJobPriority::caThLevel6,
             Task1, 0, 0, 0x4000);
     u32 th3 = caThread::CreateThread("tty2",
-            caThreadPriority::caThLevel6,
+            caJobPriority::caThLevel6,
             Task2, 0, 0, 0x4000);
     start_system_timer();
     while (lock.Get() != LOCK_FREE) {
@@ -205,11 +205,11 @@ static void test_03(u32 & success, u32 &failed) {
 static void test_04(u32 & success, u32 &failed) {
     u32 i = 0;
     u32 th1, th2 = caThread::CreateThread("iddle",
-            caThreadPriority::caThLevel1,
+            caJobPriority::caThLevel1,
             Idle, 0, 0, 0x4000);
     for (i = 0; i < 100; i++) {
         th1 = caThread::CreateThread("tty100",
-                caThreadPriority::caThLevel6,
+                caJobPriority::caThLevel6,
                 Task3, i);
     }
     start_system_timer();

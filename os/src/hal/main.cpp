@@ -126,16 +126,16 @@ int main(void) {
 #endif    
     // MAIN TASK SVC MODE TO RUN  ALL SERVICES    
     caScheduler::AddSystemJob("main",
-            caThreadPriority::caThLevel3,
+            caJobPriority::caThLevel3,
             mainTask);
     caScheduler::AddJob("TTY",
-            caThreadPriority::caThLevel6,
+            caJobPriority::caThLevel6,
             consoleTask, 0, 0, 0x4000);
     // idle task always two task in scheduler : alway nullTASK running
     // will be  the priority scheduler to unswitcjh to null task with 
     // have the lowest priority of all threads: no cpu load for null task
     caScheduler::AddJob("idle",
-            caThreadPriority::caThLevel0,
+            caJobPriority::caThLevel0,
             nullTask);
     // GO scheduler 
     hal_llc_time_1.hll_start();

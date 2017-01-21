@@ -36,7 +36,7 @@ typedef enum tag_ca_thread_mode {
     MODE_HYP = 0x1A,
     MODE_UND = 0x1B,
     MODE_SYS = 0x1F,
-} caThreadMode;
+} caJobMode;
 
 typedef enum tag_ca_thread_priority {
     caThLevel0 = 1,
@@ -46,7 +46,7 @@ typedef enum tag_ca_thread_priority {
     caThLevel4 = 16,
     caThLevel5 = 32,
     caThLevel6 = 64,
-} caThreadPriority;
+} caJobPriority;
 
 typedef enum tag_ca_thread_status {
     thUnknow = 0,
@@ -57,7 +57,7 @@ typedef enum tag_ca_thread_status {
     thRun = 0x40,
     thInit = 0x80,
     thRunning = 0xc0
-} caThreadStatus;
+} caJobStatus;
 
 typedef struct tag_ca_thread_context {
     volatile u32 pcb[32];
@@ -65,10 +65,10 @@ typedef struct tag_ca_thread_context {
     u32 index; //index over taskList array
     u32 stack_start;
     u32 stack_end;
-    caThreadMode mode; // th mode
-    caThreadPriority priority; // th pripority
+    caJobMode mode; // th mode
+    caJobPriority priority; // th pripority
     volatile u32 cur_prio; // temporary priority from priority to lowest 
-    volatile caThreadStatus status; // th status
+    volatile caJobStatus status; // th status
     volatile u32 count;
     volatile u32 sleep;
     volatile u32 time;
@@ -82,8 +82,8 @@ typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
 inline bool less(caThreadContext* a, caThreadContext* b) {
     if ((a != NULL) &&
             (b != NULL)/* &&
-            ((a->status & caThreadStatus::thRunning)) &&
-            ((b->status & caThreadStatus::thRunning))*/) {
+            ((a->status & caJobStatus::thRunning)) &&
+            ((b->status & caJobStatus::thRunning))*/) {
         if (a->cur_prio == b->cur_prio)
             return (a->nswitch / a->priority) > (b->nswitch / b->priority);
         else
@@ -130,8 +130,8 @@ private:
     class caThread {
     public:
         
-        static u32 CreateThread(const char *name, caThreadMode mode,
-                caThreadPriority p, thFunc func,
+        static u32 CreateThread(const char *name, caJobMode mode,
+                caJobPriority p, thFunc func,
                 u32 par1, u32 par2, u32 stack);
 
         static void LaunchThread(thFunc f, u32 p1, u32 p2);
@@ -182,21 +182,21 @@ public:
         return mng.IsValidContext(thid);
     }
 
-    static inline u32 AddJob(const char *name, caThreadPriority p,
+    static inline u32 AddJob(const char *name, caJobPriority p,
             thFunc func, u32 par1 = 0, u32 par2 = 0, u32 stack = 0) {
-        return caThread::CreateThread(name, caThreadMode::MODE_USR, p,
+        return caThread::CreateThread(name, caJobMode::MODE_USR, p,
                 func, par1, par2, stack);
     }
 
-    static inline u32 AddSuperVisorJob(const char *name, caThreadPriority p,
+    static inline u32 AddSuperVisorJob(const char *name, caJobPriority p,
             thFunc func, u32 par1 = 0, u32 par2 = 0, u32 stack = 0) {
-        return caThread::CreateThread(name, caThreadMode::MODE_SVC, p,
+        return caThread::CreateThread(name, caJobMode::MODE_SVC, p,
                 func, par1, par2, stack);
     }
 
-    static inline u32 AddSystemJob(const char *name, caThreadPriority p,
+    static inline u32 AddSystemJob(const char *name, caJobPriority p,
             thFunc func, u32 par1 = 0, u32 par2 = 0, u32 stack = 0) {
-        return caThread::CreateThread(name, caThreadMode::MODE_SYS, p,
+        return caThread::CreateThread(name, caJobMode::MODE_SYS, p,
                 func, par1, par2, stack);
     }
 
