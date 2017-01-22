@@ -233,6 +233,24 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
     return res;
 }
 
+bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
+    bool res = false;
+
+    if (IsValidContext(thIdx)) {
+        caThreadContext *ctx = NULL;
+        if (table.At(ctx, thIdx) && (ctx != NULL)) {
+            while (hal_llc_scheduler.hll_lock() == false) {
+            };
+            ctx->priority = newPrio;
+            ctx->cur_prio = newPrio;
+            while (hal_llc_scheduler.hll_lock() == false) {
+            };
+            res=true;
+        }
+    }
+    return res;
+}
+
 caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
     //TIN();
     //REFRESH  
@@ -288,13 +306,13 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
  How WORK
  * FOR N SWITCH 
  * N= Th0+2*Th1+4*Th2+8*Th3+16*Th4+32*TH5+64*TH6=127 
- * n=PRIORITY 0  = ntotal/127
- * n=PRIORITY 1  = ( ntotal/127)*2
- * n=PRIORITY 2  = ( ntotal/127)*4
- * n=PRIORITY 3  = ( ntotal/127)*8
- * n=PRIORITY 4  = ( ntotal/127)*16
- * n=PRIORITY 5  = ( ntotal/127)*32
- * n=PRIORITY 6  = ( ntotal/127)*64
+ * n=PRIORITY 0  = ntotal/127           ->0,787%    CPU Time
+ * n=PRIORITY 1  = ( ntotal/127)*2      ->%1,57     CPU Time
+ * n=PRIORITY 2  = ( ntotal/127)*4      ->%3.1496...CPU Time
+ * n=PRIORITY 3  = ( ntotal/127)*8      ->6.28%     CPU Time
+ * n=PRIORITY 4  = ( ntotal/127)*16     ->12,56%    CPU Time
+ * n=PRIORITY 5  = ( ntotal/127)*32     ->25,12%    CPU Time
+ * n=PRIORITY 6  = ( ntotal/127)*64     ->50,24%    CPU Time
  */
 caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *current) {
     caThreadContext * tmp, *target;
@@ -340,7 +358,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
             if (less(target, current)) {
             target = current;
         }
-        if (current->cur_prio==0 )
+        if (current->cur_prio == 0)
             current->cur_prio = current->priority;
         current->nswitch++;
     }
@@ -436,7 +454,7 @@ bool caScheduler::RemoveAllJobs(void) {
     do {
         idx--;
         res = RemoveJob(idx);
-    }    while (idx != 0 && res == true);
+    } while (idx != 0 && res == true);
     return res;
 }
 
@@ -611,6 +629,7 @@ u32 caScheduler::GetCurrentTaskId(void) {
         return current_task->index;
     }
 }
+
 
 
 

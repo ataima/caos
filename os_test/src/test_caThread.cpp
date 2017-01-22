@@ -60,17 +60,17 @@ static u32 hll_totick(u32 ms) {
 }
 
 static bool hll_enable_lock(void) {
-    std::cout<<"SPINLOCK "<<std::endl;
+    std::cout << "SPINLOCK " << std::endl;
     return true;
 }
 
 static bool hll_enable_unlock(void) {
-    std::cout<<"SPINUNLOCK "<<std::endl;    
+    std::cout << "SPINUNLOCK " << std::endl;
     return true;
 }
 
 static void hll_req_schedule(void) {
-    std::cout<<"REQ SCHEDULER "<<std::endl;
+    std::cout << "REQ SCHEDULER " << std::endl;
     caScheduler::GetNextContext();
 }
 
@@ -124,6 +124,7 @@ class test_caThread_class
     CA_TEST(test_caThread_class::test6, "createThread pri 1 ");
     CA_TEST(test_caThread_class::test7, "createThread pri 2 ");
     CA_TEST(test_caThread_class::test8, "createThread pri 3 ");
+    CA_TEST(test_caThread_class::test9, "change priority ");
     CA_TEST_SUITE_END();
 
     void setUp(void) {
@@ -143,6 +144,7 @@ class test_caThread_class
     void test6(void);
     void test7(void);
     void test8(void);
+    void test9(void);
 
 };
 
@@ -547,7 +549,7 @@ void test_caThread_class::test8(void) {
             i++;
         }
     }
-    
+
     std::sort<std::vector<u32>::iterator>(SW.begin(), SW.end());
     //1000=x+2x+4x+8x+16x+32x+64c->1000/127->about 8-6-32-64-128-256-512 
     CA_ASSERT(SW.at(0) > 6 && SW.at(0) < 10);
@@ -557,5 +559,93 @@ void test_caThread_class::test8(void) {
     CA_ASSERT(SW.at(4) > 120 && SW.at(4) < 140);
     CA_ASSERT(SW.at(5) > 240 && SW.at(5) < 270);
     CA_ASSERT(SW.at(6) > 480 && SW.at(6) < 520);
+    CA_ASSERT(caScheduler::Destroy() == true);
+}
+
+static bool caThreadContext_less(caThreadContext *a, caThreadContext*b) {
+    return a->nswitch < b->nswitch;
+}
+
+void test_caThread_class::test9(void) {
+    _START();
+    _INFO("to check CreateThread function of class caThread with 7 thread");
+    _AUTHOR("Coppi Angelo");
+    _PROJECT("C.A.O.S");
+    _STOP();
+    caScheduler::Init(caSchedulerMode::Priority);
+    u32 index1 = caScheduler::AddJob("PROVA1", caJobPriority::caThLevel0,
+            dummy, 1000, 2000, 0x4000);
+    u32 index2 = caScheduler::AddJob("PROVA2", caJobPriority::caThLevel1,
+            dummy, 1000, 2000, 0x4000);
+    u32 index3 = caScheduler::AddJob("PROVA3", caJobPriority::caThLevel2,
+            dummy, 1000, 2000, 0x4000);
+    u32 index4 = caScheduler::AddJob("PROVA4", caJobPriority::caThLevel3,
+            dummy, 1000, 2000, 0x4000);
+    u32 index5 = caScheduler::AddJob("PROVA5", caJobPriority::caThLevel4,
+            dummy, 1000, 2000, 0x4000);
+    u32 index6 = caScheduler::AddJob("PROVA6", caJobPriority::caThLevel5,
+            dummy, 1000, 2000, 0x4000);
+    u32 index7 = caScheduler::AddJob("PROVA7", caJobPriority::caThLevel6,
+            dummy, 1000, 2000, 0x4000);
+    CA_ASSERT(index1 == (0));
+    CA_ASSERT(index2 == (1));
+    CA_ASSERT(index3 == (2));
+    CA_ASSERT(index4 == (3));
+    CA_ASSERT(index5 == (4));
+    CA_ASSERT(index6 == (5));
+    CA_ASSERT(index7 == (6));
+    std::vector<caThreadContext *> ctxs;
+    ctxs.insert(ctxs.begin(), 7, NULL);
+    u32 i;
+    for (i = 0; i < 1000; i++) {
+        caScheduler::GetNextContext();
+        caThreadContext *tmp = caScheduler::GetCurrentContext();
+        ctxs[tmp->index] = tmp;
+    }
+
+    std::sort<std::vector<caThreadContext *>::iterator >(ctxs.begin(), ctxs.end(), caThreadContext_less);
+
+    //1000=x+2x+4x+8x+16x+32x+64c->1000/127->about 8-6-32-64-128-256-512 
+    CA_ASSERT(ctxs.at(0)->nswitch > 6 && ctxs.at(0)->nswitch < 10);
+    CA_ASSERT(ctxs.at(0)->index == 0);
+    CA_ASSERT(ctxs.at(1)->nswitch > 14 && ctxs.at(1)->nswitch < 18);
+    CA_ASSERT(ctxs.at(1)->index == 1);
+    CA_ASSERT(ctxs.at(2)->nswitch > 28 && ctxs.at(2)->nswitch < 36);
+    CA_ASSERT(ctxs.at(2)->index == 2);
+    CA_ASSERT(ctxs.at(3)->nswitch > 60 && ctxs.at(3)->nswitch < 70);
+    CA_ASSERT(ctxs.at(3)->index == 3);
+    CA_ASSERT(ctxs.at(4)->nswitch > 120 && ctxs.at(4)->nswitch < 140);
+    CA_ASSERT(ctxs.at(4)->index == 4);
+    CA_ASSERT(ctxs.at(5)->nswitch > 240 && ctxs.at(5)->nswitch < 270);
+    CA_ASSERT(ctxs.at(5)->index == 5);
+    CA_ASSERT(ctxs.at(6)->nswitch > 480 && ctxs.at(6)->nswitch < 520);
+    CA_ASSERT(ctxs.at(6)->index == 6);
+    CA_ASSERT(caScheduler::ChangePriority(0, caJobPriority::caThLevel6) == true);
+    for (i = 0; i < 1000; i++) {
+        caScheduler::GetNextContext();
+        caScheduler::GetCurrentContext();
+    }
+    //+1000=2x+4x+8x+16x+32x+64x+64x->1000/190 ->10-21-42-84-168-336+336
+    //672-480-6 -> recover thread 0 500 tick
+    std::sort<std::vector<caThreadContext *>::iterator >(ctxs.begin(), ctxs.end(), caThreadContext_less);
+    CA_ASSERT(ctxs.at(0)->nswitch > (14 + 10) && ctxs.at(0)->nswitch < (18 + 10));
+    CA_ASSERT(ctxs.at(0)->index == 1);
+    CA_ASSERT(ctxs.at(1)->nswitch > (28 + 20) && ctxs.at(1)->nswitch < (36 + 20));
+    CA_ASSERT(ctxs.at(1)->index == 2);
+    CA_ASSERT(ctxs.at(2)->nswitch > (60 + 35) && ctxs.at(2)->nswitch < (70 + 35));
+    CA_ASSERT(ctxs.at(2)->index == 3);
+    CA_ASSERT(ctxs.at(3)->nswitch > (120 + 70) && ctxs.at(3)->nswitch < (140 + 70));
+    CA_ASSERT(ctxs.at(3)->index == 4);
+    CA_ASSERT(ctxs.at(4)->nswitch > (240 + 110) && ctxs.at(4)->nswitch < (270 + 110));
+    CA_ASSERT(ctxs.at(4)->index == 5);
+    CA_ASSERT(ctxs.at(5)->nswitch > (6 + 550) && ctxs.at(5)->nswitch < (10 + 580));
+    CA_ASSERT(ctxs.at(5)->index == 0);
+    CA_ASSERT(ctxs.at(6)->nswitch > (480 + 180) && ctxs.at(6)->nswitch < (520 + 220));
+    CA_ASSERT(ctxs.at(6)->index == 6);
+    s8 buff[4096];
+    caStringStream<s8> ss;
+    ss.Init(buff, sizeof (buff));
+    caScheduler::Dump(ss);
+    std::cout << buff;
     CA_ASSERT(caScheduler::Destroy() == true);
 }

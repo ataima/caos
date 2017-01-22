@@ -82,7 +82,7 @@ typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
 inline bool less(caThreadContext* a, caThreadContext* b) {
     // TEST TRUE SWAP TARGET
     if (a->cur_prio == b->cur_prio)
-        return (a->nswitch/a->priority) > (b->nswitch/b->priority);
+        return (a->nswitch / a->priority) > (b->nswitch / b->priority);
     else
         return a->cur_prio < b->cur_prio;
 }
@@ -109,7 +109,7 @@ public:
     static bool IsValidContext(u32 thIdx);
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
-
+    static bool ChangePriority(s_t thIdx, caJobPriority newPrio);
     static inline s_t Size(void) {
         return table.Size();
     }
@@ -146,26 +146,31 @@ private:
     static void CheckValid(u32 p);
     static void Panic(void);
 #endif    
+    static bool AddTask(caThreadContext *ctx);
+    static void SwitchContext(void);
+    static void EndTask(u32 result);
+    static u32 StartTask(void);
     //static u32 IoCtrl(caDevicePort *port, caSchedulerDeviceCtrl *in);
 public:
     static bool Init(caSchedulerMode req);
     static bool Destroy(void);
-    static bool AddTask(caThreadContext *ctx);
+
     static void GetNextContext(void);
 
     static inline caThreadContext *GetCurrentContext(void) {
         return current_task;
     }
-    static void SwitchContext(void);
+
     static u32 GetCurrentTaskId(void);
     static u32 SetSleepMode(u32 tick, u32 thIdx);
     static u32 Dump(caStringStream<s8> & ss);
-    static void EndTask(u32 result);
-
+    static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio){
+        return mng.ChangePriority(thIdx, newPrio);
+    }
+    
     static inline s_t Size(void) {
         return mng.Size();
     }
-    static u32 StartTask(void);
 
     static inline void WakeUp(u32 thid) {
         mng.WakeUp(thid);
