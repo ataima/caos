@@ -80,16 +80,11 @@ typedef struct tag_ca_thread_context {
 typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
 
 inline bool less(caThreadContext* a, caThreadContext* b) {
-    if ((a != NULL) &&
-            (b != NULL)/* &&
-            ((a->status & caJobStatus::thRunning)) &&
-            ((b->status & caJobStatus::thRunning))*/) {
-        if (a->cur_prio == b->cur_prio)
-            return (a->nswitch / a->priority) > (b->nswitch / b->priority);
-        else
-            return a->cur_prio < b->cur_prio;
-    } else
-        return false;
+    // TEST TRUE SWAP TARGET
+    if (a->cur_prio == b->cur_prio)
+        return (a->nswitch/a->priority) > (b->nswitch/b->priority);
+    else
+        return a->cur_prio < b->cur_prio;
 }
 
 typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
@@ -103,6 +98,7 @@ typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
 class caNextTaskManager {
 private:
     static caArray<caThreadContext *> table;
+    static u32 cur_index;
 public:
     static bool Init(caThreadContext ** ebuff, s_t max_task);
     static bool Detach(void);
@@ -129,18 +125,15 @@ private:
 
     class caThread {
     public:
-        
+
         static u32 CreateThread(const char *name, caJobMode mode,
                 caJobPriority p, thFunc func,
                 u32 par1, u32 par2, u32 stack);
 
         static void LaunchThread(thFunc f, u32 p1, u32 p2);
-        
+
         static void Dump(caStringStream<s8> & ss, caThreadContext *ctx);
 
-        static inline void ReqSchedule(void) {
-            hal_llc_scheduler.hll_req_scheduler();
-        }
     };
 
 private:
@@ -200,11 +193,11 @@ public:
                 func, par1, par2, stack);
     }
 
-    static bool RemoveJob(u32 idx); 
-    
+    static bool RemoveJob(u32 idx);
+
     static bool RemoveAllJobs(void);
 
-    
+
 #define SLEEP_FOR_EVER 0xffffffff
 
     static u32 Sleep(u32 ms);

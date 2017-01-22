@@ -194,7 +194,7 @@ deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,
                 res = caOS::Write(port, ss);
             }
         }
-#if SYS_TIMER_DEVICE        
+      
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caIDeviceConfigure in;
@@ -210,8 +210,7 @@ deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,
                 }
                 res = caOS::Close(portTimer);
             }
-        }
-#endif        
+        }       
     } else {
         SyntaxError(port, iss);
     }
@@ -241,7 +240,7 @@ deviceError caConsole::Command_READ_DEVICE(caDeviceHandle &port,
                 res = caOS::Write(port, ss);
             }
         }
-#if SYS_TIMER_DEVICE                
+              
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caIDeviceConfigure in;
@@ -263,7 +262,7 @@ deviceError caConsole::Command_READ_DEVICE(caDeviceHandle &port,
                 res = caOS::Close(portTimer);
             }
         }
-#endif        
+       
     } else {
         SyntaxError(port, iss);
     }
@@ -287,8 +286,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDeviceHandle &port,
             } else {
                 res = deviceError::error_read_less_data;
             }
-        }
-#if SYS_TIMER_DEVICE             
+        }             
         else
             if (caStrAux::StrNCmp((char *) opt.ptr, "systimer", 8) == 0) {
             caIDeviceConfigure in;
@@ -311,8 +309,7 @@ deviceError caConsole::Command_WRITE_DEVICE(caDeviceHandle &port,
                 res = caOS::Write(portTimer);
                 res = caOS::Close(portTimer);
             }
-        }
-#endif        
+        }       
     } else {
         SyntaxError(port, iss);
     }

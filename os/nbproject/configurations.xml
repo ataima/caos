@@ -22,7 +22,6 @@
           <in>schedulerdevice.cpp</in>
           <in>stream.cpp</in>
           <in>syslog.cpp</in>
-          <in>thread.cpp</in>
         </df>
         <df name="hw">
           <df name="rasp2">
@@ -121,8 +120,6 @@
       <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/hal/syslog.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/hal/thread.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/hw/rasp2/cache.cpp" ex="false" tool="1" flavor2="0">
       </item>

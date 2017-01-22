@@ -25,12 +25,10 @@
         <in>test_heaparray.cpp</in>
         <in>test_memaux.cpp</in>
         <in>test_memory.cpp</in>
-        <in>test_scheduler.cpp</in>
         <in>test_straux.cpp</in>
         <in>test_string_stream.cpp</in>
         <in>test_syslog.cpp</in>
         <in>test_token_string.cpp</in>
-        <in>thread.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -170,10 +168,6 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="src/test_scheduler.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
       <item path="src/test_straux.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -187,10 +181,6 @@
         </ccTool>
       </item>
       <item path="src/test_token_string.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/thread.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

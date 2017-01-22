@@ -1189,9 +1189,20 @@ public:
 
     virtual void addResult(const char *info, int f = 0, int timeU = 0) {
         if (timeU != -1)
-            fprintf(file, "%d:%s:%d ms\n", f, info, timeU);
+        {
+            if(f)
+               fprintf(file, ">OK  :%s%d ms\n",  info, timeU);
+            else
+               fprintf(file, ">FAIL:%s%d ms\n",  info, timeU);
+                
+        }
         else
-            fprintf(file, "%d:%s\n", f, info);
+        {
+            if(f)
+               fprintf(file, ">OK  :%s\n",  info);
+            else
+               fprintf(file, ">FAIL:%s\n",  info);
+        }
         fflush(file);
     }
 };
