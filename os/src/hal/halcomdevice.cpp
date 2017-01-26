@@ -186,19 +186,19 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
             LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comFlush:
+        case caComDeviceCtrl::IoComCtrlDirect::comFlush:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comFlush" << caEnd::endl;
             res = Flush(port);
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comStart:
+        case caComDeviceCtrl::IoComCtrlDirect::comStart:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStart" << caEnd::endl;
             res = link->hll_enable(1, 1);
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comStop:
+        case caComDeviceCtrl::IoComCtrlDirect::comStop:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStop" << caEnd::endl;
             res = link->hll_enable(0, 0);
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comListHardware:
+        case caComDeviceCtrl::IoComCtrlDirect::comListHardware:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comListHardware" << caEnd::endl;
             if (in->ss != NULL) {
                 in->ss->Clear();
@@ -208,12 +208,12 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 LOG(caLog, error) << " deviceError::error_invalid_null_destination" << caEnd::endl;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comStatusBuffer:
+        case caComDeviceCtrl::IoComCtrlDirect::comStatusBuffer:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStatusBuffer" << caEnd::endl;
             in->param_1 = Rx.Size();
             in->param_2 = Tx.Size();
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comAddSignalRx:
+        case caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalRx" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalRx)) {
                 res = deviceError::error_signal_already_set;
@@ -227,7 +227,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 }
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comAddSignalTx:
+        case caComDeviceCtrl::IoComCtrlDirect::comAddSignalTx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalTx" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalTx)) {
                 res = deviceError::error_signal_already_set;
@@ -241,7 +241,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 }
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comRemoveSignalRx:
+        case caComDeviceCtrl::IoComCtrlDirect::comRemoveSignalRx:
             LOG(caLog, info) << " : caComDeviceCtrl::IoCtrlDirect::comRemoveSignalRx" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalRx)) {
                 signalRx = 0;
@@ -250,7 +250,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx:
+        case caComDeviceCtrl::IoComCtrlDirect::comRemoveSignalTx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalTx)) {
                 signalTx = 0;
@@ -259,15 +259,15 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comGetSignalRx:
+        case caComDeviceCtrl::IoComCtrlDirect::comGetSignalRx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalRx" << caEnd::endl;
             in->param_1 = signalRx;
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comGetSignalTx:
+        case caComDeviceCtrl::IoComCtrlDirect::comGetSignalTx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
             in->param_1 = signalTx;
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comLogCreate:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
             if (!caLog.IsValid()) {
                 if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
                     res = deviceError::error_cannot_create_log;
@@ -275,7 +275,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comLogDestroy:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
             if (caLog.IsValid()) {
                 if (caLog.Destroy() != TRUE)
                     res = deviceError::error_cannot_destroy_log;
@@ -283,21 +283,21 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comLogStart:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
             if (caLog.IsValid()) {
                 caLog.Enable();
             } else {
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comLogStop:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
             if (caLog.IsValid()) {
                 caLog.Disable();
             } else {
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caComDeviceCtrl::IoCtrlDirect::comLogGet:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
             if (caLog.IsValid()) {
                 if (in->ss != NULL) {
                     caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);

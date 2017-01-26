@@ -181,19 +181,19 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
             LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerFlush:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerFlush:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerFlush" << caEnd::endl;
             res = Flush(port);
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStart:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStart:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStart" << caEnd::endl;
             res = hal_llc_time_1.hll_start();
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStop:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStop:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStop" << caEnd::endl;
             res = hal_llc_time_1.hll_stop();
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware" << caEnd::endl;
             if (in->ss != NULL) {
                 in->ss->Clear();
@@ -203,7 +203,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 LOG(caLog, error) << " deviceError::error_invalid_null_destination" << caEnd::endl;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_1:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_1:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_1" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_1)) {
                 res = deviceError::error_signal_already_set;
@@ -217,7 +217,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 }
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_2)) {
                 res = deviceError::error_signal_already_set;
@@ -231,7 +231,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 }
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1:
             LOG(caLog, info) << " : caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_1)) {
                 signal_1 = 0;
@@ -240,7 +240,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2" << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_2)) {
                 signal_2 = 0;
@@ -249,15 +249,15 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_1:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1" << caEnd::endl;
             in->param_1 = signal_1;
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_2:
+        case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
             in->param_1 = signal_2;
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogCreate:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
             if (!caLog.IsValid()) {
                 if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
                     res = deviceError::error_cannot_create_log;
@@ -265,7 +265,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogDestroy:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
             if (caLog.IsValid()) {
                 if (caLog.Destroy() != TRUE)
                     res = deviceError::error_cannot_destroy_log;
@@ -273,21 +273,21 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogStart:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
             if (caLog.IsValid()) {
                 caLog.Enable();
             } else {
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogStop:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
             if (caLog.IsValid()) {
                 caLog.Disable();
             } else {
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogGet:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
             if (caLog.IsValid()) {
                 if (in->ss != NULL) {
                     caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);

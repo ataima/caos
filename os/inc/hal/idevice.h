@@ -26,6 +26,26 @@ struct caIDeviceConfigure {
 };
 
 struct caIDeviceCtrl {
+    
+typedef enum tag_io_ctrl_specific_request {
+        ctrl_none =0,        
+        ctrl_LogCreate,
+        ctrl_LogDestroy,
+        ctrl_LogStart,
+        ctrl_LogStop,
+        ctrl_LogGet
+    } IoCtrlDirect;
+    
+    caIDeviceCtrl() {
+        param_1 = param_2 = 0;
+        ss = NULL;
+        command = 0;
+    }
+    
+    s_t command;
+    caStringStream<s8> *ss;
+    s_t param_1;
+    s_t param_2;
 };
 
 

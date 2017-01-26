@@ -52,8 +52,7 @@ struct caComDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
-    typedef enum tag_io_ctrl_specific_request {
-        com_none =0,
+    typedef enum tag_io_ctrl_com_specific_request  {
         comFlush = 0x5000,
         comStop,
         comStart,
@@ -65,22 +64,8 @@ public:
         comRemoveSignalTx,
         comGetSignalRx,
         comGetSignalTx,
-        comLogCreate,
-        comLogDestroy,
-        comLogStart,
-        comLogStop,
-        comLogGet
-    } IoCtrlDirect;
+    } IoComCtrlDirect;
 
-    IoCtrlDirect command;
-    caStringStream<s8> *ss;
-    s_t param_1;
-    s_t param_2;
-    caComDeviceCtrl(){
-        param_1=param_2=0;
-        ss=NULL;
-        command=com_none;
-    }
 };
 
 class caHalComDevice

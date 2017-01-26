@@ -30,8 +30,7 @@ struct caSysTimerDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
-    typedef enum tag_io_ctrl_specific_request {
-        sysTimer_none = 0,
+    typedef enum tag_io_ctrl_systimer_specific_request {
         sysTimerFlush = 0x5000,
         sysTimerListHardware,
         sysTimerStart,
@@ -42,22 +41,7 @@ public:
         sysTimerRemoveSignal_2,
         sysTimerGetSignal_1,
         sysTimerGetSignal_2,
-        sysTimerLogCreate,
-        sysTimerLogDestroy,
-        sysTimerLogStart,
-        sysTimerLogStop,
-        sysTimerLogGet
-    } IoCtrlDirect;
-    IoCtrlDirect command;
-    s_t param_1;
-    s_t param_2;
-    caStringStream<s8> *ss;
-    
-    caSysTimerDeviceCtrl(){
-        param_1=param_2=0;
-        ss=NULL;
-        command=sysTimer_none;
-    };
+    } IoSysTimerCtrlDirect;   
 };
 
 struct caSysTimerConfigure

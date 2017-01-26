@@ -506,13 +506,13 @@ void caHalSysTimerDevice_test_class::test5(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     // IOCTRL 
     caSysTimerDeviceCtrl in;
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStart;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStart;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
 
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionIoCtrl);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStop;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStop;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
 
@@ -573,7 +573,7 @@ void caHalSysTimerDevice_test_class::test6(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     // IOCTRL 
     caSysTimerDeviceCtrl in;
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_null_destination);
     caStringStream<s8> ss;
@@ -641,7 +641,7 @@ void caHalSysTimerDevice_test_class::test8(void)
     CA_ASSERT(portIO.rdError == 0);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caSysTimerDeviceCtrl in;
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_1;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_1;
     in.param_1 = 12345678; // invalid handle from scheduler connector
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
@@ -654,7 +654,7 @@ void caHalSysTimerDevice_test_class::test8(void)
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_1;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.param_1 == 100);
@@ -663,10 +663,10 @@ void caHalSysTimerDevice_test_class::test8(void)
     u32 rd;
     hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, msg, 12, rd);   
     CA_ASSERT(timer_wakeup_1 == 100);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     res = timerDev.Close(&portIO);
@@ -723,7 +723,7 @@ void caHalSysTimerDevice_test_class::test9(void)
     CA_ASSERT(portIO.rdError == 0);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caSysTimerDeviceCtrl in;
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2;
     in.param_2 = 12345678; // invalid handle from scheduler connector
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
@@ -736,7 +736,7 @@ void caHalSysTimerDevice_test_class::test9(void)
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.param_1 == 200);
@@ -757,10 +757,10 @@ void caHalSysTimerDevice_test_class::test9(void)
     CA_ASSERT(rd == 0);
    
     CA_ASSERT(timer_wakeup_2 == 200);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     res = timerDev.Close(&portIO);
@@ -800,10 +800,10 @@ void caHalSysTimerDevice_test_class::test10(void)
     caSysTimerDeviceCtrl in;
     in.param_1 = 16512;
     in.param_2 = (u32) deviceloglevels::end_device_log_lev;
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogCreate;
+    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;
     u32 res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogStart;
+    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     res = timerDev.Open(&setup, &portIO);
@@ -826,7 +826,7 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(portIO.rdError == 0);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
 
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2;
     in.param_2 = 12345678; // invalid handle from scheduler connector
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
@@ -839,7 +839,7 @@ void caHalSysTimerDevice_test_class::test10(void)
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.param_1 == 200);
@@ -860,10 +860,10 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(rd == 0);
 
     CA_ASSERT(timer_wakeup_2 == 200);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2;
+    in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     res = timerDev.Close(&portIO);
@@ -882,7 +882,7 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionClose);
     CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
     CA_ASSERT(portIO.tStop == portIO.tLast);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogStop;
+    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     char out[8000];
@@ -893,12 +893,12 @@ void caHalSysTimerDevice_test_class::test10(void)
         ss.Init(out, 8000);
         in.ss = &ss;
         in.param_1 = u;
-        in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogGet;
+        in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet;
         res = timerDev.IoCtrl(&portIO, &in);
         std::cout << out << std::endl;
     }
     CA_ASSERT(res == deviceError::no_error);
-    in.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerLogDestroy;
+    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     param_reset();

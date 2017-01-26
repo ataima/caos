@@ -28,24 +28,8 @@ struct caJobDeviceCtrl
 public:
 
     typedef enum tag_io_ctrl_specific_request {
-        job_none = 0,
         jobGetThid = 0x5000,
-        jobLogCreate,
-        jobDestroy,
-        jobLogStart,
-        jobLogStop,
-        jobLogGet
-    } IoCtrlDirect;
-
-    IoCtrlDirect command;
-    s_t param_1;
-    s_t param_2;
-    caStringStream<s8> *ss;
-    caJobDeviceCtrl(){
-        param_1=param_2=0;
-        ss=NULL;
-        command=job_none;
-    }
+    } IoJobCtrlDirect;
 };
 
 struct caJobConfigure

@@ -187,7 +187,7 @@ deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,
     if (opt.size > 0) {
         if (caStrAux::StrNCmp((char *) opt.ptr, "com1", 4) == 0) {
             caComDeviceCtrl req;
-            req.command = caComDeviceCtrl::IoCtrlDirect::comListHardware;
+            req.command = caComDeviceCtrl::IoComCtrlDirect::comListHardware;
             req.ss = &ss;
             res = caOS::IoCtrl(port, req);
             if (res == deviceError::no_error) {
@@ -202,7 +202,7 @@ deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,
             res = caOS::Open("SYSTIMER", in, portTimer);
             if (res == deviceError::no_error) {
                 caSysTimerDeviceCtrl req;
-                req.command = caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware;
+                req.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware;
                 req.ss = &ss;
                 res = caOS::IoCtrl(portTimer, req);
                 if (res == deviceError::no_error) {

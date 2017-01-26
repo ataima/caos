@@ -119,10 +119,10 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobGetThid:
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobGetThid:
             in->param_1 = caScheduler::GetCurrentTaskId();
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobLogCreate:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
             if (!caLog.IsValid()) {
                 if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
                     res = deviceError::error_cannot_create_log;
@@ -130,7 +130,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobDestroy:
+       case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
             if (caLog.IsValid()) {
                 if (caLog.Destroy() != TRUE)
                     res = deviceError::error_cannot_destroy_log;
@@ -138,21 +138,21 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobLogStart:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
             if (caLog.IsValid()) {
                 caLog.Enable();
             } else {
                 res = deviceError::error_log_already_set;
             }
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobLogStop:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
             if (caLog.IsValid()) {
                 caLog.Disable();
             } else {
                 res = deviceError::error_log_not_set;
             }
             break;
-        case caJobDeviceCtrl::IoCtrlDirect::jobLogGet:
+        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
             if (caLog.IsValid()) {
                 if (in->ss != NULL) {
                     caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);

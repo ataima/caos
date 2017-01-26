@@ -68,7 +68,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     res = caOS::Open("COM1", in, port);
     if (res == deviceError::no_error) {
         caComDeviceCtrl comCtrl;
-        comCtrl.command = caComDeviceCtrl::IoCtrlDirect::comAddSignalRx;
+        comCtrl.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx;
         comCtrl.param_1 = thIdx;
         res = caOS::IoCtrl(port, comCtrl);
         if (res == deviceError::no_error) {
