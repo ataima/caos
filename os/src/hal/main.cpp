@@ -20,7 +20,6 @@
 #include "hal.h"
 #include "memory.h"
 #include "scheduler.h"
-#include "schedulerdevice.h"
 #include "console.h"
 #include "memaux.h"
 #include "test.h"

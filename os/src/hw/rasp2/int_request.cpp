@@ -30,7 +30,6 @@
 #include "memory.h"
 #include "heaparray.h"
 #include "scheduler.h"
-#include "schedulerdevice.h"
 #include "systimer.h"
 #include "cache.h"
 #include "coprocessor.h"

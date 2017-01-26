@@ -138,9 +138,9 @@ typedef struct tag_hal_llc_reset {
 
 
 /* LINK to COM1 */
-#if COM1_DEVICE 
+
 extern hal_llc_com_io hal_llc_com1;
-#endif
+
 /* LINK to COM2 */
 #if COM2_DEVICE 
 extern hal_llc_com_io hal_llc_com2;
@@ -170,9 +170,8 @@ extern hal_llc_com_io hal_llc_com7;
 extern hal_llc_com_io hal_llc_com8;
 #endif
 
-#if SYS_TIMER_1_DEVICE
 extern hal_llc_sys_time hal_llc_time_1;
-#endif
+
 
 /* MEM RAM BORDER */
 extern hal_llc_mem_io hal_llc_mem;

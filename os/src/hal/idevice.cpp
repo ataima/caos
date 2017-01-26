@@ -44,6 +44,10 @@ u32 caHalDeviceRules::Open(IDevice *dev, caIDeviceConfigure * setup,
         } else {
             caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
             res = dev->Open(setup, port);
+            if(res!=deviceError::no_error){
+                caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
+            }
+            else
             if (!IsValidHandle(port->handle, guid)) {
                 res = deviceError::error_invalid_handle_port;
             }

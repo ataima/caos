@@ -23,19 +23,45 @@
 #include "memaux.h"
 
 #include "scheduler.h"
-#include "schedulerdevice.h"
+#include "haljobdevice.h"
+#include "halcomdevice.h"
 #include "memory.h"
 #include "halsystimerdevice.h"
 #include "caos.h"
 
-#if SYS_TIMER_1_DEVICE
+caHalJobDevice caOS::scheduler(&hal_llc_scheduler, ioCtrlRequest::Task);
+
 caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
+
+#if SYS_TIMER_2_DEVICE
+caHalSysTimerDevice caOS::timer2(&hal_llc_time_2, ioCtrlRequest::SysTimer2);
 #endif
 
+#if SYS_TIMER_3_DEVICE
+caHalSysTimerDevice caOS::timer3(&hal_llc_time_3, ioCtrlRequest::SysTimer3);
+#endif
 
-#if COM1_DEVICE
+#if SYS_TIMER_4_DEVICE
+caHalSysTimerDevice caOS::timer4(&hal_llc_time_4, ioCtrlRequest::SysTimer4);
+#endif
+
+#if SYS_TIMER_5_DEVICE
+caHalSysTimerDevice caOS::timer5(&hal_llc_time_5, ioCtrlRequest::SysTimer5);
+#endif
+
+#if SYS_TIMER_6_DEVICE
+caHalSysTimerDevice caOS::timer6(&hal_llc_time_6, ioCtrlRequest::SysTimer6);
+#endif
+
+#if SYS_TIMER_7_DEVICE
+caHalSysTimerDevice caOS::timer7(&hal_llc_time_7, ioCtrlRequest::SysTimer7);
+#endif
+
+#if SYS_TIMER_8_DEVICE
+caHalSysTimerDevice caOS::timer8(&hal_llc_time_8, ioCtrlRequest::SysTimer8);
+#endif
+
 caHalComDevice caOS::com1(&hal_llc_com1, ioCtrlRequest::Com1);
-#endif
 
 #if COM2_DEVICE
 caHalComDevice caOS::com2(&hal_llc_com2, ioCtrlRequest::Com2);
@@ -66,22 +92,38 @@ caHalComDevice caOS::com8(&hal_llc_com8, ioCtrlRequest::Com8);
 #endif
 
 
-// TO DO HAVE TO DESIGN A DEVICE MANAGER TO INSERT REMOVE DEVICES
-// AT MOMENT A SIMPLE ARRAY ....
-
-
 caOS::devicePair caOS::allDevices[] = {
     {"MEMORY", ioCtrlRequest::Memory, NULL},
-    {"SCHEDULER", ioCtrlRequest::Scheduler, NULL},
-    {"TASK", ioCtrlRequest::Task, NULL},
+    {"TASK", ioCtrlRequest::Task, &scheduler},
     {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
-#if SYS_TIMER_1_DEVICE    
+    
     {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
+   
+#if SYS_TIMER_2_DEVICE    
+    {"SYS_TIMER_2", ioCtrlRequest::SysTimer2, &timer2},
+#endif    
+#if SYS_TIMER_3_DEVICE    
+    {"SYS_TIMER_3", ioCtrlRequest::SysTimer3, &timer3},
+#endif    
+#if SYS_TIMER_4_DEVICE    
+    {"SYS_TIMER_4", ioCtrlRequest::SysTimer4, &timer4},
+#endif    
+#if SYS_TIMER_5_DEVICE    
+    {"SYS_TIMER_5", ioCtrlRequest::SysTimer5, &timer5},
+#endif    
+#if SYS_TIMER_6_DEVICE    
+    {"SYS_TIMER_6", ioCtrlRequest::SysTimer6, &timer6},
+#endif    
+#if SYS_TIMER_7_DEVICE    
+    {"SYS_TIMER_7", ioCtrlRequest::SysTimer7, &timer7},
+#endif    
+#if SYS_TIMER_8_DEVICE    
+    {"SYS_TIMER_8", ioCtrlRequest::SysTimer8, &timer8},
 #endif    
     {"CACHE", ioCtrlRequest::Cache, NULL},
-#if COM1_DEVICE   
+   
     {"TTY1", ioCtrlRequest::Com1, &com1},
-#endif
+
 #if COM2_DEVICE    
     {"TTY2", ioCtrlRequest::Com2, &com2},
 #endif

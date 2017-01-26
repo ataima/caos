@@ -49,7 +49,6 @@
 
 ///////////////////////////// INCLUDE - EXCLUDE DEVICE FROM KERNEL
 // SYSTEM TIMER
-#define SYS_TIMER_1_DEVICE      1 
 #define SYS_TIMER_2_DEVICE      0
 #define SYS_TIMER_3_DEVICE      0
 #define SYS_TIMER_4_DEVICE      0
@@ -57,8 +56,7 @@
 #define SYS_TIMER_6_DEVICE      0
 #define SYS_TIMER_7_DEVICE      0
 #define SYS_TIMER_8_DEVICE      0
-// COMS
-#define COM1_DEVICE             1    
+// COMS    
 #define COM2_DEVICE             0    
 #define COM3_DEVICE             0    
 #define COM4_DEVICE             0    

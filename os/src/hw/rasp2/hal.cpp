@@ -57,7 +57,7 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     caArmCpu::SVC_7961
 };
 
-#if COM1_DEVICE
+
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
     NULL,
@@ -76,9 +76,9 @@ hal_llc_com_io hal_llc_com1 = {
     caMiniUart::Send,
     caMiniUart::Recv
 };
-#endif
 
-#if SYS_TIMER_1_DEVICE
+
+
 // Hardware connectors sys timer
 hal_llc_sys_time hal_llc_time_1 = {
     NULL,
@@ -102,7 +102,7 @@ hal_llc_sys_time hal_llc_time_1 = {
     caHalDeviceRules::IrqService1, 
     caHalDeviceRules::IrqService2,    
 };
-#endif
+
 
 hal_llc_interrupt hal_llc_int_req = {
     caArmCpu::EnableAll,

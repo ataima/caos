@@ -24,6 +24,7 @@
 #include "hal.h"
 #include "halsystimerdevice.h"
 #include "halcomdevice.h"
+#include "haljobdevice.h"
 
 class caOS {
 private:
@@ -36,14 +37,44 @@ private:
     } devicePair;
 
     static devicePair allDevices[];
-    
-#if SYS_TIMER_1_DEVICE 
+
+    static caHalJobDevice scheduler;
+
+
     static caHalSysTimerDevice timer1; // already present for task scheduler...  
+
+
+#if SYS_TIMER_2_DEVICE 
+    static caHalSysTimerDevice timer2;
 #endif
-    
-#if COM1_DEVICE
+
+#if SYS_TIMER_3_DEVICE 
+    static caHalSysTimerDevice timer3;
+#endif
+
+#if SYS_TIMER_4_DEVICE 
+    static caHalSysTimerDevice timer4;
+#endif
+
+#if SYS_TIMER_5_DEVICE 
+    static caHalSysTimerDevice timer5;
+#endif
+
+#if SYS_TIMER_6_DEVICE 
+    static caHalSysTimerDevice timer6;
+#endif
+
+#if SYS_TIMER_7_DEVICE 
+    static caHalSysTimerDevice timer7;
+#endif
+
+#if SYS_TIMER_8_DEVICE 
+    static caHalSysTimerDevice timer8;
+#endif
+
+
     static caHalComDevice com1;
-#endif
+
 #if COM2_DEVICE
     static caHalComDevice com2;
 #endif
@@ -79,54 +110,90 @@ public:
     static deviceError IoCtrl(caDeviceHandle & port, caIDeviceCtrl &in);
     // method avaiable only in supervisor mode device to device or  isr to device
 
-#if COM1_DEVICE
+static inline caHalJobDevice & getScheduler(void) {
+        return scheduler;
+    }
 
     static inline caHalComDevice & getCom1(void) {
         return com1;
     }
-#endif
-#if COM2_DEVICE
 
+#if COM2_DEVICE
     static inline caHalComDevice & getCom2(void) {
         return com2;
     }
 #endif
 #if COM3_DEVICE
-
     static inline caHalComDevice & getCom3(void) {
         return com3;
     }
 #endif
 #if COM4_DEVICE
-
     static inline caHalComDevice & getCom4(void) {
         return com4;
     }
 #endif
 #if COM5_DEVICE
-
     static inline caHalComDevice & getCom5(void) {
         return com5;
     }
 #endif
 #if COM6_DEVICE
-
     static inline caHalComDevice & getCom6(void) {
         return com6;
     }
 #endif
 #if COM7_DEVICE
-
     static inline caHalComDevice & getCom7(void) {
         return com7;
     }
 #endif
 #if COM8_DEVICE
-
     static inline caHalComDevice & getCom8(void) {
         return com8;
     }
 #endif
+    
+    static inline caHalSysTimerDevice & getTimer1(void) {
+        return timer1;
+    }
+
+#if SYS_TIMER_2_DEVICE
+    static inline caHalSysTimerDevice & getTimer2(void) {
+        return timer2;
+    }
+#endif
+#if SYS_TIMER_3_DEVICE
+    static inline caHalSysTimerDevice & getTimer3(void) {
+        return timer3;
+    }
+#endif
+#if SYS_TIMER_4_DEVICE
+    static inline caHalSysTimerDevice & getTimer4(void) {
+        return timer4;
+    }
+#endif
+#if SYS_TIMER_5_DEVICE
+    static inline caHalSysTimerDevice & getTimer5(void) {
+        return timer5;
+    }
+#endif
+#if SYS_TIMER_6_DEVICE
+    static inline caHalSysTimerDevice & getTimer6(void) {
+        return timer6;
+    }
+#endif
+#if SYS_TIMER_7_DEVICE
+    static inline caHalSysTimerDevice & getTimer7(void) {
+        return timer7;
+    }
+#endif
+#if SYS_TIMER_8_DEVICE
+    static inline caHalSysTimerDevice & getTimer8(void) {
+        return timer8;
+    }
+#endif
+    
 };
 
 #endif /* DEVICE_H */
