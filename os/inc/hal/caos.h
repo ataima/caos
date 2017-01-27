@@ -110,7 +110,7 @@ public:
     static deviceError IoCtrl(caDeviceHandle & port, caIDeviceCtrl &in);
     // method avaiable only in supervisor mode device to device or  isr to device
 
-static inline caHalJobDevice & getScheduler(void) {
+    static inline caHalJobDevice & getScheduler(void) {
         return scheduler;
     }
 
@@ -119,81 +119,95 @@ static inline caHalJobDevice & getScheduler(void) {
     }
 
 #if COM2_DEVICE
+
     static inline caHalComDevice & getCom2(void) {
         return com2;
     }
 #endif
 #if COM3_DEVICE
+
     static inline caHalComDevice & getCom3(void) {
         return com3;
     }
 #endif
 #if COM4_DEVICE
+
     static inline caHalComDevice & getCom4(void) {
         return com4;
     }
 #endif
 #if COM5_DEVICE
+
     static inline caHalComDevice & getCom5(void) {
         return com5;
     }
 #endif
 #if COM6_DEVICE
+
     static inline caHalComDevice & getCom6(void) {
         return com6;
     }
 #endif
 #if COM7_DEVICE
+
     static inline caHalComDevice & getCom7(void) {
         return com7;
     }
 #endif
 #if COM8_DEVICE
+
     static inline caHalComDevice & getCom8(void) {
         return com8;
     }
 #endif
-    
+
     static inline caHalSysTimerDevice & getTimer1(void) {
         return timer1;
     }
 
 #if SYS_TIMER_2_DEVICE
+
     static inline caHalSysTimerDevice & getTimer2(void) {
         return timer2;
     }
 #endif
 #if SYS_TIMER_3_DEVICE
+
     static inline caHalSysTimerDevice & getTimer3(void) {
         return timer3;
     }
 #endif
 #if SYS_TIMER_4_DEVICE
+
     static inline caHalSysTimerDevice & getTimer4(void) {
         return timer4;
     }
 #endif
 #if SYS_TIMER_5_DEVICE
+
     static inline caHalSysTimerDevice & getTimer5(void) {
         return timer5;
     }
 #endif
 #if SYS_TIMER_6_DEVICE
+
     static inline caHalSysTimerDevice & getTimer6(void) {
         return timer6;
     }
 #endif
 #if SYS_TIMER_7_DEVICE
+
     static inline caHalSysTimerDevice & getTimer7(void) {
         return timer7;
     }
 #endif
 #if SYS_TIMER_8_DEVICE
+
     static inline caHalSysTimerDevice & getTimer8(void) {
         return timer8;
     }
 #endif
-    
+
 };
 
 #endif /* DEVICE_H */

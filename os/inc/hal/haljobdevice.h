@@ -64,6 +64,10 @@ public:
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
 
+    inline caSysLog * GetDeviceLog(void) {
+        return &caLog;
+    }
+
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }

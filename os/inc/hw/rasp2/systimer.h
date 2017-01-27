@@ -57,18 +57,20 @@ typedef struct tag_sys_timer_status {
         ss << cs_min << mn_Min << caEnd::endl;
         ss << cs_hour << mn_Hour << caEnd::endl;
         ss << cs_day << mn_Day << caEnd::endl;
-        ss << cs_tot << mn_IrqCount << caEnd::endl;        
+        ss << cs_tot << mn_IrqCount << caEnd::endl;
         ss.Str();
     }
 } sysTimerStatus;
-
 
 class caSysTimer {
 private:
     static sysTimerStatus st;
 public:
     static u32 Init(u32 tick_hz, u32 timer_hz);
-    static inline u32 Configure(u32 , u32 ,u32, u32) {return TRUE;}
+
+    static inline u32 Configure(u32, u32, u32, u32) {
+        return TRUE;
+    }
     static u32 EnableTimer(u32 status);
     static u32 EnableCounter(u32 status);
     static u32 TimerRunnig(void);
@@ -83,7 +85,7 @@ public:
     static u32 ToTime(u32 tick);
     static void IrqService(void);
     static u32 Dump(caStringStream<s8> * ss);
-    
+
     static u32 SetTime(u32 day, u32 hour, u32 min, u32 sec);
 
     inline static u32 GetTickFreq(void) {
@@ -101,15 +103,15 @@ public:
     inline static u32 GetPsec(void) {
         return 0;
     }
-    
+
     inline static u32 GetNsec(void) {
         return 0;
     }
-    
+
     inline static u32 GetUsec(void) {
         return st.mn_Usec;
     }
-    
+
     inline static u32 GetMsec(void) {
         return st.mn_Msec;
     }

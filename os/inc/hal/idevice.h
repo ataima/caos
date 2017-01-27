@@ -21,34 +21,45 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "devicehandle.h"
+#include "memaux.h"
 
 struct caIDeviceConfigure {
 };
 
 struct caIDeviceCtrl {
-    
-typedef enum tag_io_ctrl_specific_request {
-        ctrl_none =0,        
+
+    typedef enum tag_io_ctrl_specific_request {
+        ctrl_none = 0,
         ctrl_LogCreate,
         ctrl_LogDestroy,
         ctrl_LogStart,
         ctrl_LogStop,
         ctrl_LogGet
     } IoCtrlDirect;
-    
+
     caIDeviceCtrl() {
-        param_1 = param_2 = 0;
+        caMemAux<s_t>::MemZero(params, sizeof (params));
         ss = NULL;
         command = 0;
     }
-    
+
     s_t command;
     caStringStream<s8> *ss;
-    s_t param_1;
-    s_t param_2;
+    s_t params[8];
 };
 
+/*  utility to convert to any struct from params ex:
+ * struct dummy {  int a,u32 b... } only to to change param name...
+ * struct dummy *p=caAssociate<struct dummy>(caIDeviceCtrl &t);
+ */
+template <typename T>
+class caAttach {
+public:
 
+    static T* link(caIDeviceCtrl &t) {
+        return reinterpret_cast<T*> (&t.params);
+    }
+};
 
 
 
@@ -108,6 +119,9 @@ typedef struct tag_mem_dump_addr {
     s_t addr;
 } dumpAddrReq;
 
+
+class caSysLog;
+
 class IDevice {
 public:
     // METHOD TO SYSTEM MODE
@@ -125,6 +139,8 @@ public:
     virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0;
 
     virtual u32 GetOpenFlag(void) = 0;
+
+    virtual caSysLog * GetDeviceLog(void) = 0;
 
     virtual u32 IrqService1(u8 * buff, s_t size, s_t & iosize) = 0;
 
@@ -214,10 +230,11 @@ typedef enum tag_device_error {
     error_log_already_set,
     error_log_not_set,
     error_log_empthy,
+    error_log_null,
     error_stream_no_good,
     error_systimer_configure_not_valid,
     error_systimer_configure_error,
-            error_ioctrl_command_error,
+    error_ioctrl_command_error,
     error_hal_configure,
 } deviceError;
 

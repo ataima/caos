@@ -22,7 +22,6 @@
 #include "memaux.h"
 #include "scheduler.h"
 
-
 caHalJobDevice::caHalJobDevice(hal_llc_scheduler_io *iface, u32 mask) {
     isOpen = 0;
     link = iface;
@@ -120,47 +119,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             res = deviceError::error_ioctrl_command_error;
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobGetThid:
-            in->param_1 = caScheduler::GetCurrentTaskId();
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
-            if (!caLog.IsValid()) {
-                if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
-                    res = deviceError::error_cannot_create_log;
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-       case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
-            if (caLog.IsValid()) {
-                if (caLog.Destroy() != TRUE)
-                    res = deviceError::error_cannot_destroy_log;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
-            if (caLog.IsValid()) {
-                caLog.Enable();
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
-            if (caLog.IsValid()) {
-                caLog.Disable();
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
-            if (caLog.IsValid()) {
-                if (in->ss != NULL) {
-                    caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);
-                } else
-                    res = deviceError::error_invalid_null_destination;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
+            in->params[0] = caScheduler::GetCurrentTaskId();
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;

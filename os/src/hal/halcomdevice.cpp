@@ -210,8 +210,8 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comStatusBuffer:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStatusBuffer" << caEnd::endl;
-            in->param_1 = Rx.Size();
-            in->param_2 = Tx.Size();
+            in->params[0] = Rx.Size();
+            in->params[1] = Tx.Size();
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalRx" << caEnd::endl;
@@ -219,8 +219,8 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 res = deviceError::error_signal_already_set;
                 LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
             } else {
-                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->param_1)) {
-                    signalRx = in->param_1;
+                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[0])) {
+                    signalRx = in->params[0];
                 } else {
                     res = deviceError::error_invalid_handle_port;
                     LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
@@ -233,8 +233,8 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
                 res = deviceError::error_signal_already_set;
                 LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
             } else {
-                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->param_2)) {
-                    signalTx = in->param_2;
+                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[1])) {
+                    signalTx = in->params[1];
                 } else {
                     res = deviceError::error_invalid_handle_port;
                     LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
@@ -261,51 +261,11 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comGetSignalRx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalRx" << caEnd::endl;
-            in->param_1 = signalRx;
+            in->params[0] = signalRx;
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comGetSignalTx:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
-            in->param_1 = signalTx;
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
-            if (!caLog.IsValid()) {
-                if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
-                    res = deviceError::error_cannot_create_log;
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
-            if (caLog.IsValid()) {
-                if (caLog.Destroy() != TRUE)
-                    res = deviceError::error_cannot_destroy_log;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
-            if (caLog.IsValid()) {
-                caLog.Enable();
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
-            if (caLog.IsValid()) {
-                caLog.Disable();
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
-            if (caLog.IsValid()) {
-                if (in->ss != NULL) {
-                    caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);
-                } else
-                    res = deviceError::error_invalid_null_destination;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
+            in->params[0] = signalTx;
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;

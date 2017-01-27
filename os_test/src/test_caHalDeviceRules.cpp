@@ -143,7 +143,9 @@ public:
         iosize = size;
         return 0;
     };
-
+    
+    
+    caSysLog * GetDeviceLog(void){return NULL;}
 };
 
 class testDevice_test_class

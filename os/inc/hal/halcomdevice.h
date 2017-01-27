@@ -52,7 +52,7 @@ struct caComDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
-    typedef enum tag_io_ctrl_com_specific_request  {
+    typedef enum tag_io_ctrl_com_specific_request {
         comFlush = 0x5000,
         comStop,
         comStart,
@@ -104,6 +104,9 @@ public:
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
 
+    inline caSysLog * GetDeviceLog(void) {
+        return &caLog;
+    }
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }

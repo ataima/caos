@@ -41,7 +41,7 @@ public:
         sysTimerRemoveSignal_2,
         sysTimerGetSignal_1,
         sysTimerGetSignal_2,
-    } IoSysTimerCtrlDirect;   
+    } IoSysTimerCtrlDirect;
 };
 
 struct caSysTimerConfigure
@@ -81,6 +81,10 @@ public:
     u32 IrqService6(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
+
+    inline caSysLog * GetDeviceLog(void) {
+        return &caLog;
+    }
 
     inline u32 GetOpenFlag(void) {
         return isOpen;

@@ -96,9 +96,9 @@ public:
 
 
 
-#define LOGGIN 1
+#define DO_LOG 1
 
-#if LOGGIN
+#if DO_LOG
 
 #define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(LEVEL)<=LOG.GetCurLogLevel()) \
                         LOG.Stream(LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "

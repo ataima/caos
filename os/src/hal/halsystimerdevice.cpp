@@ -96,8 +96,8 @@ u32 caHalSysTimerDevice::Write(caDeviceHandle *port) {
         port->wrError = port->rdError = 0;
     } else {
         res = deviceError::error_invalid_handle_port_wr_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_wr_size:" 
-                <<port->wrSize << caEnd::endl;
+        LOG(caLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
+                << port->wrSize << caEnd::endl;
     }
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
     return res;
@@ -209,8 +209,8 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_signal_already_set;
                 LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
             } else {
-                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->param_1)) {
-                    signal_1 = in->param_1;
+                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[0])) {
+                    signal_1 = in->params[0];
                 } else {
                     res = deviceError::error_invalid_handle_port;
                     LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
@@ -223,8 +223,8 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                 res = deviceError::error_signal_already_set;
                 LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
             } else {
-                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->param_2)) {
-                    signal_2 = in->param_2;
+                if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[1])) {
+                    signal_2 = in->params[1];
                 } else {
                     res = deviceError::error_invalid_handle_port;
                     LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
@@ -251,51 +251,11 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_1:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1" << caEnd::endl;
-            in->param_1 = signal_1;
+            in->params[0] = signal_1;
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
-            in->param_1 = signal_2;
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
-            if (!caLog.IsValid()) {
-                if (caLog.Init(in->param_1, (deviceloglevels) in->param_2) != TRUE)
-                    res = deviceError::error_cannot_create_log;
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
-            if (caLog.IsValid()) {
-                if (caLog.Destroy() != TRUE)
-                    res = deviceError::error_cannot_destroy_log;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
-            if (caLog.IsValid()) {
-                caLog.Enable();
-            } else {
-                res = deviceError::error_log_already_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
-            if (caLog.IsValid()) {
-                caLog.Disable();
-            } else {
-                res = deviceError::error_log_not_set;
-            }
-            break;
-        case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
-            if (caLog.IsValid()) {
-                if (in->ss != NULL) {
-                    caLog.Stream((deviceloglevels) in->param_1).Str(*in->ss);
-                } else
-                    res = deviceError::error_invalid_null_destination;
-            } else {
-                res = deviceError::error_log_not_set;
-            }
+            in->params[0] = signal_2;
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;

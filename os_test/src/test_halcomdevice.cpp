@@ -592,8 +592,8 @@ void caHalComDevice_test_class::test7(void)
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    CA_ASSERT(in.param_1 == 12);
-    CA_ASSERT(in.param_2 == 12);
+    CA_ASSERT(in.params[0] == 12);
+    CA_ASSERT(in.params[1] == 12);
     // IOCTRL     
     in.command = caComDeviceCtrl::IoComCtrlDirect::comFlush;
     res = comDev.IoCtrl(&portIO, &in);
@@ -605,8 +605,8 @@ void caHalComDevice_test_class::test7(void)
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    CA_ASSERT(in.param_1 == 0);
-    CA_ASSERT(in.param_2 == 0);
+    CA_ASSERT(in.params[0] == 0);
+    CA_ASSERT(in.params[1] == 0);
     res = comDev.Close(&portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(tcom_speed == 0);
@@ -659,22 +659,22 @@ void caHalComDevice_test_class::test8(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx;
-    in.param_1 = 12345678; // invalid handle from scheduler connector
+    in.params[0] = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.param_1 = 100; // ok
+    in.params[0] = 100; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.param_1 = 100; // already set
+    in.params[0] = 100; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoComCtrlDirect::comGetSignalRx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.param_1 == 100);
+    CA_ASSERT(in.params[0] == 100);
     //IRQ CALLBACK
     u8 msg[] = "hello world";
     u32 rd;
@@ -739,22 +739,22 @@ void caHalComDevice_test_class::test9(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
     caComDeviceCtrl in;
     in.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalTx;
-    in.param_2 = 12345678; // invalid handle from scheduler connector
+    in.params[1] = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.param_2 = 200; // ok
+    in.params[1] = 200; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.param_2 = 200; // already set
+    in.params[1] = 200; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoComCtrlDirect::comGetSignalTx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.param_1 == 200);
+    CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 12;
@@ -811,8 +811,8 @@ void caHalComDevice_test_class::test10(void)
     caMemory::Init();
     caDeviceHandle portIO;
     caComDeviceCtrl in;
-    in.param_1 = 16512;
-    in.param_2 = (u32) deviceloglevels::end_device_log_lev;
+    in.params[0] = 16512;
+    in.params[1] = (u32) deviceloglevels::end_device_log_lev;
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;
     u32 res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
@@ -839,22 +839,22 @@ void caHalComDevice_test_class::test10(void)
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
 
     in.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalTx;
-    in.param_2 = 12345678; // invalid handle from scheduler connector
+    in.params[1] = 12345678; // invalid handle from scheduler connector
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
-    in.param_2 = 200; // ok
+    in.params[1] = 200; // ok
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
-    in.param_2 = 200; // already set
+    in.params[1] = 200; // already set
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caComDeviceCtrl::IoComCtrlDirect::comGetSignalTx;
     res = comDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
-    CA_ASSERT(in.param_1 == 200);
+    CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 12;
@@ -901,7 +901,7 @@ void caHalComDevice_test_class::test10(void)
     {
         ss.Init(out, 8000);
         in.ss = &ss;
-        in.param_1 = u;
+        in.params[0] = u;
         in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet;
         res = comDev.IoCtrl(&portIO, &in);
         std::cout << out << std::endl;

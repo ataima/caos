@@ -96,9 +96,9 @@ caOS::devicePair caOS::allDevices[] = {
     {"MEMORY", ioCtrlRequest::Memory, NULL},
     {"TASK", ioCtrlRequest::Task, &scheduler},
     {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
-    
+
     {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
-   
+
 #if SYS_TIMER_2_DEVICE    
     {"SYS_TIMER_2", ioCtrlRequest::SysTimer2, &timer2},
 #endif    
@@ -121,7 +121,7 @@ caOS::devicePair caOS::allDevices[] = {
     {"SYS_TIMER_8", ioCtrlRequest::SysTimer8, &timer8},
 #endif    
     {"CACHE", ioCtrlRequest::Cache, NULL},
-   
+
     {"TTY1", ioCtrlRequest::Com1, &com1},
 
 #if COM2_DEVICE    

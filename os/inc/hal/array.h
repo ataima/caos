@@ -56,7 +56,7 @@ public:
         good = false;
         size = capacity = 0;
     }
-    
+
     //T
 
     inline s_t Size(void) {

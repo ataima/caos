@@ -51,7 +51,6 @@ typedef u32 s_t;
 
 #if _IS_64_
 
-
 inline u32 ptr_to_uint(void *p) {
     long long int v64 = (long long int) (p);
     u32 v = (u32) (v64 & 0xffffffff);

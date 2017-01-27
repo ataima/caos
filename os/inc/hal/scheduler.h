@@ -110,6 +110,7 @@ public:
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
     static bool ChangePriority(s_t thIdx, caJobPriority newPrio);
+
     static inline s_t Size(void) {
         return table.Size();
     }
@@ -164,10 +165,11 @@ public:
     static u32 GetCurrentTaskId(void);
     static u32 SetSleepMode(u32 tick, u32 thIdx);
     static u32 Dump(caStringStream<s8> & ss);
-    static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio){
+
+    static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio) {
         return mng.ChangePriority(thIdx, newPrio);
     }
-    
+
     static inline s_t Size(void) {
         return mng.Size();
     }

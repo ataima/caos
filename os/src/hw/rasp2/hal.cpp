@@ -99,8 +99,8 @@ hal_llc_sys_time hal_llc_time_1 = {
     not_implemented_base,
     caScheduler::WakeUp,
     caScheduler::WakeUp,
-    caHalDeviceRules::IrqService1, 
-    caHalDeviceRules::IrqService2,    
+    caHalDeviceRules::IrqService1,
+    caHalDeviceRules::IrqService2,
 };
 
 
@@ -119,5 +119,4 @@ hal_llc_reset hal_llc_reset_req{
     caSysLed::LedsOff,
     caSysLed::LedsOn,
     caSysLed::LedOff,
-    caSysLed::LedOn
-};
+    caSysLed::LedOn};

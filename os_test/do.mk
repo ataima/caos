@@ -108,7 +108,7 @@ remove_ext_src:
 	
 
 
-distclean: clean   	
+distclean: clean  remove_ext_src add_ext_src
 	@rm -rf $(BUILDIR)/$(DEPEND)
 	@rm -rf $(BUILDIR)
 

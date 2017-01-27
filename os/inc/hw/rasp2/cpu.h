@@ -250,6 +250,7 @@ public:
         asm ("ISB"); //TOTEST
         asm ("svc #7961");
     }
+
     static inline void CopyRegsFromStack(void) {
         // r0 dest
         asm ("ldr r1, [sp,#0]"); // r0

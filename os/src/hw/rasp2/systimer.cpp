@@ -143,8 +143,6 @@ u32 caSysTimer::FastIrqEnable(void) {
     return 0;
 }
 
-
-
 u32 caSysTimer::SetTime(u32 day, u32 hour, u32 min, u32 sec) {
     u32 res = deviceError::no_error;
     if (sec > 59)sec = 0;
@@ -164,11 +162,11 @@ void caSysTimer::IrqService(void) {
     s_t dummy;
     st.mn_IrqCount++;
     st.mn_Msec++;
-    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj,NULL,0,dummy);
+    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
     if (st.mn_Msec == SYS_TIMER_TICK) {
         st.mn_Msec = 0;
         st.mn_Sec++;
-        hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj,NULL,0,dummy);
+        hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
         if (st.mn_Sec == 60) {
             st.mn_Sec = 0;
             st.mn_Min++;

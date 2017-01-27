@@ -19,6 +19,8 @@
 #include "hal.h"
 
 #include "memaux.h"
+#include "syslog.h"
+
 
 u32 caHalDeviceRules::isOpen(IDevice *device) {
     u32 res = 0;
@@ -44,11 +46,10 @@ u32 caHalDeviceRules::Open(IDevice *dev, caIDeviceConfigure * setup,
         } else {
             caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
             res = dev->Open(setup, port);
-            if(res!=deviceError::no_error){
+            if (res != deviceError::no_error) {
                 caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
-            }
-            else
-            if (!IsValidHandle(port->handle, guid)) {
+            } else
+                if (!IsValidHandle(port->handle, guid)) {
                 res = deviceError::error_invalid_handle_port;
             }
         }
@@ -149,7 +150,86 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
             res = deviceError::error_invalid_handle_port;
         } else {
             //ok perform ioctl command
-            res = dev->IoCtrl(port, inp);
+            switch (inp->command) {
+                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
+                {
+                    caSysLog *caLog = dev->GetDeviceLog();
+                    if (caLog != NULL) {
+                        if (!caLog->IsValid()) {
+                            if (caLog->Init(inp->params[0], (deviceloglevels) inp->params[1]) != TRUE)
+                                res = deviceError::error_cannot_create_log;
+                        } else {
+                            res = deviceError::error_log_already_set;
+                        }
+                    } else {
+                        res = deviceError::error_log_null;
+                    }
+                }
+                    break;
+                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
+                {
+                    caSysLog *caLog = dev->GetDeviceLog();
+                    if (caLog != NULL) {
+                        if (!caLog->IsValid()) {
+                            if (caLog->Destroy() != TRUE)
+                                res = deviceError::error_cannot_destroy_log;
+                        } else {
+                            res = deviceError::error_log_not_set;
+                        }
+                    } else {
+                        res = deviceError::error_log_null;
+                    }
+                }
+                    break;
+                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
+                {
+                    caSysLog *caLog = dev->GetDeviceLog();
+                    if (caLog != NULL) {
+                        if (!caLog->IsValid()) {
+                            caLog->Enable();
+                        } else {
+                            res = deviceError::error_log_already_set;
+                        }
+                    } else {
+                        res = deviceError::error_log_null;
+                    }
+                }
+                    break;
+                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
+                {
+                    caSysLog *caLog = dev->GetDeviceLog();
+                    if (caLog != NULL) {
+                        if (!caLog->IsValid()) {
+                            caLog->Disable();
+                        } else {
+                            res = deviceError::error_log_not_set;
+                        }
+                    } else {
+                        res = deviceError::error_log_null;
+                    }
+                }
+                    break;
+                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
+                {
+                    caSysLog *caLog = dev->GetDeviceLog();
+                    if (caLog != NULL) {
+                        if (!caLog->IsValid()) {
+                            if (inp->ss != NULL) {
+                                caLog->Stream((deviceloglevels) inp->params[0]).Str(*inp->ss);
+                            } else
+                                res = deviceError::error_invalid_null_destination;
+                        } else {
+                            res = deviceError::error_log_not_set;
+                        }
+                    } else {
+                        res = deviceError::error_log_null;
+                    }
+                }
+                    break;
+                default:
+                    res = dev->IoCtrl(port, inp);
+                    break;
+            }
         }
     } else
         if (dev == NULL)
@@ -212,7 +292,6 @@ u32 caHalDeviceRules::IrqService3(void *obj, u8 * buff, s_t size, s_t & iosize) 
     }
     return res;
 }
-
 
 u32 caHalDeviceRules::IrqService4(void *obj, u8 * buff, s_t size, s_t & iosize) {
     u32 res = deviceError::error_invalid_null_device;

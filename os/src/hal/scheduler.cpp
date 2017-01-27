@@ -245,7 +245,7 @@ bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
             ctx->cur_prio = newPrio;
             while (hal_llc_scheduler.hll_lock() == false) {
             };
-            res=true;
+            res = true;
         }
     }
     return res;

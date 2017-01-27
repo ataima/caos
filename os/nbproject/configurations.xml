@@ -19,7 +19,6 @@
           <in>memdevice.cpp</in>
           <in>memory.cpp</in>
           <in>scheduler.cpp</in>
-          <in>schedulerdevice.cpp</in>
           <in>stream.cpp</in>
           <in>syslog.cpp</in>
         </df>
@@ -114,8 +113,6 @@
       <item path="src/hal/memory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/hal/scheduler.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/hal/schedulerdevice.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="0">
       </item>
