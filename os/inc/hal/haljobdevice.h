@@ -29,6 +29,16 @@ public:
 
     typedef enum tag_io_ctrl_specific_request {
         jobGetThid = 0x5000,
+        jobChangePriority,
+        jobSleep,
+        jobWaitForSignal,
+        jobAddUserJob,
+        jobAddSystemJob,
+        jobAddSuperVisorJob,
+        jobList,
+        jobGetSize,
+        jobDestroy,
+        jobDestroyAll,
     } IoJobCtrlDirect;
 };
 

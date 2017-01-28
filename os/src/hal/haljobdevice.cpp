@@ -85,8 +85,15 @@ u32 caHalJobDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     if (port->rdSize != 0) {
-        //u32 *ptr = (u32 *) port->rdBuff;
-        //TODO ADD READ HERE
+        s_t pSize = port->rdSize;
+        if (pSize>sizeof (caThreadContext))
+            pSize = sizeof (caThreadContext);
+        u32 *dst = (u32 *) port->rdBuff;
+        u32 *ctx = (u32 *) caScheduler::GetCurrentContext();
+        caMemAux<u32>::MemCpy(dst, ctx, pSize);
+        port->readed += pSize;
+        port->rdBuff += pSize;
+        port->rdSize -= pSize;
         port->tLast = hal_llc_time_1.hll_tick();
         port->tLastCmd = caDeviceAction::caActionRead;
         port->wrError = port->rdError = 0;
@@ -109,14 +116,67 @@ u32 caHalJobDevice::Flush(caDeviceHandle *port) {
 
 u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
         caIDeviceCtrl *inp) {
+
+    struct param {
+        const char *name;
+        caJobPriority p;
+        thFunc func;
+        u32 par1;
+        u32 par2;
+        u32 stack;
+    };
     u32 res = deviceError::no_error;
     port->tLast = link->hll_tick();
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     caJobDeviceCtrl *in = static_cast<caJobDeviceCtrl *> (inp);
     switch (in->command) {
         default:
-            LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
+            LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
+                    << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroyAll:
+            res = caScheduler::RemoveAllJobs();
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroy:
+            res = caScheduler::RemoveJob(inp->params[0]);
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize:
+            inp->params[0] = caScheduler::Dump(*inp->ss);
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobList:
+            res = caScheduler::Dump(*inp->ss);
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobAddSuperVisorJob:
+        {
+            struct param *input = caAttach<struct param>::link(inp);
+            res = caScheduler::AddSuperVisorJob(input->name, input->p,
+                    input->func, input->par1, input->par2, input->stack);
+        }
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobAddSystemJob:
+        {
+            struct param *input = caAttach<struct param>::link(inp);
+            res = caScheduler::AddSystemJob(input->name, input->p, input->func,
+                    input->par1, input->par2, input->stack);
+        }
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobAddUserJob:
+        {
+            struct param *input = caAttach<struct param>::link(inp);
+            res = caScheduler::AddJob(input->name, input->p, input->func,
+                    input->par1, input->par2, input->stack);
+        }
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobWaitForSignal:
+            res = caScheduler::WaitForSignal();
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobSleep:
+            res = caScheduler::Sleep(in->params[0]);
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobChangePriority:
+            res = caScheduler::ChangePriority(in->params[0],
+                    (caJobPriority) in->params[1]);
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobGetThid:
             in->params[0] = caScheduler::GetCurrentTaskId();

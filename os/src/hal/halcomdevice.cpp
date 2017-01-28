@@ -127,7 +127,7 @@ u32 caHalComDevice::Read(caDeviceHandle *port) {
             res = deviceError::error_device_is_busy;
             LOG(caLog, error) << " deviceError::error_device_is_busy" << caEnd::endl;
         } else {
-            u32 rSize, pSize = 0;
+            s_t rSize, pSize = 0;
             if (Rx.Empty() == false) {
                 if (Rx.Size() < port->rdSize)
                     rSize = Rx.Size();

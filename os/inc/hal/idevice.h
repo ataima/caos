@@ -59,6 +59,9 @@ public:
     static T* link(caIDeviceCtrl &t) {
         return reinterpret_cast<T*> (&t.params);
     }
+    static T* link(caIDeviceCtrl *t) {
+        return reinterpret_cast<T*> (&t->params);
+    }
 };
 
 
