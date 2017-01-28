@@ -801,10 +801,10 @@ void caHalSysTimerDevice_test_class::test10(void)
     in.params[0] = 16512;
     in.params[1] = (u32) deviceloglevels::end_device_log_lev;
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;
-    u32 res = timerDev.IoCtrl(&portIO, &in);
+    u32 res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     res = timerDev.Open(&setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
@@ -883,7 +883,7 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
     CA_ASSERT(portIO.tStop == portIO.tLast);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     char out[8000];
     caStringStream<s8> ss;
@@ -894,12 +894,12 @@ void caHalSysTimerDevice_test_class::test10(void)
         in.ss = &ss;
         in.params[0] = u;
         in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet;
-        res = timerDev.IoCtrl(&portIO, &in);
+        res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
         std::cout << out << std::endl;
     }
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res =caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     param_reset();
 

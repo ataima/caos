@@ -21,7 +21,6 @@
 #include "memaux.h"
 #include "syslog.h"
 
-
 u32 caHalDeviceRules::isOpen(IDevice *device) {
     u32 res = 0;
     if (device)
@@ -98,7 +97,8 @@ u32 caHalDeviceRules::Write(IDevice *dev, caDeviceHandle *port, u32 guid) {
             res = deviceError::error_invalid_handle_port;
         } else {
             if (port->wrBuff != NULL) {
-                // return no error... wrSize == 0 flush ? TODO ,can perform write action...
+                // return no error... wrSize == 0 flush ? TODO ,can perform 
+                //write action...
                 res = dev->Write(port);
             } else {
                 res = deviceError::error_invalid_null_buffer_port;
@@ -143,93 +143,96 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
         caIDeviceCtrl *inp, u32 guid) {
     u32 res = deviceError::no_error;
     if (dev != NULL && inp != NULL && port != NULL && guid != NULL) {
-        if (isOpen(dev) == 0) {
-            res = deviceError::error_device_not_opened;
-        } else
-            if (!IsValidHandle(port->handle, guid)) {
-            res = deviceError::error_invalid_handle_port;
-        } else {
-            //ok perform ioctl command
-            switch (inp->command) {
-                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
-                {
-                    caSysLog *caLog = dev->GetDeviceLog();
-                    if (caLog != NULL) {
-                        if (!caLog->IsValid()) {
-                            if (caLog->Init(inp->params[0], (deviceloglevels) inp->params[1]) != TRUE)
-                                res = deviceError::error_cannot_create_log;
-                        } else {
-                            res = deviceError::error_log_already_set;
-                        }
+        //ok perform ioctl command
+        switch (inp->command) {
+            case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
+            {
+                caSysLog *caLog = dev->GetDeviceLog();
+                if (caLog != NULL) {
+                    if (!caLog->IsValid()) {
+                        if (caLog->Init(inp->params[0],
+                                (deviceloglevels) inp->params[1]) != TRUE)
+                            res = deviceError::error_cannot_create_log;
                     } else {
-                        res = deviceError::error_log_null;
+                        res = deviceError::error_log_already_set;
                     }
+                } else {
+                    res = deviceError::error_log_null;
                 }
-                    break;
-                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
-                {
-                    caSysLog *caLog = dev->GetDeviceLog();
-                    if (caLog != NULL) {
-                        if (!caLog->IsValid()) {
-                            if (caLog->Destroy() != TRUE)
-                                res = deviceError::error_cannot_destroy_log;
-                        } else {
-                            res = deviceError::error_log_not_set;
-                        }
-                    } else {
-                        res = deviceError::error_log_null;
-                    }
-                }
-                    break;
-                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
-                {
-                    caSysLog *caLog = dev->GetDeviceLog();
-                    if (caLog != NULL) {
-                        if (!caLog->IsValid()) {
-                            caLog->Enable();
-                        } else {
-                            res = deviceError::error_log_already_set;
-                        }
-                    } else {
-                        res = deviceError::error_log_null;
-                    }
-                }
-                    break;
-                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
-                {
-                    caSysLog *caLog = dev->GetDeviceLog();
-                    if (caLog != NULL) {
-                        if (!caLog->IsValid()) {
-                            caLog->Disable();
-                        } else {
-                            res = deviceError::error_log_not_set;
-                        }
-                    } else {
-                        res = deviceError::error_log_null;
-                    }
-                }
-                    break;
-                case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
-                {
-                    caSysLog *caLog = dev->GetDeviceLog();
-                    if (caLog != NULL) {
-                        if (!caLog->IsValid()) {
-                            if (inp->ss != NULL) {
-                                caLog->Stream((deviceloglevels) inp->params[0]).Str(*inp->ss);
-                            } else
-                                res = deviceError::error_invalid_null_destination;
-                        } else {
-                            res = deviceError::error_log_not_set;
-                        }
-                    } else {
-                        res = deviceError::error_log_null;
-                    }
-                }
-                    break;
-                default:
-                    res = dev->IoCtrl(port, inp);
-                    break;
             }
+                break;
+            case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
+            {
+                caSysLog *caLog = dev->GetDeviceLog();
+                if (caLog != NULL) {
+                    if (caLog->IsValid()) {
+                        if (caLog->Destroy() != TRUE)
+                            res = deviceError::error_cannot_destroy_log;
+                    } else {
+                        res = deviceError::error_log_not_set;
+                    }
+                } else {
+                    res = deviceError::error_log_null;
+                }
+            }
+                break;
+            case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
+            {
+                caSysLog *caLog = dev->GetDeviceLog();
+                if (caLog != NULL) {
+                    if (!caLog->IsEnabled()) {
+                        caLog->Enable();
+                    } else {
+                        res = deviceError::error_log_already_set;
+                    }
+                } else {
+                    res = deviceError::error_log_null;
+                }
+            }
+                break;
+            case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
+            {
+                caSysLog *caLog = dev->GetDeviceLog();
+                if (caLog != NULL) {
+                    if (caLog->IsEnabled()) {
+                        caLog->Disable();
+                    } else {
+                        res = deviceError::error_log_not_set;
+                    }
+                } else {
+                    res = deviceError::error_log_null;
+                }
+            }
+                break;
+            case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
+            {
+                caSysLog *caLog = dev->GetDeviceLog();
+                if (caLog != NULL) {
+                    if (caLog->IsValid() ) {
+                        if (inp->ss != NULL) {
+                            caLog->Stream((deviceloglevels) inp->params[0]).
+                                    Str(*inp->ss);
+                        } else
+                            res = deviceError::error_invalid_null_destination;
+                    } else {
+                        res = deviceError::error_log_not_set;
+                    }
+                } else {
+                    res = deviceError::error_log_null;
+                }
+            }
+                break;
+            default:
+                if (isOpen(dev) == 0) {
+                    res = deviceError::error_device_not_opened;
+                } else
+                    if (!IsValidHandle(port->handle, guid)) {
+                    res = deviceError::error_invalid_handle_port;
+                } else {
+                    res = dev->IoCtrl(port, inp);
+
+                }
+                break;
         }
     } else
         if (dev == NULL)
