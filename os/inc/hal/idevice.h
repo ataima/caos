@@ -59,9 +59,11 @@ public:
     static T* link(caIDeviceCtrl &t) {
         return reinterpret_cast<T*> (&t.params);
     }
+
     static T* link(caIDeviceCtrl *t) {
         return reinterpret_cast<T*> (&t->params);
     }
+
 };
 
 
@@ -165,11 +167,13 @@ public:
 
 class caHalDeviceRules {
 public:
-    static u32 Open(IDevice *dev, caIDeviceConfigure * setup, caDeviceHandle *port, u32 guid);
+    static u32 Open(IDevice *dev, caIDeviceConfigure * setup,
+            caDeviceHandle *port, u32 guid);
     static u32 Close(IDevice *dev, caDeviceHandle *port, u32 guid);
     static u32 Write(IDevice *dev, caDeviceHandle *port, u32 guid);
     static u32 Read(IDevice *dev, caDeviceHandle *port, u32 guid);
-    static u32 IoCtrl(IDevice *dev, caDeviceHandle *port, caIDeviceCtrl *inp, u32 guid);
+    static u32 IoCtrl(IDevice *dev, caDeviceHandle *port, caIDeviceCtrl *inp,
+            u32 guid);
     static u32 IoctlReq(IDevice *dev, ioCtrlFunction request, u32 *p1, u32 *p2);
     static u32 Flush(IDevice *dev, caDeviceHandle *port, u32 guid);
     static bool IsValidHandle(u32 handle, u32 mask);
@@ -191,7 +195,6 @@ public:
 
 typedef enum tag_device_error {
     no_error = 0,
-    okey = 1,
     error_unknow_device_name = 1000,
     error_unknow_device_ioctrl,
     error_open_device,
@@ -239,6 +242,15 @@ typedef enum tag_device_error {
     error_systimer_configure_error,
     error_ioctrl_command_error,
     error_hal_configure,
+    error_hal_job_remove,
+    error_hal_jobs_remove_all,
+    error_hal_job_dump,
+    error_hal_job_sv_create,
+    error_hal_job_sys_create,
+    error_hal_job_user_create,
+    error_hal_job_to_sleep,
+    error_hal_job_change_priority,
+            
 } deviceError;
 
 

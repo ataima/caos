@@ -177,7 +177,6 @@ void test_caThread_class::test1(void) {
     CA_ASSERT((ctx->stack_start - ctx->stack_end) > 0x4000);
     CA_ASSERT(ctx->status == caJobStatus::thInit);
     CA_ASSERT(caScheduler::Destroy() == true);
-    ;
 }
 
 void test_caThread_class::test2(void) {
@@ -248,7 +247,6 @@ void test_caThread_class::test3(void) {
         CA_ASSERT(ctx->pcb[4] == 2000);
     }
     CA_ASSERT(caScheduler::Destroy() == true);
-
 }
 
 void test_caThread_class::test4(void) {
@@ -620,7 +618,7 @@ void test_caThread_class::test9(void) {
     CA_ASSERT(ctxs.at(5)->index == 5);
     CA_ASSERT(ctxs.at(6)->nswitch > 480 && ctxs.at(6)->nswitch < 520);
     CA_ASSERT(ctxs.at(6)->index == 6);
-    CA_ASSERT(caScheduler::ChangePriority(0, caJobPriority::caThLevel6) == true);
+    CA_ASSERT(caScheduler::ChangePriority(0, caJobPriority::caThLevel6) == deviceError::no_error);
     for (i = 0; i < 1000; i++) {
         caScheduler::GetNextContext();
         caScheduler::GetCurrentContext();

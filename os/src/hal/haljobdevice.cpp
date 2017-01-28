@@ -136,36 +136,58 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             res = deviceError::error_ioctrl_command_error;
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroyAll:
-            res = caScheduler::RemoveAllJobs();
+            if (caScheduler::RemoveAllJobs() == false) {
+                res = deviceError::error_hal_jobs_remove_all;
+            }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroy:
-            res = caScheduler::RemoveJob(inp->params[0]);
-            break;
-        case caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize:
-            inp->params[0] = caScheduler::Dump(*inp->ss);
+            if (caScheduler::RemoveJob(inp->params[0]) == false) {
+                res = deviceError::error_hal_job_remove;
+            }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobList:
-            res = caScheduler::Dump(*inp->ss);
+        {
+            u32 size = caScheduler::Dump(*inp->ss);
+            inp->params[0] = size;
+            if (size == 0) {
+                res = deviceError::error_hal_job_dump;
+            }
+        }
+            break;
+        case caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize:
+            inp->params[0] = caScheduler::Size();
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobAddSuperVisorJob:
         {
             struct param *input = caAttach<struct param>::link(inp);
-            res = caScheduler::AddSuperVisorJob(input->name, input->p,
+            u32 result = caScheduler::AddSuperVisorJob(input->name, input->p,
                     input->func, input->par1, input->par2, input->stack);
+            inp->params[0]=result;
+            if(result==(u32)CreateThreadResult::FailCreate){
+                res=deviceError::error_hal_job_sv_create;
+            }
         }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobAddSystemJob:
         {
             struct param *input = caAttach<struct param>::link(inp);
-            res = caScheduler::AddSystemJob(input->name, input->p, input->func,
+            u32 result = caScheduler::AddSystemJob(input->name, input->p, input->func,
                     input->par1, input->par2, input->stack);
+            inp->params[0]=result;
+            if(result==(u32)CreateThreadResult::FailCreate){
+                res=deviceError::error_hal_job_sys_create;
+            }
         }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobAddUserJob:
         {
             struct param *input = caAttach<struct param>::link(inp);
-            res = caScheduler::AddJob(input->name, input->p, input->func,
+            u32 result = caScheduler::AddJob(input->name, input->p, input->func,
                     input->par1, input->par2, input->stack);
+            inp->params[0]=result;
+            if(result==(u32)CreateThreadResult::FailCreate){
+                res=deviceError::error_hal_job_user_create;
+            }
         }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobWaitForSignal:
@@ -184,6 +206,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+
     return res;
 }
 
@@ -206,6 +229,7 @@ u32 caHalJobDevice::IoctlReq(ioCtrlFunction request,
             break;
         case ioCtrlFunction::caIoCtrlDevice:
             res = IoCtrl((caDeviceHandle *) p1, (caJobDeviceCtrl *) p2);
+
             break;
         default:
             break;
@@ -216,36 +240,43 @@ u32 caHalJobDevice::IoctlReq(ioCtrlFunction request,
 
 u32 caHalJobDevice::IrqService1(u8 *, s_t size, s_t &) {
     LOG(caLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService2(u8 *, s_t size, s_t &) {
     LOG(caLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService3(u8 *, s_t, s_t &) {
     LOG(caLog, irq_3) << " IrqService3 " << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService4(u8 *, s_t, s_t &) {
     LOG(caLog, irq_4) << " IrqService4 " << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService5(u8 *, s_t, s_t &) {
     LOG(caLog, irq_5) << " IrqService5 " << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService6(u8 *, s_t, s_t &) {
     LOG(caLog, irq_6) << " IrqService6 " << caEnd::endl;
+
     return 1;
 }
 
 u32 caHalJobDevice::IrqService7(u8 *, s_t, s_t &) {
     LOG(caLog, irq_7) << " IrqService7 " << caEnd::endl;
+
     return 1;
 }
 

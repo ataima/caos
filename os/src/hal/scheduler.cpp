@@ -88,7 +88,7 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         caScheduler::AddTask(ctx);
         return ctx->index;
     }
-    return -1;
+    return CreateThreadResult::FailCreate;
 }
 
 void caScheduler::caThread::LaunchThread(thFunc f, u32 p1, u32 p2) {
@@ -234,8 +234,7 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
 }
 
 bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
-    bool res = false;
-
+    bool res = deviceError::no_error;
     if (IsValidContext(thIdx)) {
         caThreadContext *ctx = NULL;
         if (table.At(ctx, thIdx) && (ctx != NULL)) {
@@ -245,7 +244,8 @@ bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
             ctx->cur_prio = newPrio;
             while (hal_llc_scheduler.hll_lock() == false) {
             };
-            res = true;
+        } else {
+            res = deviceError::error_hal_job_change_priority;
         }
     }
     return res;
@@ -389,7 +389,8 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
         if (tmp != NULL && (tmp->status & caJobStatus::thRunning)) {
             tmp->status = caJobStatus::thSleep;
             tmp->sleep = tick;
-            res = deviceError::okey;
+        } else {
+            res = deviceError::error_hal_job_to_sleep;
         }
         while (hal_llc_scheduler.hll_unlock() == false) {
         };
@@ -494,9 +495,9 @@ u32 caScheduler::Dump(caStringStream<s8> & ss) {
 }
 
 u32 caScheduler::Sleep(u32 ms) {
-    u32 res = 0;
+    u32 res = deviceError::no_error;
     res = caScheduler::SetSleepMode(ms, caScheduler::GetCurrentTaskId());
-    if (res == deviceError::okey) {
+    if (res == deviceError::no_error) {
         caScheduler::SwitchContext();
     }
     return res;
