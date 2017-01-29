@@ -552,7 +552,6 @@ void caHalSysTimerDevice_test_class::test6(void) {
     in.ss = &ss;
     res = timerDev.IoCtrl(&portIO, &in);
     CA_ASSERT(res > 0);
-
     CA_ASSERT(ss.Size() == 13);
     CA_ASSERT(ss == "IOCTRL DUMP\r\n");
     CA_ASSERT(portIO.tLast >= portIO.tStart);

@@ -30,13 +30,13 @@
 extern hal_llc_sys_time hal_llc_time_1;
 
 caMemDeviceDescriptor caMemDevice::descriptors[MAX_SHARED_MEM_BLOCK];
-u32 caMemDevice::guid = ioCtrlRequest::MemPipe + BASE_HANDLE;
+u32 caMemDevice::guid = ioCtrlRequest::Pipe + BASE_HANDLE;
 u32 caMemDevice::isOpen = 0;
 u32 caMemDevice::n_desc = 0;
 
 bool caMemDevice::IsValidHandle(u32 handle) {
     bool res = false;
-    if ((handle & ioCtrlRequest::maskIoCtrl) == ioCtrlRequest::MemPipe &&
+    if ((handle & ioCtrlRequest::maskIoCtrl) == ioCtrlRequest::Pipe &&
             (handle & ioCtrlRequest::maskHandle) > BASE_HANDLE)
         res = true;
     return res;

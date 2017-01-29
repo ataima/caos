@@ -83,7 +83,7 @@ typedef enum tag_ioctrl_request {
     no_ioctrl = 0,
     Memory = IO_UID(id_device::id_Mem),
     Task = IO_UID(id_device::id_Task),
-    MemPipe = IO_UID(id_device::id_Pipe),
+    Pipe = IO_UID(id_device::id_Pipe),
     SysTimer1 = IO_UID(id_device::id_SysTimer),
     SysTimer2 = IO_UID(id_device::id_SysTimer + 1),
     SysTimer3 = IO_UID(id_device::id_SysTimer + 2),

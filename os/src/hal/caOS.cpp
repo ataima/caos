@@ -21,17 +21,15 @@
 
 #include "hal.h"
 #include "memaux.h"
-
 #include "scheduler.h"
-#include "haljobdevice.h"
-#include "halcomdevice.h"
 #include "memory.h"
-#include "halsystimerdevice.h"
 #include "caos.h"
 
 caHalJobDevice caOS::scheduler(&hal_llc_scheduler, ioCtrlRequest::Task);
 
 caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
+
+caHalMemDevice caOS::memory(&hal_llc_mem,ioCtrlRequest::Memory);
 
 #if SYS_TIMER_2_DEVICE
 caHalSysTimerDevice caOS::timer2(&hal_llc_time_2, ioCtrlRequest::SysTimer2);
@@ -93,9 +91,9 @@ caHalComDevice caOS::com8(&hal_llc_com8, ioCtrlRequest::Com8);
 
 
 caOS::devicePair caOS::allDevices[] = {
-    {"MEMORY", ioCtrlRequest::Memory, NULL},
+    {"MEMORY", ioCtrlRequest::Memory, &memory},
     {"TASK", ioCtrlRequest::Task, &scheduler},
-    {"MEMPIPE", ioCtrlRequest::MemPipe, NULL},
+    {"PIPE", ioCtrlRequest::Pipe, NULL},
 
     {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
 

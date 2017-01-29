@@ -25,6 +25,7 @@
 #include "halsystimerdevice.h"
 #include "halcomdevice.h"
 #include "haljobdevice.h"
+#include "halmemdevice.h"
 
 class caOS {
 private:
@@ -40,10 +41,10 @@ private:
 
     static caHalJobDevice scheduler;
 
-
     static caHalSysTimerDevice timer1; // already present for task scheduler...  
 
-
+    static caHalMemDevice memory;
+    
 #if SYS_TIMER_2_DEVICE 
     static caHalSysTimerDevice timer2;
 #endif
