@@ -23,134 +23,120 @@
 #include <iostream>
 
 class testDevice
-: public IDevice
-{
+: public IDevice {
     u32 isOpen;
 public:
 
-    testDevice()
-    {
+    testDevice() {
         isOpen = 0;
     }
 
-    inline void setIsOpen(u32 v)
-    {
+    const char *toString(void) {
+        return "testDevice";
+    }
+
+    inline void setIsOpen(u32 v) {
         isOpen = v;
     }
 
-    u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port)
-    {
+    u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Open( " << conf << " , " << port << " );" << std::endl;
         if (port)port->handle = 0xfff01002;
         return 0;
     }
 
-    u32 Close(caDeviceHandle *port)
-    {
+    u32 Close(caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Close( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Write(caDeviceHandle *port)
-    {
+    u32 Write(caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Write( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Read(caDeviceHandle *port)
-    {
+    u32 Read(caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Read( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Flush(caDeviceHandle *port)
-    {
+    u32 Flush(caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Flush( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl)
-    {
+    u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) {
         std::cout << "Call to : testDevice::IoCtrl( " << port << " , " << ctrl << " );" << std::endl;
         return 0;
     }
 
-    u32 GetOpenFlag(void)
-    {
+    u32 GetOpenFlag(void) {
         return isOpen;
     }
 
-    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed)
-    {
+    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed) {
         CA_ASSERT(txbuff != NULL);
         CA_ASSERT(size == 1);
         writed = size;
         return 0;
     }
 
-    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed)
-    {
+    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed) {
         CA_ASSERT(rxbuff != NULL);
         CA_ASSERT(size == 1);
         readed = size;
         return 0;
     };
 
-    u32 IrqService3(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService3(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService4(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService4(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService5(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService5(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService6(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService6(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService7(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService7(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService8(u8 * buff, s_t size, s_t & iosize)
-    {
+    u32 IrqService8(u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != NULL);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
-    
-    
-    caSysLog * GetDeviceLog(void){return NULL;}
+
+    caSysLog * GetDeviceLog(void) {
+        return NULL;
+    }
 };
 
 class testDevice_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(testDevice_test_class);
     CA_TEST(testDevice_test_class::test1, "Open test");
     CA_TEST(testDevice_test_class::test2, "Close test");
@@ -163,56 +149,47 @@ class testDevice_test_class
     CA_TEST(testDevice_test_class::test9, "IrqTx test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
 
-    void test1(void)
-    {
+    void test1(void) {
         testDevice t;
         CA_ASSERT(t.Open(NULL, NULL) == 0);
     }
 
-    void test2(void)
-    {
+    void test2(void) {
         testDevice t;
         CA_ASSERT(t.Close(NULL) == 0);
     }
 
-    void test3(void)
-    {
+    void test3(void) {
         testDevice t;
         CA_ASSERT(t.Write(NULL) == 0);
     }
 
-    void test4(void)
-    {
+    void test4(void) {
         testDevice t;
         CA_ASSERT(t.Read(NULL) == 0);
     }
 
-    void test5(void)
-    {
+    void test5(void) {
         testDevice t;
         CA_ASSERT(t.Flush(NULL) == 0);
     }
 
-    void test6(void)
-    {
+    void test6(void) {
         testDevice t;
         CA_ASSERT(t.IoCtrl(NULL, NULL) == 0);
     }
 
-    void test7(void)
-    {
+    void test7(void) {
         testDevice t;
         CA_ASSERT(t.GetOpenFlag() == 0);
         t.setIsOpen(12734);
         CA_ASSERT(t.GetOpenFlag() == 12734);
     }
 
-    void test8(void)
-    {
+    void test8(void) {
         u8 buff;
         testDevice t;
         s_t readed;
@@ -221,8 +198,7 @@ class testDevice_test_class
 
     }
 
-    void test9(void)
-    {
+    void test9(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -230,8 +206,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test10(void)
-    {
+    void test10(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -239,8 +214,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test11(void)
-    {
+    void test11(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -248,8 +222,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test12(void)
-    {
+    void test12(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -257,8 +230,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test13(void)
-    {
+    void test13(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -266,8 +238,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test14(void)
-    {
+    void test14(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -275,8 +246,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void test15(void)
-    {
+    void test15(void) {
         u8 buff;
         testDevice t;
         s_t writed;
@@ -284,8 +254,7 @@ class testDevice_test_class
         CA_ASSERT(writed == 1);
     }
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
@@ -293,8 +262,7 @@ class testDevice_test_class
 REGISTER_CLASS(testDevice_test_class);
 
 class caHalDeviceRules_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caHalDeviceRules_test_class);
     CA_TEST(caHalDeviceRules_test_class::test1, "Open test");
     CA_TEST(caHalDeviceRules_test_class::test2, "Close test");
@@ -304,8 +272,7 @@ class caHalDeviceRules_test_class
     CA_TEST(caHalDeviceRules_test_class::test6, "Flush test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
 
     void test1(void);
@@ -320,16 +287,14 @@ class caHalDeviceRules_test_class
 
     void test6(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caHalDeviceRules_test_class);
 
-void caHalDeviceRules_test_class::test1(void)
-{
+void caHalDeviceRules_test_class::test1(void) {
     _START();
     _INFO("to check Open function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");
@@ -347,8 +312,7 @@ void caHalDeviceRules_test_class::test1(void)
     CA_ASSERT(port.handle = 0xfff01002);
 }
 
-void caHalDeviceRules_test_class::test2(void)
-{
+void caHalDeviceRules_test_class::test2(void) {
     _START();
     _INFO("to check Close function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");
@@ -373,8 +337,7 @@ void caHalDeviceRules_test_class::test2(void)
 
 }
 
-void caHalDeviceRules_test_class::test3(void)
-{
+void caHalDeviceRules_test_class::test3(void) {
     _START();
     _INFO("to check Write function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");
@@ -398,8 +361,7 @@ void caHalDeviceRules_test_class::test3(void)
     CA_ASSERT(caHalDeviceRules::Write(&t, &port, guid) == deviceError::error_invalid_handle_port);
 }
 
-void caHalDeviceRules_test_class::test4(void)
-{
+void caHalDeviceRules_test_class::test4(void) {
     _START();
     _INFO("to check Read function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");
@@ -424,8 +386,7 @@ void caHalDeviceRules_test_class::test4(void)
     CA_ASSERT(caHalDeviceRules::Read(&t, &port, guid) == deviceError::error_invalid_handle_port);
 }
 
-void caHalDeviceRules_test_class::test5(void)
-{
+void caHalDeviceRules_test_class::test5(void) {
     _START();
     _INFO("to check IoCtrl function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");
@@ -453,8 +414,7 @@ void caHalDeviceRules_test_class::test5(void)
 
 }
 
-void caHalDeviceRules_test_class::test6(void)
-{
+void caHalDeviceRules_test_class::test6(void) {
     _START();
     _INFO("to check Flush function of caHalDeviceRules");
     _AUTHOR("Coppi Angelo");

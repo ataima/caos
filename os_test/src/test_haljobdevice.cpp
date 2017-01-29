@@ -158,7 +158,7 @@ void caHalJobDevice_test_class::test2(void) {
         caScheduler::GetNextContext();
     s8 buff[1024];
     caStringStream<s8> ss;
-    ss.Init(buff,sizeof(buff));
+    ss.Init(buff, sizeof (buff));
     ctrl.command = caJobDeviceCtrl::IoJobCtrlDirect::jobList;
     ctrl.ss = &ss;
     res1 = caHalDeviceRules::IoCtrl(&jobber, &port, &ctrl, ioCtrlRequest::Task);

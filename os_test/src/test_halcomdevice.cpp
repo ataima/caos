@@ -38,15 +38,13 @@ static u32 tcom_dump = 0;
 static u32 tcom_wakeup_rx = 0;
 static u32 tcom_wakeup_tx = 0;
 
-static void param_reset(void)
-{
+static void param_reset(void) {
     tcom_speed = tcom_stop = tcom_parity = tcom_data = tcom_enable_int_rx =
             tcom_start_tx = tcom_stop_com = tcom_enable_rx = tcom_enable_tx =
             tcom_dump = tcom_wakeup_rx = tcom_wakeup_tx = 0;
 }
 
-static u32 hll_config(u32 speed, u32 stop, u32 parity, u32 data)
-{
+static u32 hll_config(u32 speed, u32 stop, u32 parity, u32 data) {
     u32 res = -1;
     tcom_speed = speed;
     tcom_stop = stop;
@@ -57,16 +55,14 @@ static u32 hll_config(u32 speed, u32 stop, u32 parity, u32 data)
     return res;
 }
 
-static u32 hll_time(void)
-{
+static u32 hll_time(void) {
     u32 us;
     struct timespec spec, diff;
     clock_gettime(CLOCK_REALTIME, &spec);
     diff.tv_sec = (time_t) difftime(spec.tv_sec, start_time.tv_sec);
     if (spec.tv_nsec > start_time.tv_nsec)
         diff.tv_nsec = spec.tv_nsec - start_time.tv_nsec;
-    else
-    {
+    else {
         spec.tv_sec--;
         diff.tv_nsec = spec.tv_nsec - start_time.tv_nsec + 1000000000;
     }
@@ -76,53 +72,45 @@ static u32 hll_time(void)
     return us;
 }
 
-static u32 hll_en_int_rx(void)
-{
+static u32 hll_en_int_rx(void) {
     tcom_enable_int_rx = 1;
     return 0;
 }
 
-static u32 hll_stop(void)
-{
+static u32 hll_stop(void) {
     param_reset();
     tcom_stop_com = 1;
     return 0;
 }
 
-static u32 hll_get_errors(u32 & rxErr, u32 & txErr)
-{
+static u32 hll_get_errors(u32 & rxErr, u32 & txErr) {
     rxErr = 127;
     txErr = 95;
     return 0;
 }
 
-static u32 hll_start_tx(void)
-{
+static u32 hll_start_tx(void) {
     tcom_start_tx = 1;
     return 0;
 }
 
-static u32 hll_enable(bool rx, bool tx)
-{
+static u32 hll_enable(bool rx, bool tx) {
     tcom_enable_rx = rx;
     tcom_enable_tx = tx;
     return 0;
 }
 
-static u32 hll_dump(caStringStream<s8> *ss)
-{
+static u32 hll_dump(caStringStream<s8> *ss) {
     (*ss) << "IOCTRL DUMP" << caEnd::endl;
     tcom_dump = 1;
     return 0;
 }
 
-static void hll_wakeup_rx(u32 num)
-{
+static void hll_wakeup_rx(u32 num) {
     tcom_wakeup_rx = num;
 }
 
-static void hll_wakeup_tx(u32 num)
-{
+static void hll_wakeup_tx(u32 num) {
     tcom_wakeup_tx = num;
 }
 
@@ -147,8 +135,7 @@ hal_llc_com_io hal_llc_com1 = {
 };
 
 class caHalComDevice_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caHalComDevice_test_class);
     CA_TEST(caHalComDevice_test_class::test1, " Open test");
     CA_TEST(caHalComDevice_test_class::test2, " Close test");
@@ -162,8 +149,7 @@ class caHalComDevice_test_class
     CA_TEST(caHalComDevice_test_class::test10, " IoCtrl Logs test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
         clock_gettime(CLOCK_REALTIME, &start_time);
     }
 
@@ -178,8 +164,7 @@ class caHalComDevice_test_class
     void test9(void);
     void test10(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 
@@ -187,8 +172,7 @@ class caHalComDevice_test_class
 
 REGISTER_CLASS(caHalComDevice_test_class);
 
-void caHalComDevice_test_class::test1(void)
-{
+void caHalComDevice_test_class::test1(void) {
     _START();
     _INFO("to check Open function of caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -223,8 +207,7 @@ void caHalComDevice_test_class::test1(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test2(void)
-{
+void caHalComDevice_test_class::test2(void) {
     _START();
     _INFO("to check Close function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -273,8 +256,7 @@ void caHalComDevice_test_class::test2(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test3(void)
-{
+void caHalComDevice_test_class::test3(void) {
     _START();
     _INFO("to check Read Function of caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -337,8 +319,7 @@ void caHalComDevice_test_class::test3(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test4(void)
-{
+void caHalComDevice_test_class::test4(void) {
     _START();
     _INFO("to check Write function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -403,8 +384,7 @@ void caHalComDevice_test_class::test4(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test5(void)
-{
+void caHalComDevice_test_class::test5(void) {
     _START();
     _INFO("to check IoCtrl Enable function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -470,8 +450,7 @@ void caHalComDevice_test_class::test5(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test6(void)
-{
+void caHalComDevice_test_class::test6(void) {
     _START();
     _INFO("to check IoCtrl Dump function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -514,7 +493,7 @@ void caHalComDevice_test_class::test6(void)
     ss.Init(buff, 100);
     in.ss = &ss;
     res = comDev.IoCtrl(&portIO, &in);
-    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(res > 0);
     CA_ASSERT(tcom_dump == 1);
     CA_ASSERT(ss.Size() == 13);
     CA_ASSERT(ss == "IOCTRL DUMP\r\n");
@@ -538,8 +517,7 @@ void caHalComDevice_test_class::test6(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test7(void)
-{
+void caHalComDevice_test_class::test7(void) {
     _START();
     _INFO("to check IoCtrl Flush  function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -624,8 +602,7 @@ void caHalComDevice_test_class::test7(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test8(void)
-{
+void caHalComDevice_test_class::test8(void) {
     _START();
     _INFO("to check IoCtrl SignalRX  function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -704,8 +681,7 @@ void caHalComDevice_test_class::test8(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test9(void)
-{
+void caHalComDevice_test_class::test9(void) {
     _START();
     _INFO("to check IoCtrl SignalTX  function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -794,8 +770,7 @@ void caHalComDevice_test_class::test9(void)
     param_reset();
 }
 
-void caHalComDevice_test_class::test10(void)
-{
+void caHalComDevice_test_class::test10(void) {
     _START();
     _INFO("to check IoCtrl Logs  function caHalComDevice");
     _AUTHOR("Coppi Angelo");
@@ -813,11 +788,11 @@ void caHalComDevice_test_class::test10(void)
     caComDeviceCtrl in;
     in.params[0] = 16512;
     in.params[1] = (u32) deviceloglevels::end_device_log_lev;
-    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;    
-    u32 res = caHalDeviceRules::IoCtrl(&comDev,&portIO, &in,ioCtrlRequest::Com6);
+    in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;
+    u32 res = caHalDeviceRules::IoCtrl(&comDev, &portIO, &in, ioCtrlRequest::Com6);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart;
-    res = caHalDeviceRules::IoCtrl(&comDev,&portIO, &in,ioCtrlRequest::Com6);
+    res = caHalDeviceRules::IoCtrl(&comDev, &portIO, &in, ioCtrlRequest::Com6);
     CA_ASSERT(res == deviceError::no_error);
     res = comDev.Open(&setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
@@ -891,23 +866,22 @@ void caHalComDevice_test_class::test10(void)
     CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
     CA_ASSERT(portIO.tStop == portIO.tLast);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop;
-    res = caHalDeviceRules::IoCtrl(&comDev,&portIO, &in, ioCtrlRequest::Com6);
+    res = caHalDeviceRules::IoCtrl(&comDev, &portIO, &in, ioCtrlRequest::Com6);
     CA_ASSERT(res == deviceError::no_error);
     char out[8000];
     caStringStream<s8> ss;
     u32 u = 0;
-    for (u = 0; u < deviceloglevels::end_device_log_lev; u++)
-    {
+    for (u = 0; u < deviceloglevels::end_device_log_lev; u++) {
         ss.Init(out, 8000);
         in.ss = &ss;
         in.params[0] = u;
         in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet;
-        res = caHalDeviceRules::IoCtrl(&comDev,&portIO, &in, ioCtrlRequest::Com6);
+        res = caHalDeviceRules::IoCtrl(&comDev, &portIO, &in, ioCtrlRequest::Com6);
         std::cout << out << std::endl;
     }
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy;
-    res = caHalDeviceRules::IoCtrl(&comDev,&portIO, &in, ioCtrlRequest::Com6);
+    res = caHalDeviceRules::IoCtrl(&comDev, &portIO, &in, ioCtrlRequest::Com6);
     CA_ASSERT(res == deviceError::no_error);
     param_reset();
 

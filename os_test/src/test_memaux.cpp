@@ -23,8 +23,7 @@
 #include "memaux.h"
 
 class caMemAux_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caMemAux_test_class);
     CA_TEST(caMemAux_test_class::test1, "MemCpy u32 test");
     CA_TEST(caMemAux_test_class::test2, "MemCpy u16  test");
@@ -34,8 +33,7 @@ class caMemAux_test_class
     CA_TEST(caMemAux_test_class::test6, "MemSet u8  test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -44,16 +42,14 @@ class caMemAux_test_class
     void test5(void);
     void test6(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caMemAux_test_class);
 
-void caMemAux_test_class::test1(void)
-{
+void caMemAux_test_class::test1(void) {
     _START();
     _INFO("to check MemCpy u32 of caMemAux");
     _AUTHOR("Coppi Angelo");
@@ -61,13 +57,12 @@ void caMemAux_test_class::test1(void)
     _STOP();
     u32 b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     u32 e[10];
-    void * ptr = caMemAux<u32>::MemCpy(e, b, sizeof (b) );
+    void * ptr = caMemAux<u32>::MemCpy(e, b, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
 
-void caMemAux_test_class::test2(void)
-{
+void caMemAux_test_class::test2(void) {
     _START();
     _INFO("to check MemCpy u16 of caMemAux");
     _AUTHOR("Coppi Angelo");
@@ -75,14 +70,13 @@ void caMemAux_test_class::test2(void)
     _STOP();
     u16 b[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     u16 e[10];
-    void * ptr = caMemAux<u16>::MemCpy(e, b, sizeof (b) );
+    void * ptr = caMemAux<u16>::MemCpy(e, b, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 
 }
 
-void caMemAux_test_class::test3(void)
-{
+void caMemAux_test_class::test3(void) {
     _START();
     _INFO("to check MemCpy u8 of caMemAux");
     _AUTHOR("Coppi Angelo");
@@ -96,8 +90,7 @@ void caMemAux_test_class::test3(void)
 
 }
 
-void caMemAux_test_class::test4(void)
-{
+void caMemAux_test_class::test4(void) {
     _START();
     _INFO("to check MemSet u32 of caMemAux");
     _AUTHOR("Coppi Angelo");
@@ -105,13 +98,12 @@ void caMemAux_test_class::test4(void)
     _STOP();
     u32 b[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     u32 e[10];
-    void * ptr = caMemAux<u32>::MemSet(e, 5, sizeof (b) );
+    void * ptr = caMemAux<u32>::MemSet(e, 5, sizeof (b));
     CA_ASSERT(ptr == &e[10]);
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
 
-void caMemAux_test_class::test5(void)
-{
+void caMemAux_test_class::test5(void) {
     _START();
     _INFO("to check MemSet u16 of caMemAux");
     _AUTHOR("Coppi Angelo");
@@ -124,8 +116,7 @@ void caMemAux_test_class::test5(void)
     CA_ASSERT(memcmp(b, e, sizeof (b)) == 0);
 }
 
-void caMemAux_test_class::test6(void)
-{
+void caMemAux_test_class::test6(void) {
     _START();
     _INFO("to check MemSet u8 of caMemAux");
     _AUTHOR("Coppi Angelo");

@@ -1,5 +1,5 @@
-#ifndef HALCOMDEVICE_H
-#define HALCOMDEVICE_H
+#ifndef _HAL_MEM_DEVICE_H
+#define _HAL_MEM_DEVICE_H
 
 ////////////////////////////////////////////////////////////////////////////////
 //    Copyright (C) 2016  Angelo Coppi (angelogkcop at hotmail.com )
@@ -21,81 +21,44 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
-#include "circularbuffer.h"
-#include "atomiclock.h"
 #include "syslog.h"
 
-struct caComDeviceConfigure
-: public caIDeviceConfigure {
-public:
-    u32 speed;
-    u32 stop;
-    u32 parity;
-    u32 data;
-
-    void Dump(caStringStream<s8> & ss) {
-        caCSTR(cs_speed, "SETUP SPEED  = ");
-        caCSTR(cs_stop, "SETUP STOP   = ");
-        caCSTR(cs_parity, "SETUP PARITY = ");
-        caCSTR(cs_data, "SETUP DATA   = ");
-        ss << cs_speed << speed << caEnd::endl;
-        ss << cs_stop << stop << caEnd::endl;
-        ss << cs_parity << parity << caEnd::endl;
-        ss << cs_data << data << caEnd::endl;
-        ss.Str();
-    }
-
-
-};
-
-struct caComDeviceCtrl
+struct caMemoryDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
-    typedef enum tag_io_ctrl_com_specific_request {
-        comFlush = IO_CTRL_UID(id_device::id_Com),
-        comStop,
-        comStart,
-        comListHardware,
-        comStatusBuffer,
-        comAddSignalRx,
-        comAddSignalTx,
-        comRemoveSignalRx,
-        comRemoveSignalTx,
-        comGetSignalRx,
-        comGetSignalTx,
-    } IoComCtrlDirect;
-
+    typedef enum tag_io_ctrl_mem_specific_request {
+        memList = IO_CTRL_UID(id_device::id_Mem),
+        memAllocate,
+        memFree,
+        memReallocate,
+    } IoMemCtrlDirect;
 };
 
-class caHalComDevice
+struct caMemConfigure
+: public caIDeviceConfigure {
+public:
+    //TODO ....
+};
+
+class caHalMemDevice
 : public IDevice {
 private:
-    static const u32 QUEUESIZE = 0x4000;
     u32 mask_guid;
     u32 handle_guid;
     u32 isOpen;
-    u32 signalRx;
-    u32 signalTx;
-    caCircularBuffer<u8> Rx;
-    caCircularBuffer<u8> Tx;
-    u8 RxBuffer[QUEUESIZE];
-    u8 TxBuffer[QUEUESIZE];
-    caAtomicLock RxLock;
-    caAtomicLock TxLock;
     caSysLog caLog;
-    hal_llc_com_io *link;
-
+    hal_llc_mem_io *link;
 public:
-    caHalComDevice(hal_llc_com_io *com, u32 mask_handle);
+    caHalMemDevice(hal_llc_mem_io *iface, u32 mask_handle);
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
     u32 Close(caDeviceHandle *port);
     u32 Write(caDeviceHandle *port);
     u32 Read(caDeviceHandle *port);
     u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
     u32 Flush(caDeviceHandle *port);
-    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed);
-    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed);
+    u32 IrqService1(u8 * buff, s_t size, s_t & iosize);
+    u32 IrqService2(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService3(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService4(u8 * buff, s_t size, s_t & iosize);
     u32 IrqService5(u8 * buff, s_t size, s_t & iosize);
@@ -112,12 +75,12 @@ public:
     }
 
     inline const char * toString(void) {
-        return "Hal Com driver ('COMxx') :";
+        return "Hal Memory driver ('Mem') :";
     }
 
 };
 
 
 
-#endif /* HALCOMDEVICE_H */
+#endif  //_HAL_MEM_DEVICE_H
 

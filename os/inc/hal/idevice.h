@@ -66,35 +66,44 @@ public:
 
 };
 
+typedef enum tag_id_device {
+    id_Mem = 0x100,
+    id_Task = 0x200,
+    id_Pipe = 0x300,
+    id_SysTimer = 0x400,
+    id_Cache = 0x500,
+    id_Com = 0x600,
+} id_device;
 
 
-#define IO_UID(a)    ((a)<<20)
+#define IO_UID(a)    (((u32)(a))<<16)
+#define IO_CTRL_UID(a)   (((u32)(a))<<8)
 
 typedef enum tag_ioctrl_request {
     no_ioctrl = 0,
-    Memory = IO_UID(100),
-    Task = IO_UID(200),
-    MemPipe = IO_UID(300),
-    SysTimer1 = IO_UID(400),
-    SysTimer2 = IO_UID(401),
-    SysTimer3 = IO_UID(402),
-    SysTimer4 = IO_UID(403),
-    SysTimer5 = IO_UID(404),
-    SysTimer6 = IO_UID(405),
-    SysTimer7 = IO_UID(406),
-    SysTimer8 = IO_UID(407),
-    Cache = IO_UID(500),
+    Memory = IO_UID(id_device::id_Mem),
+    Task = IO_UID(id_device::id_Task),
+    MemPipe = IO_UID(id_device::id_Pipe),
+    SysTimer1 = IO_UID(id_device::id_SysTimer),
+    SysTimer2 = IO_UID(id_device::id_SysTimer + 1),
+    SysTimer3 = IO_UID(id_device::id_SysTimer + 2),
+    SysTimer4 = IO_UID(id_device::id_SysTimer + 3),
+    SysTimer5 = IO_UID(id_device::id_SysTimer + 4),
+    SysTimer6 = IO_UID(id_device::id_SysTimer + 5),
+    SysTimer7 = IO_UID(id_device::id_SysTimer + 6),
+    SysTimer8 = IO_UID(id_device::id_SysTimer + 7),
+    Cache = IO_UID(id_device::id_Cache),
     //COMS
-    Com1 = IO_UID(600),
-    Com2 = IO_UID(601),
-    Com3 = IO_UID(602),
-    Com4 = IO_UID(603),
-    Com5 = IO_UID(604),
-    Com6 = IO_UID(605),
-    Com7 = IO_UID(606),
-    Com8 = IO_UID(607),
-    maskIoCtrl = 0xfff00000,
-    maskHandle = 0x000fffff
+    Com1 = IO_UID(id_device::id_Com),
+    Com2 = IO_UID(id_device::id_Com + 1),
+    Com3 = IO_UID(id_device::id_Com + 2),
+    Com4 = IO_UID(id_device::id_Com + 3),
+    Com5 = IO_UID(id_device::id_Com + 4),
+    Com6 = IO_UID(id_device::id_Com + 5),
+    Com7 = IO_UID(id_device::id_Com + 6),
+    Com8 = IO_UID(id_device::id_Com + 7),
+    maskIoCtrl = 0xffff0000,
+    maskHandle = 0x0000ffff
 } ioCtrlRequest;
 
 typedef enum tag_software_request {
@@ -125,6 +134,7 @@ typedef struct tag_mem_dump_addr {
 } dumpAddrReq;
 
 
+
 class caSysLog;
 
 class IDevice {
@@ -146,6 +156,8 @@ public:
     virtual u32 GetOpenFlag(void) = 0;
 
     virtual caSysLog * GetDeviceLog(void) = 0;
+
+    virtual const char * toString(void) = 0;
 
     virtual u32 IrqService1(u8 * buff, s_t size, s_t & iosize) = 0;
 
@@ -194,7 +206,8 @@ public:
 };
 
 typedef enum tag_device_error {
-    no_error = 0,
+    no_error = 0, // false OK
+    error_generic = 1, // else error
     error_unknow_device_name = 1000,
     error_unknow_device_ioctrl,
     error_open_device,
@@ -202,7 +215,6 @@ typedef enum tag_device_error {
     error_write_device,
     error_read_device,
     error_ioctrl_device,
-    error_generic_fail_device,
     error_device_config_param,
     error_port_out_config,
     error_pipe_no_memory,
@@ -238,8 +250,10 @@ typedef enum tag_device_error {
     error_log_empthy,
     error_log_null,
     error_stream_no_good,
+    error_com_dump,
     error_systimer_configure_not_valid,
     error_systimer_configure_error,
+    error_systimer_dump,
     error_ioctrl_command_error,
     error_hal_configure,
     error_hal_job_remove,
@@ -248,12 +262,10 @@ typedef enum tag_device_error {
     error_hal_job_sv_create,
     error_hal_job_sys_create,
     error_hal_job_user_create,
-    error_hal_job_to_sleep,
+    error_hal_job_wait_for_signal,
+    error_hal_job_sleep,
     error_hal_job_change_priority,
-            
 } deviceError;
-
-
 
 
 

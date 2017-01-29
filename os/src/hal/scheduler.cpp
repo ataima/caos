@@ -245,7 +245,7 @@ bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
             while (hal_llc_scheduler.hll_lock() == false) {
             };
         } else {
-            res = deviceError::error_hal_job_change_priority;
+            res = deviceError::error_generic;
         }
     }
     return res;
@@ -390,7 +390,7 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
             tmp->status = caJobStatus::thSleep;
             tmp->sleep = tick;
         } else {
-            res = deviceError::error_hal_job_to_sleep;
+            res = deviceError::error_generic;
         }
         while (hal_llc_scheduler.hll_unlock() == false) {
         };

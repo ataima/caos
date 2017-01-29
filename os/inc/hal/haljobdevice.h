@@ -27,8 +27,8 @@ struct caJobDeviceCtrl
 : public caIDeviceCtrl {
 public:
 
-    typedef enum tag_io_ctrl_specific_request {
-        jobGetThid = 0x5000,
+    typedef enum tag_io_ctrl_job_specific_request {
+        jobGetThid = IO_CTRL_UID(id_device::id_Task),
         jobChangePriority,
         jobSleep,
         jobWaitForSignal,
@@ -58,7 +58,6 @@ private:
     hal_llc_scheduler_io *link;
 public:
     caHalJobDevice(hal_llc_scheduler_io *iface, u32 mask_handle);
-    u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
     u32 Close(caDeviceHandle *port);
     u32 Write(caDeviceHandle *port);
@@ -81,6 +80,11 @@ public:
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }
+
+    inline const char * toString(void) {
+        return "Hal Jobs driver ('Task') :";
+    }
+
 };
 
 

@@ -22,8 +22,7 @@
 #include "hal.h"
 
 class caTokenizeSStream_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caTokenizeSStream_test_class);
     CA_TEST(caTokenizeSStream_test_class::test1, "ctor test");
     CA_TEST(caTokenizeSStream_test_class::test2, "Init test");
@@ -45,8 +44,7 @@ class caTokenizeSStream_test_class
     CA_TEST(caTokenizeSStream_test_class::test30, " Foward ");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -67,16 +65,14 @@ class caTokenizeSStream_test_class
     void test29(void);
     void test30(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caTokenizeSStream_test_class);
 
-void caTokenizeSStream_test_class::test1(void)
-{
+void caTokenizeSStream_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caTokenizeSStream");
     _AUTHOR("Coppi Angelo");
@@ -89,8 +85,7 @@ void caTokenizeSStream_test_class::test1(void)
     CA_ASSERT(a.Good() == false);
 }
 
-void caTokenizeSStream_test_class::test2(void)
-{
+void caTokenizeSStream_test_class::test2(void) {
     _START();
     _INFO("to check Init of caTokenizeSStream");
     _AUTHOR("Coppi Angelo");
@@ -115,8 +110,7 @@ void caTokenizeSStream_test_class::test2(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caTokenizeSStream_test_class::test3(void)
-{
+void caTokenizeSStream_test_class::test3(void) {
     _START();
     _INFO(" caTokenizeSStream: to check init from caStringStream ");
     _AUTHOR("Coppi Angelo");
@@ -153,8 +147,7 @@ void caTokenizeSStream_test_class::test3(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test4(void)
-{
+void caTokenizeSStream_test_class::test4(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> s8 ");
     _AUTHOR("Coppi Angelo");
@@ -224,8 +217,7 @@ void caTokenizeSStream_test_class::test4(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test5(void)
-{
+void caTokenizeSStream_test_class::test5(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> u8 ");
     _AUTHOR("Coppi Angelo");
@@ -266,8 +258,7 @@ void caTokenizeSStream_test_class::test5(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test6(void)
-{
+void caTokenizeSStream_test_class::test6(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> s16 ");
     _AUTHOR("Coppi Angelo");
@@ -312,8 +303,7 @@ void caTokenizeSStream_test_class::test6(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test7(void)
-{
+void caTokenizeSStream_test_class::test7(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> u16 ");
     _AUTHOR("Coppi Angelo");
@@ -358,8 +348,7 @@ void caTokenizeSStream_test_class::test7(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test8(void)
-{
+void caTokenizeSStream_test_class::test8(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> s32 ");
     _AUTHOR("Coppi Angelo");
@@ -404,8 +393,7 @@ void caTokenizeSStream_test_class::test8(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test9(void)
-{
+void caTokenizeSStream_test_class::test9(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator >> u32 ");
     _AUTHOR("Coppi Angelo");
@@ -452,8 +440,7 @@ void caTokenizeSStream_test_class::test9(void)
 
 //////////////  HEX    
 
-void caTokenizeSStream_test_class::test16(void)
-{
+void caTokenizeSStream_test_class::test16(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator( hex ) >> s16 ");
     _AUTHOR("Coppi Angelo");
@@ -498,8 +485,7 @@ void caTokenizeSStream_test_class::test16(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test17(void)
-{
+void caTokenizeSStream_test_class::test17(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( hex ) >> u16 ");
     _AUTHOR("Coppi Angelo");
@@ -544,8 +530,7 @@ void caTokenizeSStream_test_class::test17(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test18(void)
-{
+void caTokenizeSStream_test_class::test18(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( hex ) >> s32 ");
     _AUTHOR("Coppi Angelo");
@@ -590,8 +575,7 @@ void caTokenizeSStream_test_class::test18(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test19(void)
-{
+void caTokenizeSStream_test_class::test19(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( hex ) >> u32 ");
     _AUTHOR("Coppi Angelo");
@@ -638,8 +622,7 @@ void caTokenizeSStream_test_class::test19(void)
 
 //////////////  BIN     
 
-void caTokenizeSStream_test_class::test26(void)
-{
+void caTokenizeSStream_test_class::test26(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator( bin ) >> s16 ");
     _AUTHOR("Coppi Angelo");
@@ -684,8 +667,7 @@ void caTokenizeSStream_test_class::test26(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test27(void)
-{
+void caTokenizeSStream_test_class::test27(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( bin ) >> u16 ");
     _AUTHOR("Coppi Angelo");
@@ -730,8 +712,7 @@ void caTokenizeSStream_test_class::test27(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test28(void)
-{
+void caTokenizeSStream_test_class::test28(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( bin ) >> s32 ");
     _AUTHOR("Coppi Angelo");
@@ -776,8 +757,7 @@ void caTokenizeSStream_test_class::test28(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test29(void)
-{
+void caTokenizeSStream_test_class::test29(void) {
     _START();
     _INFO(" caTokenizeSStream: to check operator ( bin ) >> u32 ");
     _AUTHOR("Coppi Angelo");
@@ -822,8 +802,7 @@ void caTokenizeSStream_test_class::test29(void)
     CA_ASSERT(b.Empty() == true);
 }
 
-void caTokenizeSStream_test_class::test30(void)
-{
+void caTokenizeSStream_test_class::test30(void) {
     _START();
     _INFO(" caTokenizeSStream: to check Foward method ");
     _AUTHOR("Coppi Angelo");

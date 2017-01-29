@@ -22,66 +22,54 @@
 #include "hal.h"
 #include "atomiclock.h"
 
-
-
-
-
-
 class caAtomicLock_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caAtomicLock_test_class);
     CA_TEST(caAtomicLock_test_class::test1, " ctor test");
     CA_TEST(caAtomicLock_test_class::test2, " lock test");
     CA_TEST(caAtomicLock_test_class::test3, " unlock test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
     void test3(void);
 
-
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
     caAtomicLock lock;
 };
 
 REGISTER_CLASS(caAtomicLock_test_class);
 
-void caAtomicLock_test_class::test1(void)
-{
+void caAtomicLock_test_class::test1(void) {
     _START();
     _INFO("to check ctor function of caHalComDevice");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    CA_ASSERT(lock.Get()==0);
+    CA_ASSERT(lock.Get() == 0);
 }
 
-void caAtomicLock_test_class::test2(void)
-{
+void caAtomicLock_test_class::test2(void) {
     _START();
     _INFO("to check lock  function caHalComDevice");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    CA_ASSERT(lock.Lock()!=0);
-    CA_ASSERT(lock.Get()!=0);
+    CA_ASSERT(lock.Lock() != 0);
+    CA_ASSERT(lock.Get() != 0);
 }
 
-void caAtomicLock_test_class::test3(void)
-{
+void caAtomicLock_test_class::test3(void) {
     _START();
     _INFO("to check unlock caHalComDevice");
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
-    _STOP();    
-    CA_ASSERT(lock.UnLock()!=0);
-    CA_ASSERT(lock.Get()==0);
+    _STOP();
+    CA_ASSERT(lock.UnLock() != 0);
+    CA_ASSERT(lock.Get() == 0);
 }
 
 

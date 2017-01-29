@@ -47,6 +47,7 @@ typedef u32(* abstract_functor_spec_dump)(caStringStream<s8> *ss);
 typedef u32(* abstract_functor_spec_irq)(void *obj, u8 * buff, s_t size, s_t & iosize);
 
 typedef struct tag_hal_llc_mem_io {
+    const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_void_func hll_mem_min_phy;
     const abstract_functor_int_void_func hll_mem_max_phy;
 } hal_llc_mem_io;

@@ -43,6 +43,7 @@ class caArray_test_class
     void test5(void);
     void test6(void);
     void test7(void);
+
     void tearDown(void) {
     }
 
@@ -239,7 +240,6 @@ void caArray_test_class::test6(void) {
     CA_ASSERT(u == 20);
 
 }
-
 
 void caArray_test_class::test7(void) {
     _START();

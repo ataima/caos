@@ -41,18 +41,14 @@ static u32 timer_wakeup_1 = 0;
 static u32 timer_wakeup_2 = 0;
 static u32 timer_dump = 1;
 
-
-
-static void param_reset(void)
-{
+static void param_reset(void) {
     timer_conf1 = timer_conf2 = timer_conf3 = timer_conf4 =
             timer_day = timer_hour = timer_min = timer_sec =
             timer_start = timer_stop = timer_wakeup_1 = timer_wakeup_2 =
-            timer_tick = timer_dump=0;
+            timer_tick = timer_dump = 0;
 }
 
-static u32 hll_config(u32 conf1, u32 conf2, u32 conf3, u32 conf4)
-{
+static u32 hll_config(u32 conf1, u32 conf2, u32 conf3, u32 conf4) {
     u32 res = -1;
     timer_conf1 = conf1;
     timer_conf2 = conf2;
@@ -62,16 +58,14 @@ static u32 hll_config(u32 conf1, u32 conf2, u32 conf3, u32 conf4)
     return res;
 }
 
-static u32 hll_time(void)
-{
+static u32 hll_time(void) {
     u32 us;
     struct timespec diff;
     clock_gettime(CLOCK_REALTIME, &curr_spec);
     diff.tv_sec = (time_t) difftime(curr_spec.tv_sec, start_time.tv_sec);
     if (curr_spec.tv_nsec > start_time.tv_nsec)
         diff.tv_nsec = curr_spec.tv_nsec - start_time.tv_nsec;
-    else
-    {
+    else {
         curr_spec.tv_sec--;
         diff.tv_nsec = curr_spec.tv_nsec - start_time.tv_nsec + 1000000000;
     }
@@ -81,63 +75,53 @@ static u32 hll_time(void)
     return us;
 }
 
-static u32 hll_getps(void)
-{
+static u32 hll_getps(void) {
     hll_time();
     return 0;
 }
 
-static u32 hll_getns(void)
-{
+static u32 hll_getns(void) {
     hll_time();
     return (u32) (curr_spec.tv_nsec & 0xffff);
 }
 
-static u32 hll_getus(void)
-{
+static u32 hll_getus(void) {
     hll_time();
     return (u32) (curr_spec.tv_nsec / 1000);
 }
 
-static u32 hll_getms(void)
-{
+static u32 hll_getms(void) {
     hll_time();
     return (u32) (curr_spec.tv_nsec / 1000000);
 }
 
-static u32 hll_getsec(void)
-{
+static u32 hll_getsec(void) {
     hll_time();
     return (u32) (curr_spec.tv_sec % 60);
 }
 
-static u32 hll_getmin(void)
-{
+static u32 hll_getmin(void) {
     hll_time();
     return 12;
 }
 
-static u32 hll_gethour(void)
-{
+static u32 hll_gethour(void) {
     hll_time();
     return 21;
 }
 
-static u32 hll_getday(void)
-{
+static u32 hll_getday(void) {
     hll_time();
     return 7;
 }
 
-static u32 hll_dump(caStringStream<s8> *ss)
-{
-   (*ss) << "IOCTRL DUMP" << caEnd::endl;
-   timer_dump=1;
+static u32 hll_dump(caStringStream<s8> *ss) {
+    (*ss) << "IOCTRL DUMP" << caEnd::endl;
+    timer_dump = 1;
     return 0;
 }
 
-static u32 hll_settime(u32 day, u32 hour, u32 min, u32 sec)
-{
+static u32 hll_settime(u32 day, u32 hour, u32 min, u32 sec) {
     u32 res = -1;
     timer_day = day;
     timer_hour = hour;
@@ -147,22 +131,19 @@ static u32 hll_settime(u32 day, u32 hour, u32 min, u32 sec)
     return res;
 }
 
-static u32 hll_totick(u32 tick)
-{
+static u32 hll_totick(u32 tick) {
     hll_time();
     timer_tick = 1000 + tick;
     return 0;
 }
 
-static u32 hll_start(void)
-{
+static u32 hll_start(void) {
     hll_time();
     timer_start = 1;
     return 0;
 }
 
-static u32 hll_stop(void)
-{
+static u32 hll_stop(void) {
     hll_time();
     timer_conf1 = 0;
     timer_conf2 = 0;
@@ -173,14 +154,12 @@ static u32 hll_stop(void)
     return 0;
 }
 
-static void hll_wakeup_1(u32 thid)
-{
+static void hll_wakeup_1(u32 thid) {
     hll_time();
     timer_wakeup_1 = thid;
 }
 
-static void hll_wakeup_2(u32 thid)
-{
+static void hll_wakeup_2(u32 thid) {
     hll_time();
     timer_wakeup_2 = thid;
 }
@@ -211,8 +190,7 @@ hal_llc_sys_time hal_llc_time_1 = {
 };
 
 class caHalSysTimerDevice_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caHalSysTimerDevice_test_class);
     CA_TEST(caHalSysTimerDevice_test_class::test1, " Open test");
     CA_TEST(caHalSysTimerDevice_test_class::test2, " Close test");
@@ -225,8 +203,7 @@ class caHalSysTimerDevice_test_class
     CA_TEST(caHalSysTimerDevice_test_class::test10, " IoCtrl Logs test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
         clock_gettime(CLOCK_REALTIME, &start_time);
     }
 
@@ -240,8 +217,7 @@ class caHalSysTimerDevice_test_class
     void test9(void);
     void test10(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 
@@ -249,8 +225,7 @@ class caHalSysTimerDevice_test_class
 
 REGISTER_CLASS(caHalSysTimerDevice_test_class);
 
-void caHalSysTimerDevice_test_class::test1(void)
-{
+void caHalSysTimerDevice_test_class::test1(void) {
     _START();
     _INFO("to check Open function of caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -286,8 +261,7 @@ void caHalSysTimerDevice_test_class::test1(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test2(void)
-{
+void caHalSysTimerDevice_test_class::test2(void) {
     _START();
     _INFO("to check Close function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -336,8 +310,7 @@ void caHalSysTimerDevice_test_class::test2(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test3(void)
-{
+void caHalSysTimerDevice_test_class::test3(void) {
     _START();
     _INFO("to check Read Function of caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -374,7 +347,7 @@ void caHalSysTimerDevice_test_class::test3(void)
     //IRQ CALLBACK
     u8 msg[] = "hello world";
     hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, msg, 12, rd);
-    CA_ASSERT(rd==0);
+    CA_ASSERT(rd == 0);
     u8 buff[100];
     portIO.rdBuff = buff;
     portIO.rdSize = 100;
@@ -402,8 +375,7 @@ void caHalSysTimerDevice_test_class::test3(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test4(void)
-{
+void caHalSysTimerDevice_test_class::test4(void) {
     _START();
     _INFO("to check Write function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -450,7 +422,7 @@ void caHalSysTimerDevice_test_class::test4(void)
     u32 rd;
     //IRQ TX CALLBACK
     hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, buff, 100, rd);
-    CA_ASSERT(rd==0);
+    CA_ASSERT(rd == 0);
 
     res = timerDev.Close(&portIO);
     CA_ASSERT(res == deviceError::no_error);
@@ -470,8 +442,7 @@ void caHalSysTimerDevice_test_class::test4(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test5(void)
-{
+void caHalSysTimerDevice_test_class::test5(void) {
     _START();
     _INFO("to check IoCtrl Enable function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -537,8 +508,7 @@ void caHalSysTimerDevice_test_class::test5(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test6(void)
-{
+void caHalSysTimerDevice_test_class::test6(void) {
     _START();
     _INFO("to check IoCtrl Dump function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -581,7 +551,7 @@ void caHalSysTimerDevice_test_class::test6(void)
     ss.Init(buff, 100);
     in.ss = &ss;
     res = timerDev.IoCtrl(&portIO, &in);
-    CA_ASSERT(res == deviceError::no_error);
+    CA_ASSERT(res > 0);
 
     CA_ASSERT(ss.Size() == 13);
     CA_ASSERT(ss == "IOCTRL DUMP\r\n");
@@ -606,8 +576,7 @@ void caHalSysTimerDevice_test_class::test6(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test8(void)
-{
+void caHalSysTimerDevice_test_class::test8(void) {
     _START();
     _INFO("to check IoCtrl SignalRX  function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -661,7 +630,7 @@ void caHalSysTimerDevice_test_class::test8(void)
     //IRQ CALLBACK
     u8 msg[] = "hello world";
     u32 rd;
-    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, msg, 12, rd);   
+    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, msg, 12, rd);
     CA_ASSERT(timer_wakeup_1 == 100);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1;
     res = timerDev.IoCtrl(&portIO, &in);
@@ -687,8 +656,7 @@ void caHalSysTimerDevice_test_class::test8(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test9(void)
-{
+void caHalSysTimerDevice_test_class::test9(void) {
     _START();
     _INFO("to check IoCtrl SignalTX  function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -742,12 +710,12 @@ void caHalSysTimerDevice_test_class::test9(void)
     CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
-    portIO.wrSize = 4*sizeof(u32);
+    portIO.wrSize = 4 * sizeof (u32);
     portIO.writed = 0;
     res = timerDev.Write(&portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.wrSize == 0);
-    CA_ASSERT(portIO.writed == 4*sizeof(u32));
+    CA_ASSERT(portIO.writed == 4 * sizeof (u32));
 
 
     u8 buff[100];
@@ -755,7 +723,7 @@ void caHalSysTimerDevice_test_class::test9(void)
     //IRQ TX CALLBACK
     hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, buff, 100, rd);
     CA_ASSERT(rd == 0);
-   
+
     CA_ASSERT(timer_wakeup_2 == 200);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
     res = timerDev.IoCtrl(&portIO, &in);
@@ -781,8 +749,7 @@ void caHalSysTimerDevice_test_class::test9(void)
     param_reset();
 }
 
-void caHalSysTimerDevice_test_class::test10(void)
-{
+void caHalSysTimerDevice_test_class::test10(void) {
     _START();
     _INFO("to check IoCtrl Logs  function caHalSysTimerDevice");
     _AUTHOR("Coppi Angelo");
@@ -801,10 +768,10 @@ void caHalSysTimerDevice_test_class::test10(void)
     in.params[0] = 16512;
     in.params[1] = (u32) deviceloglevels::end_device_log_lev;
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate;
-    u32 res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
+    u32 res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart;
-    res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
+    res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     res = timerDev.Open(&setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
@@ -845,12 +812,12 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
-    portIO.wrSize = 4*sizeof(u32);
+    portIO.wrSize = 4 * sizeof (u32);
     portIO.writed = 0;
     res = timerDev.Write(&portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.wrSize == 0);
-    CA_ASSERT(portIO.writed ==  4*sizeof(u32));
+    CA_ASSERT(portIO.writed == 4 * sizeof (u32));
 
 
     u8 buff[100];
@@ -883,23 +850,22 @@ void caHalSysTimerDevice_test_class::test10(void)
     CA_ASSERT(portIO.status == caDeviceHandle::statusHandle::Close);
     CA_ASSERT(portIO.tStop == portIO.tLast);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop;
-    res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
+    res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     char out[8000];
     caStringStream<s8> ss;
     u32 u = 0;
-    for (u = 0; u < deviceloglevels::end_device_log_lev; u++)
-    {
+    for (u = 0; u < deviceloglevels::end_device_log_lev; u++) {
         ss.Init(out, 8000);
         in.ss = &ss;
         in.params[0] = u;
         in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet;
-        res = caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
+        res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
         std::cout << out << std::endl;
     }
     CA_ASSERT(res == deviceError::no_error);
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy;
-    res =caHalDeviceRules::IoCtrl(&timerDev,&portIO, &in, ioCtrlRequest::SysTimer6);
+    res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
     param_reset();
 

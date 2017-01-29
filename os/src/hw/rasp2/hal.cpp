@@ -42,8 +42,9 @@ static u32 mem_phy_max_addr(void) {
 }
 
 hal_llc_mem_io hal_llc_mem = {
+    caSysTimer::GetCount,
     mem_phy_min_addr,
-    mem_phy_max_addr
+    mem_phy_max_addr,
 };
 
 

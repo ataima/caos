@@ -26,8 +26,7 @@
 const char *caEnd::endl = "\r\n";
 
 class caStringStream_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caStringStream_test_class);
     CA_TEST(caStringStream_test_class::test1, "ctor test");
     CA_TEST(caStringStream_test_class::test2, "Init test");
@@ -55,8 +54,7 @@ class caStringStream_test_class
     CA_TEST(caStringStream_test_class::test30, "== const s8* test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -83,16 +81,14 @@ class caStringStream_test_class
     void testPrefetch(void);
     void test30(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caStringStream_test_class);
 
-void caStringStream_test_class::test1(void)
-{
+void caStringStream_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -105,8 +101,7 @@ void caStringStream_test_class::test1(void)
     CA_ASSERT(a.Good() == false);
 }
 
-void caStringStream_test_class::test2(void)
-{
+void caStringStream_test_class::test2(void) {
     _START();
     _INFO("to check Init of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -128,8 +123,7 @@ void caStringStream_test_class::test2(void)
     CA_ASSERT(a.Empty() == true);
 }
 
-void caStringStream_test_class::test3(void)
-{
+void caStringStream_test_class::test3(void) {
     _START();
     _INFO("to check operator << s8 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -157,8 +151,7 @@ void caStringStream_test_class::test3(void)
     CA_ASSERT(a.Empty() == true);
 }
 
-void caStringStream_test_class::test4(void)
-{
+void caStringStream_test_class::test4(void) {
     _START();
     _INFO("to check operator << u8 of caStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -222,8 +215,7 @@ void caStringStream_test_class::test4(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test5(void)
-{
+void caStringStream_test_class::test5(void) {
     _START();
     _INFO("to check operator << s16 of caStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -299,8 +291,7 @@ void caStringStream_test_class::test5(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test6(void)
-{
+void caStringStream_test_class::test6(void) {
     _START();
     _INFO("to check operator << s16 of caStringStream");
     _INFO("with s16 a negative number");
@@ -377,8 +368,7 @@ void caStringStream_test_class::test6(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test7(void)
-{
+void caStringStream_test_class::test7(void) {
     _START();
     _INFO("to check operator << u16 of caStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -453,8 +443,7 @@ void caStringStream_test_class::test7(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test8(void)
-{
+void caStringStream_test_class::test8(void) {
     _START();
     _INFO("to check operator << s32 of caStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -555,8 +544,7 @@ void caStringStream_test_class::test8(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test9(void)
-{
+void caStringStream_test_class::test9(void) {
     _START();
     _INFO("to check operator << s32 of caStringStream");
     _INFO("value of s32 negative");
@@ -659,8 +647,7 @@ void caStringStream_test_class::test9(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test10(void)
-{
+void caStringStream_test_class::test10(void) {
     _START();
     _INFO("to check operator << u32 of caStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -761,8 +748,7 @@ void caStringStream_test_class::test10(void)
     a.Clear();
 }
 
-void caStringStream_test_class::test11(void)
-{
+void caStringStream_test_class::test11(void) {
     _START();
     _INFO("to check operator << & b of caStringStream");
     _INFO("concatenate two castringstream (faster mode: memcpy)");
@@ -832,8 +818,7 @@ void caStringStream_test_class::test11(void)
     CA_ASSERT(strcmp(a.Str(), "pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  p") == 0);
 }
 
-void caStringStream_test_class::test12(void)
-{
+void caStringStream_test_class::test12(void) {
     _START();
     _INFO("to check operator << const char *msg of caStringStream");
     _INFO("concatenate string (slower mode: no memcpy)");
@@ -864,8 +849,7 @@ void caStringStream_test_class::test12(void)
 
 }
 
-void caStringStream_test_class::test12bis(void)
-{
+void caStringStream_test_class::test12bis(void) {
     _START();
     _INFO("to check operator << const char *msg of caStringStream");
     _INFO("concatenate string (slower mode: no memcpy)");
@@ -897,8 +881,7 @@ void caStringStream_test_class::test12bis(void)
 
 }
 
-void caStringStream_test_class::test13(void)
-{
+void caStringStream_test_class::test13(void) {
     _START();
     _INFO("to check operator << *s8 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -914,8 +897,7 @@ void caStringStream_test_class::test13(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test14(void)
-{
+void caStringStream_test_class::test14(void) {
     _START();
     _INFO("to check operator << *u8 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -937,8 +919,7 @@ void caStringStream_test_class::test14(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test15(void)
-{
+void caStringStream_test_class::test15(void) {
     _START();
     _INFO("to check operator << *s16 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -955,8 +936,7 @@ void caStringStream_test_class::test15(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test16(void)
-{
+void caStringStream_test_class::test16(void) {
     _START();
     _INFO("to check operator << *u16 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -973,8 +953,7 @@ void caStringStream_test_class::test16(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test17(void)
-{
+void caStringStream_test_class::test17(void) {
     _START();
     _INFO("to check operator << *s32 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -991,8 +970,7 @@ void caStringStream_test_class::test17(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test18(void)
-{
+void caStringStream_test_class::test18(void) {
     _START();
     _INFO("to check operator << *u32 of caStringStream");
     _AUTHOR("Coppi Angelo");
@@ -1009,8 +987,7 @@ void caStringStream_test_class::test18(void)
     CA_ASSERT(strcmp(a.Str(), buff_b) == 0);
 }
 
-void caStringStream_test_class::test19(void)
-{
+void caStringStream_test_class::test19(void) {
     _START();
     _INFO("to check operator << * b a ptr of caStringStream");
     _INFO("concatenate two castringstream (faster mode: memcpy)");
@@ -1059,8 +1036,7 @@ void caStringStream_test_class::test19(void)
     CA_ASSERT(strcmp(a.Str(), "pippo  pluto  ") == 0);
 }
 
-void caStringStream_test_class::test20(void)
-{
+void caStringStream_test_class::test20(void) {
     _START();
     _INFO("to check filler object");
     _AUTHOR("Coppi Angelo");
@@ -1084,8 +1060,7 @@ void caStringStream_test_class::test20(void)
     CA_ASSERT(v.end == 15);
 }
 
-void caStringStream_test_class::test21(void)
-{
+void caStringStream_test_class::test21(void) {
     _START();
     _INFO("to check terminator object");
     _AUTHOR("Coppi Angelo");
@@ -1103,8 +1078,7 @@ void caStringStream_test_class::test21(void)
     CA_ASSERT(strcmp(a.Str(), "pippo\r\n") == 0);
 }
 
-void caStringStream_test_class::testPrefetch(void)
-{
+void caStringStream_test_class::testPrefetch(void) {
     _START();
     _INFO("to check terminator object");
     _AUTHOR("Coppi Angelo");
@@ -1128,8 +1102,7 @@ void caStringStream_test_class::testPrefetch(void)
     CA_ASSERT(ss.Str() != NULL);
 }
 
-void caStringStream_test_class::test30(void)
-{
+void caStringStream_test_class::test30(void) {
     _START();
     _INFO("to check operator == const s8 *");
     _AUTHOR("Coppi Angelo");
@@ -1138,6 +1111,6 @@ void caStringStream_test_class::test30(void)
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
-    ss<<"Hello world";
-    CA_ASSERT((ss=="Hello world"));
+    ss << "Hello world";
+    CA_ASSERT((ss == "Hello world"));
 }

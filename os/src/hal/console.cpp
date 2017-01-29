@@ -129,7 +129,7 @@ u32 caConsole::SyntaxError(caDeviceHandle &port, caTokenizeSStream <u8> & iss) {
     iss.Dump(ss);
     ss << " .. see help..." << caEnd::endl;
     caOS::Write(port, ss);
-    return deviceError::error_generic_fail_device;
+    return deviceError::error_generic;
 }
 
 void caConsole::Dump(u8 * buff, u32 readed, caStringStream<s8> &ss) {
@@ -174,7 +174,7 @@ deviceError caConsole::Command_PS(caDeviceHandle &port,
         res = caOS::Write(port, ss);
         return (deviceError) (res);
     }
-    return deviceError::error_generic_fail_device;
+    return deviceError::error_generic;
 }
 
 deviceError caConsole::Command_HARDWARE(caDeviceHandle &port,

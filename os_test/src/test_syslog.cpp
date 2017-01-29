@@ -26,16 +26,14 @@
 
 static struct timespec start_time = {0, 0};
 
-static u32 hll_time(void)
-{
+static u32 hll_time(void) {
     u32 us;
     struct timespec spec, diff;
     clock_gettime(CLOCK_REALTIME, &spec);
     diff.tv_sec = (time_t) difftime(spec.tv_sec, start_time.tv_sec);
     if (spec.tv_nsec > start_time.tv_nsec)
         diff.tv_nsec = spec.tv_nsec - start_time.tv_nsec;
-    else
-    {
+    else {
         spec.tv_sec--;
         diff.tv_nsec = spec.tv_nsec - start_time.tv_nsec + 1000000000;
     }
@@ -45,13 +43,11 @@ static u32 hll_time(void)
     return us;
 }
 
-static u32 hll_dummy(void)
-{
+static u32 hll_dummy(void) {
     return 7;
 }
 
-static u32 hll_conf(u32, u32, u32, u32)
-{
+static u32 hll_conf(u32, u32, u32, u32) {
     return 1;
 }
 
@@ -71,30 +67,26 @@ hal_llc_sys_time hal_llc_time{
     NULL, NULL, NULL, NULL};
 
 class caSysLog_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caSysLog_test_class);
     CA_TEST(caSysLog_test_class::test1, "Init test");
     CA_TEST(caSysLog_test_class::test2, "stream test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
         caMemory::Init();
     }
     void test1(void);
     void test2(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caSysLog_test_class);
 
-void caSysLog_test_class::test1(void)
-{
+void caSysLog_test_class::test1(void) {
     _START();
     _INFO("to check Init/ destroy function of caSysLog");
     _AUTHOR("Coppi Angelo");
@@ -140,8 +132,7 @@ void caSysLog_test_class::test1(void)
     CA_ASSERT(caMemory::Find(a.GetBase(info)) == 0);
 }
 
-void caSysLog_test_class::test2(void)
-{
+void caSysLog_test_class::test2(void) {
     _START();
     _INFO("to check stream functions of caSysLog");
     _AUTHOR("Coppi Angelo");

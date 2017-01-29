@@ -23,8 +23,7 @@
 #include "memaux.h"
 
 class caStrAux_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caStrAux_test_class);
     CA_TEST(caStrAux_test_class::test1, "StrCmp  test");
     CA_TEST(caStrAux_test_class::test2, "MemCpy u16  test");
@@ -34,8 +33,7 @@ class caStrAux_test_class
     CA_TEST(caStrAux_test_class::test6, "MemSet u8  test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -44,16 +42,14 @@ class caStrAux_test_class
     void test5(void);
     void test6(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caStrAux_test_class);
 
-void caStrAux_test_class::test1(void)
-{
+void caStrAux_test_class::test1(void) {
     _START();
     _INFO("to check StrCmp  of caStrAux");
     _AUTHOR("Coppi Angelo");
@@ -69,8 +65,7 @@ void caStrAux_test_class::test1(void)
     CA_ASSERT(caStrAux::StrCmp(p1, p4) != 0);
 }
 
-void caStrAux_test_class::test2(void)
-{
+void caStrAux_test_class::test2(void) {
     _START();
     _INFO("to check MemCpy u16 of caStrAux");
     _AUTHOR("Coppi Angelo");
@@ -83,8 +78,7 @@ void caStrAux_test_class::test2(void)
 
 }
 
-void caStrAux_test_class::test3(void)
-{
+void caStrAux_test_class::test3(void) {
     _START();
     _INFO("to check MemCpy u8 of caStrAux");
     _AUTHOR("Coppi Angelo");
@@ -100,8 +94,7 @@ void caStrAux_test_class::test3(void)
     CA_ASSERT(caStrAux::StrICmp(p1, p4) != 0);
 }
 
-void caStrAux_test_class::test4(void)
-{
+void caStrAux_test_class::test4(void) {
     _START();
     _INFO("to check MemSet u32 of caStrAux");
     _AUTHOR("Coppi Angelo");
@@ -113,8 +106,7 @@ void caStrAux_test_class::test4(void)
     CA_ASSERT(memcmp(dest, p1, 6) == 0);
 }
 
-void caStrAux_test_class::test5(void)
-{
+void caStrAux_test_class::test5(void) {
     _START();
     _INFO("to check MemSet u16 of caStrAux");
     _AUTHOR("Coppi Angelo");
@@ -123,12 +115,11 @@ void caStrAux_test_class::test5(void)
     const s8* p1 = "pippopippopippo";
     s8 dest[10];
     CA_ASSERT(caStrAux::StrNCpy(dest, p1, sizeof (dest)) == &dest[10]);
-    u32 res =memcmp(dest, p1, 10);
-    CA_ASSERT( res== 0);
+    u32 res = memcmp(dest, p1, 10);
+    CA_ASSERT(res == 0);
 }
 
-void caStrAux_test_class::test6(void)
-{
+void caStrAux_test_class::test6(void) {
     _START();
     _INFO("to check MemSet u8 of caStrAux");
     _AUTHOR("Coppi Angelo");

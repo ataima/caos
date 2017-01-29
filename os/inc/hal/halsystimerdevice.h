@@ -31,7 +31,7 @@ struct caSysTimerDeviceCtrl
 public:
 
     typedef enum tag_io_ctrl_systimer_specific_request {
-        sysTimerFlush = 0x5000,
+        sysTimerFlush = IO_CTRL_UID(id_device::id_SysTimer),
         sysTimerListHardware,
         sysTimerStart,
         sysTimerStop,
@@ -66,7 +66,6 @@ private:
     hal_llc_sys_time *link;
 public:
     caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask_handle);
-    u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
     u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
     u32 Close(caDeviceHandle *port);
     u32 Write(caDeviceHandle *port);
@@ -89,6 +88,11 @@ public:
     inline u32 GetOpenFlag(void) {
         return isOpen;
     }
+
+    inline const char * toString(void) {
+        return "Hal Sysytem Timer driver ('SysTimer') :";
+    }
+
 };
 
 

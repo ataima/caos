@@ -201,7 +201,7 @@ u32 caSysTimer::ReadFreeCounter(void) {
 }
 
 u32 caSysTimer::Dump(caStringStream<s8> * ss) {
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     if (ss != NULL) {
         system_ap804_timer(ap804);
         (*ss) << " --- SYS TIMER LIST ---" << caEnd::endl;
@@ -217,8 +217,7 @@ u32 caSysTimer::Dump(caStringStream<s8> * ss) {
         (*ss) << "RELOAD   [" << (u32) & ap804->Reload << "]=" << ap804->Reload << caEnd::endl;
         (*ss) << "VALUE    [" << (u32) & ap804->Value << "]=" << ap804->Value << caEnd::endl;
         (*ss).Str();
-        if (!ss->Good())
-            res = deviceError::error_generic_fail_device;
+        res = ss->Size();
     }
     return res;
 }

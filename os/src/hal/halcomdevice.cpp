@@ -183,117 +183,118 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
     caComDeviceCtrl *in = static_cast<caComDeviceCtrl *> (inp);
     switch (in->command) {
         default:
-            LOG(caLog, error) << " deviceError::error_ioctrl_command_error" << caEnd::endl;
+            LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
+                    << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comFlush:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comFlush" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comFlush"
+                    << caEnd::endl;
             res = Flush(port);
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comStart:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStart" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStart"
+                    << caEnd::endl;
             res = link->hll_enable(1, 1);
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comStop:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStop" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStop"
+                    << caEnd::endl;
             res = link->hll_enable(0, 0);
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comListHardware:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comListHardware" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comListHardware"
+                    << caEnd::endl;
             if (in->ss != NULL) {
                 in->ss->Clear();
-                res = link->hll_dump(in->ss);
+                u32 size = link->hll_dump(in->ss);
+                in->params[0] = size;
+                if (size == 0) {
+                    res = deviceError::error_com_dump;
+                    LOG(caLog, error) << " deviceError::error_com_dump"
+                            << caEnd::endl;
+                }
             } else {
                 res = deviceError::error_invalid_null_destination;
-                LOG(caLog, error) << " deviceError::error_invalid_null_destination" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_null_destination"
+                        << caEnd::endl;
             }
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comStatusBuffer:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStatusBuffer" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comStatusBuffer"
+                    << caEnd::endl;
             in->params[0] = Rx.Size();
             in->params[1] = Tx.Size();
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalRx" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalRx"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalRx)) {
                 res = deviceError::error_signal_already_set;
-                LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_signal_already_set"
+                        << caEnd::endl;
             } else {
                 if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[0])) {
                     signalRx = in->params[0];
                 } else {
                     res = deviceError::error_invalid_handle_port;
-                    LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                    LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                            << caEnd::endl;
                 }
             }
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comAddSignalTx:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalTx" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comAddSignalTx"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalTx)) {
                 res = deviceError::error_signal_already_set;
-                LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_signal_already_set"
+                        << caEnd::endl;
             } else {
                 if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[1])) {
                     signalTx = in->params[1];
                 } else {
                     res = deviceError::error_invalid_handle_port;
-                    LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                    LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                            << caEnd::endl;
                 }
             }
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comRemoveSignalRx:
-            LOG(caLog, info) << " : caComDeviceCtrl::IoCtrlDirect::comRemoveSignalRx" << caEnd::endl;
+            LOG(caLog, info) << " : caComDeviceCtrl::IoCtrlDirect::comRemoveSignalRx"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalRx)) {
                 signalRx = 0;
             } else {
                 res = deviceError::error_invalid_handle_port;
-                LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                        << caEnd::endl;
             }
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comRemoveSignalTx:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comRemoveSignalTx"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signalTx)) {
                 signalTx = 0;
             } else {
                 res = deviceError::error_invalid_handle_port;
-                LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                        << caEnd::endl;
             }
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comGetSignalRx:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalRx" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalRx"
+                    << caEnd::endl;
             in->params[0] = signalRx;
             break;
         case caComDeviceCtrl::IoComCtrlDirect::comGetSignalTx:
-            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
+            LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comGetSignalTx"
+                    << caEnd::endl;
             in->params[0] = signalTx;
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
-    return res;
-}
-
-u32 caHalComDevice::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
-    u32 res = deviceError::no_error;
-    switch (request) {
-        case ioCtrlFunction::caOpenDevice:
-            res = Open((caComDeviceConfigure *) p1, (caDeviceHandle *) p2);
-            break;
-        case ioCtrlFunction::caCloseDevice:
-            res = Close((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caWriteDevice:
-            res = Write((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caReadDevice:
-            res = Read((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDeviceHandle *) p1, (caComDeviceCtrl *) p2);
-            break;
-        default:
-            break;
-    }
     return res;
 }
 

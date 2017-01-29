@@ -103,7 +103,7 @@ u32 caMiniUart::GetErrors(u32 &rxError, u32 & txError) {
 
 u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {
     caStringStream<s8> & ss = *ptr_ss;
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     system_aux_mini_uart(mu);
     ss << caStringFormat::hex;
     ss << "bcm 2835/6 Aux MiniUart :" << caEnd::endl;
@@ -119,8 +119,7 @@ u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {
     ss << "STAT[" << (u32) & mu->stat << "]=" << mu->stat.asReg << caEnd::endl;
     ss << "BAUD[" << (u32) & mu->baud << "]=" << mu->baud << caEnd::endl;
     ss.Str();
-    if (!ss.Good())
-        res = deviceError::error_generic_fail_device;
+    res = ss.Size();
     return res;
 }
 

@@ -23,8 +23,7 @@
 #include "circularbuffer.h"
 
 class caCircularBuffer_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caCircularBuffer_test_class);
     CA_TEST(caCircularBuffer_test_class::test1, "ctor test");
     CA_TEST(caCircularBuffer_test_class::test2, "Init test");
@@ -34,8 +33,7 @@ class caCircularBuffer_test_class
     CA_TEST(caCircularBuffer_test_class::test6, "overwrite test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     //
     void test1(void);
@@ -46,16 +44,14 @@ class caCircularBuffer_test_class
     void test6(void);
     //
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caCircularBuffer_test_class);
 
-void caCircularBuffer_test_class::test1(void)
-{
+void caCircularBuffer_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caCircularBuffer");
     _AUTHOR("Coppi Angelo");
@@ -69,8 +65,7 @@ void caCircularBuffer_test_class::test1(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caCircularBuffer_test_class::test2(void)
-{
+void caCircularBuffer_test_class::test2(void) {
     _START();
     _INFO("to check Init procudere of caCircularBuffer");
     _AUTHOR("Coppi Angelo");
@@ -85,8 +80,7 @@ void caCircularBuffer_test_class::test2(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caCircularBuffer_test_class::test3(void)
-{
+void caCircularBuffer_test_class::test3(void) {
     _START();
     _INFO("to check PUSH/POP procudere of caCircularBuffer");
     _AUTHOR("Coppi Angelo");
@@ -113,8 +107,7 @@ void caCircularBuffer_test_class::test3(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caCircularBuffer_test_class::test4(void)
-{
+void caCircularBuffer_test_class::test4(void) {
     _START();
     _INFO("to check multi PUSH/POP procudere of caCircularBuffer");
     _AUTHOR("Coppi Angelo");
@@ -153,8 +146,7 @@ void caCircularBuffer_test_class::test4(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caCircularBuffer_test_class::test5(void)
-{
+void caCircularBuffer_test_class::test5(void) {
     _START();
     _INFO("to check maxsize PUSH/POP procudere of caCircularBuffer");
     _AUTHOR("Coppi Angelo");
@@ -214,8 +206,7 @@ void caCircularBuffer_test_class::test5(void)
     CA_ASSERT(a.Good() == true);
 }
 
-void caCircularBuffer_test_class::test6(void)
-{
+void caCircularBuffer_test_class::test6(void) {
     _START();
     _INFO("to check owerwrite procudere of caCircularBuffer");
     _AUTHOR("Coppi Angelo");

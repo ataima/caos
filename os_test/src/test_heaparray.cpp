@@ -24,31 +24,27 @@
 #include "heaparray.h"
 
 class caHeapArray_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caHeapArray_test_class);
     CA_TEST(caHeapArray_test_class::test1, "ctor test");
     CA_TEST(caHeapArray_test_class::test2, "init test");
     CA_TEST(caHeapArray_test_class::test3, "add test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
     void test3(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caHeapArray_test_class);
 
-void caHeapArray_test_class::test1(void)
-{
+void caHeapArray_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
@@ -63,8 +59,7 @@ void caHeapArray_test_class::test1(void)
     CA_ASSERT(v.Empty() == true);
 }
 
-void caHeapArray_test_class::test2(void)
-{
+void caHeapArray_test_class::test2(void) {
     _START();
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");
@@ -87,8 +82,7 @@ void caHeapArray_test_class::test2(void)
     CA_ASSERT(v.Empty() == true);
 }
 
-void caHeapArray_test_class::test3(void)
-{
+void caHeapArray_test_class::test3(void) {
     _START();
     _INFO("to check ctor of caHeapArray");
     _AUTHOR("Coppi Angelo");

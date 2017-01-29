@@ -27,6 +27,7 @@ caHalJobDevice::caHalJobDevice(hal_llc_scheduler_io *iface, u32 mask) {
     link = iface;
     handle_guid = BASE_HANDLE;
     mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+
 }
 
 u32 caHalJobDevice::Open(caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {
@@ -137,11 +138,15 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroyAll:
             if (caScheduler::RemoveAllJobs() == false) {
+                LOG(caLog, error) << " deviceError::error_hal_jobs_remove_all"
+                        << caEnd::endl;
                 res = deviceError::error_hal_jobs_remove_all;
             }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroy:
             if (caScheduler::RemoveJob(inp->params[0]) == false) {
+                LOG(caLog, error) << " deviceError::error_hal_job_remove"
+                        << caEnd::endl;
                 res = deviceError::error_hal_job_remove;
             }
             break;
@@ -150,6 +155,8 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             u32 size = caScheduler::Dump(*inp->ss);
             inp->params[0] = size;
             if (size == 0) {
+                LOG(caLog, error) << " deviceError::error_hal_job_dump"
+                        << caEnd::endl;
                 res = deviceError::error_hal_job_dump;
             }
         }
@@ -162,9 +169,11 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             struct param *input = caAttach<struct param>::link(inp);
             u32 result = caScheduler::AddSuperVisorJob(input->name, input->p,
                     input->func, input->par1, input->par2, input->stack);
-            inp->params[0]=result;
-            if(result==(u32)CreateThreadResult::FailCreate){
-                res=deviceError::error_hal_job_sv_create;
+            inp->params[0] = result;
+            if (result == (u32) CreateThreadResult::FailCreate) {
+                LOG(caLog, error) << " deviceError::error_hal_job_dump"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_dump;
             }
         }
             break;
@@ -173,9 +182,11 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             struct param *input = caAttach<struct param>::link(inp);
             u32 result = caScheduler::AddSystemJob(input->name, input->p, input->func,
                     input->par1, input->par2, input->stack);
-            inp->params[0]=result;
-            if(result==(u32)CreateThreadResult::FailCreate){
-                res=deviceError::error_hal_job_sys_create;
+            inp->params[0] = result;
+            if (result == (u32) CreateThreadResult::FailCreate) {
+                LOG(caLog, error) << " deviceError::error_hal_job_sys_create"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_sys_create;
             }
         }
             break;
@@ -184,21 +195,38 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             struct param *input = caAttach<struct param>::link(inp);
             u32 result = caScheduler::AddJob(input->name, input->p, input->func,
                     input->par1, input->par2, input->stack);
-            inp->params[0]=result;
-            if(result==(u32)CreateThreadResult::FailCreate){
-                res=deviceError::error_hal_job_user_create;
+            inp->params[0] = result;
+            if (result == (u32) CreateThreadResult::FailCreate) {
+                LOG(caLog, error) << " deviceError::error_hal_job_user_create"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_user_create;
             }
         }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobWaitForSignal:
             res = caScheduler::WaitForSignal();
+            if (res != deviceError::error_generic) {
+                LOG(caLog, error) << " deviceError::error_hal_job_wait_for_signal"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_wait_for_signal;
+            }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobSleep:
             res = caScheduler::Sleep(in->params[0]);
+            if (res != deviceError::error_generic) {
+                LOG(caLog, error) << " deviceError::error_hal_job_sleep"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_sleep;
+            }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobChangePriority:
             res = caScheduler::ChangePriority(in->params[0],
                     (caJobPriority) in->params[1]);
+            if (res != deviceError::error_generic) {
+                LOG(caLog, error) << " deviceError::error_hal_job_change_priority"
+                        << caEnd::endl;
+                res = deviceError::error_hal_job_change_priority;
+            }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobGetThid:
             in->params[0] = caScheduler::GetCurrentTaskId();
@@ -207,34 +235,6 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
 
-    return res;
-}
-
-u32 caHalJobDevice::IoctlReq(ioCtrlFunction request,
-        u32 *p1, u32 *p2) {
-    u32 res = deviceError::no_error;
-    //TIN();
-    switch (request) {
-        case ioCtrlFunction::caOpenDevice:
-            res = Open((caIDeviceConfigure *) p1, (caDeviceHandle *) p2);
-            break;
-        case ioCtrlFunction::caCloseDevice:
-            res = Close((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caWriteDevice:
-            res = Write((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caReadDevice:
-            res = Read((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDeviceHandle *) p1, (caJobDeviceCtrl *) p2);
-
-            break;
-        default:
-            break;
-    }
-    //
     return res;
 }
 

@@ -22,14 +22,12 @@
 #include "hal.h"
 
 class caCString_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caCString_test_class);
     CA_TEST(caCString_test_class::test1, "ctor test");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -38,16 +36,14 @@ class caCString_test_class
     void test5(void);
     void test6(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caCString_test_class);
 
-void caCString_test_class::test1(void)
-{
+void caCString_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caCString_test_class");
     _AUTHOR("Coppi Angelo");

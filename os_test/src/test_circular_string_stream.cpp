@@ -22,12 +22,8 @@
 #include "hal.h"
 #include <iostream>
 
-
-
-
 class caCircularStringStream_test_class
-: public caTester
-{
+: public caTester {
     CA_TEST_SUITE(caCircularStringStream_test_class);
     CA_TEST(caCircularStringStream_test_class::test1, "ctor test");
     CA_TEST(caCircularStringStream_test_class::test2, "Init test");
@@ -55,8 +51,7 @@ class caCircularStringStream_test_class
     CA_TEST(caCircularStringStream_test_class::test30, "rolling text");
     CA_TEST_SUITE_END();
 
-    void setUp(void)
-    {
+    void setUp(void) {
     }
     void test1(void);
     void test2(void);
@@ -83,16 +78,14 @@ class caCircularStringStream_test_class
     void testPrefetch(void);
     void test30(void);
 
-    void tearDown(void)
-    {
+    void tearDown(void) {
     }
 
 };
 
 REGISTER_CLASS(caCircularStringStream_test_class);
 
-void caCircularStringStream_test_class::test1(void)
-{
+void caCircularStringStream_test_class::test1(void) {
     _START();
     _INFO("to check ctor of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -105,8 +98,7 @@ void caCircularStringStream_test_class::test1(void)
     CA_ASSERT(a.Good() == false);
 }
 
-void caCircularStringStream_test_class::test2(void)
-{
+void caCircularStringStream_test_class::test2(void) {
     _START();
     _INFO("to check Init of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -126,8 +118,7 @@ void caCircularStringStream_test_class::test2(void)
     CA_ASSERT(a.Empty() == true);
 }
 
-void caCircularStringStream_test_class::test3(void)
-{
+void caCircularStringStream_test_class::test3(void) {
     _START();
     _INFO("to check operator << s8 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -155,8 +146,7 @@ void caCircularStringStream_test_class::test3(void)
     CA_ASSERT(a.Empty() == true);
 }
 
-void caCircularStringStream_test_class::test4(void)
-{
+void caCircularStringStream_test_class::test4(void) {
     _START();
     _INFO("to check operator << u8 of caCircularStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -218,8 +208,7 @@ void caCircularStringStream_test_class::test4(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test5(void)
-{
+void caCircularStringStream_test_class::test5(void) {
     _START();
     _INFO("to check operator << s16 of caCircularStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -296,8 +285,7 @@ void caCircularStringStream_test_class::test5(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test6(void)
-{
+void caCircularStringStream_test_class::test6(void) {
     _START();
     _INFO("to check operator << s16 of caCircularStringStream");
     _INFO("with s16 a negative number");
@@ -375,8 +363,7 @@ void caCircularStringStream_test_class::test6(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test7(void)
-{
+void caCircularStringStream_test_class::test7(void) {
     _START();
     _INFO("to check operator << u16 of caCircularStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -452,8 +439,7 @@ void caCircularStringStream_test_class::test7(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test8(void)
-{
+void caCircularStringStream_test_class::test8(void) {
     _START();
     _INFO("to check operator << s32 of caCircularStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -555,8 +541,7 @@ void caCircularStringStream_test_class::test8(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test9(void)
-{
+void caCircularStringStream_test_class::test9(void) {
     _START();
     _INFO("to check operator << s32 of caCircularStringStream");
     _INFO("value of s32 negative");
@@ -660,8 +645,7 @@ void caCircularStringStream_test_class::test9(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test10(void)
-{
+void caCircularStringStream_test_class::test10(void) {
     _START();
     _INFO("to check operator << u32 of caCircularStringStream");
     _INFO("Test out on format dec,hex,bin");
@@ -762,8 +746,7 @@ void caCircularStringStream_test_class::test10(void)
     a.Clear();
 }
 
-void caCircularStringStream_test_class::test11(void)
-{
+void caCircularStringStream_test_class::test11(void) {
     _START();
     _INFO("to check operator << & b of caCircularStringStream");
     _INFO("concatenate two castringstream (faster mode: memcpy)");
@@ -834,8 +817,7 @@ void caCircularStringStream_test_class::test11(void)
     CA_ASSERT(strcmp(obuff, " pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  pippo  pluto  ") == 0);
 }
 
-void caCircularStringStream_test_class::test12(void)
-{
+void caCircularStringStream_test_class::test12(void) {
     _START();
     _INFO("to check operator << const char *msg of caCircularStringStream");
     _INFO("concatenate string (slower mode: no memcpy)");
@@ -867,8 +849,7 @@ void caCircularStringStream_test_class::test12(void)
 
 }
 
-void caCircularStringStream_test_class::test12bis(void)
-{
+void caCircularStringStream_test_class::test12bis(void) {
     _START();
     _INFO("to check operator << const char *msg of caCircularStringStream");
     _INFO("concatenate string (slower mode: no memcpy)");
@@ -901,8 +882,7 @@ void caCircularStringStream_test_class::test12bis(void)
 
 }
 
-void caCircularStringStream_test_class::test13(void)
-{
+void caCircularStringStream_test_class::test13(void) {
     _START();
     _INFO("to check operator << *s8 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -920,8 +900,7 @@ void caCircularStringStream_test_class::test13(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test14(void)
-{
+void caCircularStringStream_test_class::test14(void) {
     _START();
     _INFO("to check operator << *u8 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -946,8 +925,7 @@ void caCircularStringStream_test_class::test14(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test15(void)
-{
+void caCircularStringStream_test_class::test15(void) {
     _START();
     _INFO("to check operator << *s16 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -966,8 +944,7 @@ void caCircularStringStream_test_class::test15(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test16(void)
-{
+void caCircularStringStream_test_class::test16(void) {
     _START();
     _INFO("to check operator << *u16 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -986,8 +963,7 @@ void caCircularStringStream_test_class::test16(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test17(void)
-{
+void caCircularStringStream_test_class::test17(void) {
     _START();
     _INFO("to check operator << *s32 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -1006,8 +982,7 @@ void caCircularStringStream_test_class::test17(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test18(void)
-{
+void caCircularStringStream_test_class::test18(void) {
     _START();
     _INFO("to check operator << *u32 of caCircularStringStream");
     _AUTHOR("Coppi Angelo");
@@ -1026,8 +1001,7 @@ void caCircularStringStream_test_class::test18(void)
     CA_ASSERT(strcmp(obuff, buff_b) == 0);
 }
 
-void caCircularStringStream_test_class::test19(void)
-{
+void caCircularStringStream_test_class::test19(void) {
     _START();
     _INFO("to check operator << * b a ptr of caCircularStringStream");
     _INFO("concatenate two castringstream (faster mode: memcpy)");
@@ -1076,8 +1050,7 @@ void caCircularStringStream_test_class::test19(void)
     CA_ASSERT(strcmp(obuff, "pippo  pluto  ") == 0);
 }
 
-void caCircularStringStream_test_class::test20(void)
-{
+void caCircularStringStream_test_class::test20(void) {
     _START();
     _INFO("to check filler object");
     _AUTHOR("Coppi Angelo");
@@ -1089,22 +1062,21 @@ void caCircularStringStream_test_class::test20(void)
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 100);
-    CA_ASSERT(a.Str(obuff,100) == 0);
+    CA_ASSERT(a.Str(obuff, 100) == 0);
     CA_ASSERT(a.Good() == true);
     caStringFiller v('a', 10);
     caCSTR(f, "pippo");
     a << f;
     a.Fix(v);
     a << v;
-    CA_ASSERT(a.Str(obuff,100)==15)
+    CA_ASSERT(a.Str(obuff, 100) == 15)
     CA_ASSERT(strcmp(obuff, "pippoaaaaaaaaaa") == 0);
     CA_ASSERT(v.ch == 'a');
     CA_ASSERT(v.width == 10);
     CA_ASSERT(v.end == 15);
 }
 
-void caCircularStringStream_test_class::test21(void)
-{
+void caCircularStringStream_test_class::test21(void) {
     _START();
     _INFO("to check terminator object");
     _AUTHOR("Coppi Angelo");
@@ -1116,16 +1088,15 @@ void caCircularStringStream_test_class::test21(void)
     a.Init(buff, 100);
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 100);
-    CA_ASSERT(a.Str(obuff,100) == 0);
+    CA_ASSERT(a.Str(obuff, 100) == 0);
     CA_ASSERT(a.Good() == true);
     caCSTR(f, "pippo");
     a << f << caEnd::endl;
-    CA_ASSERT(a.Str(obuff,100) == 7);
+    CA_ASSERT(a.Str(obuff, 100) == 7);
     CA_ASSERT(strcmp(obuff, "pippo\r\n") == 0);
 }
 
-void caCircularStringStream_test_class::testPrefetch(void)
-{
+void caCircularStringStream_test_class::testPrefetch(void) {
     _START();
     _INFO("to check terminator object");
     _AUTHOR("Coppi Angelo");
@@ -1146,12 +1117,11 @@ void caCircularStringStream_test_class::testPrefetch(void)
     ss << "SVC = " << lr_svc << caEnd::endl;
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
-    CA_ASSERT(ss.Str(obuff,512) != 0);
+    CA_ASSERT(ss.Str(obuff, 512) != 0);
     std::cout << obuff;
 }
 
-void caCircularStringStream_test_class::test30(void)
-{
+void caCircularStringStream_test_class::test30(void) {
     _START();
     _INFO("to check roling text on circular buffer object");
     _AUTHOR("Coppi Angelo");
@@ -1163,19 +1133,17 @@ void caCircularStringStream_test_class::test30(void)
     a.Init(buff, 11);
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 11);
-    CA_ASSERT(a.Str(obuff,100) == 0);
+    CA_ASSERT(a.Str(obuff, 100) == 0);
     CA_ASSERT(a.Good() == true);
-    const char msg[]="01234567890123456789";
-    s_t i,u;
-    for(i=0;i<100;i++)
-    {
-      u=(i%10);
-      s8 t=msg[u];
-      a<<t;
-      if(i>=9)
-      {
-          CA_ASSERT(a.Str(obuff,100) == 10);
-          CA_ASSERT(memcmp(obuff,&msg[u+1],10)==0);
-      }
+    const char msg[] = "01234567890123456789";
+    s_t i, u;
+    for (i = 0; i < 100; i++) {
+        u = (i % 10);
+        s8 t = msg[u];
+        a << t;
+        if (i >= 9) {
+            CA_ASSERT(a.Str(obuff, 100) == 10);
+            CA_ASSERT(memcmp(obuff, &msg[u + 1], 10) == 0);
+        }
     }
 }

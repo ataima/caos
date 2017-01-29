@@ -18,12 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
-
-
-
-
-
-
 #include "halsystimerdevice.h"
 #include "memaux.h"
 
@@ -182,43 +176,58 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
             res = deviceError::error_ioctrl_command_error;
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerFlush:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerFlush" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerFlush"
+                    << caEnd::endl;
             res = Flush(port);
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStart:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStart" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStart"
+                    << caEnd::endl;
             res = hal_llc_time_1.hll_start();
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStop:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStop" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerStop"
+                    << caEnd::endl;
             res = hal_llc_time_1.hll_stop();
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware"
+                    << caEnd::endl;
             if (in->ss != NULL) {
                 in->ss->Clear();
-                res = hal_llc_time_1.hll_dump(in->ss);
+                u32 size = hal_llc_time_1.hll_dump(in->ss);
+                in->params[0] = size;
+                if (size == 0) {
+                    res = deviceError::error_systimer_dump;
+                    LOG(caLog, error) << " deviceError::error_systimer_dump"
+                            << caEnd::endl;
+                }
             } else {
                 res = deviceError::error_invalid_null_destination;
-                LOG(caLog, error) << " deviceError::error_invalid_null_destination" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_null_destination"
+                        << caEnd::endl;
             }
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_1:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_1" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_1"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_1)) {
                 res = deviceError::error_signal_already_set;
-                LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_signal_already_set"
+                        << caEnd::endl;
             } else {
                 if (hal_llc_scheduler.hll_scheduler_valid_handle(in->params[0])) {
                     signal_1 = in->params[0];
                 } else {
                     res = deviceError::error_invalid_handle_port;
-                    LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                    LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                            << caEnd::endl;
                 }
             }
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerAddSignal_2"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_2)) {
                 res = deviceError::error_signal_already_set;
                 LOG(caLog, error) << " deviceError::error_signal_already_set" << caEnd::endl;
@@ -227,66 +236,46 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
                     signal_2 = in->params[1];
                 } else {
                     res = deviceError::error_invalid_handle_port;
-                    LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                    LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                            << caEnd::endl;
                 }
             }
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1:
-            LOG(caLog, info) << " : caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1" << caEnd::endl;
+            LOG(caLog, info) << " : caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_1"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_1)) {
                 signal_1 = 0;
             } else {
                 res = deviceError::error_invalid_handle_port;
-                LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                        << caEnd::endl;
             }
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerRemoveSignal_2"
+                    << caEnd::endl;
             if (hal_llc_scheduler.hll_scheduler_valid_handle(signal_2)) {
                 signal_2 = 0;
             } else {
                 res = deviceError::error_invalid_handle_port;
-                LOG(caLog, error) << " deviceError::error_invalid_handle_port" << caEnd::endl;
+                LOG(caLog, error) << " deviceError::error_invalid_handle_port"
+                        << caEnd::endl;
             }
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_1:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerGetSignal_1"
+                    << caEnd::endl;
             in->params[0] = signal_1;
             break;
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2:
-            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::comGetSignalTx" << caEnd::endl;
+            LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::comGetSignalTx"
+                    << caEnd::endl;
             in->params[0] = signal_2;
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
-    return res;
-}
-
-u32 caHalSysTimerDevice::IoctlReq(ioCtrlFunction request,
-        u32 *p1, u32 *p2) {
-    u32 res = deviceError::no_error;
-    //TIN();
-    switch (request) {
-        case ioCtrlFunction::caOpenDevice:
-            res = Open((caIDeviceConfigure *) p1, (caDeviceHandle *) p2);
-            break;
-        case ioCtrlFunction::caCloseDevice:
-            res = Close((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caWriteDevice:
-            res = Write((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caReadDevice:
-            res = Read((caDeviceHandle *) p1);
-            break;
-        case ioCtrlFunction::caIoCtrlDevice:
-            res = IoCtrl((caDeviceHandle *) p1, (caSysTimerDeviceCtrl *) p2);
-            break;
-        default:
-            break;
-    }
-    //
     return res;
 }
 

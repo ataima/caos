@@ -121,18 +121,16 @@ typedef enum tag_sched_mode {
     Priority,
 } caSchedulerMode;
 
-typedef enum _tag_fail_create
-{ 
-    FailCreate=-1
-}CreateThreadResult;
-
+typedef enum _tag_fail_create {
+    FailCreate = -1
+} CreateThreadResult;
 
 class caScheduler {
 private:
 
     class caThread {
     public:
-        
+
         static u32 CreateThread(const char *name, caJobMode mode,
                 caJobPriority p, thFunc func,
                 u32 par1, u32 par2, u32 stack);

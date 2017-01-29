@@ -1188,20 +1188,17 @@ public:
     /// implementation of ...
 
     virtual void addResult(const char *info, int f = 0, int timeU = 0) {
-        if (timeU != -1)
-        {
-            if(f)
-               fprintf(file, ">OK  :%s%d ms\n",  info, timeU);
+        if (timeU != -1) {
+            if (f)
+                fprintf(file, ">OK  :%s%d ms\n", info, timeU);
             else
-               fprintf(file, ">FAIL:%s%d ms\n",  info, timeU);
-                
-        }
-        else
-        {
-            if(f)
-               fprintf(file, ">OK  :%s\n",  info);
+                fprintf(file, ">FAIL:%s%d ms\n", info, timeU);
+
+        } else {
+            if (f)
+                fprintf(file, ">OK  :%s\n", info);
             else
-               fprintf(file, ">FAIL:%s\n",  info);
+                fprintf(file, ">FAIL:%s\n", info);
         }
         fflush(file);
     }
