@@ -20,13 +20,20 @@
 #include "config.h"
 #include "caos_c_types.h"
 #include "memaux.h"
+#include "kdebug.h"
 
 // stub for memcpy & more missing function . gcc with -O0 and -ggdb reuire memcpy 
 // in ctor and virtual pure default functions...
 
 
-extern "C" int memcpy(s8 *dest,s8 *src,s_t len){
- return caMemAux::MemCpy(dest,src,len);
+extern "C" void * memcpy(void  *dest,const void *src,s_t len){
+    s8* p1=reinterpret_cast<s8*>(dest);
+    const s8* p2=reinterpret_cast<const s8*>(src);
+ return caMemAux<s8>::MemCpy(p1,p2,len);
 }
 
-
+extern "C" void __cxa_pure_virtual() { 
+    Dbg::Put("> c.a.O.S. : PANIC ERROR [ call to virtual pure function !! ]\r\n");
+    while(1){
+    }
+}
