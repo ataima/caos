@@ -54,8 +54,8 @@ extern "C" {
         caInterruptRequest::Prefetch(lr_usr, lr_svc, lr_irq, lr_abt);
     }
 
-    void ISR_Hypervisor(void) {
-        caInterruptRequest::Hypervisor();
+    void ISR_Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt) {
+        caInterruptRequest::Hypervisor(lr_usr,  lr_svc,  lr_irq,  lr_abt);
     }
 
     void switchContext(void) {

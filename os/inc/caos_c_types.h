@@ -42,9 +42,11 @@ typedef u32 s_t;
 
 
 #if __LP64__
+//#warning "platform 64 bit !!"
 #define _IS_64_ 1
 #define _IS_32_ 0
 #else
+//#warning "platform 32 bit !!"
 #define _IS_64_ 0
 #define _IS_32_ 1
 #endif
@@ -66,13 +68,9 @@ inline void * uint_to_ptr(u32 v) {
 
 #if _IS_32_
 
-inline u32 ptr_to_uint(void *p) {
-    return (u32) (p);
-}
+#define ptr_to_uint(p) (u32)(p)
+#define uint_to_ptr(p) (void *)(p)
 
-inline void * uint_to_ptr(u32 v) {
-    return (void *) v;
-}
 #endif      
 
 

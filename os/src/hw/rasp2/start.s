@@ -95,7 +95,6 @@ ResetISR:
         msr     ELR_hyp,r0
         eret
 no_Monitor:
-
         /* NO IRQ - FIQ - A for entry from bootloader....*/
         mrs	r0, cpsr      
 	orr	r0, r0, #(A_BIT|F_BIT|I_BIT)

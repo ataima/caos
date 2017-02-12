@@ -148,13 +148,17 @@ void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt
     while (1);
 }
 
-void caInterruptRequest::Hypervisor(void) {
+void caInterruptRequest::Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt) {
     caArmCpu::DisableInt();
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
     ss << caStringFormat::hex;
-    ss << "HYpervisor" << caEnd::endl;
+    ss << "Hypervisor" << caEnd::endl;
+    ss << "USR = " << lr_usr << caEnd::endl;
+    ss << "SVC = " << lr_svc << caEnd::endl;
+    ss << "IRQ = " << lr_irq << caEnd::endl;
+    ss << "ABT = " << lr_abt << caEnd::endl;
     Dbg::Put(ss.Str());
     while (1);
 }

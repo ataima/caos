@@ -75,7 +75,7 @@ objdump_file:
 dwload_1: kernel7.img
 	@echo  $(EH) $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
 	@$(DWLOAD) $(BUILDIR)/caOS.hex
-	@$(PUTTY)  
+
 
 dwload: dwload_1 	
 	@echo dwload ...done.

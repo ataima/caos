@@ -31,7 +31,8 @@ BUILD_NUMBER:=
 #CROSS TOOLS 
 ARMGNU:=arm-none-eabi
 # CURRENT DEBUG LEVEL
-DBG:=  -ggdb 
+DBG:=  -O2
+#DBG:=  -ggdb
 # C LANGUAGE OPTIONS
 C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -c 
 # CPP LANGUAGE OPTIONS

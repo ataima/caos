@@ -33,7 +33,7 @@ extern "C" {
     u32 ISR_IRQ(void);
     u32 ISR_FIQ(void);
     void ISR_Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt);
-    void ISR_Hypervisor(void);
+    void ISR_Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt);
     void switchContext(void) __attribute__ ((naked));
 }
 
@@ -46,7 +46,7 @@ public:
     static u32 IRQ(void);
     static u32 FIQ(void);
     static void Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_fiq);
-    static void Hypervisor(void);
+    static void Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt);
 
 
 
