@@ -68,8 +68,8 @@ inline void * uint_to_ptr(u32 v) {
 
 #if _IS_32_
 
-#define ptr_to_uint(p) (u32)(p)
-#define uint_to_ptr(p) (void *)(p)
+#define ptr_to_uint(p) ((u32)(p))
+#define uint_to_ptr(p) ((void *)(p))
 
 #endif      
 

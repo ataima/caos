@@ -320,7 +320,7 @@ deviceError caConsole::Command_MEM(caDeviceHandle &port,
     iss>>opt;
     if (opt.size == 0 || caStrAux::StrNCmp((char *) opt.ptr, "list", 4) == 0) {
         //MemoryList(buffio, sizeof (buffio), &res);
-        res = caMemory::List(buffio, sizeof (buffio));
+        res = caMemory::List(ss);
         if (res) {
             ss.Forward(res);
             res = caOS::Write(port, ss);

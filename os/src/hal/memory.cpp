@@ -217,11 +217,9 @@ void caMemory::Dump(caStringStream<s8> & ss, blockMem *start) {
     ss << p << caEnd::endl;
 }
 
-u32 caMemory::List(s8 *buff, u32 size) {
+u32 caMemory::List(caStringStream<s8>  & ss) {
     caStringFiller p(' ', 12);
-    caStringStream<s8> ss;
     u32 i = 1;
-    ss.Init(buff, size);
     ss << " --- MEMORY LIST ---\r\n";
     blockMem *start = reinterpret_cast<blockMem *> (start_mem);
     while (start != NULL) {
@@ -305,57 +303,9 @@ u32 caMemory::Ascii(dumpAddrReq *req) {
     return 0;
 }
 
-u32 caMemory::IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2) {
-    u32 res = FALSE;
-    switch (request) {
-        case caMemoryAlloc:
-            *p2 = ptr_to_uint(caMemory::Allocate(*p1));
-            res = (*p2 != NULL);
-            break;
-        case caMemoryFree:
-            res = caMemory::Free((void *) p1, p2);
-            break;
-        case caMemoryListAll:
-            res = caMemory::List(reinterpret_cast<s8*> (p1), ptr_to_uint(p2));
-            break;
-        case caMemoryDump:
-        {
-            dumpAddrReq *req = (dumpAddrReq *) (p1);
-            res = caMemory::Dump(req);
-        }
-            break;
-        case caMemoryAsciiDump:
-        {
-            dumpAddrReq *req = (dumpAddrReq *) (p1);
-            res = caMemory::Ascii(req);
-        }
-            break;
-        default:
-            break;
-    }
-    return res;
-}
 
-#ifdef TEST_SVC_MEMORY
 
-u32 caMemory::TestMemoryIoctl(void) {
-    u32 ptr = 0;
-    u32 size = 10000;
-    u32 res = 0;
-    MemoryDump(&res);
-    MemoryAlloc<u32 *, u32 *>(&size, &ptr, &res);
-    Dbg::Put("PTR = ", ptr);
-    Dbg::Put("SIZE = ", size);
-    Dbg::Put("RES = ", res);
-    MemoryDump(&res);
-    size = -1;
-    MemoryFree<u32 *, u32* >(&ptr, &size, &res);
-    Dbg::Put("PTR = ", ptr);
-    Dbg::Put("SIZE = ", size);
-    Dbg::Put("RES = ", res);
-    MemoryDump(&res);
-}
-#endif
+
 
 
 

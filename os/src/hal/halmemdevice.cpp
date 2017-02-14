@@ -59,16 +59,15 @@ u32 caHalMemDevice::Close(caDeviceHandle *port) {
     return res;
 }
 
+
+/// Write to device memDevice -> allocate memory : in port->wrSize,out  port->wrBuff size
+
 u32 caHalMemDevice::Write(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     if (port->wrSize != 0) {
-        u32 size = port->wrSize;
-        //u32 * ptr = (u32*) port->wrBuff;
-        // TODO INSERT WRITE DATA 
-        port->writed += size;
-        port->wrBuff += size;
-        port->wrSize -= size;
+        port->writed = 0;
+        port->wrBuff = (u8*) caMemory::Allocate(port->wrSize);
         port->tLast = link->hll_tick();
         port->tLastCmd = caDeviceAction::caActionWrite;
         port->wrError = port->rdError = 0;
@@ -84,19 +83,11 @@ u32 caHalMemDevice::Write(caDeviceHandle *port) {
 u32 caHalMemDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
-    if (port->rdSize != 0) {
-        u32 pSize = port->rdSize;
-        port->readed += pSize;
-        port->rdBuff += pSize;
-        port->rdSize -= pSize;
-        port->tLast = hal_llc_time_1.hll_tick();
-        port->tLastCmd = caDeviceAction::caActionRead;
-        port->wrError = port->rdError = 0;
-    } else {
-        res = deviceError::error_invalid_handle_port_rd_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_rd_size:"
-                << port->rdSize << caEnd::endl;
-    }
+    port->readed = caMemory::Free(port->rdBuff, &port->rdSize);
+    port->rdBuff=NULL;
+    port->tLast = hal_llc_time_1.hll_tick();
+    port->tLastCmd = caDeviceAction::caActionRead;
+    port->wrError = port->rdError = 0;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
@@ -117,20 +108,22 @@ u32 caHalMemDevice::IoCtrl(caDeviceHandle *port,
     caMemoryDeviceCtrl *in = static_cast<caMemoryDeviceCtrl *> (inp);
     switch (in->command) {
         case caMemoryDeviceCtrl::IoMemCtrlDirect::memReallocate:
+            //todo 
             break;
-
         default:
             LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
                     << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
         case caMemoryDeviceCtrl::IoMemCtrlDirect::memList:
+            caMemory::List(*inp->ss);
             break;
-        case caMemoryDeviceCtrl::IoMemCtrlDirect::memAllocate:
+        case caMemoryDeviceCtrl::IoMemCtrlDirect::memInfo:
+            inp->params[0]=ptr_to_uint(caMemory::GetStartAddress());
+            inp->params[1]=ptr_to_uint(caMemory::GetEndAddress());
+            inp->params[2]=caMemory::GetAvailMemory();
+            inp->params[3]=caMemory::GetTotalSize();
             break;
-        case caMemoryDeviceCtrl::IoMemCtrlDirect::memFree:
-            break;
-
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
@@ -139,43 +132,36 @@ u32 caHalMemDevice::IoCtrl(caDeviceHandle *port,
 
 u32 caHalMemDevice::IrqService1(u8 *, s_t size, s_t &) {
     LOG(caLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService2(u8 *, s_t size, s_t &) {
     LOG(caLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService3(u8 *, s_t, s_t &) {
     LOG(caLog, irq_3) << " IrqService3 " << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService4(u8 *, s_t, s_t &) {
     LOG(caLog, irq_4) << " IrqService4 " << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService5(u8 *, s_t, s_t &) {
     LOG(caLog, irq_5) << " IrqService5 " << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService6(u8 *, s_t, s_t &) {
     LOG(caLog, irq_6) << " IrqService6 " << caEnd::endl;
-
     return 1;
 }
 
 u32 caHalMemDevice::IrqService7(u8 *, s_t, s_t &) {
     LOG(caLog, irq_7) << " IrqService7 " << caEnd::endl;
-
     return 1;
 }
 

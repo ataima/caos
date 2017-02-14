@@ -66,7 +66,7 @@ private:
     static void *SplitBlock(blockMem *free, u32 size);
     static void UnionBlock(blockMem * s);
 public:
-    static u32 List(s8 *buff, u32 size);
+    static u32 List(caStringStream<s8>  & ss);
     static u32 Dump(dumpAddrReq *req);
     static u32 Ascii(dumpAddrReq *req);
     static void Dump(caStringStream<s8> & ss, blockMem *s);
@@ -83,8 +83,6 @@ public:
     static u32 Find(void *p);
 
     static s8* DumpAvail(s8* buff, s_t size);
-
-    static u32 IoctlReq(ioCtrlFunction request, u32 *p1, u32 *p2);
 
     //T
 
@@ -122,13 +120,6 @@ public:
         return BLOCKSIZE;
     }
 
-#ifdef TEST_SVC_MEMORY
-    static void TestMemoryIoctl(void);
-#else
-
-    static inline void TestMemoryIoctl(void) {
-    }
-#endif
 };
 
 

@@ -28,10 +28,9 @@ struct caMemoryDeviceCtrl
 public:
 
     typedef enum tag_io_ctrl_mem_specific_request {
-        memList = IO_CTRL_UID(id_device::id_Mem),
-        memAllocate,
-        memFree,
-        memReallocate,
+        memList = IO_CTRL_UID(id_device::id_Mem),        
+        memReallocate, // todo 
+        memInfo,        
     } IoMemCtrlDirect;
 };
 
