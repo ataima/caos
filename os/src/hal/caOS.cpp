@@ -31,6 +31,8 @@ caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
 
 caHalMemDevice caOS::memory(&hal_llc_mem,ioCtrlRequest::Memory);
 
+caHalPipeDevice caOS::pipe(&hal_llc_mem,ioCtrlRequest::Pipe);
+
 #if SYS_TIMER_2_DEVICE
 caHalSysTimerDevice caOS::timer2(&hal_llc_time_2, ioCtrlRequest::SysTimer2);
 #endif
@@ -94,7 +96,6 @@ caOS::devicePair caOS::allDevices[] = {
     {"MEMORY", ioCtrlRequest::Memory, &memory},
     {"TASK", ioCtrlRequest::Task, &scheduler},
     {"PIPE", ioCtrlRequest::Pipe, NULL},
-
     {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
 
 #if SYS_TIMER_2_DEVICE    
