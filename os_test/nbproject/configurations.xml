@@ -3,9 +3,11 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <in>caos.cpp</in>
         <in>halcomdevice.cpp</in>
         <in>haljobdevice.cpp</in>
         <in>halmemdevice.cpp</in>
+        <in>halpipedevice.cpp</in>
         <in>halsystimerdevice.cpp</in>
         <in>idevice.cpp</in>
         <in>kdebug.cpp</in>
@@ -25,6 +27,7 @@
         <in>test_halcomdevice.cpp</in>
         <in>test_haljobdevice.cpp</in>
         <in>test_halmemdevice.cpp</in>
+        <in>test_halpipedevice.cpp</in>
         <in>test_halsystimerdevice.cpp</in>
         <in>test_heaparray.cpp</in>
         <in>test_memaux.cpp</in>
@@ -81,6 +84,10 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="src/caos.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="src/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -90,6 +97,10 @@
         </ccTool>
       </item>
       <item path="src/halmemdevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/halpipedevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -169,6 +180,10 @@
         </ccTool>
       </item>
       <item path="src/test_halmemdevice.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/test_halpipedevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

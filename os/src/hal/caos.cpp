@@ -95,7 +95,7 @@ caHalComDevice caOS::com8(&hal_llc_com8, ioCtrlRequest::Com8);
 caOS::devicePair caOS::allDevices[] = {
     {"MEMORY", ioCtrlRequest::Memory, &memory},
     {"TASK", ioCtrlRequest::Task, &scheduler},
-    {"PIPE", ioCtrlRequest::Pipe, NULL},
+    {"PIPE", ioCtrlRequest::Pipe, &pipe},
     {"SYS_TIMER_1", ioCtrlRequest::SysTimer1, &timer1},
 
 #if SYS_TIMER_2_DEVICE    
@@ -150,7 +150,7 @@ bool caOS::GetDevice(const char * name, s32 & offset) {
     bool res = false;
     offset = -1;
     u32 i;
-    u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) + 1;
+    u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) ;
     for (i = 0; i < mnDevices; i++) {
         // TO DO BINARY SEARCH ON allDevices
         if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {

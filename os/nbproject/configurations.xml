@@ -4,7 +4,7 @@
     <df root="." name="0">
       <df name="src">
         <df name="hal">
-          <in>caOS.cpp</in>
+          <in>caos.cpp</in>
           <in>console.cpp</in>
           <in>devicehandle.cpp</in>
           <in>halcomdevice.cpp</in>
@@ -91,7 +91,7 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="src/hal/caOS.cpp" ex="false" tool="1" flavor2="8">
+      <item path="src/hal/caos.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
           <incDir>
             <pElem>src/hal</pElem>

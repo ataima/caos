@@ -79,7 +79,7 @@ define link_ext_file
     $(shell if [ ! -e src/$1 ]; then ln ../os/src/hal/$1 src/$1 ; fi)
 endef
 
-define ulink_ext_file
+define detach_ext_file
     $(shell if [ -e src/$1 ]; then rm -f src/$1 ; fi)
 endef
 
@@ -90,23 +90,27 @@ add_ext_src:
 	$(call link_ext_file,halsystimerdevice.cpp)
 	$(call link_ext_file,haljobdevice.cpp)
 	$(call link_ext_file,halmemdevice.cpp)
+	$(call link_ext_file,halpipedevice.cpp)
 	$(call link_ext_file,syslog.cpp)
+	$(call link_ext_file,caos.cpp)
 	$(call link_ext_file,memory.cpp)
 	$(call link_ext_file,scheduler.cpp)
 	$(call link_ext_file,kdebug.cpp)
 
 
 remove_ext_src:
-	$(call ulink_ext_file,memaux.cpp)
-	$(call ulink_ext_file,idevice.cpp)
-	$(call ulink_ext_file,halcomdevice.cpp)
-	$(call ulink_ext_file,halsystimerdevice.cpp)
-	$(call ulink_ext_file,haljobdevice.cpp)
-	$(call link_ext_file,halmemdevice.cpp)
-	$(call ulink_ext_file,syslog.cpp)
-	$(call ulink_ext_file,memory.cpp)
-	$(call ulink_ext_file,scheduler.cpp)
-	$(call ulink_ext_file,kdebug.cpp)
+	$(call detach_ext_file,memaux.cpp)
+	$(call detach_ext_file,idevice.cpp)
+	$(call detach_ext_file,halcomdevice.cpp)
+	$(call detach_ext_file,halsystimerdevice.cpp)
+	$(call detach_ext_file,haljobdevice.cpp)
+	$(call detach_ext_file,halmemdevice.cpp)
+	$(call detach_ext_file,halpipedevice.cpp)
+	$(call detach_ext_file,syslog.cpp)
+	$(call detach_ext_file,caos.cpp)
+	$(call detach_ext_file,memory.cpp)
+	$(call detach_ext_file,scheduler.cpp)
+	$(call detach_ext_file,kdebug.cpp)
 
 	
 	
