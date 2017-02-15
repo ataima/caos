@@ -116,6 +116,7 @@ all_cpp_file: 	$(OBJ_CPP)
 
 
 info:	
+	@echo  $(EH) $(C_YELLOW)"Current HARDWARE = "$(C_RESET)$(HARDWARE)
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN PATH= "$(C_RESET)$(ARMPATH)
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CC= "$(C_RESET)$(CROSS_CC)

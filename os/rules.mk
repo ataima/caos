@@ -28,39 +28,105 @@ CAOS_VERSION_1:= 1
 CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
-#CROSS TOOLS 
-ARMGNU:=arm-none-eabi
+#SELECT CURRENT HARDWARE RASPI2  686   SIMULA
+# ===========================================	
+HARDWARE=SIMULA
+#        ^^^^^^^^^^^^^^^ 
+# ===========================================	
+#CUSTOMIZE ENVIROMENT FROM SELECTED HARDWARE
+#CASE 1: RASPBERRY-2
+ifeq ($(HARDWARE),RASPI2)	
+	#CROSS TOOLS 
+	ARMGNU:=arm-none-eabi
+	# C LANGUAGE OPTIONS
+	CPU_SPEC_C:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
+	# CPP LANGUAGE OPTIONS
+	CPU_SPEC_CPP:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
+	# ASM LANGUAGE OPTIONS
+	CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  -DHW_RASPI2
+	# LINKER OPTIONS
+	LN_OPTS:=-T ld_conf/BCM2836.ld
+	# ABSOLUTE PATH TO CROSS TOOLCHAIN
+	ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
+	# CROSS TOOOL PROGRAMS
+	CROSS_CC:=$(ARMPATH)/$(ARMGNU)-gcc 
+	CROSS_CPP:=$(ARMPATH)/$(ARMGNU)-g++ 
+	CROSS_AS:=$(ARMPATH)/$(ARMGNU)-as 
+	CROSS_LD:=$(ARMPATH)/$(ARMGNU)-ld 
+	CROSS_OBJDUMP:=$(ARMPATH)/$(ARMGNU)-objdump 
+	CROSS_OBJCOPY:=$(ARMPATH)/$(ARMGNU)-objcopy 
+	CROSS_GDB:=$(ARMPATH)/$(ARMGNU)-gdb 
+endif
+#CASE2 686 TODO
+ifeq ($(HARDWARE),686)	
+	# CURRENT DEBUG LEVEL
+	DBG:=  -O2
+	#DBG:=  -ggdb
+	# C LANGUAGE OPTIONS
+	CPU_SPEC_C:= -DHW_686 
+	# CPP LANGUAGE OPTIONS
+	CPU_SPEC_CPP:= -DHW_686 
+	# ASM LANGUAGE OPTIONS
+	CPU_SPEC_ASM:=   -DHW_686 
+	# LINKER OPTIONS
+	LN_OPTS:=	
+	# CROSS TOOOL PROGRAMS
+	CROSS_CC:=gcc 
+	CROSS_CPP:=g++ 
+	CROSS_AS:=as 
+	CROSS_LD:=ld 
+	CROSS_OBJDUMP:=objdump 
+	CROSS_OBJCOPY:=objcopy 
+	CROSS_GDB:=gdb 
+endif
+#CASE 3 SIMULA
+ifeq ($(HARDWARE),SIMULA)	
+	# CURRENT DEBUG LEVEL
+	DBG:=  -O2
+	#DBG:=  -ggdb
+	C_MODE:=-m32
+	# C LANGUAGE OPTIONS
+	CPU_SPEC_C:=$(C_MODE)
+	# CPP LANGUAGE OPTIONS
+	CPU_SPEC_CPP:=$(C_MODE)
+	# ASM LANGUAGE OPTIONS
+	CPU_SPEC_ASM:=  
+	# LINKER OPTIONS
+	ifeq ($(C_MODE),-m32)
+	LK_OPT=  
+	else
+	LK_OPT=  
+	endif	
+	# CROSS TOOOL PROGRAMS
+	CROSS_CC:=gcc 
+	CROSS_CPP:=g++ 
+	CROSS_AS:=as 
+	CROSS_LD:=ld 
+	CROSS_OBJDUMP:=objdump 
+	CROSS_OBJCOPY:=objcopy 
+	CROSS_GDB:=gdb 
+endif
+#COMMON SETUP
+
 # CURRENT DEBUG LEVEL
 DBG:=  -O2
 #DBG:=  -ggdb
 # C LANGUAGE OPTIONS
-C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -c 
+C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
-CPP_OPTS := -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -c 
+CPP_OPTS := -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
 # ASM LANGUAGE OPTIONS
-ASM_OPTS:= -g -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
-# LINKER OPTIONS
-LN_OPTS:=
+ASM_OPTS:= -g $(CPU_SPEC_ASM)  
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE
 DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
-    PUTTY:= putty -load "pi-tty" 
-    ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
+    PUTTY:= putty -load "pi-tty"     
     EH:=-e 
 else	    
-    PUTTY:= putty.exe -load "pi-tty"  
-    ARMPATH:="/home/Finsoft/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin"
+    PUTTY:= putty.exe -load "pi-tty"      
     EH:=-e	
 endif
-# CROSS TOOOL PROGRAMS
-CROSS_CC:=$(ARMPATH)/$(ARMGNU)-gcc 
-CROSS_CPP:=$(ARMPATH)/$(ARMGNU)-g++ 
-CROSS_AS:=$(ARMPATH)/$(ARMGNU)-as 
-CROSS_LD:=$(ARMPATH)/$(ARMGNU)-ld 
-CROSS_OBJDUMP:=$(ARMPATH)/$(ARMGNU)-objdump 
-CROSS_OBJCOPY:=$(ARMPATH)/$(ARMGNU)-objcopy 
-CROSS_GDB:=$(ARMPATH)/$(ARMGNU)-gdb 
 #OUTPUT BUILD DIR
 BUILDIR:=build
 DEPEND:=depend

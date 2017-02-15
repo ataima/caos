@@ -29,11 +29,11 @@ void caDeviceHandle::Dump(caDeviceHandle & port, caStringStream<s8> & ss) {
     ss << "TIME STOP =" << port.tStop << caEnd::endl;
     ss << "TIME LAST =" << port.tLast << caEnd::endl;
     ss << "LAST CMD  =" << port.tLastCmd << caEnd::endl;
-    ss << "WR BUFF   =" << (u32) port.wrBuff << caEnd::endl;
+    ss << "WR BUFF   =" << ptr_to_uint(port.wrBuff) << caEnd::endl;
     ss << "WR SIZE   =" << port.wrSize << caEnd::endl;
     ss << "WRITED    =" << port.writed << caEnd::endl;
     ss << "WR ERROR  =" << port.wrError << caEnd::endl;
-    ss << "RD BUFF   =" << (u32) port.rdBuff << caEnd::endl;
+    ss << "RD BUFF   =" << ptr_to_uint( port.rdBuff )<< caEnd::endl;
     ss << "RD SIZE   =" << port.rdSize << caEnd::endl;
     ss << "READED    =" << port.readed << caEnd::endl;
     ss << "RD ERROR  =" << port.rdError << caEnd::endl;

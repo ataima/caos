@@ -138,7 +138,7 @@ void caConsole::Dump(u8 * buff, u32 readed, caStringStream<s8> &ss) {
     ss << caStringFormat::hex;
     for (i = 0; i < readed;) {
         if (!ss.Good())break;
-        ss << (u32) ptr << " - ";
+        ss << ptr_to_uint(ptr)<< " - ";
         for (u = 0; u < 4 && i < readed; u++, i++) {
             if (!ss.Good())break;
             ss << *ptr++ << "  ";

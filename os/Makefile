@@ -1,10 +1,21 @@
 include rules.mk
 # --silent
-V=--silent
+#V=--silent
 
 HAL:=src/hal/do.mk
-HW:=src/hw/rasp2/do.mk
-TEST:=test/do.mk
+ifeq ($(HARDWARE),RASPI2)
+    HW:=src/hw/rasp2/do.mk
+    TEST:=test/rasp2/do.mk
+endif
+ifeq ($(HARDWARE),686)
+    HW:=src/hw/686/do.mk
+    TEST:=test/686/do.mk
+endif
+ifeq ($(HARDWARE),SIMULA)
+    HW:=src/hw/simula/do.mk
+    TEST:=test/simula/do.mk
+endif
+
 
 default: all
 
@@ -55,7 +66,7 @@ endef
 	
 link_file: all_obj
 	$(eval $(call find_objs,$(BUILDIR)/$(OBJ_OUT)))
-	$(CROSS_LD)  $(ALLOBJS) -M $(LK_OPT) -T ld_conf/BCM2836.ld -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
+	$(CROSS_LD)  $(ALLOBJS) -M $(LK_OPT) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
 	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
 	
 objdump_file:

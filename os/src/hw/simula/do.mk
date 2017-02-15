@@ -1,11 +1,11 @@
 # set environment variables
 include rules.mk
 #define includes 
-INC=-I inc -I inc/hal -I inc/hw/rasp2 
+INC=-I inc -I inc/hal -I inc/hw/simula 
  
 #dependences and objs 
 
-SRC:=src/hw/rasp2
+SRC:=src/hw/simula
 
 
 #SOURCE FILES
@@ -128,6 +128,7 @@ link_file:
 	
 
 info:	
+	@echo  $(EH) $(C_YELLOW)"Current HARDWARE = "$(C_RESET)$(HARDWARE)
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN PATH= "$(C_RESET)$(ARMPATH)
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CC= "$(C_RESET)$(CROSS_CC)
