@@ -33,6 +33,7 @@
 typedef void (* abstract_functor_void_func)(void);
 typedef void(* abstract_functor_void_int)(u32 thId);
 typedef u32(* abstract_functor_int_void_func)(void);
+typedef u32*(* abstract_functor_ptr_void_func)(void);
 typedef u32(* abstract_functor_int_bool_func)(bool);
 typedef u32(* abstract_functor_int_2_bool_func)(bool, bool);
 typedef u32(* abstract_functor_int_3_bool_func)(bool, bool, bool);
@@ -50,6 +51,8 @@ typedef struct tag_hal_llc_mem_io {
     const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_void_func hll_mem_min_phy;
     const abstract_functor_int_void_func hll_mem_max_phy;
+    const abstract_functor_int_void_func hll_heap_start;
+    const abstract_functor_int_void_func hll_heap_end;  
 } hal_llc_mem_io;
 
 

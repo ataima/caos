@@ -46,7 +46,7 @@ extern "C" {
         Dbg::Put("> c.a.O.S. : [ ");
         caArmCpu::DumpCPSR();
         Dbg::Put(" ]\r\n");
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
         caMemory::DumpAvail(buff, sizeof (buff));
         Dbg::Put(buff);
         caArmCpu::GetMainIdCpuInfo();

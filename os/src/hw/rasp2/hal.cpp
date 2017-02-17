@@ -32,6 +32,8 @@
 
 extern u32 __ram_start__;
 extern u32 __ram_end__;
+extern u32 __heap_base__;
+extern u32 __heap_end__;
 
 static u32 mem_phy_min_addr(void) {
     return __ram_start__;
@@ -41,10 +43,21 @@ static u32 mem_phy_max_addr(void) {
     return __ram_end__;
 }
 
+static u32 mem_heap_start_addr(void) {
+    return __heap_base__;
+}
+
+static u32 mem_heap_end_addr(void) {
+    return __heap_end__;
+}
+
+
 hal_llc_mem_io hal_llc_mem = {
     caSysTimer::GetCount,
     mem_phy_min_addr,
     mem_phy_max_addr,
+    mem_heap_start_addr,
+    mem_heap_end_addr
 };
 
 

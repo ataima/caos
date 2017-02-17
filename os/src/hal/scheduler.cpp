@@ -28,7 +28,6 @@
 #include "kdebug.h"
 
 
-extern u32 __heap_base__;
 extern u32 __svc_stack_pos__;
 extern u32 __sys_stack_pos__;
 
@@ -62,7 +61,7 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         a_stk = (((stack) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
     base = ptr_to_uint(caMemory::Allocate(a_stk));
     if (base != 0) {
-        ctx = static_cast<caThreadContext *> (uint_to_ptr(a_stk + base - sizeof (caThreadContext)));
+        ctx = static_cast<caThreadContext *> ((void *)uint_to_ptr(a_stk + base - sizeof (caThreadContext)));
         pst = ptr_to_uint(ctx) - 64; //64 guard
         ctx->thid = ptr_to_uint(ctx);
         ctx->status = caJobStatus::thInit;
@@ -554,7 +553,7 @@ void caScheduler::CheckValid(u32 p) {
         Panic();
     }
     if (current_task->pcb[1] != current_task->pcb[16]) {
-        if (current_task->pcb[16] > __heap_base__) {
+        if (current_task->pcb[16] > hal_llc_mem.hll_heap_start()) {
             Dbg::Put("ERROR : TASK JUMP ADDRESS FAULT : HIGHER", p);
             Dbg::Put("TASK :");
             Dbg::Put((const char *) current_task->name);

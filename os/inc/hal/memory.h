@@ -72,7 +72,7 @@ public:
     static void Dump(caStringStream<s8> & ss, blockMem *s);
 
     //T
-    static void Init(void);
+    static void Init(hal_llc_mem_io *lnk);
 
     static void Clean(void);
 

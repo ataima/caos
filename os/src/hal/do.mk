@@ -64,7 +64,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(DEPEND)
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
+	@mkdir -p $(BUILDIR)/$(OBJ_OUT)	
 	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
 	@echo "	@echo "$(EH)  $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
@@ -115,6 +115,7 @@ all_cpp_file: 	$(OBJ_CPP)
 		
 
 
+
 info:	
 	@echo  $(EH) $(C_YELLOW)"Current HARDWARE = "$(C_RESET)$(HARDWARE)
 	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
@@ -131,7 +132,7 @@ info:
 	@echo  $(EH) $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
 	@echo  $(EH) $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
 	@echo  $(EH) $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPT)
+	@echo  $(EH) $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPTS)
 	@echo  $(EH) $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
 	@echo  $(EH) $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
 	@echo  $(EH) $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)

@@ -344,12 +344,12 @@ public:
         asm volatile("wfi");
     }
 
-    static inline void DisableAll() {
+    static inline void DisableAll(void) {
         caArmCpu::DisableInt();
         caArmCpu::DisableIrqFiq();
     }
 
-    static inline void EnableAll() {
+    static inline void EnableAll(void) {
         caArmCpu::EnableInt();
         caArmCpu::EnableIrqFiq();
     }

@@ -1,3 +1,9 @@
+
+#SELECT CURRENT HARDWARE RASPI2  686   SIMULA
+# ===========================================	
+HARDWARE=SIMULA
+#        ^^^^^^^^^^^^^^^ 
+# ===========================================	
 #COLOURED TERMINAL....
 C_WHITE="\033[1;37m"
 C_GRAY_LIGHT="\033[0;37m"
@@ -28,24 +34,22 @@ CAOS_VERSION_1:= 1
 CAOS_VERSION_2:= 00
 CAOS_VERSION_3:= 023
 BUILD_NUMBER:=
-#SELECT CURRENT HARDWARE RASPI2  686   SIMULA
-# ===========================================	
-HARDWARE=SIMULA
-#        ^^^^^^^^^^^^^^^ 
-# ===========================================	
+
 #CUSTOMIZE ENVIROMENT FROM SELECTED HARDWARE
 #CASE 1: RASPBERRY-2
 ifeq ($(HARDWARE),RASPI2)	
 	#CROSS TOOLS 
 	ARMGNU:=arm-none-eabi
+	# OBJDUMP CPU SPEC
+	OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS
 	CPU_SPEC_C:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
 	# CPP LANGUAGE OPTIONS
 	CPU_SPEC_CPP:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
 	# ASM LANGUAGE OPTIONS
-	CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  -DHW_RASPI2
+	CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
 	# LINKER OPTIONS
-	LN_OPTS:=-T ld_conf/BCM2836.ld
+	LN_OPTS:= -M -T ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN
 	ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
 	# CROSS TOOOL PROGRAMS
@@ -62,6 +66,8 @@ ifeq ($(HARDWARE),686)
 	# CURRENT DEBUG LEVEL
 	DBG:=  -O2
 	#DBG:=  -ggdb
+	# OBJDUMP CPU SPEC
+	OBJD_CPU=
 	# C LANGUAGE OPTIONS
 	CPU_SPEC_C:= -DHW_686 
 	# CPP LANGUAGE OPTIONS
@@ -82,8 +88,10 @@ endif
 #CASE 3 SIMULA
 ifeq ($(HARDWARE),SIMULA)	
 	# CURRENT DEBUG LEVEL
-	DBG:=  -O2
-	#DBG:=  -ggdb
+	#DBG:=  -O2
+	DBG:=  -ggdb
+	# OBJDUMP CPU SPEC
+	OBJD_CPU=-m i386
 	C_MODE:=-m32
 	# C LANGUAGE OPTIONS
 	CPU_SPEC_C:=$(C_MODE)
@@ -93,28 +101,28 @@ ifeq ($(HARDWARE),SIMULA)
 	CPU_SPEC_ASM:=  
 	# LINKER OPTIONS
 	ifeq ($(C_MODE),-m32)
-	LK_OPT=  
+	LK_OPTS= -lpthread -lstdc++ 
 	else
-	LK_OPT=  
+	LK_OPTS= -lpthread -lstdc++
 	endif	
 	# CROSS TOOOL PROGRAMS
 	CROSS_CC:=gcc 
 	CROSS_CPP:=g++ 
 	CROSS_AS:=as 
-	CROSS_LD:=ld 
+	CROSS_LD:=g++ $(C_MODE)
 	CROSS_OBJDUMP:=objdump 
 	CROSS_OBJCOPY:=objcopy 
 	CROSS_GDB:=gdb 
 endif
-#COMMON SETUP
-
+#SILENT --silent no gcc cmd printed
+SILENT:=
 # CURRENT DEBUG LEVEL
 DBG:=  -O2
 #DBG:=  -ggdb
 # C LANGUAGE OPTIONS
-C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
+C_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
-CPP_OPTS := -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
+CPP_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
 # ASM LANGUAGE OPTIONS
 ASM_OPTS:= -g $(CPU_SPEC_ASM)  
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE

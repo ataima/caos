@@ -118,7 +118,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     return 0;
 }
 
-int main(void) {
+int hal_main(void) {
     caScheduler::Init(caSchedulerMode::Priority);
 #if TEST
     tmain();

@@ -209,7 +209,7 @@ bssloop:
         mov r12,r0
         mov r14,r0
         bl      sysInit 
-        bl      main
+        bl      _Z8hal_mainv
         bl      sysStop 
         b       _main_exit_handler
 .loop1: b       .loop1

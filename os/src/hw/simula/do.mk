@@ -20,28 +20,28 @@ SRC_ASM:=$(wildcard $(SRC)/*.s)
 
 
 #OBJ FILES
-OBJ_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(OBJ_OUT)/%.o,$(SRC_CPP))
+OBJ_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_CPP))
 
-OBJ_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(OBJ_OUT)/%.o,$(SRC_C))
+OBJ_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_C))
 
-OBJ_ASM:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(OBJ_OUT)/%.o,$(SRC_ASM))
+OBJ_ASM:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_ASM))
 
 
 
 
 #DEPEND FILES
-DEP_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(DEPEND)/%.d,$(SRC_CPP))
+DEP_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(DEPEND)/hw/%.d,$(SRC_CPP))
 
-DEP_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(DEPEND)/%.d,$(SRC_C))
+DEP_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(DEPEND)/hw/%.d,$(SRC_C))
 
 
 
 #GENERATED ASM FILES
-ASM_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(GE_ASM)/%.s,$(SRC_CPP))
+ASM_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_CPP))
 
-ASM_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(GE_ASM)/%.s,$(SRC_C))
+ASM_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_C))
 
-ASM_S:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(GE_ASM)/%.s,$(SRC_ASM))
+ASM_S:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_ASM))
 
 
 ASM_OBJ:= $(ASM_CPP)  $(ASM_C) $(ASM_S) $(TEST_ASM_CPP)
@@ -52,12 +52,14 @@ OBJS:= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM)
 #ALL DEPEND
 DEP_OBJ:= $(DEP_CPP)  $(DEP_C) 
 
-$(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
+$(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(DEPEND)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
-	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
+	@mkdir -p $(BUILDIR)/$(DEPEND)/hw
+	@mkdir -p $(BUILDIR)/$(OBJ_OUT)/hw	
+	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/hw/$(@F) -c $<
+	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/hw/$(@F)
 	@echo "	@echo "$(EH)  $(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
@@ -66,12 +68,14 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 
 
 
-$(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
+$(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(DEPEND)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
-	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
+	@mkdir -p $(BUILDIR)/$(DEPEND)/hw
+	@mkdir -p $(BUILDIR)/$(OBJ_OUT)/hw
+	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/hw/$(@F) -c $<
+	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/hw/$(@F)
 	@echo "	@echo "$(EH)  $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
@@ -79,7 +83,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 
 -include $(DEP_OBJ) 
 
-$(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
+$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F) $<
@@ -87,19 +91,19 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 
 
 
-$(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
+$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
 	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
-$(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.s
+$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	cp $< $(BUILDIR)/$(GE_ASM)/$(@F) 
 	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F))" $(C_RESET) >/dev/stderr
 
-$(BUILDIR)/$(OBJ_OUT)/%.o:$(SRC)/%.s
+$(BUILDIR)/$(OBJ_OUT)/hw/%.o:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_AS) -o $(BUILDIR)/$(OBJ_OUT)/$(@F)  $(ASM_OPTS)  $<
@@ -121,11 +125,6 @@ all_cpp_file: 	$(OBJ_CPP)
 	
 
 
-
-link_file:
-	$(CROSS_LD) $(TEST_OBJ_CPP) $(OBJ_CPP)  $(OBJ_C) $(OBJ_ASM) -M $(LK_OPT) -T ld_conf/BCM2836.ld -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
-	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
-	
 
 info:	
 	@echo  $(EH) $(C_YELLOW)"Current HARDWARE = "$(C_RESET)$(HARDWARE)

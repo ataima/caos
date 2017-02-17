@@ -1,6 +1,5 @@
 include rules.mk
-# --silent
-#V=--silent
+V=$(SILENT)
 
 HAL:=src/hal/do.mk
 ifeq ($(HARDWARE),RASPI2)
@@ -61,12 +60,13 @@ all_obj:
 
 define find_objs =
 ALLOBJS:= $(wildcard $1/*.o)
+ALLOBJS+= $(wildcard $1/hw/*.o)	
 endef
 	
 	
 link_file: all_obj
 	$(eval $(call find_objs,$(BUILDIR)/$(OBJ_OUT)))
-	$(CROSS_LD)  $(ALLOBJS) -M $(LK_OPT) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
+	$(CROSS_LD)  $(ALLOBJS) $(LK_OPTS) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
 	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
 	
 objdump_file:
@@ -78,7 +78,7 @@ objdump_file:
 	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.bin">/dev/stderr
 	@cp $(BUILDIR)/caOS.bin kernel7.img
 	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" kernel7.img">/dev/stderr
-	$(CROSS_OBJDUMP) -m arm -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
+	$(CROSS_OBJDUMP) $(OBJD_CPU) -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
 	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.s">/dev/stderr
 	$(CROSS_OBJCOPY) --only-keep-debug $(BUILDIR)/caOS.elf $(BUILDIR)/caOS.syms
 	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.syms">/dev/stderr

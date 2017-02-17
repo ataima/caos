@@ -22,17 +22,21 @@
 #include "memory.h"
 
 
-extern u32* __heap_base__;
-extern u32* __heap_end__;
+
 
 
 u32* caMemory::start_mem;
 u32* caMemory::end_mem;
 u32 caMemory::avail_mem;
 
-void caMemory::Init(void) {
-    start_mem = __heap_base__;
-    end_mem = __heap_end__;
+void caMemory::Init(hal_llc_mem_io *lnk) {
+    if (lnk != NULL) {
+        start_mem =static_cast<u32*>(uint_to_ptr(lnk->hll_heap_start()));
+        end_mem = static_cast<u32*>(uint_to_ptr(lnk->hll_heap_end()));
+    } else {
+        start_mem = 0;
+        end_mem = 0;
+    }
     avail_mem = (ptr_to_uint(end_mem) - ptr_to_uint(start_mem));
     blockMem *start = reinterpret_cast<blockMem *> (start_mem);
     start->addr = start;
@@ -217,7 +221,7 @@ void caMemory::Dump(caStringStream<s8> & ss, blockMem *start) {
     ss << p << caEnd::endl;
 }
 
-u32 caMemory::List(caStringStream<s8>  & ss) {
+u32 caMemory::List(caStringStream<s8> & ss) {
     caStringFiller p(' ', 12);
     u32 i = 1;
     ss << " --- MEMORY LIST ---\r\n";
@@ -277,7 +281,7 @@ u32 caMemory::Ascii(dumpAddrReq *req) {
     caStringStream<s8> ss;
     if (req != NULL) {
         u32 i, u;
-        s8 *ptr = static_cast<s8 *> (uint_to_ptr(req->addr));
+        s8 *ptr = static_cast<s8 *>(uint_to_ptr(req->addr));
         ss.Init(req->buffo, req->size);
         ss << " --- MEMORY ASCII DUMP ---\r\n";
         ss << caStringFormat::hex;
