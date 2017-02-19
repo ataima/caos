@@ -16,7 +16,6 @@
           <in>idevice.cpp</in>
           <in>kdebug.cpp</in>
           <in>memaux.cpp</in>
-          <in>memdevice.cpp</in>
           <in>memory.cpp</in>
           <in>scheduler.cpp</in>
           <in>stream.cpp</in>
@@ -24,38 +23,11 @@
           <in>syslog.cpp</in>
         </df>
         <df name="hw">
-          <df name="rasp2">
-            <in>cache.cpp</in>
-            <in>cpu.cpp</in>
-            <in>gpio.cpp</in>
-            <in>hal.cpp</in>
-            <in>hw_func.cpp</in>
-            <in>int_request.cpp</in>
-            <in>interrupt.cpp</in>
-            <in>miniuart.cpp</in>
-            <in>mmu.cpp</in>
-            <in>smp.cpp</in>
-            <in>softreq.cpp</in>
-            <in>sysirqctrl.cpp</in>
-            <in>sysleds.cpp</in>
-            <in>systimer.cpp</in>
-          </df>
           <df name="simula">
             <in>hal.cpp</in>
             <in>main.cpp</in>
           </df>
         </df>
-      </df>
-      <df name="test">
-        <in>main_test.cpp</in>
-        <in>test_circular_buffer.cpp</in>
-        <in>test_com_device.cpp</in>
-        <in>test_locking.cpp</in>
-        <in>test_mem_pipe.cpp</in>
-        <in>test_miniuart.cpp</in>
-        <in>test_scheduler.cpp</in>
-        <in>test_sys_timer_device.cpp</in>
-        <in>test_token_sstream.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -80,11 +52,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-Wpedantic -O2 -std=c++11 -nostdlib -fno-rtti -fno-exceptions -ffreestanding"/>
-        <element flagsID="1"
                  commonFlags="-Wpedantic -O2 -std=c++11 -nostdlib -fno-rtti -fno-exceptions -ffreestanding -m32"/>
-        <element flagsID="2"
-                 commonFlags="-march=armv7ve -mtune=cortex-a7 -std=c++11 -fno-rtti -fno-exceptions -ffreestanding"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -93,18 +61,29 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>build/caOS.elf</executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>inc</pElem>
+              <pElem>inc/hal</pElem>
+            </incDir>
+          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/hw/simula">
+      <folder path="0/src/hal">
         <ccTool>
           <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/hw">
+        <ccTool>
+          <incDir>
             <pElem>inc/hw/simula</pElem>
             <pElem>.</pElem>
           </incDir>
@@ -112,387 +91,78 @@
       </folder>
       <item path="src/hal/caos.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/console.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/devicehandle.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/haljobdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/halmain.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halmemdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/halpipedevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/halsystimerdevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/idevice.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/kdebug.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/memaux.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hal/memdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/memory.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/scheduler.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/stub_gdb.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hal/syslog.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/cache.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/cpu.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/gpio.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/hal.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/hw_func.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/int_request.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/interrupt.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/miniuart.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/mmu.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/smp.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/softreq.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/sysirqctrl.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/sysleds.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="src/hw/rasp2/systimer.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hw/simula/hal.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hw/simula/main.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="test/main_test.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_circular_buffer.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_com_device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_locking.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_mem_pipe.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_miniuart.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_scheduler.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_sys_timer_device.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="test/test_token_sstream.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
     </conf>

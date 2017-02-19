@@ -89,7 +89,7 @@ endif
 ifeq ($(HARDWARE),SIMULA)	
 	# CURRENT DEBUG LEVEL
 	#DBG:=  -O2
-	DBG:=  -ggdb
+	DBG:=  -O0 -g
 	# OBJDUMP CPU SPEC
 	OBJD_CPU=-m i386
 	C_MODE:=-m32
@@ -116,9 +116,6 @@ ifeq ($(HARDWARE),SIMULA)
 endif
 #SILENT --silent no gcc cmd printed
 SILENT:=
-# CURRENT DEBUG LEVEL
-DBG:=  -O2
-#DBG:=  -ggdb
 # C LANGUAGE OPTIONS
 C_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
