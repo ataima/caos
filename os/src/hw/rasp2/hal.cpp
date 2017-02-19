@@ -65,6 +65,7 @@ hal_llc_mem_io hal_llc_mem = {
 hal_llc_scheduler_io hal_llc_scheduler = {
     caSysTimer::GetCount,
     caSysTimer::ToTick,
+    caScheduler::AddTask,
     caScheduler::IsValidContext,
     caIrqCtrl::LockSwitchContext,
     caIrqCtrl::UnLockSwitchContext,

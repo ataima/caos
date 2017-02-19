@@ -150,13 +150,13 @@ private:
 #if DEBUG_CHECK_TASK    
     static void CheckValid(u32 p);
     static void Panic(void);
-#endif    
-    static bool AddTask(caThreadContext *ctx);
+#endif        
     static void SwitchContext(void);
     static void EndTask(u32 result);
     static u32 StartTask(void);
     //static u32 IoCtrl(caDevicePort *port, caSchedulerDeviceCtrl *in);
 public:
+    static bool AddTask(caThreadContext *ctx);
     static bool Init(caSchedulerMode req);
     static bool Destroy(void);
 

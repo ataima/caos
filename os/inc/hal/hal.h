@@ -26,6 +26,8 @@
 #include "stream.h"
 #include "devicehandle.h"
 #include "idevice.h"
+#include "scheduler.h"
+
 
 
 /* Hardware abstract layer functor   */
@@ -46,6 +48,8 @@ typedef bool(* abstract_functor_bool_void_func)(void);
 typedef bool(* abstract_functor_bool_int_func)(u32);
 typedef u32(* abstract_functor_spec_dump)(caStringStream<s8> *ss);
 typedef u32(* abstract_functor_spec_irq)(void *obj, u8 * buff, s_t size, s_t & iosize);
+typedef bool(* abstract_functor_bool_ctx_func)(caThreadContext *ctx);
+
 
 typedef struct tag_hal_llc_mem_io {
     const abstract_functor_int_void_func hll_tick;
@@ -63,6 +67,7 @@ typedef bool ( * abstract_functor_bool_int_func)(u32 t);
 typedef struct tag_hal_llc_scheduler_io {
     const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_int_func hll_to_tick;
+    const abstract_functor_bool_ctx_func hll_scheduler_add_atsk;
     const abstract_functor_bool_int_func hll_scheduler_valid_handle;
     const abstract_functor_bool_void_func hll_lock;
     const abstract_functor_bool_void_func hll_unlock;

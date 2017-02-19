@@ -26,7 +26,7 @@ u32 sim_get_tick(void);
 u32 sim_to_tick(u32 ms);
 int hal_main(void);
 
-
+bool sim_add_task(caThreadContext *task);
 bool sim_is_valid_context(u32 thid);
 bool sim_lock_switch_context(void);
 bool sim_unlock_switch_context(void);

@@ -1,7 +1,7 @@
 
 #SELECT CURRENT HARDWARE RASPI2  686   SIMULA
 # ===========================================	
-HARDWARE=SIMULA
+HARDWARE=RASPI2
 #        ^^^^^^^^^^^^^^^ 
 # ===========================================	
 #COLOURED TERMINAL....
@@ -40,6 +40,8 @@ BUILD_NUMBER:=
 ifeq ($(HARDWARE),RASPI2)	
 	#CROSS TOOLS 
 	ARMGNU:=arm-none-eabi
+	# CURRENT DEBUG LEVEL
+	DBG:=  -O0 -g
 	# OBJDUMP CPU SPEC
 	OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS
@@ -49,7 +51,7 @@ ifeq ($(HARDWARE),RASPI2)
 	# ASM LANGUAGE OPTIONS
 	CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
 	# LINKER OPTIONS
-	LN_OPTS:= -M -T ld_conf/BCM2836.ld
+	LK_OPTS:= -M -T ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN
 	ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
 	# CROSS TOOOL PROGRAMS
@@ -64,18 +66,17 @@ endif
 #CASE2 686 TODO
 ifeq ($(HARDWARE),686)	
 	# CURRENT DEBUG LEVEL
-	DBG:=  -O2
-	#DBG:=  -ggdb
+	DBG:=-O2	
 	# OBJDUMP CPU SPEC
 	OBJD_CPU=
 	# C LANGUAGE OPTIONS
-	CPU_SPEC_C:= -DHW_686 
+	CPU_SPEC_C:=-DHW_686 
 	# CPP LANGUAGE OPTIONS
-	CPU_SPEC_CPP:= -DHW_686 
+	CPU_SPEC_CPP:=-DHW_686 
 	# ASM LANGUAGE OPTIONS
-	CPU_SPEC_ASM:=   -DHW_686 
+	CPU_SPEC_ASM:=-DHW_686 
 	# LINKER OPTIONS
-	LN_OPTS:=	
+	LK_OPTS:=	
 	# CROSS TOOOL PROGRAMS
 	CROSS_CC:=gcc 
 	CROSS_CPP:=g++ 
@@ -115,7 +116,7 @@ ifeq ($(HARDWARE),SIMULA)
 	CROSS_GDB:=gdb 
 endif
 #SILENT --silent no gcc cmd printed
-SILENT:=
+SILENT:=--silent
 # C LANGUAGE OPTIONS
 C_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
@@ -127,7 +128,7 @@ DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
     PUTTY:= putty -load "pi-tty"     
-    EH:=-e 
+    EH:= 
 else	    
     PUTTY:= putty.exe -load "pi-tty"      
     EH:=-e	

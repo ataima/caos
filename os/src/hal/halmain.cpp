@@ -65,7 +65,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     in.data = 8;
     in.parity = 0;
     in.stop = 1;
-    res = caOS::Open("COM1", in, port);
+    res = caOS::Open("TTY1", in, port);
     if (res == deviceError::no_error) {
         caComDeviceCtrl comCtrl;
         comCtrl.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx;

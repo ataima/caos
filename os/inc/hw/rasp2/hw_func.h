@@ -1,6 +1,5 @@
-
-#ifndef _HARDWARE_FUNCTIONS_
-#define _HARDWARE_FUNCTIONS_
+#ifndef _HARDWARE_FUNCTIONS_STUB
+#define _HARDWARE_FUNCTIONS_STUB
 
 
 ////////////////////////////////////////////////////////////////////////////////

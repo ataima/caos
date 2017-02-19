@@ -50,7 +50,7 @@ ASM_OBJ:= $(ASM_CPP)  $(ASM_C) $(ASM_S) $(TEST_ASM_CPP)
 OBJS:= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM) 
 
 #ALL DEPEND
-DEP_OBJ:= $(DEP_CPP)  $(DEP_C) 
+DEP_OBJ:= $(DEP_CPP)  $(DEP_C)  
 
 $(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)

@@ -24,6 +24,10 @@
 #include <errno.h>
 #include <unistd.h>
 #include "adapter.h"
+#include "memory.h"
+#include "kdebug.h"
+#include "caos_version.h"
+#include "scheduler.h"
 //in sim mode have to create the funcion for all HAL_CONNECTORS...
 
 
@@ -52,8 +56,8 @@ void allocate_global_rams(void) {
 
 void free_global_rams() {
     delete []sim_mem;
-    delete []sim_heap;    
-    __ram_start__ = __ram_end__ = __heap_base__ =__heap_end__ =0;
+    delete []sim_heap;
+    __ram_start__ = __ram_end__ = __heap_base__ = __heap_end__ = 0;
 }
 
 pthread_t * CreateThread(functor entry, void *param) {
@@ -144,67 +148,69 @@ void * tick_thread(void *) {
 /// ADAPTERS
 
 bool sim_is_valid_context(u32 /*thid*/) {
-    printf("ENTER FUNC : %s",__func__);
-    return true;
+    static int i=0;
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
+    
+    return i++;
 }
 
 bool sim_lock_switch_context(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return true;
 }
 
 bool sim_unlock_switch_context(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return true;
 }
 
 void sim_svc_request(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 
 }
 
 u32 sim_get_tick(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_IrqCount;
 }
 
 u32 sim_to_tick(u32 ms) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return ms;
 }
 
 u32 sim_uart_configure(u32 /*speed*/, u32 /*stop*/, u32 /*parity*/, u32 /*data*/) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_enable_int(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_EnableIrqTx(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_stop(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_enable(bool /*rx*/, bool /*tx*/) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_dump(caStringStream<s8> * /*ptr_ss*/) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_uart_get_errors(u32 & /*rxError*/, u32 & /*txError*/) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
@@ -217,52 +223,52 @@ u32 sim_uart_recv(void) {
 }
 
 u32 sim_timer_configure(u32, u32, u32, u32) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_timer_get_psec(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_timer_get_nsec(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return 0;
 }
 
 u32 sim_timer_get_usec(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Usec;
 }
 
 u32 sim_timer_get_msec(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Msec;
 }
 
 u32 sim_timer_get_sec(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Sec;
 }
 
 u32 sim_timer_get_min(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Min;
 }
 
 u32 sim_timer_get_hour(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Hour;
 }
 
 u32 sim_timer_get_day(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     return st.mn_Day;
 }
 
 u32 sim_timer_set_time(u32 day, u32 hour, u32 min, u32 sec) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     u32 res = deviceError::no_error;
     if (sec > 59)sec = 0;
     if (min > 59)min = 0;
@@ -275,7 +281,7 @@ u32 sim_timer_set_time(u32 day, u32 hour, u32 min, u32 sec) {
 }
 
 u32 sim_timer_dump(caStringStream<s8> * ss) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     u32 res = 0;
     if (ss != NULL) {
         (*ss) << "simulated timer ..." << caEnd::endl;
@@ -285,50 +291,51 @@ u32 sim_timer_dump(caStringStream<s8> * ss) {
 }
 
 void sim_int_disable_all(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 }
 
 void sim_int_enable_all(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 }
 
 void sim_int_wait_for_interrupt(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
+    while(1){}
 
 }
 
 void sim_reset_reset(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     exit(0);
 }
 
 void sim_reset_shutdown(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     exit(0);
 }
 
 void sim_reset_restart(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     exit(0);
 }
 
 void sim_led_ledsoff(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 
 }
 
 void sim_led_ledson(void) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 
 }
 
 void sim_led_ledoff(u32) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 
 }
 
 void sim_led_ledon(u32) {
-    printf("ENTER FUNC : %s",__func__);
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
 
 }
 
@@ -347,8 +354,37 @@ void stop_thread_tick(void) {
     tick_th = NULL;
 }
 
+
+///typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
+typedef void (* froute)(thFunc f, u32 p1, u32 p2);
+void * go_start_thread(void *p){
+    caThreadContext *task=(caThreadContext *)(p);
+    froute f=(froute)task->pcb[16];
+    thFunc ef=(thFunc)task->pcb[2];
+    u32 p1=task->pcb[3];
+    u32 p2=task->pcb[4];
+    f(ef,p1,p2);   
+    return NULL;
+}
+
+bool sim_add_task(caThreadContext *task){
+    printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
+    task->thid=ptr_to_uint(CreateThread(go_start_thread,task));
+    return true;;
+}
+
+
 int main(void) {
+    s8 buff[256];
     allocate_global_rams();
+    Dbg::Put("> c.a.O.S. : [ SIMULATOR ");
+    Dbg::Put(" ]\r\n");
+    caMemory::Init(&hal_llc_mem);
+    caMemory::DumpAvail(buff, sizeof (buff));
+    Dbg::Put(buff);
+    Dbg::Put("> c.a.O.S. : [ ");
+    Dbg::Put(caos_version);
+    Dbg::Put(" ]\r\n");
     create_thread_tick();
     hal_main();
     stop_thread_tick();

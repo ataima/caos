@@ -84,7 +84,8 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         ctx->cur_prio = ctx->priority;
         ctx->nswitch = 0;
         caStrAux::StrNCpy(ctx->name, name, 64);
-        caScheduler::AddTask(ctx);
+        //caScheduler::AddTask(ctx);
+        hal_llc_scheduler.hll_scheduler_add_atsk(ctx);
         return ctx->index;
     }
     return CreateThreadResult::FailCreate;
