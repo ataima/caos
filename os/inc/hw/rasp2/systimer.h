@@ -69,7 +69,7 @@ public:
     static u32 Init(u32 tick_hz, u32 timer_hz);
 
     static inline u32 Configure(u32, u32, u32, u32) {
-        return TRUE;
+        return true;
     }
     static u32 EnableTimer(u32 status);
     static u32 EnableCounter(u32 status);

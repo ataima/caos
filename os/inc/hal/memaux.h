@@ -42,7 +42,7 @@ public:
 
     static void* MemSet(T *dest, T pat, s_t size) {
         if (!dest)
-            return FALSE;
+            return nullptr;
         size /= (s_t) (sizeof (T));
         while (size > 0) {
             *dest++ = pat;
@@ -54,7 +54,7 @@ public:
 
     static void* MemZero(T *dest, s_t size) {
         if (!dest)
-            return FALSE;
+            return nullptr;
         size /= (s_t) (sizeof (T));
         while (size > 0) {
             *dest++ = 0;

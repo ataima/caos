@@ -35,8 +35,8 @@ typedef void * (*functor)(void *);
 
 
 
-u32 *sim_mem = NULL;
-u32 *sim_heap = NULL;
+u32 *sim_mem = nullptr;
+u32 *sim_heap = nullptr;
 
 u32 __ram_start__;
 u32 __ram_end__;
@@ -65,7 +65,7 @@ pthread_t * CreateThread(functor entry, void *param) {
     pthread_attr_t tattr;
     pthread_t *thread_id;
     thread_id = new pthread_t();
-    if (thread_id != NULL) {
+    if (thread_id != nullptr) {
         ret = pthread_attr_init(&tattr);
         if (ret == 0 || ret == EBUSY) {
             ret = pthread_attr_setdetachstate(&tattr, PTHREAD_CREATE_JOINABLE);
@@ -77,17 +77,17 @@ pthread_t * CreateThread(functor entry, void *param) {
     if (ret == 0)
         return thread_id;
     else
-        return NULL;
+        return nullptr;
 }
 
 void JoinThread(pthread_t *thread_id) {
-    pthread_join(*thread_id, NULL);
+    pthread_join(*thread_id, nullptr);
     delete thread_id;
     ;
 }
 
 void DestroyThread(pthread_t *thread_id) {
-    if (thread_id != NULL) {
+    if (thread_id != nullptr) {
         pthread_cancel(*thread_id);
         delete thread_id;
     }
@@ -122,11 +122,11 @@ void * tick_thread(void *) {
     while (1) {
         st.mn_IrqCount++;
         st.mn_Msec++;
-        hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
+        hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
         if (st.mn_Msec == SYS_TIMER_TICK) {
             st.mn_Msec = 0;
             st.mn_Sec++;
-            hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
+            hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
             if (st.mn_Sec == 60) {
                 st.mn_Sec = 0;
                 st.mn_Min++;
@@ -283,7 +283,7 @@ u32 sim_timer_set_time(u32 day, u32 hour, u32 min, u32 sec) {
 u32 sim_timer_dump(caStringStream<s8> * ss) {
     printf("[%06d]ENTER FUNC : %s\n",st.mn_IrqCount, __func__);
     u32 res = 0;
-    if (ss != NULL) {
+    if (ss != nullptr) {
         (*ss) << "simulated timer ..." << caEnd::endl;
         res = ss->Size();
     }
@@ -341,17 +341,17 @@ void sim_led_ledon(u32) {
 
 
 
-pthread_t *tick_th = NULL;
+pthread_t *tick_th = nullptr;
 
 void create_thread_tick(void) {
     caMemAux<u8>::MemZero((u8*) & st, sizeof (st));
-    void *param = NULL;
+    void *param = nullptr;
     tick_th = CreateThread(tick_thread, param);
 }
 
 void stop_thread_tick(void) {
     DestroyThread(tick_th);
-    tick_th = NULL;
+    tick_th = nullptr;
 }
 
 
@@ -364,7 +364,7 @@ void * go_start_thread(void *p){
     u32 p1=task->pcb[3];
     u32 p2=task->pcb[4];
     f(ef,p1,p2);   
-    return NULL;
+    return nullptr;
 }
 
 bool sim_add_task(caThreadContext *task){

@@ -26,39 +26,39 @@
 #include "gpio.h"
 
 u32 caGpio::Set(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
     system_gpio_control(gpio);
     gpio->Set[bank].asReg = BIT(pin);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::Set(u32 blk, u32 mask) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     system_gpio_control(gpio);
     gpio->Set[blk].asReg = mask;
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::Clr(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
     system_gpio_control(gpio);
     gpio->Clear[bank].asReg = BIT(pin);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::Clr(u32 blk, u32 mask) {
-    if (blk > 1)return FALSE;
+    if (blk > 1)return false;
     system_gpio_control(gpio);
     gpio->Clear[blk].asReg = mask;
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::Get(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     system_gpio_control(gpio);
     register u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
@@ -67,13 +67,13 @@ u32 caGpio::Get(u32 pin) {
 }
 
 u32 caGpio::Get(u32 blk, u32 mask) {
-    if (blk > 1)return FALSE;
+    if (blk > 1)return false;
     system_gpio_control(gpio);
     return (gpio->Level[blk].asReg & mask);
 }
 
 u32 caGpio::SetReg(u32 pin, volatile gpioFnReg dest[2]) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
     u32 mask = BIT(pin);
@@ -81,20 +81,20 @@ u32 caGpio::SetReg(u32 pin, volatile gpioFnReg dest[2]) {
         dest[bank].asReg |= mask;
         return ((dest[bank].asReg & mask) != 0);
     }
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::SetReg(u32 blk, u32 mask, volatile gpioFnReg dest[2]) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     if ((dest[blk].asReg & mask) != mask) {
         dest[blk].asReg |= mask;
         return ((dest[blk].asReg & mask) == mask);
     }
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::ClearReg(u32 pin, volatile gpioFnReg dest[2]) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
     u32 mask = BIT(pin);
@@ -102,20 +102,20 @@ u32 caGpio::ClearReg(u32 pin, volatile gpioFnReg dest[2]) {
         dest[bank].asReg &= ~(mask);
         return ((dest[bank].asReg & mask) != 0);
     }
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::ClearReg(u32 blk, u32 mask, volatile gpioFnReg dest[2]) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     if ((dest[blk].asReg & mask) != 0) {
         dest[blk].asReg &= ~(mask);
         return (dest[blk].asReg & mask) == 0;
     }
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::GetReg(u32 pin, volatile gpioFnReg dest[2]) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     u32 bank = pin / 32;
     while (pin > 32)pin -= 32;
     u32 mask = BIT(pin);
@@ -123,7 +123,7 @@ u32 caGpio::GetReg(u32 pin, volatile gpioFnReg dest[2]) {
 }
 
 u32 caGpio::GetReg(u32 blk, u32 mask, volatile gpioFnReg dest[2]) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     return (dest[blk].asReg & mask);
 }
 
@@ -145,7 +145,7 @@ void caGpio::Delay(u32 n) {
 }
 
 u32 caGpio::SetFunction(u32 pin, u32 fn) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     if (fn != GetFn(pin)) {
         system_gpio_control(gpio);
         register u32 bank = pin / 10;
@@ -156,7 +156,7 @@ u32 caGpio::SetFunction(u32 pin, u32 fn) {
         gpio->Sel[bank].asReg |= fnmask;
         return (fn == GetFn(pin));
     }
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::GetFn(u32 pin) {
@@ -171,69 +171,69 @@ u32 caGpio::GetFn(u32 pin) {
 }
 
 u32 caGpio::SetPullUp(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 2;
     Delay(20);
     SetReg(pin, gpio->PullClock);
     Delay(20);
     ClearReg(pin, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::SetPullUp(u32 blk, u32 mask) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 2;
     Delay(20);
     SetReg(blk, mask, gpio->PullClock);
     Delay(20);
     ClearReg(blk, mask, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::SetPullDown(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 1;
     Delay(20);
     SetReg(pin, gpio->PullClock);
     Delay(20);
     ClearReg(pin, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::SetPullDown(u32 blk, u32 mask) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 1;
     Delay(20);
     SetReg(blk, mask, gpio->PullClock);
     Delay(20);
     ClearReg(blk, mask, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::RemovePullDown(u32 pin) {
-    if (pin > MAX_GPIO_PIN)return FALSE;
+    if (pin > MAX_GPIO_PIN)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 0;
     Delay(20);
     SetReg(pin, gpio->PullClock);
     Delay(20);
     ClearReg(pin, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 u32 caGpio::RemovePullDown(u32 blk, u32 mask) {
-    if (blk > MAX_GPIO_BLK)return FALSE;
+    if (blk > MAX_GPIO_BLK)return false;
     system_gpio_control(gpio);
     gpio->PullResistor = 0;
     Delay(20);
     SetReg(blk, mask, gpio->PullClock);
     Delay(20);
     ClearReg(blk, mask, gpio->PullClock);
-    return TRUE;
+    return true;
 }
 
 #if HAVE_DUMP_OBJ

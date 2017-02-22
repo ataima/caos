@@ -40,7 +40,7 @@ class caHalMemDevice_test_class
     CA_TEST_SUITE_END();
 
     void setUp(void) {
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
         start_time_scheduler();
     }
 
@@ -76,12 +76,12 @@ void caHalMemDevice_test_class::test1(void) {
     res1 = caHalDeviceRules::Write(&mem,&port, ioCtrlRequest::Memory);
     CA_ASSERT(res1 == deviceError::no_error);
     CA_ASSERT(port.wrBuff != (u8*)&port);
-    CA_ASSERT(port.wrBuff != NULL);
+    CA_ASSERT(port.wrBuff != nullptr);
     port.rdBuff = port.wrBuff;
     port.rdSize = 0;
     res1 = caHalDeviceRules::Read(&mem, &port, ioCtrlRequest::Memory);
     CA_ASSERT(res1 == deviceError::no_error);
-    CA_ASSERT(port.rdBuff == NULL);
+    CA_ASSERT(port.rdBuff == nullptr);
     CA_ASSERT(port.rdSize > port.wrSize);
 }
 
@@ -105,7 +105,7 @@ void caHalMemDevice_test_class::test2(void) {
     res1 = caHalDeviceRules::Write(&mem, &port, ioCtrlRequest::Memory);
     CA_ASSERT(res1 == deviceError::no_error);
     CA_ASSERT(port.wrBuff != (u8*)&port);
-    CA_ASSERT(port.wrBuff != NULL);
+    CA_ASSERT(port.wrBuff != nullptr);
     caMemoryDeviceCtrl ctrl;
     ctrl.command = caMemoryDeviceCtrl::IoMemCtrlDirect::memList;
     s8 buff[4096];

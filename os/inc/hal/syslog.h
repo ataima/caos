@@ -64,7 +64,7 @@ public:
     u32 Destroy();
 
     inline bool IsValid(void) {
-        return (curlev > 0 && mn_Base[curlev - 1] != NULL);
+        return (curlev > 0 && mn_Base[curlev - 1] != nullptr);
     }
 
     inline bool IsEnabled(void) {
@@ -103,7 +103,7 @@ public:
 #define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(deviceloglevels::LEVEL)<=LOG.GetCurLogLevel()) \
                         LOG.Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
-#define PLOG(LOG,LEVEL) if(LOG!=NULL && LOG->IsEnabled() && (s32)(deviceloglevels::LEVEL)<=LOG->GetCurLogLevel()) \
+#define PLOG(LOG,LEVEL) if(LOG!=nullptr && LOG->IsEnabled() && (s32)(deviceloglevels::LEVEL)<=LOG->GetCurLogLevel()) \
                         LOG->Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
 #else

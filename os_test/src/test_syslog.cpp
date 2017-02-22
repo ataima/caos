@@ -52,7 +52,7 @@ static u32 hll_conf(u32, u32, u32, u32) {
 }
 
 hal_llc_sys_time hal_llc_time{
-    NULL,
+    nullptr,
     hll_conf,
     hll_time, //system tick count
     hll_dummy,
@@ -63,8 +63,8 @@ hal_llc_sys_time hal_llc_time{
     hll_dummy,
     hll_dummy,
     hll_dummy,
-    NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL};
+    nullptr, nullptr, nullptr, nullptr, nullptr,
+    nullptr, nullptr, nullptr, nullptr};
 
 class caSysLog_test_class
 : public caTester {
@@ -74,7 +74,7 @@ class caSysLog_test_class
     CA_TEST_SUITE_END();
 
     void setUp(void) {
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
     }
     void test1(void);
     void test2(void);
@@ -94,18 +94,18 @@ void caSysLog_test_class::test1(void) {
     _STOP();
     caSysLog a;
     u32 res = a.Init(1000, deviceloglevels::end_device_log_lev);
-    CA_ASSERT(res == TRUE);
-    CA_ASSERT(a.GetBase(irq_1) != NULL);
-    CA_ASSERT(a.GetBase(irq_2) != NULL);
-    CA_ASSERT(a.GetBase(irq_3) != NULL);
-    CA_ASSERT(a.GetBase(irq_4) != NULL);
-    CA_ASSERT(a.GetBase(irq_5) != NULL);
-    CA_ASSERT(a.GetBase(irq_6) != NULL);
-    CA_ASSERT(a.GetBase(irq_7) != NULL);
-    CA_ASSERT(a.GetBase(irq_8) != NULL);
-    CA_ASSERT(a.GetBase(device) != NULL);
-    CA_ASSERT(a.GetBase(error) != NULL);
-    CA_ASSERT(a.GetBase(info) != NULL);
+    CA_ASSERT(res == true);
+    CA_ASSERT(a.GetBase(irq_1) != nullptr);
+    CA_ASSERT(a.GetBase(irq_2) != nullptr);
+    CA_ASSERT(a.GetBase(irq_3) != nullptr);
+    CA_ASSERT(a.GetBase(irq_4) != nullptr);
+    CA_ASSERT(a.GetBase(irq_5) != nullptr);
+    CA_ASSERT(a.GetBase(irq_6) != nullptr);
+    CA_ASSERT(a.GetBase(irq_7) != nullptr);
+    CA_ASSERT(a.GetBase(irq_8) != nullptr);
+    CA_ASSERT(a.GetBase(device) != nullptr);
+    CA_ASSERT(a.GetBase(error) != nullptr);
+    CA_ASSERT(a.GetBase(info) != nullptr);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_1)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_2)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_3)) > 1000);
@@ -118,7 +118,7 @@ void caSysLog_test_class::test1(void) {
     CA_ASSERT(caMemory::Find(a.GetBase(error)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(info)) > 1000);
     res = a.Destroy();
-    CA_ASSERT(res == TRUE);
+    CA_ASSERT(res == true);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_1)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_2)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_3)) == 0);
@@ -140,18 +140,18 @@ void caSysLog_test_class::test2(void) {
     _STOP();
     caSysLog a;
     u32 res = a.Init(1000, deviceloglevels::end_device_log_lev);
-    CA_ASSERT(res == TRUE);
-    CA_ASSERT(a.GetBase(irq_1) != NULL);
-    CA_ASSERT(a.GetBase(irq_2) != NULL);
-    CA_ASSERT(a.GetBase(irq_3) != NULL);
-    CA_ASSERT(a.GetBase(irq_4) != NULL);
-    CA_ASSERT(a.GetBase(irq_5) != NULL);
-    CA_ASSERT(a.GetBase(irq_6) != NULL);
-    CA_ASSERT(a.GetBase(irq_7) != NULL);
-    CA_ASSERT(a.GetBase(irq_8) != NULL);
-    CA_ASSERT(a.GetBase(device) != NULL);
-    CA_ASSERT(a.GetBase(error) != NULL);
-    CA_ASSERT(a.GetBase(info) != NULL);
+    CA_ASSERT(res == true);
+    CA_ASSERT(a.GetBase(irq_1) != nullptr);
+    CA_ASSERT(a.GetBase(irq_2) != nullptr);
+    CA_ASSERT(a.GetBase(irq_3) != nullptr);
+    CA_ASSERT(a.GetBase(irq_4) != nullptr);
+    CA_ASSERT(a.GetBase(irq_5) != nullptr);
+    CA_ASSERT(a.GetBase(irq_6) != nullptr);
+    CA_ASSERT(a.GetBase(irq_7) != nullptr);
+    CA_ASSERT(a.GetBase(irq_8) != nullptr);
+    CA_ASSERT(a.GetBase(device) != nullptr);
+    CA_ASSERT(a.GetBase(error) != nullptr);
+    CA_ASSERT(a.GetBase(info) != nullptr);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_1)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_2)) > 1000);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_3)) > 1000);
@@ -198,7 +198,7 @@ void caSysLog_test_class::test2(void) {
     CA_ASSERT(strlen(a.GetBase(error)) > 0);
     CA_ASSERT(strlen(a.GetBase(info)) > 0);
     res = a.Destroy();
-    CA_ASSERT(res == TRUE);
+    CA_ASSERT(res == true);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_1)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_2)) == 0);
     CA_ASSERT(caMemory::Find(a.GetBase(irq_3)) == 0);

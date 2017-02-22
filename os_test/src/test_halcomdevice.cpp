@@ -117,7 +117,7 @@ static void hll_wakeup_tx(u32 num) {
 
 // connector to virtual hardware
 hal_llc_com_io hal_llc_com1 = {
-    NULL,
+    nullptr,
     hll_config, //hll_config   -> Open
     hll_time, //hll_time      -> Open
     hll_en_int_rx, //hll_en_int_rx -> Open
@@ -783,7 +783,7 @@ void caHalComDevice_test_class::test10(void) {
     setup.stop = 11223344;
     setup.parity = 88776655;
     setup.data = 12312312;
-    caMemory::Init();
+    caMemory::Init(&hal_llc_mem);
     caDeviceHandle portIO;
     caComDeviceCtrl in;
     in.params[0] = 16512;

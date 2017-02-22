@@ -25,30 +25,30 @@
 #if HAVE_SYS_LOG
 
 u32 caSysLog::Init(s_t total_size, deviceloglevels reqlev) {
-    u32 res = FALSE;
+    u32 res = false;
     caMemAux<s8>::MemZero((s8*) mn_Base, sizeof (mn_Base));
     s_t i;
     if (reqlev > deviceloglevels::end_device_log_lev)reqlev = deviceloglevels::end_device_log_lev;
     curlev = reqlev;
     for (i = 0; i < curlev; i++) {
         mn_Base[i] = static_cast<s8*> (caMemory::Allocate(total_size));
-        if (mn_Base[i] != NULL) {
+        if (mn_Base[i] != nullptr) {
             res = ss[i].Init(mn_Base[i], total_size);
         }
-        if (res == FALSE)break;
+        if (res == false)break;
     }
     enable = false;
     return res;
 }
 
 u32 caSysLog::Destroy(void) {
-    u32 res = FALSE;
+    u32 res = false;
     s_t i;
     for (i = 0; i < curlev; i++) {
-        if (mn_Base[i] != NULL) {
-            ss[i].Init(NULL, 0);
+        if (mn_Base[i] != nullptr) {
+            ss[i].Init(nullptr, 0);
             res = caMemory::Free(mn_Base[i]);
-            mn_Base[i] = NULL;
+            mn_Base[i] = nullptr;
         }
     }
     enable = false;

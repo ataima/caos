@@ -30,7 +30,7 @@ caHalPipeDevice::caHalPipeDevice(hal_llc_mem_io *iface, u32 mask) {
 }
 
 caPipeDeviceDescriptor * caHalPipeDevice::FindDescriptor(caPipeDeviceConfigure* setup) {
-    caPipeDeviceDescriptor *desc = NULL;
+    caPipeDeviceDescriptor *desc = nullptr;
     u32 i;
     for (i = 0; i < MAX_PIPE_BLOCK; i++) {
         if (caStrAux::StrICmp(descriptors[i].name, setup->name) == 0) {
@@ -51,14 +51,14 @@ u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
     u32 i;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     caPipeDeviceConfigure *setup = static_cast<caPipeDeviceConfigure *> (set_up);
-    if (setup != NULL) {
-        if (setup->name != NULL) {
+    if (setup != nullptr) {
+        if (setup->name != nullptr) {
             if (caStrAux::StrLen(setup->name) == 0) {
                 LOG(caLog, error) << " deviceError::error_pipe_invalid_name " << caEnd::endl;
                 res = deviceError::error_pipe_invalid_name;
             } else {
                 caPipeDeviceDescriptor * desc = FindDescriptor(setup);
-                if (desc == NULL && setup->host_guest == caPipeDeviceConfigure::host) {
+                if (desc == nullptr && setup->host_guest == caPipeDeviceConfigure::host) {
                     //check if available empty descriptor
                     for (i = 0; i < MAX_PIPE_BLOCK; i++) {
                         if (descriptors[i].name[0] == '\0')
@@ -72,7 +72,7 @@ u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
                         caStrAux::StrCpy(desc->name, setup->name);
                         desc->size = (setup->size / sizeof (u32)) + 1;
                         u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
-                        if (buff == NULL) {
+                        if (buff == nullptr) {
                             LOG(caLog, error) << " deviceError::error_pipe_no_memory " << caEnd::endl;
                             res = deviceError::error_pipe_no_memory;
                             caMemAux<u32>::MemSet((u32*) desc, 0,
@@ -86,11 +86,11 @@ u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
                         res = deviceError::error_pipe_queue_full;
                     }
                 } else
-                    if (desc == NULL && setup->host_guest == caPipeDeviceConfigure::guest) {
+                    if (desc == nullptr && setup->host_guest == caPipeDeviceConfigure::guest) {
                     LOG(caLog, error) << " deviceError::error_pipe_not_exist " << caEnd::endl;
                     res = deviceError::error_pipe_not_exist;
                 }
-                if (desc != NULL && res == deviceError::no_error) {
+                if (desc != nullptr && res == deviceError::no_error) {
                     isOpen++;
                     port->handle = caHalDeviceRules::addHandle(desc->index, mask_guid);
                     port->status = caDeviceHandle::statusHandle::Open;
@@ -123,12 +123,12 @@ u32 caHalPipeDevice::Close(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
-    if (desc != NULL) {
+    if (desc != nullptr) {
         if (desc->guest == port->handle) {
             desc->guest = 0;
         } else
             if (desc->host == port->handle) {
-            caMemory::Free(desc->queue.GetBase(), NULL);
+            caMemory::Free(desc->queue.GetBase(), nullptr);
             caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caPipeDeviceDescriptor));
         }
         isOpen--;
@@ -152,7 +152,7 @@ u32 caHalPipeDevice::Write(caDeviceHandle *port) {
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     if (port->wrSize != 0) {
         caPipeDeviceDescriptor *desc = GetDescriptor(port->handle);
-        if (desc != NULL) {
+        if (desc != nullptr) {
             if (desc->host == port->handle) {
                 u32 wSize;
                 u32 pSize = (port->wrSize / sizeof (u32)) + 1;
@@ -202,7 +202,7 @@ u32 caHalPipeDevice::Read(caDeviceHandle *port) {
     if (port->rdSize != 0) {
         u32 rSize, pSize;
         caPipeDeviceDescriptor *desc = GetDescriptor(port->handle);
-        if (desc != NULL) {
+        if (desc != nullptr) {
             if (desc->guest == port->handle) {
                 pSize = (port->rdSize / sizeof (u32)) + 1;
                 if (desc->queue.Size() < pSize)
@@ -251,11 +251,11 @@ u32 caHalPipeDevice::Resize(caDeviceHandle *port, u32 size) {
     u32 res = deviceError::no_error;
     u32 old_size;
     caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
-    if (desc != NULL) {
+    if (desc != nullptr) {
         if (caMemory::Free(desc->queue.GetBase(), &old_size)) {
             desc->size = (size / sizeof (u32)) + 1;
             u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
-            if (buff == NULL) {
+            if (buff == nullptr) {
                 res = deviceError::error_pipe_no_memory;
                 caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caPipeDeviceDescriptor));
             } else {
@@ -273,7 +273,7 @@ u32 caHalPipeDevice::Resize(caDeviceHandle *port, u32 size) {
 u32 caHalPipeDevice::Dump(caDeviceHandle *port, caStringStream<s8> *ss) {
     u32 res = deviceError::no_error;
     caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
-    if (desc != NULL) {
+    if (desc != nullptr) {
         ss->Clear();
         *ss << "Name     = " << (const char *) (desc->name) << caEnd::endl;
         *ss << "Size     = " << caStringFormat::dec << desc->size << caEnd::endl;
@@ -312,7 +312,7 @@ u32 caHalPipeDevice::IoCtrl(caDeviceHandle *port,
         case caPipeDeviceCtrl::IoPipeCtrlDirect::Reset:
         {
             caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
-            if (desc != NULL) {
+            if (desc != nullptr) {
                 desc->queue.Clean();
             } else {
                 res = deviceError::error_pipe_invalid_descriptor;

@@ -32,14 +32,6 @@ typedef long long s64;
 
 typedef u32 s_t;
 
-#define TRUE    1
-#define FALSE   0
-
-#ifndef NULL
-#define NULL   ((0))
-#endif
-
-
 
 #if __LP64__
 //#warning "platform 64 bit !!"

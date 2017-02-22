@@ -256,7 +256,7 @@ public:
 
     caStringStream() {
         capacity = 0;
-        cBuff = start = stop = NULL;
+        cBuff = start = stop = nullptr;
         size = 0;
         mode_dec = mode_hex = mode_bin = false;
     }
@@ -264,8 +264,8 @@ public:
     //Tested
 
     u32 Init(T *base, s_t a_size) {
-        u32 res = FALSE;
-        if (base != NULL) {
+        u32 res = false;
+        if (base != nullptr) {
             if (a_size > 0)
                 capacity = a_size - 1;
             else
@@ -277,12 +277,12 @@ public:
             mode_dec = true;
             mode_hex = false;
             mode_bin = false;
-            if (cBuff != NULL && capacity > 0) {
+            if (cBuff != nullptr && capacity > 0) {
                 cBuff[0] = '\0';
-                res = TRUE;
+                res = true;
             }
         } else {
-            start = stop = cBuff = NULL;
+            start = stop = cBuff = nullptr;
             size = capacity = 0;
         }
         return res;
@@ -495,7 +495,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -506,7 +506,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -517,7 +517,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -528,7 +528,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -539,7 +539,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -550,7 +550,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -558,7 +558,7 @@ public:
     //Tested
 
     caStringStream<T> & operator<<(caStringStream<T> *t) {
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -639,27 +639,27 @@ public:
 
     caCircularStringStream() {
         start = stop = capacity = 0;
-        cBuff = NULL;
+        cBuff = nullptr;
         mode_dec = mode_hex = mode_bin = false;
     }
 
     //Tested
 
     u32 Init(T *base, s_t a_size) {
-        u32 res = FALSE;
-        if (base != NULL && a_size > 0) {
+        u32 res = false;
+        if (base != nullptr && a_size > 0) {
             capacity = a_size;
             cBuff = base;
             start = stop = 0;
             mode_dec = true;
             mode_hex = false;
             mode_bin = false;
-            if (cBuff != NULL && capacity > 0) {
+            if (cBuff != nullptr && capacity > 0) {
                 cBuff[0] = '\0';
-                res = TRUE;
+                res = true;
             }
         } else {
-            cBuff = NULL;
+            cBuff = nullptr;
             start = stop = capacity = 0;
         }
         return res;
@@ -716,7 +716,7 @@ public:
     s_t Str(T * buff, s_t size) {
         s_t index, writed = 0;
         s_t w = Size();
-        if (w > 0 && buff != NULL && size > 0) {
+        if (w > 0 && buff != nullptr && size > 0) {
             if (w > size)
                 w = size;
             index = 0;
@@ -901,7 +901,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -912,7 +912,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -923,7 +923,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -934,7 +934,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -945,7 +945,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -956,7 +956,7 @@ public:
         Add('[');
         caIFaceStringStream<T>::toBase16(this, ptr_to_uint(t), 8);
         Add(']');
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -964,7 +964,7 @@ public:
     //Tested
 
     caCircularStringStream<T> & operator<<(caCircularStringStream<T> *t) {
-        if (t != NULL)
+        if (t != nullptr)
             (*this) << *t;
         return (*this);
     }
@@ -978,7 +978,7 @@ public:
     s_t size;
 
     TokenString() {
-        ptr = NULL;
+        ptr = nullptr;
         size = 0;
     }
 };
@@ -1131,8 +1131,8 @@ private:
     void tokenize(T *&res, s_t & rsize) {
         T u = 0;
         rsize = 0;
-        if (pos != NULL && pos == stop && *pos == '\0') {
-            res = NULL;
+        if (pos != nullptr && pos == stop && *pos == '\0') {
+            res = nullptr;
         } else {
             if (Good()) {
                 while (Good()) {
@@ -1151,7 +1151,7 @@ private:
                     } while (1);
                 }
             } else {
-                res = NULL;
+                res = nullptr;
             }
         }
     }
@@ -1162,7 +1162,7 @@ public:
 
     caTokenizeSStream() {
         capacity = 0;
-        cBuff = pos = stop = NULL;
+        cBuff = pos = stop = nullptr;
         size = 0;
         good = false;
     }
@@ -1170,32 +1170,32 @@ public:
     //Tested 
 
     u32 Init(T *base, s_t total_size, s_t s_size) {
-        u32 res = FALSE;
+        u32 res = false;
         capacity = total_size - 1;
         cBuff = base;
         pos = cBuff;
         size = s_size;
         stop = &cBuff[size];
-        if (cBuff != NULL && capacity > 0) {
-            res = TRUE;
+        if (cBuff != nullptr && capacity > 0) {
+            res = true;
         }
-        good = ((res == TRUE) && Good());
+        good = ((res == true) && Good());
         return res;
     }
 
     //Tested 
 
     u32 Init(caStringStream<T> & ss) {
-        u32 res = FALSE;
+        u32 res = false;
         capacity = ss.Capacity();
         cBuff = ss.Str();
         size = ss.Size();
         pos = cBuff;
         stop = &cBuff[size];
-        if (cBuff != NULL && capacity > 0) {
-            res = TRUE;
+        if (cBuff != nullptr && capacity > 0) {
+            res = true;
         }
-        good = ((res == TRUE) && Good());
+        good = ((res == true) && Good());
         return res;
     }
 
@@ -1236,7 +1236,7 @@ public:
     //Tested 
 
     inline s_t Good(void) {
-        return good = (pos <= stop && pos != NULL);
+        return good = (pos <= stop && pos != nullptr);
     }
 
     inline void Forward(s_t npos) {
@@ -1248,7 +1248,7 @@ public:
     //Tested 
 
     inline T* Str(void) {
-        if (stop != NULL)
+        if (stop != nullptr)
             *stop = '\0';
         return pos;
     }

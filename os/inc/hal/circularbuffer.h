@@ -72,7 +72,7 @@ public:
 
     caCircularBuffer() {
         start = stop = WIDTH = 0;
-        cBuff = NULL;
+        cBuff = nullptr;
     }
 
     void Init(T * buff, s_t assigned_width) {
@@ -129,7 +129,7 @@ public:
 
     inline bool Push(T *ptr, s_t requested, s_t & writed) {
         bool res = false;
-        if (ptr != NULL) {
+        if (ptr != nullptr) {
             res = add(ptr, requested, writed);
         }
         return res;
@@ -137,7 +137,7 @@ public:
 
     inline bool Pop(T *ptr, s_t requested, s_t & readed) {
         bool res = false;
-        if (ptr != NULL) {
+        if (ptr != nullptr) {
             res = remove(ptr, requested, readed);
         }
         return res;

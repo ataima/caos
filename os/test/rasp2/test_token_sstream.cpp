@@ -165,7 +165,7 @@ static void test_02(u32 & success, u32 &failed) {
     }
 
     iss >> res;
-    if (res.ptr == NULL) {
+    if (res.ptr == nullptr) {
         success++;
     } else {
         failed++;

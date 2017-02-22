@@ -52,7 +52,7 @@ caThreadContext *caScheduler::taskList[MAX_TASK];
 
 
 u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJobPriority p, thFunc func, u32 par1, u32 par2, u32 stack) {
-    caThreadContext * ctx = NULL;
+    caThreadContext * ctx = nullptr;
     u32 pst, a_stk, base;
     u32 header_mem_alloc = caMemory::GetHeaderBlock();
     if (stack <= TH_MIN_STACK_BLK)
@@ -100,7 +100,7 @@ void caScheduler::caThread::LaunchThread(thFunc f, u32 p1, u32 p2) {
 }
 
 void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) {
-    if (ctx != NULL) {
+    if (ctx != nullptr) {
         ss << caStringFormat::hex << ctx->index << caStringFormat::dec << ") ";
         caStringFiller p(' ', 18);
         ss.Fix(p);
@@ -224,8 +224,8 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
     bool res = false;
 
     if (IsValidContext(idx)) {
-        caThreadContext *ctx = NULL;
-        if (table.At(ctx, idx) && (ctx != NULL)) {
+        caThreadContext *ctx = nullptr;
+        if (table.At(ctx, idx) && (ctx != nullptr)) {
             ctx->status = caJobStatus::thRemove;
             res = true;
         }
@@ -236,8 +236,8 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
 bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
     bool res = deviceError::no_error;
     if (IsValidContext(thIdx)) {
-        caThreadContext *ctx = NULL;
-        if (table.At(ctx, thIdx) && (ctx != NULL)) {
+        caThreadContext *ctx = nullptr;
+        if (table.At(ctx, thIdx) && (ctx != nullptr)) {
             while (hal_llc_scheduler.hll_lock() == false) {
             };
             ctx->priority = newPrio;
@@ -254,10 +254,10 @@ bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
 caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
     //TIN();
     //REFRESH  
-    caThreadContext * tmp = NULL;
+    caThreadContext * tmp = nullptr;
     u32 i, max = 0;
     for (i = 0; i < table.Size(); i++) {
-        if (table.At(tmp, i) && (tmp != NULL)) {
+        if (table.At(tmp, i) && (tmp != nullptr)) {
             tmp->time++; // always time ++ staus ignored also current
             if (tmp->status == caJobStatus::thRemove) {
                 table.Remove(i);
@@ -265,7 +265,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
                 if (table.Size() == i) {
                     break; // no more context 
                 } else {
-                    if (table.At(tmp, i) && (tmp != NULL))
+                    if (table.At(tmp, i) && (tmp != nullptr))
                         tmp->index = i;
                     i--; // re evaluate at index i :  remove also this task if is mask removable
                     continue;
@@ -287,14 +287,14 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
     i = cur_index;
     while (1) { // Round robin
         i = i % table.Size();
-        if (table.At(tmp, i) && (tmp != NULL) && (tmp->status & caJobStatus::thRunning)) {
+        if (table.At(tmp, i) && (tmp != nullptr) && (tmp->status & caJobStatus::thRunning)) {
             tmp->nswitch++;
             break; // Year ... it's the next thread to
         }
         max++;
         i++;
         if (max == table.Size()) {
-            tmp = NULL;
+            tmp = nullptr;
             break;
         }
     }
@@ -317,9 +317,9 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
 caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *current) {
     caThreadContext * tmp, *target;
     u32 i;
-    tmp = target = NULL;
+    tmp = target = nullptr;
     for (i = 0; i < table.Size(); i++) {
-        if (table.At(tmp, i) && (tmp != NULL)) {
+        if (table.At(tmp, i) && (tmp != nullptr)) {
             tmp->time++; // always time ++ staus ignored also current
             if (tmp->status == caJobStatus::thRemove) {
                 table.Remove(i);
@@ -327,7 +327,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
                 if (table.Size() == i) {
                     break; // no more context 
                 } else {
-                    if (table.At(tmp, i) && (tmp != NULL))
+                    if (table.At(tmp, i) && (tmp != nullptr))
                         tmp->index = i;
                     i--; // re evaluate at index i
                     continue;
@@ -341,7 +341,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
                 }
             }
             if (tmp != current && (tmp->status & caJobStatus::thRunning)) {
-                if (target == NULL) {
+                if (target == nullptr) {
                     target = tmp;
                 } else
                     if (less(target, tmp)) {
@@ -350,9 +350,9 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
             }
         }
     }
-    if (current != NULL) {
+    if (current != nullptr) {
         current->cur_prio >>= 1;
-        if (target == NULL)
+        if (target == nullptr)
             target = current;
         else
             if (less(target, current)) {
@@ -372,8 +372,8 @@ bool caNextTaskManager::IsValidContext(u32 thIdx) {
 /* from interrupt service routine : must be fast!!*/
 void caNextTaskManager::WakeUp(u32 thid) {
     if (thid < table.Size()) {
-        caThreadContext * tmp = NULL;
-        if (table.At(tmp, thid) && tmp != NULL && tmp->status == caJobStatus::thSleep)
+        caThreadContext * tmp = nullptr;
+        if (table.At(tmp, thid) && tmp != nullptr && tmp->status == caJobStatus::thSleep)
             tmp->status = caJobStatus::thRun;
     }
 }
@@ -382,11 +382,11 @@ void caNextTaskManager::WakeUp(u32 thid) {
 u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
     u32 res = deviceError::no_error;
     if (thid < table.Size()) {
-        caThreadContext * tmp = NULL;
+        caThreadContext * tmp = nullptr;
         table.At(tmp, thid);
         while (hal_llc_scheduler.hll_lock() == false) {
         };
-        if (tmp != NULL && (tmp->status & caJobStatus::thRunning)) {
+        if (tmp != nullptr && (tmp->status & caJobStatus::thRunning)) {
             tmp->status = caJobStatus::thSleep;
             tmp->sleep = tick;
         } else {
@@ -421,7 +421,7 @@ bool caScheduler::Destroy(void) {
     if (caScheduler::RemoveAllJobs()) {
         caMemAux<u32>::MemSet((u32 *) taskList, 0, sizeof (taskList));
         caMemAux<u32>::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext));
-        current_task = NULL;
+        current_task = nullptr;
         mng.Detach();
         res = true;
     }
@@ -467,12 +467,12 @@ void caScheduler::GetNextContext(void) {
     if (current_task != &main_ctx)
         current_task = getnextcontext(current_task);
     else
-        current_task = getnextcontext(NULL);
+        current_task = getnextcontext(nullptr);
 
 #if DEBUG_CHECK_TASK
     CheckValid(2);
 #endif
-    if (current_task == NULL)
+    if (current_task == nullptr)
         current_task = &main_ctx;
 }
 
@@ -507,7 +507,7 @@ u32 caScheduler::StartTask(void) {
     u32 res = 0xffffffff;
     while (hal_llc_scheduler.hll_lock() == false) {
     };
-    if (current_task != NULL) {
+    if (current_task != nullptr) {
         current_task->status = caJobStatus::thRun;
         res = current_task->index;
     }
@@ -519,7 +519,7 @@ u32 caScheduler::StartTask(void) {
 void caScheduler::EndTask(u32 result) {
     while (hal_llc_scheduler.hll_lock() == false) {
     };
-    if (current_task != NULL) {
+    if (current_task != nullptr) {
         current_task->result = result;
         current_task->status = caJobStatus::thStop;
     }
@@ -535,7 +535,7 @@ void caScheduler::Panic(void) {
     caStringStream<s8> ss;
     hal_llc_int_req.hll_disable();
     ss.Init(buff, 512);
-    if (current_task != NULL)
+    if (current_task != nullptr)
         caThread::Dump(ss, current_task);
     Dbg::Put((const char *) ss.Str());
     ss.Clear();
@@ -549,8 +549,8 @@ void caScheduler::Panic(void) {
 void caScheduler::CheckValid(u32 p) {
     if (p == 1 && current_task == &main_ctx)
         return;
-    if (current_task == NULL) {
-        Dbg::Put("ERROR : NULL CONTEXT : ", p);
+    if (current_task == nullptr) {
+        Dbg::Put("ERROR : nullptr CONTEXT : ", p);
         Panic();
     }
     if (current_task->pcb[1] != current_task->pcb[16]) {
@@ -624,7 +624,7 @@ void caScheduler::SwitchContext(void) {
 }
 
 u32 caScheduler::GetCurrentTaskId(void) {
-    if (current_task == NULL || current_task == &main_ctx) {
+    if (current_task == nullptr || current_task == &main_ctx) {
         return -1;
     } else {
         return current_task->index;

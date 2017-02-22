@@ -38,7 +38,7 @@ u32 caSysTimer::Init(u32 tick_hz, u32 timer_hz) {
     system_ap804_timer(ap804);
     Ap804Control cntl;
     if (timer_hz > 0xffff)
-        return FALSE;
+        return false;
     caSysTimer::EnableTimer(0);
     caSysTimer::EnableCounter(0);
     cntl.asReg = ap804->Control.asReg;
@@ -51,7 +51,7 @@ u32 caSysTimer::Init(u32 tick_hz, u32 timer_hz) {
             clkdiv = 2;
             prescaler = BCM2836_CLOCK_FREQ / (tick_hz << 8);
             if (prescaler > 255) {
-                return FALSE; // too low tick freq
+                return false; // too low tick freq
             }
         }
     }
@@ -67,9 +67,9 @@ u32 caSysTimer::Init(u32 tick_hz, u32 timer_hz) {
         ap804->Control.asReg = cntl.asReg;
         st.mn_ClkHz = tick_hz;
         st.mn_IrqHz = timer_hz;
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 u32 caSysTimer::EnableTimer(u32 status) {
@@ -162,11 +162,11 @@ void caSysTimer::IrqService(void) {
     s_t dummy;
     st.mn_IrqCount++;
     st.mn_Msec++;
-    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
+    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
     if (st.mn_Msec == SYS_TIMER_TICK) {
         st.mn_Msec = 0;
         st.mn_Sec++;
-        hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, NULL, 0, dummy);
+        hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
         if (st.mn_Sec == 60) {
             st.mn_Sec = 0;
             st.mn_Min++;
@@ -202,7 +202,7 @@ u32 caSysTimer::ReadFreeCounter(void) {
 
 u32 caSysTimer::Dump(caStringStream<s8> * ss) {
     u32 res = 0;
-    if (ss != NULL) {
+    if (ss != nullptr) {
         system_ap804_timer(ap804);
         (*ss) << " --- SYS TIMER LIST ---" << caEnd::endl;
         (*ss) << caStringFormat::hex;
@@ -257,7 +257,7 @@ u32 caSysTimer::ToTime(u32 tick) {
 }
 
 u32 caSysTimer::Start(void) {
-    u32 res = FALSE;
+    u32 res = false;
     if (caSysTimer::Init(SYS_CLOCK_TIMER, SYS_TIMER_TICK)) {
         if (caSysTimer::EnableCounter(1)) {
             if (caSysTimer::EnableTimer(1)) {
@@ -270,7 +270,7 @@ u32 caSysTimer::Start(void) {
 }
 
 u32 caSysTimer::Stop(void) {
-    u32 res = FALSE;
+    u32 res = false;
     if (caSysTimer::EnableCounter(0)) {
         if (caSysTimer::EnableTimer(0)) {
             res = caSysTimer::IrqDisable();

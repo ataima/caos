@@ -41,7 +41,7 @@ class caHalPipeDevice_test_class
     CA_TEST_SUITE_END();
 
     void setUp(void) {
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
         start_time_scheduler();
     }
 
@@ -64,7 +64,7 @@ static u32 sourceTask(void) {
     caMemAux<u32>::MemCpy((u32*) in1.name, (u32*) "pippoSource\0", 12);
     in1.size = 1024 * 1024 * 32; //1M
     in1.host_guest = caPipeDeviceConfigure::requestMode::host;
-    in1.size=100;
+    in1.size = 100;
     deviceError res;
     s8 buff[1000];
     caStringStream<s8> ss;
@@ -82,7 +82,7 @@ static u32 sourceTask(void) {
         while (loop1 < 100) {
             ss << (u32) caScheduler::GetCurrentContext() <<
                     " - Source TASK : write on Mem Pipe " << caEnd::endl;
-            res=caOS::Write(port1,ss);
+            res = caOS::Write(port1, ss);
             port2.rdBuff = (u8*) buff;
             port2.readed = 0;
             port2.rdSize = 30;
@@ -109,9 +109,9 @@ static u32 destTask(void) {
     s8 buff_in[1000];
     caStringStream<s8> ss;
     ss.Init(buff_in, 1000);
-    do {       
+    do {
         res = caOS::Open("PIPE", in1, port1);
-    } while (res != deviceError::no_error);
+    } while (res != deviceError::error_device_already_opened);
     if (res == deviceError::no_error) {
         caMemAux<u32>::MemCpy((u32*) in2.name, (u32*) "pippoDest\0\0\0", 3);
         in2.size = 1024 * 1024 * 32; //1M
@@ -129,7 +129,7 @@ static u32 destTask(void) {
             }
             ss << (u32) caScheduler::GetCurrentContext() <<
                     " - Dest TASK : write on Mem Pipe " << caEnd::endl;
-            caOS::Write(port2,ss);
+            caOS::Write(port2, ss);
             loop2++;
         }
     }
@@ -137,7 +137,6 @@ static u32 destTask(void) {
     res = caOS::Close(port2);
     return 0;
 }
-
 
 void caHalPipeDevice_test_class::test1(void) {
     _START();
@@ -156,5 +155,5 @@ void caHalPipeDevice_test_class::test2(void) {
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    
+
 }

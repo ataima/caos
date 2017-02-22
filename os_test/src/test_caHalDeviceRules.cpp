@@ -75,63 +75,63 @@ public:
     }
 
     u32 IrqService1(u8 * txbuff, s_t size, s_t & writed) {
-        CA_ASSERT(txbuff != NULL);
+        CA_ASSERT(txbuff != nullptr);
         CA_ASSERT(size == 1);
         writed = size;
         return 0;
     }
 
     u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed) {
-        CA_ASSERT(rxbuff != NULL);
+        CA_ASSERT(rxbuff != nullptr);
         CA_ASSERT(size == 1);
         readed = size;
         return 0;
     };
 
     u32 IrqService3(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     u32 IrqService4(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     u32 IrqService5(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     u32 IrqService6(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     u32 IrqService7(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     u32 IrqService8(u8 * buff, s_t size, s_t & iosize) {
-        CA_ASSERT(buff != NULL);
+        CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
     caSysLog * GetDeviceLog(void) {
-        return NULL;
+        return nullptr;
     }
 };
 
@@ -154,32 +154,32 @@ class testDevice_test_class
 
     void test1(void) {
         testDevice t;
-        CA_ASSERT(t.Open(NULL, NULL) == 0);
+        CA_ASSERT(t.Open(nullptr, nullptr) == 0);
     }
 
     void test2(void) {
         testDevice t;
-        CA_ASSERT(t.Close(NULL) == 0);
+        CA_ASSERT(t.Close(nullptr) == 0);
     }
 
     void test3(void) {
         testDevice t;
-        CA_ASSERT(t.Write(NULL) == 0);
+        CA_ASSERT(t.Write(nullptr) == 0);
     }
 
     void test4(void) {
         testDevice t;
-        CA_ASSERT(t.Read(NULL) == 0);
+        CA_ASSERT(t.Read(nullptr) == 0);
     }
 
     void test5(void) {
         testDevice t;
-        CA_ASSERT(t.Flush(NULL) == 0);
+        CA_ASSERT(t.Flush(nullptr) == 0);
     }
 
     void test6(void) {
         testDevice t;
-        CA_ASSERT(t.IoCtrl(NULL, NULL) == 0);
+        CA_ASSERT(t.IoCtrl(nullptr, nullptr) == 0);
     }
 
     void test7(void) {
@@ -305,9 +305,9 @@ void caHalDeviceRules_test_class::test1(void) {
     caDeviceHandle port;
     u32 guid = 0xfff00000;
     memset(&port, 128, sizeof (port));
-    CA_ASSERT(caHalDeviceRules::Open(NULL, NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::Open(&t, NULL, NULL, 0) == deviceError::error_device_config_param);
-    CA_ASSERT(caHalDeviceRules::Open(&t, &setup, NULL, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::Open(nullptr, nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::Open(&t, nullptr, nullptr, 0) == deviceError::error_device_config_param);
+    CA_ASSERT(caHalDeviceRules::Open(&t, &setup, nullptr, 0) == deviceError::error_invalid_null_port);
     CA_ASSERT(caHalDeviceRules::Open(&t, &setup, &port, guid) == deviceError::no_error);
     CA_ASSERT(port.handle = 0xfff01002);
 }
@@ -324,8 +324,8 @@ void caHalDeviceRules_test_class::test2(void) {
     memset(&port, 0, sizeof (port));
     port.handle = 0xfff00000 + BASE_HANDLE + 1;
     t.setIsOpen(1);
-    CA_ASSERT(caHalDeviceRules::Close(NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::Close(&t, NULL, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::Close(nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::Close(&t, nullptr, 0) == deviceError::error_invalid_null_port);
     CA_ASSERT(caHalDeviceRules::Close(&t, &port, guid) == deviceError::no_error);
     t.setIsOpen(0);
     CA_ASSERT(caHalDeviceRules::Close(&t, &port, guid) == deviceError::error_device_not_opened);
@@ -349,8 +349,8 @@ void caHalDeviceRules_test_class::test3(void) {
     memset(&port, 0, sizeof (port));
     port.handle = 0xfff00000 + BASE_HANDLE + 1;
     t.setIsOpen(1);
-    CA_ASSERT(caHalDeviceRules::Write(NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::Write(&t, NULL, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::Write(nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::Write(&t, nullptr, 0) == deviceError::error_invalid_null_port);
     CA_ASSERT(caHalDeviceRules::Write(&t, &port, guid) == deviceError::error_invalid_null_buffer_port);
     t.setIsOpen(0);
     CA_ASSERT(caHalDeviceRules::Write(&t, &port, guid) == deviceError::error_device_not_opened);
@@ -373,8 +373,8 @@ void caHalDeviceRules_test_class::test4(void) {
     memset(&port, 0, sizeof (port));
     port.handle = 0xfff00000 + BASE_HANDLE + 1;
     t.setIsOpen(1);
-    CA_ASSERT(caHalDeviceRules::Read(NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::Read(&t, NULL, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::Read(nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::Read(&t, nullptr, 0) == deviceError::error_invalid_null_port);
 
     CA_ASSERT(caHalDeviceRules::Read(&t, &port, guid) == deviceError::error_invalid_null_buffer_port);
     t.setIsOpen(0);
@@ -399,9 +399,9 @@ void caHalDeviceRules_test_class::test5(void) {
     port.handle = 0xfff00000 + BASE_HANDLE + 1;
     caIDeviceCtrl inp;
     t.setIsOpen(1);
-    CA_ASSERT(caHalDeviceRules::IoCtrl(NULL, NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::IoCtrl(&t, NULL, NULL, 0) == deviceError::error_invalid_null_port);
-    CA_ASSERT(caHalDeviceRules::IoCtrl(&t, &port, NULL, 0) == deviceError::error_device_config_param);
+    CA_ASSERT(caHalDeviceRules::IoCtrl(nullptr, nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::IoCtrl(&t, nullptr, nullptr, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::IoCtrl(&t, &port, nullptr, 0) == deviceError::error_device_config_param);
 
     CA_ASSERT(caHalDeviceRules::IoCtrl(&t, &port, &inp, guid) == deviceError::no_error);
     t.setIsOpen(0);
@@ -426,8 +426,8 @@ void caHalDeviceRules_test_class::test6(void) {
     memset(&port, 0, sizeof (port));
     port.handle = 0xfff00000 + BASE_HANDLE + 1;
     t.setIsOpen(1);
-    CA_ASSERT(caHalDeviceRules::Flush(NULL, NULL, 0) == deviceError::error_invalid_null_device);
-    CA_ASSERT(caHalDeviceRules::Flush(&t, NULL, 0) == deviceError::error_invalid_null_port);
+    CA_ASSERT(caHalDeviceRules::Flush(nullptr, nullptr, 0) == deviceError::error_invalid_null_device);
+    CA_ASSERT(caHalDeviceRules::Flush(&t, nullptr, 0) == deviceError::error_invalid_null_port);
 
     CA_ASSERT(caHalDeviceRules::Flush(&t, &port, guid) == deviceError::no_error);
     t.setIsOpen(0);

@@ -97,7 +97,7 @@ void caStringStream_test_class::test1(void) {
     caStringStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str() == NULL);
+    CA_ASSERT(a.Str() == nullptr);
     CA_ASSERT(a.Good() == false);
 }
 
@@ -111,7 +111,7 @@ void caStringStream_test_class::test2(void) {
     caStringStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str() == NULL);
+    CA_ASSERT(a.Str() == nullptr);
     CA_ASSERT(a.Good() == false);
     CA_ASSERT(a.Empty() == true);
 
@@ -1099,7 +1099,7 @@ void caStringStream_test_class::testPrefetch(void) {
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
     std::cout << ss.Str();
-    CA_ASSERT(ss.Str() != NULL);
+    CA_ASSERT(ss.Str() != nullptr);
 }
 
 void caStringStream_test_class::test30(void) {

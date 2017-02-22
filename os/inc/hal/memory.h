@@ -57,10 +57,12 @@ private:
     static u32* start_mem;
     static u32* end_mem;
     static u32 avail_mem;
-
+    static hal_llc_mem_io *link;
 private:
     static blockMem * GetFreePrev(blockMem *s);
     static blockMem * GetFreeNext(blockMem *s);
+    static blockMem * GetBusyPrev(blockMem *s);
+    static blockMem * GetBusyNext(blockMem *s);
     static blockMem *GetStartBlock(void);
     static blockMem *GetEndBlock(void);
     static void *SplitBlock(blockMem *free, u32 size);
@@ -78,7 +80,8 @@ public:
 
     static void * Allocate(u32 size);
 
-    static u32 Free(void * p, u32 *size = NULL);
+    static u32 Free(void * p, u32 *size = nullptr);
+    static u32 FreeAll(void );
 
     static u32 Find(void *p);
 

@@ -84,7 +84,7 @@ u32 caHalMemDevice::Read(caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     port->readed = caMemory::Free(port->rdBuff, &port->rdSize);
-    port->rdBuff=NULL;
+    port->rdBuff=nullptr;
     port->tLast = hal_llc_time_1.hll_tick();
     port->tLastCmd = caDeviceAction::caActionRead;
     port->wrError = port->rdError = 0;

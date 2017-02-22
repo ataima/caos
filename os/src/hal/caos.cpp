@@ -29,9 +29,9 @@ caHalJobDevice caOS::scheduler(&hal_llc_scheduler, ioCtrlRequest::Task);
 
 caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
 
-caHalMemDevice caOS::memory(&hal_llc_mem,ioCtrlRequest::Memory);
+caHalMemDevice caOS::memory(&hal_llc_mem, ioCtrlRequest::Memory);
 
-caHalPipeDevice caOS::pipe(&hal_llc_mem,ioCtrlRequest::Pipe);
+caHalPipeDevice caOS::pipe(&hal_llc_mem, ioCtrlRequest::Pipe);
 
 #if SYS_TIMER_2_DEVICE
 caHalSysTimerDevice caOS::timer2(&hal_llc_time_2, ioCtrlRequest::SysTimer2);
@@ -119,7 +119,7 @@ caOS::devicePair caOS::allDevices[] = {
 #if SYS_TIMER_8_DEVICE    
     {"SYS_TIMER_8", ioCtrlRequest::SysTimer8, &timer8},
 #endif    
-    {"CACHE", ioCtrlRequest::Cache, NULL},
+    {"CACHE", ioCtrlRequest::Cache, nullptr},
 
     {"TTY1", ioCtrlRequest::Com1, &com1},
 
@@ -150,7 +150,7 @@ bool caOS::GetDevice(const char * name, s32 & offset) {
     bool res = false;
     offset = -1;
     u32 i;
-    u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) ;
+    u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair));
     for (i = 0; i < mnDevices; i++) {
         // TO DO BINARY SEARCH ON allDevices
         if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {
@@ -188,7 +188,7 @@ deviceError caOS::Open(const char * name,
         caIDeviceConfigure & in, caDeviceHandle & out) {
     u32 res = deviceError::no_error;
     s32 offset;
-    if (name == NULL) {
+    if (name == nullptr) {
         res = deviceError::error_unknow_device_name;
     } else {
         if (caOS::GetDevice(name, offset)) {

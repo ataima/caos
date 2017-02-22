@@ -39,7 +39,7 @@ struct caIDeviceCtrl {
 
     caIDeviceCtrl() {
         caMemAux<s_t>::MemZero(params, sizeof (params));
-        ss = NULL;
+        ss = nullptr;
         command = 0;
     }
 

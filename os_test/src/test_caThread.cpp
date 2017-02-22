@@ -74,9 +74,16 @@ static void hll_req_schedule(void) {
     caScheduler::GetNextContext();
 }
 
+static bool hll_add_task(caThreadContext *ctx) {
+    std::cout << "ADD TASK " << std::endl;
+    caScheduler::AddTask(ctx);
+    return true;
+}
+
 hal_llc_scheduler_io hal_llc_scheduler = {
     hll_time,
     hll_totick,
+    hll_add_task,
     isvalidcontext,
     hll_enable_lock,
     hll_enable_unlock,
@@ -128,7 +135,7 @@ class test_caThread_class
     CA_TEST_SUITE_END();
 
     void setUp(void) {
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
         start_time_scheduler();
 
     }
@@ -593,7 +600,7 @@ void test_caThread_class::test9(void) {
     CA_ASSERT(index6 == (5));
     CA_ASSERT(index7 == (6));
     std::vector<caThreadContext *> ctxs;
-    ctxs.insert(ctxs.begin(), 7, NULL);
+    ctxs.insert(ctxs.begin(), 7, nullptr);
     u32 i;
     for (i = 0; i < 1000; i++) {
         caScheduler::GetNextContext();

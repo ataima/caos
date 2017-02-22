@@ -29,8 +29,8 @@ namespace Dbg {
     } kformat;
 
 
-    extern void Put(const char *s, void *p, u32 v, kformat f = kformat::hex, u32 cr = TRUE);
-    extern void Put(const char *msg, u32 val, kformat format = hex, u32 cr = TRUE);
+    extern void Put(const char *s, void *p, u32 v, kformat f = kformat::hex, u32 cr = true);
+    extern void Put(const char *msg, u32 val, kformat format = hex, u32 cr = true);
     extern void Put(const char *msg);
 }
 

@@ -75,7 +75,7 @@ hal_llc_scheduler_io hal_llc_scheduler = {
 
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
-    NULL,
+    nullptr,
     caMiniUart::Configure, //hll_config
     caSysTimer::GetCount, //hll_time
     caMiniUart::EnableInt, //hll_en_int
@@ -96,7 +96,7 @@ hal_llc_com_io hal_llc_com1 = {
 
 // Hardware connectors sys timer
 hal_llc_sys_time hal_llc_time_1 = {
-    NULL,
+    nullptr,
     caSysTimer::Configure, // empthy funzion base timer fix conf to scheduler task
     caSysTimer::GetCount, //system tick count
     caSysTimer::GetPsec,

@@ -167,7 +167,7 @@ static void hll_wakeup_2(u32 thid) {
 
 
 hal_llc_sys_time hal_llc_time_1 = {
-    NULL,
+    nullptr,
     hll_config, // empthy funzion base timer fix conf to scheduler task
     hll_time, //system tick count
     hll_getps,
@@ -761,7 +761,7 @@ void caHalSysTimerDevice_test_class::test10(void) {
     setup.clock_ps = 11223344;
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
-    caMemory::Init();
+    caMemory::Init(&hal_llc_mem);
     caDeviceHandle portIO;
     caSysTimerDeviceCtrl in;
     in.params[0] = 16512;

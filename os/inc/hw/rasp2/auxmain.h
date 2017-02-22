@@ -34,9 +34,9 @@ public:
         if (!ctrl.asBit.miniuart) {
             ctrl.asBit.miniuart = 1;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 DisableMiniUart(void) {
@@ -46,9 +46,9 @@ public:
         if (ctrl.asBit.miniuart) {
             ctrl.asBit.miniuart = 0;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 EnableSpi1(void) {
@@ -58,9 +58,9 @@ public:
         if (!ctrl.asBit.spi_m_1) {
             ctrl.asBit.spi_m_1 = 1;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 DisableSpi1(void) {
@@ -70,9 +70,9 @@ public:
         if (ctrl.asBit.spi_m_1) {
             ctrl.asBit.spi_m_1 = 0;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 EnableSpi2(void) {
@@ -82,9 +82,9 @@ public:
         if (!ctrl.asBit.spi_m_2) {
             ctrl.asBit.spi_m_2 = 1;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
 
     }
 
@@ -95,9 +95,9 @@ public:
         if (ctrl.asBit.spi_m_2) {
             ctrl.asBit.spi_m_2 = 0;
             aux->en.asReg = ctrl.asReg;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 GetIrqPending(void) {

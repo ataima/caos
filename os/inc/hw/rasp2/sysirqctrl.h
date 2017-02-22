@@ -147,18 +147,18 @@ public:
         system_irq_control(irq);
         if (!irq->fiq.asBit.enable) {
             irq->fiq.asBit.enable = 1;
-            return TRUE;
+            return true;
         }
-        return TRUE;
+        return true;
     }
 
     static inline u32 DisableFastIrq(void) {
         system_irq_control(irq);
         if (irq->fiq.asBit.enable) {
             irq->fiq.asBit.enable = 0;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 EnableFastIrqSysTimer(void) {
@@ -169,7 +169,7 @@ public:
             irq->fiq.asBit.source = fiqSources::arm_timer;
             return EnableFastIrq();
         }
-        return FALSE;
+        return false;
     }
 
     static inline u32 DisableFastIrqSysTimer(void) {

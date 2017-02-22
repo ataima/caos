@@ -128,7 +128,7 @@ DWLOAD:=./download.sh
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
     PUTTY:= putty -load "pi-tty"     
-    EH:= 
+    EH:= -e
 else	    
     PUTTY:= putty.exe -load "pi-tty"      
     EH:=-e	

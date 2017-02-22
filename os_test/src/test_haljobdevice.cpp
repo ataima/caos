@@ -50,7 +50,7 @@ class caHalJobDevice_test_class
     CA_TEST_SUITE_END();
 
     void setUp(void) {
-        caMemory::Init();
+        caMemory::Init(&hal_llc_mem);
         start_time_scheduler();
     }
 

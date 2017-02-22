@@ -80,7 +80,7 @@ u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
     caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff));
     caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff));
     rxPos = txPos = rxOverrun = txOverrun = 0;
-    return TRUE;
+    return true;
 }
 
 u32 caMiniUart::Stop(void) {
@@ -92,13 +92,13 @@ u32 caMiniUart::Stop(void) {
     caMemAux<u32>::MemSet((u32*) rxBuff, 0, sizeof (rxBuff));
     caMemAux<u32>::MemSet((u32*) txBuff, 0, sizeof (txBuff));
     rxPos = txPos = rxOverrun = txOverrun = 0;
-    return TRUE;
+    return true;
 }
 
 u32 caMiniUart::GetErrors(u32 &rxError, u32 & txError) {
     rxError = rxOverrun;
     txError = txOverrun;
-    return TRUE;
+    return true;
 }
 
 u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {

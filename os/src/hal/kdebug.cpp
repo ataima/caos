@@ -24,8 +24,8 @@ class caLowLevelDebug {
     /// TO DO USE STREAM....
 public:
     static void Msg(const char *s);
-    static void Msg(const char *s, u32 v, Dbg::kformat f = Dbg::kformat::hex, u32 cr = TRUE);
-    static void Msg(const char *s, void *p, u32 v, Dbg::kformat f = Dbg::kformat::hex, u32 cr = TRUE);
+    static void Msg(const char *s, u32 v, Dbg::kformat f = Dbg::kformat::hex, u32 cr = true);
+    static void Msg(const char *s, void *p, u32 v, Dbg::kformat f = Dbg::kformat::hex, u32 cr = true);
     static void Hex(u32 d);
     static void Dec(s32 d);
     static void Bin(u32 d);

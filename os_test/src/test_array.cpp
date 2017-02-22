@@ -60,8 +60,8 @@ void caArray_test_class::test1(void) {
     caArray<int> v;
     CA_ASSERT(v.Capacity() == 0);
     CA_ASSERT(v.Size() == 0);
-    CA_ASSERT(v.Start() == NULL);
-    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Start() == nullptr);
+    CA_ASSERT(v.Stop() == nullptr);
     CA_ASSERT(v.Good() == false);
     CA_ASSERT(v.Empty() == true);
 }
@@ -76,8 +76,8 @@ void caArray_test_class::test2(void) {
     caArray<int> v;
     CA_ASSERT(v.Capacity() == 0);
     CA_ASSERT(v.Size() == 0);
-    CA_ASSERT(v.Start() == NULL);
-    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Start() == nullptr);
+    CA_ASSERT(v.Stop() == nullptr);
     CA_ASSERT(v.Good() == false);
     CA_ASSERT(v.Empty() == true);
     //
@@ -274,8 +274,8 @@ void caArray_test_class::test7(void) {
     v.Detach();
     CA_ASSERT(v.Capacity() == 0);
     CA_ASSERT(v.Size() == 0);
-    CA_ASSERT(v.Start() == NULL);
-    CA_ASSERT(v.Stop() == NULL);
+    CA_ASSERT(v.Start() == nullptr);
+    CA_ASSERT(v.Stop() == nullptr);
     CA_ASSERT(v.Good() == false);
     CA_ASSERT(v.Empty() == true);
 }

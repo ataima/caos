@@ -81,7 +81,7 @@ void caTokenizeSStream_test_class::test1(void) {
     caTokenizeSStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str() == NULL);
+    CA_ASSERT(a.Str() == nullptr);
     CA_ASSERT(a.Good() == false);
 }
 
@@ -95,7 +95,7 @@ void caTokenizeSStream_test_class::test2(void) {
     caTokenizeSStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str() == NULL);
+    CA_ASSERT(a.Str() == nullptr);
     CA_ASSERT(a.Good() == false);
     a.Init(buff, 100, 0);
     CA_ASSERT(a.Size() == 0);
@@ -831,6 +831,6 @@ void caTokenizeSStream_test_class::test30(void) {
     CA_ASSERT(strncmp(res.ptr, "paperino", 8) == 0);
     CA_ASSERT(res.size == 8);
     iss >> res;
-    CA_ASSERT(res.ptr == NULL);
+    CA_ASSERT(res.ptr == nullptr);
     CA_ASSERT(res.size == 0);
 }

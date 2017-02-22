@@ -53,16 +53,16 @@ void caArmCpu::Dump(u32 *p) {
     u32 i;
     Dbg::Put("Dump : \r\n");
     for (i = 0; i < 32; i += 4) {
-        Dbg::Put("> ", (u32) p, Dbg::kformat::hex, FALSE);
-        Dbg::Put(" - ", *p++, Dbg::kformat::hex, FALSE);
-        Dbg::Put(" ", *p++, Dbg::kformat::hex, FALSE);
-        Dbg::Put(" ", *p++, Dbg::kformat::hex, FALSE);
+        Dbg::Put("> ", (u32) p, Dbg::kformat::hex, false);
+        Dbg::Put(" - ", *p++, Dbg::kformat::hex, false);
+        Dbg::Put(" ", *p++, Dbg::kformat::hex, false);
+        Dbg::Put(" ", *p++, Dbg::kformat::hex, false);
         Dbg::Put(" ", *p++, Dbg::kformat::hex);
     }
 }
 
 void caArmCpu::GetRegs(CpuRegs *regs) {
-    if (regs != NULL) {
+    if (regs != nullptr) {
         asm volatile ("STMFD    sp!, {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}");
         asm volatile ("STMFD    sp!, {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}");
         regs->r[15] = (u32) GetLinkRegisterR14() - 4; // pc to call GeRegs
@@ -97,7 +97,7 @@ void caArmCpu::GetMainIdCpuInfo(void) {
             Dbg::Put("CPU : Intel Corporation");
             break;
         default:
-            Dbg::Put("CPU : MFT = ", mid.asBit.manft, Dbg::kformat::dec, FALSE);
+            Dbg::Put("CPU : MFT = ", mid.asBit.manft, Dbg::kformat::dec, false);
             break;
     }
     switch (mid.asBit.arch) {
@@ -126,9 +126,9 @@ void caArmCpu::GetMainIdCpuInfo(void) {
             Dbg::Put(" ARV7");
             break;
     }
-    Dbg::Put(" V:", mid.asBit.variant, Dbg::kformat::dec, FALSE);
-    Dbg::Put(" N:", mid.asBit.part_number, Dbg::kformat::dec, FALSE);
-    Dbg::Put(" R:", mid.asBit.revision, Dbg::kformat::dec, FALSE);
+    Dbg::Put(" V:", mid.asBit.variant, Dbg::kformat::dec, false);
+    Dbg::Put(" N:", mid.asBit.part_number, Dbg::kformat::dec, false);
+    Dbg::Put(" R:", mid.asBit.revision, Dbg::kformat::dec, false);
     Dbg::Put(" ]\r\n");
 
 }
@@ -150,7 +150,7 @@ void caArmCpu::DumpRegs(CpuRegs * regs) {
     Dbg::Put("R12     = ", regs->r[12]);
     Dbg::Put("R13(SP) = ", regs->r[13]);
     Dbg::Put("R14(LR) = ", regs->r[14]);
-    Dbg::Put("R15(PC) = ", regs->r[15], Dbg::kformat::hex, FALSE);
+    Dbg::Put("R15(PC) = ", regs->r[15], Dbg::kformat::hex, false);
     Dbg::Put("  <-- Call from here !\r\n");
 }
 

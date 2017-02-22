@@ -35,7 +35,7 @@ u32 caHalSysTimerDevice::Open(caIDeviceConfigure * setup,
     u32 res = deviceError::no_error;
     LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
     caSysTimerConfigure *conf = (caSysTimerConfigure *) (setup);
-    if (conf != NULL) {
+    if (conf != nullptr) {
         if (link->hll_config(conf->tick_ps, conf->clock_ps, conf->prescaler_ps, conf->irq_ps)) {
             isOpen++;
             port->handle = caHalDeviceRules::addHandle(handle_guid, mask_guid);
@@ -69,7 +69,7 @@ u32 caHalSysTimerDevice::Close(caDeviceHandle *port) {
     port->handle = mask_guid | BASE_HANDLE;
     port->wrError = port->rdError = 0;
     res = link->hll_stop();
-    link->hll_lnk_obj = NULL;
+    link->hll_lnk_obj = nullptr;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
@@ -193,7 +193,7 @@ u32 caHalSysTimerDevice::IoCtrl(caDeviceHandle *port,
         case caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware:
             LOG(caLog, info) << " caSysTimerDeviceCtrl::IoCtrlDirect::sysTimerListHardware"
                     << caEnd::endl;
-            if (in->ss != NULL) {
+            if (in->ss != nullptr) {
                 in->ss->Clear();
                 u32 size = hal_llc_time_1.hll_dump(in->ss);
                 in->params[0] = size;

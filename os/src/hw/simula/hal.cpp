@@ -65,7 +65,7 @@ hal_llc_scheduler_io hal_llc_scheduler = {
 
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
-    NULL,
+    nullptr,
     sim_uart_configure, //hll_config
     sim_get_tick, //hll_time
     sim_uart_enable_int, //hll_en_int
@@ -85,7 +85,7 @@ hal_llc_com_io hal_llc_com1 = {
 
 // Hardware connectors sys timer
 hal_llc_sys_time hal_llc_time_1 = {
-    NULL,
+    nullptr,
     sim_timer_configure, // empthy funzion base timer fix conf to scheduler task
     sim_get_tick, //system tick count
     sim_timer_get_psec,

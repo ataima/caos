@@ -80,7 +80,7 @@ typedef struct tag_ca_thread_context {
 typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
 
 inline bool less(caThreadContext* a, caThreadContext* b) {
-    // TEST TRUE SWAP TARGET
+    // TEST true SWAP TARGET
     if (a->cur_prio == b->cur_prio)
         return (a->nswitch / a->priority) > (b->nswitch / b->priority);
     else

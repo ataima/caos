@@ -50,7 +50,7 @@ void caCString_test_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caCSTR(a, "Pippo");
-    CA_ASSERT(a.str != NULL);
+    CA_ASSERT(a.str != nullptr);
     CA_ASSERT(strcmp(a.str, "Pippo") == 0);
     CA_ASSERT(a.len == 6);
 }

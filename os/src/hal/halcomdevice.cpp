@@ -69,7 +69,7 @@ u32 caHalComDevice::Close(caDeviceHandle *port) {
     link->hll_get_errors(port->rdError, port->wrError);
     port->handle = mask_guid | BASE_HANDLE;
     res = link->hll_stop();
-    link->hll_lnk_obj = NULL;
+    link->hll_lnk_obj = nullptr;
     LOG(caLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
@@ -205,7 +205,7 @@ u32 caHalComDevice::IoCtrl(caDeviceHandle *port, caIDeviceCtrl *inp) {
         case caComDeviceCtrl::IoComCtrlDirect::comListHardware:
             LOG(caLog, info) << " caComDeviceCtrl::IoCtrlDirect::comListHardware"
                     << caEnd::endl;
-            if (in->ss != NULL) {
+            if (in->ss != nullptr) {
                 in->ss->Clear();
                 u32 size = link->hll_dump(in->ss);
                 in->params[0] = size;

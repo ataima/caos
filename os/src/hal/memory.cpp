@@ -28,11 +28,13 @@
 u32* caMemory::start_mem;
 u32* caMemory::end_mem;
 u32 caMemory::avail_mem;
+hal_llc_mem_io *caMemory::link=nullptr;
 
 void caMemory::Init(hal_llc_mem_io *lnk) {
-    if (lnk != NULL) {
-        start_mem =static_cast<u32*>(uint_to_ptr(lnk->hll_heap_start()));
-        end_mem = static_cast<u32*>(uint_to_ptr(lnk->hll_heap_end()));
+    link=lnk;
+    if (link != nullptr) {
+        start_mem = static_cast<u32*> (uint_to_ptr(lnk->hll_heap_start()));
+        end_mem = static_cast<u32*> (uint_to_ptr(lnk->hll_heap_end()));
     } else {
         start_mem = 0;
         end_mem = 0;
@@ -45,7 +47,7 @@ void caMemory::Init(hal_llc_mem_io *lnk) {
     avail_mem -= BLOCKSIZE;
     blockMem *free = reinterpret_cast<blockMem *> (start_mem + BLOCKSIZE);
     start->next = free;
-    start->prev = NULL;
+    start->prev = nullptr;
     free->addr = free;
     avail_mem -= (2 * BLOCKSIZE);
     free->size = avail_mem;
@@ -61,7 +63,7 @@ void caMemory::Init(hal_llc_mem_io *lnk) {
 }
 
 void caMemory::Clean(void) {
-    start_mem = end_mem = NULL;
+    start_mem = end_mem = nullptr;
     avail_mem = 0;
 }
 
@@ -76,25 +78,43 @@ caMemory::blockMem *caMemory::GetEndBlock(void) {
 }
 
 caMemory::blockMem * caMemory::GetFreePrev(blockMem *s) {
-    while (s != NULL) {
+    while (s != nullptr) {
         if (s->status == statusBlock::free_lbl)
             return s;
         s = s->prev;
     }
-    return NULL;
+    return nullptr;
 }
 
 caMemory::blockMem * caMemory::GetFreeNext(blockMem *s) {
-    while (s != NULL) {
+    while (s != nullptr) {
         if (s->status == statusBlock::free_lbl)
             return s;
         s = s->next;
     }
-    return NULL;
+    return nullptr;
+}
+
+caMemory::blockMem * caMemory::GetBusyPrev(blockMem *s) {
+    while (s != nullptr) {
+        if (s->status == statusBlock::busy_lbl)
+            return s;
+        s = s->prev;
+    }
+    return nullptr;
+}
+
+caMemory::blockMem * caMemory::GetBusyNext(blockMem *s) {
+    while (s != nullptr) {
+        if (s->status == statusBlock::busy_lbl)
+            return s;
+        s = s->next;
+    }
+    return nullptr;
 }
 
 void *caMemory::SplitBlock(blockMem *s, u32 size) {
-    void *p = NULL;
+    void *p = nullptr;
     if (s->size > size) {
         if ((s->size - size) < MIN_SLICE) {
             s->status = statusBlock::busy_lbl;
@@ -108,7 +128,7 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
             nb->size = size - BLOCKSIZE;
             s->next = nb;
             s->size -= size;
-            if (nb->next != NULL) {
+            if (nb->next != nullptr) {
                 nb->next->prev = nb;
             }
             nb->status = statusBlock::busy_lbl;
@@ -121,13 +141,13 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
 
 void caMemory::UnionBlock(blockMem * s) {
     // union of block s with prev or next if free: s is free.
-    if (s->next != NULL && s->next->status == statusBlock::free_lbl) {
+    if (s->next != nullptr && s->next->status == statusBlock::free_lbl) {
         blockMem *succ = s->next;
         s->size += succ->size + BLOCKSIZE;
         succ->next->prev = s;
         s->next = succ->next;
     }
-    if (s->prev != NULL && s->prev->status == statusBlock::free_lbl)
+    if (s->prev != nullptr && s->prev->status == statusBlock::free_lbl)
         UnionBlock(s->prev);
 }
 
@@ -143,51 +163,56 @@ void * caMemory::Allocate(u32 size) {
         blockMem *dispNext = GetStartBlock();
         do {
             dispNext = GetFreeNext(dispNext);
-            if (dispNext != NULL) {
+            if (dispNext != nullptr) {
                 if (dispNext->size > size) {
                     p = SplitBlock(dispNext, size);
-                    if (p != NULL)
+                    if (p != nullptr)
                         break;
                 }
             }
             dispPrev = GetFreePrev(dispPrev);
-            if (dispPrev != NULL) {
+            if (dispPrev != nullptr) {
                 if (dispPrev->size > size) {
                     p = SplitBlock(dispPrev, size);
-                    if (p != NULL)
+                    if (p != nullptr)
                         break;
                 }
             }
-        } while (dispNext != NULL || dispPrev != NULL);
+        } while (dispNext != nullptr || dispPrev != nullptr);
     }
     return p;
 }
 
 u32 caMemory::Free(void * p, u32 *size) {
-    u32 res = FALSE;
-    if (size != NULL)
+    u32 res = false;
+    if (size != nullptr)
         *size = 0;
     if (ptr_to_uint(p) > hal_llc_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_llc_mem.hll_mem_max_phy()) {
         blockMem *s = reinterpret_cast<blockMem *> ((u8*) (p) - BLOCKSIZE);
-        if (s != NULL && s->status == statusBlock::busy_lbl) {
+        if (s != nullptr && s->status == statusBlock::busy_lbl) {
             // Ok
             s->status = statusBlock::free_lbl;
-            if (size != NULL) {
+            if (size != nullptr) {
                 *size = s->size;
             }
             avail_mem += s->size + BLOCKSIZE;
             UnionBlock(s);
-            res = TRUE;
+            res = true;
         }
     }
     return res;
+}
+
+u32 caMemory::FreeAll(void) {
+    caMemory::Init(link);
+    return true;
 }
 
 u32 caMemory::Find(void *p) {
     u32 res = 0;
     if (ptr_to_uint(p) > hal_llc_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_llc_mem.hll_mem_max_phy()) {
         blockMem *s = reinterpret_cast<blockMem *> ((u8*) (p) - BLOCKSIZE);
-        if (s != NULL && s->status == statusBlock::busy_lbl) {
+        if (s != nullptr && s->status == statusBlock::busy_lbl) {
             // Ok
             res = s->size;
         }
@@ -226,7 +251,7 @@ u32 caMemory::List(caStringStream<s8> & ss) {
     u32 i = 1;
     ss << " --- MEMORY LIST ---\r\n";
     blockMem *start = reinterpret_cast<blockMem *> (start_mem);
-    while (start != NULL) {
+    while (start != nullptr) {
         ss << caStringFormat::dec << i << caStringFormat::hex;
         Dump(ss, start);
         start = start->next;
@@ -256,7 +281,7 @@ s8* caMemory::DumpAvail(s8 * buff, s_t size) {
 
 u32 caMemory::Dump(dumpAddrReq *req) {
     caStringStream<s8> ss;
-    if (req != NULL) {
+    if (req != nullptr) {
         u32 i, u, *ptr = static_cast<u32 *> (uint_to_ptr(req->addr));
         ss.Init(req->buffo, req->size);
         ss << " --- MEMORY DUMP ---\r\n";
@@ -279,9 +304,9 @@ u32 caMemory::Dump(dumpAddrReq *req) {
 
 u32 caMemory::Ascii(dumpAddrReq *req) {
     caStringStream<s8> ss;
-    if (req != NULL) {
+    if (req != nullptr) {
         u32 i, u;
-        s8 *ptr = static_cast<s8 *>(uint_to_ptr(req->addr));
+        s8 *ptr = static_cast<s8 *> (uint_to_ptr(req->addr));
         ss.Init(req->buffo, req->size);
         ss << " --- MEMORY ASCII DUMP ---\r\n";
         ss << caStringFormat::hex;

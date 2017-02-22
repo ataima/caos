@@ -31,7 +31,7 @@ public:
     //T
 
     caArray(void) {
-        buff = NULL;
+        buff = nullptr;
         good = false;
         size = capacity = 0;
     }
@@ -43,7 +43,7 @@ public:
             buff = ebuff;
         capacity = esize;
         if (capacity < 2) {
-            buff = NULL;
+            buff = nullptr;
             capacity = 0;
             good = false;
         } else
@@ -52,7 +52,7 @@ public:
     }
 
     void Detach(void) {
-        buff = NULL;
+        buff = nullptr;
         good = false;
         size = capacity = 0;
     }
@@ -87,7 +87,7 @@ public:
         if (buff)
             return &buff[capacity - 1];
         else
-            return NULL;
+            return nullptr;
     }
 
     //T

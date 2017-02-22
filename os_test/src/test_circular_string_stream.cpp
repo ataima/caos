@@ -94,7 +94,7 @@ void caCircularStringStream_test_class::test1(void) {
     caCircularStringStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str(NULL, 0) == 0);
+    CA_ASSERT(a.Str(nullptr, 0) == 0);
     CA_ASSERT(a.Good() == false);
 }
 
@@ -108,7 +108,7 @@ void caCircularStringStream_test_class::test2(void) {
     caCircularStringStream<char> a;
     CA_ASSERT(a.Size() == 0);
     CA_ASSERT(a.Capacity() == 0);
-    CA_ASSERT(a.Str(NULL, 0) == 0);
+    CA_ASSERT(a.Str(nullptr, 0) == 0);
     CA_ASSERT(a.Good() == false);
     CA_ASSERT(a.Empty() == true);
     a.Init(buff, 100);
