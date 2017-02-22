@@ -125,7 +125,6 @@ void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
 }
 
 u32 caInterruptRequest::IRQ(void) {
-    Dbg::Put("IRQ\r\n");
     return caIrqCtrl::SelectServiceIrq();
 }
 

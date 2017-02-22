@@ -56,8 +56,8 @@ typedef struct tag_hal_llc_mem_io {
     const abstract_functor_int_void_func hll_mem_min_phy;
     const abstract_functor_int_void_func hll_mem_max_phy;
     const abstract_functor_int_void_func hll_mem_size_phy;
-    const abstract_functor_int_void_func hll_heap_start;
-    const abstract_functor_int_void_func hll_heap_end;  
+    const abstract_functor_ptr_void_func hll_heap_start;
+    const abstract_functor_ptr_void_func hll_heap_end;  
 } hal_llc_mem_io;
 
 
@@ -194,10 +194,6 @@ extern hal_llc_interrupt hal_llc_int_req;
 extern hal_llc_reset hal_llc_reset_req;
 
 
-// NOT IMPLEMENTED
 
-extern "C" inline u32 not_implemented_base(void) {
-    return 0;
-}
 #endif /* HAL_H */
 

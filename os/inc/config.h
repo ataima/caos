@@ -41,7 +41,7 @@
 // CLOK FOR SYSTEM TIMER USUALLY 1Mhz
 #define SYS_CLOCK_TIMER 1000000
 // SYSTEM TIMER FOR SCHEDULER
-#define SYS_TIMER_TICK  10
+#define SYS_TIMER_TICK  5000
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
 // soft request interrupt true or simulated

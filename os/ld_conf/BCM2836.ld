@@ -93,9 +93,11 @@ SECTIONS
     } > ram    
 }
 
+
+__heap_base__              = .;
+__heap_end__               = __ram_end__ - __stacks_total_size__;
+__main_thread_stack_base__ = __ram_end__ - __stacks_total_size__;
 PROVIDE(end = .);
 _end = .;
 
-__heap_base__              = _end;
-__heap_end__               = __ram_end__ - __stacks_total_size__;
-__main_thread_stack_base__ = __ram_end__ - __stacks_total_size__;
+
