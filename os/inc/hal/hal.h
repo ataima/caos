@@ -55,6 +55,7 @@ typedef struct tag_hal_llc_mem_io {
     const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_void_func hll_mem_min_phy;
     const abstract_functor_int_void_func hll_mem_max_phy;
+    const abstract_functor_int_void_func hll_mem_size_phy;
     const abstract_functor_int_void_func hll_heap_start;
     const abstract_functor_int_void_func hll_heap_end;  
 } hal_llc_mem_io;

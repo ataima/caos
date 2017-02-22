@@ -17,8 +17,6 @@ SRC_C:=$(wildcard $(SRC)/*.c)
 SRC_ASM:=$(wildcard $(SRC)/*.s)
 
 
-
-
 #OBJ FILES
 OBJ_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(OBJ_OUT)/%.o,$(SRC_CPP))
 
@@ -50,15 +48,38 @@ OBJS:= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM)
 #ALL DEPEND
 DEP_OBJ:= $(DEP_CPP)  $(DEP_C) 
 
+define width_s40
+    $(shell printf "%-40s %s" "$1")
+endef
+
+define width_40
+    $(shell printf "%-40s %s" $1)
+endef
+
+define add_cpp_msg_rules
+    @echo "	@echo "$(EH)  $(I_GREEN)"[CPP]    :"$(I_WHITE)""\""$(call width_s40, $1)"\"" "$(I_CRED)$2$(I_RESET)">/dev/stderr">>$3
+endef
+
+define add_c_msg_rules
+    @echo "	@echo "$(EH)  $(I_GREEN)"[C  ]    :"$(I_WHITE)""\""$(call width_s40, $1)"\"" "$(I_CRED)$2$(I_RESET)">/dev/stderr">>$3
+endef
+
+define add_list_msg
+    @echo $(EH) $(C_CYAN)"[LST]    :"$(C_WHITE) "$(shell printf "%-40s %s" $1)" $(C_RED)$2$(C_RESET) >/dev/stderr
+endef
+
+define add_asm_msg
+    @echo $(EH) $(C_CYAN)"[AS ]    :"$(C_WHITE) "$(shell printf "%-40s %s" $1)" $(C_RED)$2$(C_RESET) >/dev/stderr
+endef
+
 $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(DEPEND)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(EH)  $(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	$(call add_cpp_msg_rules, $< ,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
 	@echo>>$@
-
 
 
 $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
@@ -67,7 +88,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)	
 	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(EH)  $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	$(call add_c_msg_rules, $< ,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
 	@echo>>$@
 
 #double pass : first create dependences with compile command so build it
@@ -78,26 +99,25 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F) $<
-	@echo $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F))" $(C_RESET) >/dev/stderr
-
+	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F)) )
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F)))
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	cp $< $(BUILDIR)/$(GE_ASM)/$(@F) 
-	@echo  $(EH) $(C_CYAN)"[LST]"$(C_RESET)" $<"$(C_CYAN)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F))" $(C_RESET) >/dev/stderr
+	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F)))
 
 $(BUILDIR)/$(OBJ_OUT)/%.o:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CROSS_AS) -o $(BUILDIR)/$(OBJ_OUT)/$(@F)  $(ASM_OPTS)  $<
-	@echo  $(EH) $(C_BLUE)"[AS ]"$(C_RESET)" $<"$(C_BLUE)"\t: "$(C_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F))" $(C_RESET) >/dev/stderr
+	$(call add_asm_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F)))
 
 
 .PHONY: doversion all clean info dwload qemu asm
@@ -113,40 +133,41 @@ all_c_file:  	$(OBJ_C)
 
 all_cpp_file: 	$(OBJ_CPP)
 		
-
+define dump_var    
+    @echo  $(EH) $(C_YELLOW)"$(shell printf "%-30s %s = " $1)"$(C_WHITE)$2$(C_RESET)
+endef
 
 
 info:	
-	@echo  $(EH) $(C_YELLOW)"Current HARDWARE = "$(C_RESET)$(HARDWARE)
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN = "$(C_RESET)$(ARMGNU) 
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN PATH= "$(C_RESET)$(ARMPATH)
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CC= "$(C_RESET)$(CROSS_CC)
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN CPP= "$(C_RESET)$(CROSS_CPP) 
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN AS= "$(C_RESET)$(CROSS_AS) 
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN LD= "$(C_RESET)$(CROSS_LD)
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN OBJDUMP= "$(C_RESET)$(CROSS_OBJDUMP) 
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN OBJCOPY= "$(C_RESET)$(CROSS_OBJCOPY)
-	@echo  $(EH) $(C_YELLOW)"Current TOOLS CHAIN LD= "$(C_RESET)$(CROSS_GDB)
-	@echo  $(EH) $(C_YELLOW)"Current Debug level = " $(C_RESET)$(DBG)
-	@echo  $(EH) $(C_YELLOW)"Current Options for depend  files = " $(C_RESET)$(DEP_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Options for C(*.c) files = " $(C_RESET)$(C_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Options for CPP(*.cpp) files = " $(C_RESET)$(CPP_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Options for ASM(*.s) files = " $(C_RESET)$(ASM_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Options for LINKER files = " $(C_RESET)$(LK_OPTS)
-	@echo  $(EH) $(C_YELLOW)"Current Download Program = " $(C_RESET)$(DWLOAD)
-	@echo  $(EH) $(C_YELLOW)"Current Terminal Program = " $(C_RESET)$(PUTTY)
-	@echo  $(EH) $(C_YELLOW)"Assembler source = "$(C_RESET)$(SRC_ASM)
-	@echo  $(EH) $(C_YELLOW)"C source = "$(C_RESET)$(SRC_C)
-	@echo  $(EH) $(C_YELLOW)"CPP source = "$(C_RESET)$(SRC_CPP) $(TEST_CPP)
-	@echo  $(EH) $(C_YELLOW)"Assembler objs = "$(C_RESET)$(OBJ_ASM)
-	@echo  $(EH) $(C_YELLOW)"C objs = "$(C_RESET)$(OBJ_C)
-	@echo  $(EH) $(C_YELLOW)"CPP objs = "$(C_RESET)$(OBJ_CPP) $(TEST_OBJ_CPP)
-	@echo  $(EH) $(C_YELLOW)"All objs = "$(C_RESET)$(OBJS)
-	@echo  $(EH) $(C_YELLOW)"All dep = "$(C_RESET)$(DEP_OBJ)
-	@echo  $(EH) $(C_YELLOW)"Asm = "$(C_RESET)$(ASM_OBJ)
-	@echo  $(EH) $(C_YELLOW)"MAIN ROOT = "$(C_RESET)$(ROOT)
-	@echo  $(EH) $(C_YELLOW)"OUTPUT BUILD DIR = " $(C_RESET)$(BUILDIR)
-	
+	$(call dump_var,"Current HARDWARE","$(HARDWARE)")
+	$(call dump_var,"Current TOOLS CHAIN","$(ARMGNU)")
+	$(call dump_var,"Current TOOLS CHAIN PATH","$(ARMPATH)")
+	$(call dump_var,"Current TOOLS CHAIN CC","$(CROSS_CC)")
+	$(call dump_var,"Current TOOLS CHAIN CPP","$(CROSS_CPP)") 
+	$(call dump_var,"Current TOOLS CHAIN AS","$(CROSS_AS)") 
+	$(call dump_var,"Current TOOLS CHAIN LD","$(CROSS_LD)")
+	$(call dump_var,"Current TOOLS CHAIN OBJDUMP","$(CROSS_OBJDUMP)") 
+	$(call dump_var,"Current TOOLS CHAIN OBJCOPY","$(CROSS_OBJCOPY)")
+	$(call dump_var,"Current TOOLS CHAIN LD","$(CROSS_GDB)")
+	$(call dump_var,"Current Debug level","$(DBG)")
+	$(call dump_var,"Current Options for depend  files","$(DEP_OPTS)")
+	$(call dump_var,"Current Options for C(*.c) files","$(C_OPTS)")
+	$(call dump_var,"Current Options for CPP(*.cpp) files","$(CPP_OPTS)")
+	$(call dump_var,"Current Options for ASM(*.s) files","$(ASM_OPTS)")
+	$(call dump_var,"Current Options for LINKER files","$(LK_OPTS)")
+	$(call dump_var,"Current Download Program","$(DWLOAD)")
+	$(call dump_var,"Current Terminal Program","$(PUTTY)")
+	$(call dump_var,"Assembler source","$(SRC_ASM)")
+	$(call dump_var,"C source","$(SRC_C)")
+	$(call dump_var,"CPP source","$(SRC_CPP) $(TEST_CPP)")
+	$(call dump_var,"Assembler objs","$(OBJ_ASM)")
+	$(call dump_var,"C objs","$(OBJ_C)")
+	$(call dump_var,"CPP objs","$(OBJ_CPP) $(TEST_OBJ_CPP)")
+	$(call dump_var,"All objs","$(OBJS)")
+	$(call dump_var,"All dep","$(DEP_OBJ)")
+	$(call dump_var,"Asm","$(ASM_OBJ)")
+	$(call dump_var,"MAIN ROOT","$(ROOT)")
+	$(call dump_var,"OUTPUT BUILD DIR","$(BUILDIR)")
 
 
 asm:    $(ASM_OBJ)

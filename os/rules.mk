@@ -26,7 +26,8 @@ I_CRED= "\"\033[0;31m\""
 I_RED= "\"\033[0;31m\""
 I_GREEN= "\"\033[0;32m\""
 I_RESET="\"\033[0m\""
-I_CPURPLE= "\"\033[1;35m\""
+I_CPURPLE="\"\033[1;35m\""
+I_WHITE="\"\033[1;37m\""
 I_TAB="\"\t\""
 #MAKE VERSION x.xx.xxx
 OS=$(shell uname -s)

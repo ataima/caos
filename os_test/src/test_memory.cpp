@@ -36,10 +36,14 @@ static u32 getstopmem(void) {
     return ptr_to_uint(__heap_end__);
 }
 
+static u32 getsizemem(void) {
+    return 100000;
+}
+
 static u32 tick(void) {
     return 100;
 }
-hal_llc_mem_io hal_llc_mem = {tick, getstartmem, getstopmem, getstartmem, getstopmem};
+hal_llc_mem_io hal_llc_mem = {tick, getstartmem, getstopmem, getsizemem,getstartmem, getstopmem};
 
 class caMemory_test_class
 : public caTester {
