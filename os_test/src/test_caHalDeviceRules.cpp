@@ -29,109 +29,128 @@ public:
 
     testDevice() {
         isOpen = 0;
+        IOpen=testDevice::Open;
+    IClose=testDevice::Close;
+    IWrite=testDevice::Write;
+    IRead=testDevice::Read;
+    IFlush=testDevice::Flush;
+    IIoCtrl=testDevice::IoCtrl;
+    IGetOpenFlag=testDevice::GetOpenFlag;
+    IGetDeviceLog=testDevice::GetDeviceLog;
+    ItoString=testDevice::toString;
+    IIrqService1=testDevice::IrqService1;
+    IIrqService2=testDevice::IrqService2;
+    IIrqService3=testDevice::IrqService3;
+    IIrqService4=testDevice::IrqService4;
+    IIrqService5=testDevice::IrqService5;
+    IIrqService6=testDevice::IrqService6;
+    IIrqService7=testDevice::IrqService7;
+    IIrqService8=testDevice::IrqService8;
     }
 
-    const char *toString(void) {
-        return "testDevice";
-    }
 
     inline void setIsOpen(u32 v) {
         isOpen = v;
     }
 
-    u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port) {
+    static u32 Open(IDevice * , caIDeviceConfigure *conf, caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Open( " << conf << " , " << port << " );" << std::endl;
         if (port)port->handle = 0xfff01002;
         return 0;
     }
 
-    u32 Close(caDeviceHandle *port) {
+    static u32 Close(IDevice * , caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Close( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Write(caDeviceHandle *port) {
+    static u32 Write(IDevice * , caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Write( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Read(caDeviceHandle *port) {
+    static u32 Read(IDevice * , caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Read( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 Flush(caDeviceHandle *port) {
+    static u32 Flush(IDevice * , caDeviceHandle *port) {
         std::cout << "Call to : testDevice::Flush( " << port << " );" << std::endl;
         return 0;
     }
 
-    u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) {
+    static u32 IoCtrl(IDevice * , caDeviceHandle *port, caIDeviceCtrl *ctrl) {
         std::cout << "Call to : testDevice::IoCtrl( " << port << " , " << ctrl << " );" << std::endl;
         return 0;
     }
 
-    u32 GetOpenFlag(void) {
-        return isOpen;
+    static u32 GetOpenFlag(IDevice * instance) {
+        testDevice *d=(testDevice *)(instance);
+        return d->isOpen;
     }
 
-    u32 IrqService1(u8 * txbuff, s_t size, s_t & writed) {
+    static u32 IrqService1(IDevice * , u8 * txbuff, s_t size, s_t & writed) {
         CA_ASSERT(txbuff != nullptr);
         CA_ASSERT(size == 1);
         writed = size;
         return 0;
     }
 
-    u32 IrqService2(u8 * rxbuff, s_t size, s_t & readed) {
+    static u32 IrqService2(IDevice * , u8 * rxbuff, s_t size, s_t & readed) {
         CA_ASSERT(rxbuff != nullptr);
         CA_ASSERT(size == 1);
         readed = size;
         return 0;
     };
 
-    u32 IrqService3(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService3(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService4(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService4(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService5(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService5(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService6(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService6(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService7(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService7(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    u32 IrqService8(u8 * buff, s_t size, s_t & iosize) {
+    static u32 IrqService8(IDevice * , u8 * buff, s_t size, s_t & iosize) {
         CA_ASSERT(buff != nullptr);
         CA_ASSERT(size == 1);
         iosize = size;
         return 0;
     };
 
-    caSysLog * GetDeviceLog(void) {
+    static caSysLog * GetDeviceLog( IDevice*  ) {
         return nullptr;
+    }
+    
+        static inline const char * toString(void) {
+        return "testdriver driver ('testxx') :";
     }
 };
 
@@ -154,46 +173,46 @@ class testDevice_test_class
 
     void test1(void) {
         testDevice t;
-        CA_ASSERT(t.Open(nullptr, nullptr) == 0);
+        CA_ASSERT(t.Open(nullptr,nullptr, nullptr) == 0);
     }
 
     void test2(void) {
         testDevice t;
-        CA_ASSERT(t.Close(nullptr) == 0);
+        CA_ASSERT(t.Close(nullptr,nullptr) == 0);
     }
 
     void test3(void) {
         testDevice t;
-        CA_ASSERT(t.Write(nullptr) == 0);
+        CA_ASSERT(t.Write(nullptr,nullptr) == 0);
     }
 
     void test4(void) {
         testDevice t;
-        CA_ASSERT(t.Read(nullptr) == 0);
+        CA_ASSERT(t.Read(nullptr,nullptr) == 0);
     }
 
     void test5(void) {
         testDevice t;
-        CA_ASSERT(t.Flush(nullptr) == 0);
+        CA_ASSERT(t.Flush(nullptr,nullptr) == 0);
     }
 
     void test6(void) {
         testDevice t;
-        CA_ASSERT(t.IoCtrl(nullptr, nullptr) == 0);
+        CA_ASSERT(t.IoCtrl(nullptr,nullptr, nullptr) == 0);
     }
 
     void test7(void) {
         testDevice t;
-        CA_ASSERT(t.GetOpenFlag() == 0);
+        CA_ASSERT(t.GetOpenFlag(&t) == 0);
         t.setIsOpen(12734);
-        CA_ASSERT(t.GetOpenFlag() == 12734);
+        CA_ASSERT(t.GetOpenFlag(&t) == 12734);
     }
 
     void test8(void) {
         u8 buff;
         testDevice t;
         s_t readed;
-        CA_ASSERT(t.IrqService1(&buff, 1, readed) == 0);
+        CA_ASSERT(t.IrqService1(nullptr,&buff, 1, readed) == 0);
         CA_ASSERT(readed == 1);
 
     }
@@ -202,7 +221,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService2(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService2(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -210,7 +229,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService3(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService3(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -218,7 +237,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService4(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService4(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -226,7 +245,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService5(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService5(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -234,7 +253,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService6(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService6(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -242,7 +261,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService7(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService7(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 
@@ -250,7 +269,7 @@ class testDevice_test_class
         u8 buff;
         testDevice t;
         s_t writed;
-        CA_ASSERT(t.IrqService8(&buff, 1, writed) == 0);
+        CA_ASSERT(t.IrqService8(nullptr,&buff, 1, writed) == 0);
         CA_ASSERT(writed == 1);
     }
 

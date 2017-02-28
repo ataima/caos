@@ -239,7 +239,7 @@ void caHalSysTimerDevice_test_class::test1(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -275,7 +275,7 @@ void caHalSysTimerDevice_test_class::test2(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -293,7 +293,7 @@ void caHalSysTimerDevice_test_class::test2(void) {
     CA_ASSERT(portIO.wrError == 0);
     CA_ASSERT(portIO.rdError == 0);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionOpen);
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -325,7 +325,7 @@ void caHalSysTimerDevice_test_class::test3(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -352,12 +352,12 @@ void caHalSysTimerDevice_test_class::test3(void) {
     portIO.rdBuff = buff;
     portIO.rdSize = 100;
     portIO.readed = 0;
-    res = timerDev.Read(&portIO);
+    res = timerDev.Read(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.rdSize == 68);
     CA_ASSERT(portIO.readed == 32);
 
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -389,7 +389,7 @@ void caHalSysTimerDevice_test_class::test4(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -412,19 +412,17 @@ void caHalSysTimerDevice_test_class::test4(void) {
     portIO.wrBuff = msg;
     portIO.wrSize = 4 * sizeof (u32);
     portIO.writed = 0;
-    res = timerDev.Write(&portIO);
+    res = timerDev.Write(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.wrSize == 0);
     CA_ASSERT(portIO.writed == 4 * sizeof (u32));
-
     param_reset();
     u8 buff[100];
     u32 rd;
     //IRQ TX CALLBACK
     hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, buff, 100, rd);
     CA_ASSERT(rd == 0);
-
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -456,7 +454,7 @@ void caHalSysTimerDevice_test_class::test5(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -478,19 +476,19 @@ void caHalSysTimerDevice_test_class::test5(void) {
     // IOCTRL 
     caSysTimerDeviceCtrl in;
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStart;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
 
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionIoCtrl);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerStop;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
 
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionIoCtrl);
     param_reset();
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -522,7 +520,7 @@ void caHalSysTimerDevice_test_class::test6(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -544,20 +542,20 @@ void caHalSysTimerDevice_test_class::test6(void) {
     // IOCTRL 
     caSysTimerDeviceCtrl in;
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerListHardware;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_null_destination);
     caStringStream<s8> ss;
     s8 buff[100];
     ss.Init(buff, 100);
     in.ss = &ss;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res > 0);
     CA_ASSERT(ss.Size() == 13);
     CA_ASSERT(ss == "IOCTRL DUMP\r\n");
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     CA_ASSERT(portIO.tLastCmd == caDeviceAction::caActionIoCtrl);
     param_reset();
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -589,7 +587,7 @@ void caHalSysTimerDevice_test_class::test8(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -611,19 +609,19 @@ void caHalSysTimerDevice_test_class::test8(void) {
     caSysTimerDeviceCtrl in;
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_1;
     in.params[0] = 12345678; // invalid handle from scheduler connector
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
     in.params[0] = 100; // ok
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.params[0] = 100; // already set
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_1;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.params[0] == 100);
     //IRQ CALLBACK
@@ -632,12 +630,12 @@ void caHalSysTimerDevice_test_class::test8(void) {
     hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, msg, 12, rd);
     CA_ASSERT(timer_wakeup_1 == 100);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_1;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -669,7 +667,7 @@ void caHalSysTimerDevice_test_class::test9(void) {
     setup.prescaler_ps = 88776655;
     setup.irq_ps = 12312312;
     caDeviceHandle portIO;
-    u32 res = timerDev.Open(&setup, &portIO);
+    u32 res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -692,26 +690,26 @@ void caHalSysTimerDevice_test_class::test9(void) {
     caSysTimerDeviceCtrl in;
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2;
     in.params[1] = 12345678; // invalid handle from scheduler connector
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
     in.params[1] = 200; // ok
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.params[1] = 200; // already set
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 4 * sizeof (u32);
     portIO.writed = 0;
-    res = timerDev.Write(&portIO);
+    res = timerDev.Write(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.wrSize == 0);
     CA_ASSERT(portIO.writed == 4 * sizeof (u32));
@@ -725,12 +723,12 @@ void caHalSysTimerDevice_test_class::test9(void) {
 
     CA_ASSERT(timer_wakeup_2 == 200);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);
@@ -772,7 +770,7 @@ void caHalSysTimerDevice_test_class::test10(void) {
     in.command = caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart;
     res = caHalDeviceRules::IoCtrl(&timerDev, &portIO, &in, ioCtrlRequest::SysTimer6);
     CA_ASSERT(res == deviceError::no_error);
-    res = timerDev.Open(&setup, &portIO);
+    res = timerDev.Open(&timerDev, &setup, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 12345678);
     CA_ASSERT(timer_conf2 == 11223344);
@@ -794,26 +792,26 @@ void caHalSysTimerDevice_test_class::test10(void) {
 
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerAddSignal_2;
     in.params[1] = 12345678; // invalid handle from scheduler connector
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
     CA_ASSERT(portIO.tLast >= portIO.tStart)
     in.params[1] = 200; // ok
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.params[1] = 200; // already set
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_signal_already_set);
     CA_ASSERT(portIO.tLast >= portIO.tStart);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerGetSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(in.params[0] == 200);
     u8 msg[] = "hello world";
     portIO.wrBuff = msg;
     portIO.wrSize = 4 * sizeof (u32);
     portIO.writed = 0;
-    res = timerDev.Write(&portIO);
+    res = timerDev.Write(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(portIO.wrSize == 0);
     CA_ASSERT(portIO.writed == 4 * sizeof (u32));
@@ -827,12 +825,12 @@ void caHalSysTimerDevice_test_class::test10(void) {
 
     CA_ASSERT(timer_wakeup_2 == 200);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::no_error);
     in.command = caSysTimerDeviceCtrl::IoSysTimerCtrlDirect::sysTimerRemoveSignal_2;
-    res = timerDev.IoCtrl(&portIO, &in);
+    res = timerDev.IoCtrl(&timerDev, &portIO, &in);
     CA_ASSERT(res == deviceError::error_invalid_handle_port);
-    res = timerDev.Close(&portIO);
+    res = timerDev.Close(&timerDev, &portIO);
     CA_ASSERT(res == deviceError::no_error);
     CA_ASSERT(timer_conf1 == 0);
     CA_ASSERT(timer_conf2 == 0);

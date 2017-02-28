@@ -37,13 +37,24 @@ static u32 getstopmem(void) {
 }
 
 static u32 getsizemem(void) {
-    return 100000;
+    return 100000*sizeof(u32);
 }
 
 static u32 tick(void) {
     return 100;
 }
-hal_llc_mem_io hal_llc_mem = {tick, getstartmem, getstopmem, getsizemem,getstartmem, getstopmem};
+
+static u32* get_heap_start(void) {
+    return __heap_base__;
+}
+
+static u32* get_heap_end(void) {
+    return __heap_end__;
+}
+
+
+
+hal_llc_mem_io hal_llc_mem = {tick, getstartmem, getstopmem, getsizemem,get_heap_start, get_heap_end};
 
 class caMemory_test_class
 : public caTester {
@@ -188,6 +199,13 @@ void caMemory_test_class::test5(void) {
     for (u = 0; u < 1000; u++) {
         u32 size = randomgen(32, 1000);
         void * p = caMemory::Allocate(size);
+        if(p==NULL)
+        {
+            std::cout<<"Allocation failure : size="<<size<< "  num="<<u<< " avail mem="<<
+                    caMemory::GetAvailMemory()<<std::endl;
+            if(caMemory::GetAvailMemory()<size)
+                break;
+        }
         CA_ASSERT(p != nullptr);
         CA_ASSERT(caMemory::GetAvailMemory() > 0);
         if (u % 10 == 0)
