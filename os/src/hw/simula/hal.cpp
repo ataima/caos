@@ -34,6 +34,10 @@ static u32 mem_phy_max_addr(void) {
     return __ram_end__;
 }
 
+static u32 mem_phy_size(void) {
+    return __heap_end__-__heap_base__;
+}
+
 static u32 mem_heap_start_addr(void) {
     return __heap_base__;
 }
@@ -47,6 +51,7 @@ hal_llc_mem_io hal_llc_mem = {
     sim_get_tick,
     mem_phy_min_addr,
     mem_phy_max_addr,
+    mem_phy_size,
     mem_heap_start_addr,
     mem_heap_end_addr
 };

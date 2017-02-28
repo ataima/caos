@@ -66,30 +66,32 @@ private:
     hal_llc_sys_time *link;
 public:
     caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask_handle);
-    u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port);
-    u32 Close(caDeviceHandle *port);
-    u32 Write(caDeviceHandle *port);
-    u32 Read(caDeviceHandle *port);
-    u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *in);
-    u32 Flush(caDeviceHandle *port);
-    u32 IrqService1(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService2(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService3(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService4(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService5(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService6(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService7(u8 * buff, s_t size, s_t & iosize);
-    u32 IrqService8(u8 * buff, s_t size, s_t & iosize);
+    static u32 Open(IDevice * instance,caIDeviceConfigure *conf, caDeviceHandle *port);
+    static u32 Close(IDevice * instance,caDeviceHandle *port);
+    static u32 Write(IDevice * instance,caDeviceHandle *port);
+    static u32 Read(IDevice * instance,caDeviceHandle *port);
+    static u32 IoCtrl(IDevice * instance,caDeviceHandle *port, caIDeviceCtrl *in);
+    static u32 Flush(IDevice * instance,caDeviceHandle *port);
+    static u32 IrqService1(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService2(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService3(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService4(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService5(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService6(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService7(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
+    static u32 IrqService8(IDevice * instance,u8 * buff, s_t size, s_t & iosize);
 
-    inline caSysLog * GetDeviceLog(void) {
-        return &caLog;
+    static inline caSysLog * GetDeviceLog(IDevice * instance) {
+        caHalSysTimerDevice* dev=static_cast<caHalSysTimerDevice*>(instance);
+        return &dev->caLog;
     }
 
-    inline u32 GetOpenFlag(void) {
-        return isOpen;
+    static inline u32 GetOpenFlag(IDevice * instance) {
+        caHalSysTimerDevice* dev=static_cast<caHalSysTimerDevice*>(instance);
+        return dev->isOpen;
     }
 
-    inline const char * toString(void) {
+    static inline const char * toString(void) {
         return "Hal Sysytem Timer driver ('SysTimer') :";
     }
 

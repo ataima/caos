@@ -20,96 +20,99 @@ default: all
 
 doversion :
 	$(eval BUILD_NUMBER=`./version.sh $(CAOS_VERSION_1) $(CAOS_VERSION_2) $(CAOS_VERSION_3)`)
-	@echo $(EH)  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED)$(BUILD_NUMBER) $(C_RESTORE) 
+	@echo $(EH)  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED)$(BUILD_NUMBER) $(C_RESTORE)
+	@echo $(EH) $(C_RESTORE)
 
 
 info:	
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HAL) info 
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HW) info 
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(TEST) info 
-	@echo "----------------------------------------------------------------------"
-	@echo info ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
+	
 
 depend:	
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HAL) depend 
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HW) depend
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(TEST) depend
-	@echo "----------------------------------------------------------------------"
-	@echo info ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
+	
 
 
 
 all_obj:		
-	@echo "--------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HAL) all 
-	@echo "--------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HW) all
-	@echo "--------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(TEST) all
-	@echo "--------------------------------------------------------------------"
-	@echo all ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
+	
 
 define find_objs =
 ALLOBJS:= $(wildcard $1/*.o)
 ALLOBJS+= $(wildcard $1/hw/*.o)	
 endef
+
+define width_s40
+    $(shell printf "%-35s %s" "$1")
+endef
+	
+define add_msg
+    @echo $(EH) $(C_GREEN)"[$1] :" $(C_WHITE)"$(call width_s40, $2)"$(C_RED)$2$(C_RESET) >/dev/stderr
+endef
 	
 	
 link_file: all_obj
 	$(eval $(call find_objs,$(BUILDIR)/$(OBJ_OUT)))
-	$(CROSS_LD)  $(ALLOBJS) $(LK_OPTS) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
-	@echo  $(EH) $(C_PURPLE)"[LINKER ]"$(C_RESET)" $(BUILDIR)/caOS.elf">/dev/stderr
+	@$(CROSS_LD)  $(ALLOBJS) $(LK_OPTS) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
+	$(call add_msg,"LINKER ",$(BUILDIR)/caOS.elf)
+	
 	
 objdump_file:
-	$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf -S > $(BUILDIR)/caOS.list
-	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.list">/dev/stderr
-	$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O ihex $(BUILDIR)/caOS.hex
-	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
-	$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O binary $(BUILDIR)/caOS.bin
-	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" $(BUILDIR)/caOS.bin">/dev/stderr
+	@$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf -S > $(BUILDIR)/caOS.list
+	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.list)
+	@$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O ihex $(BUILDIR)/caOS.hex
+	$(call add_msg,"OBJCOPY",$(BUILDIR)/caOS.hex)
+	@$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O binary $(BUILDIR)/caOS.bin
+	$(call add_msg,"OBJCOPY",$(BUILDIR)/caOS.bin)
 	@cp $(BUILDIR)/caOS.bin kernel7.img
-	@echo  $(EH) $(C_GREEN)"[OBJCOPY]"$(C_RESET)" kernel7.img">/dev/stderr
-	$(CROSS_OBJDUMP) $(OBJD_CPU) -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
-	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.s">/dev/stderr
-	$(CROSS_OBJCOPY) --only-keep-debug $(BUILDIR)/caOS.elf $(BUILDIR)/caOS.syms
-	@echo  $(EH) $(C_GREEN)"[OBJDUMP]"$(C_RESET)" $(BUILDIR)/caOS.syms">/dev/stderr
+	$(call add_msg,"OBJCOPY",kernel7.img)
+	@$(CROSS_OBJDUMP) $(OBJD_CPU) -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
+	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.s)
+	@$(CROSS_OBJCOPY) --only-keep-debug $(BUILDIR)/caOS.elf $(BUILDIR)/caOS.syms
+	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.syms)
 
 dwload_1: kernel7.img
-	@echo  $(EH) $(C_GREEN)"[DOWNLOAD]"$(C_RESET)" $(BUILDIR)/caOS.hex">/dev/stderr
+	$(call add_msg,"DOWNLOAD",$(BUILDIR)/caOS.hex)
 	@$(DWLOAD) $(BUILDIR)/caOS.hex
 
 
-dwload: dwload_1 	
-	@echo dwload ...done.
-	@echo "----------------------------------------------------------------------"
+dwload: dwload_1 		
+	@echo $(SEP)
 
 
 kernel7.img: link_file objdump_file
 	
 
 asm:		
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HAL) asm 
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(HW) asm	
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@make $(V) -f $(TEST) asm
-	@echo "----------------------------------------------------------------------"
-	@echo all ...done.
-	@echo "----------------------------------------------------------------------"
-
-
+	@echo $(SEP)
+	
 clean:	
-	@echo "----------------------------------------------------------------------"	
+	@echo $(SEP)	
 	@rm -rf  $(BUILDIR)/$(OBJ_OUT)
 	@rm -rf  $(BUILDIR)
 	@mkdir -p $(BUILDIR)
@@ -123,8 +126,7 @@ clean:
 	@rm -f $(BUILDIR)/*.s
 	@rm -f  trace-*
 	@rm -f kernel7.img
-	@echo clean ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	
 
 
@@ -132,46 +134,41 @@ all:  kernel7.img doversion
 	
 	
 qemu:
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	qemu-system-arm -M raspi2 -cpu bcm2836 -m 1G   -kernel kernel7.img  &
-	@echo qemu ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 		
 
 qemu-deb:
-	@echo "----------------------------------------------------------------------"	
+	@echo $(SEP)	
 	@qemu-system-arm -M raspi2 -cpu bcm2836 -m 1G -s  -kernel kernel7.img  &
 	@echo "target remote :1234" >gdb.conf
 	@echo "file ./$(BUILDIR)/caOS.elf" >>gdb.conf
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
 	@$(CROSS_GDB) -x gdb.conf
-	@echo qemu_deb ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 		
 jtag:
-	@echo "----------------------------------------------------------------------"	
+	@echo $(SEP)	
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
 	@$(CROSS_GDB) ./$(BUILDIR)/caOS.elf
-	@echo jtag ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 
 sim:
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	echo "target sim" >gdb.conf
 	echo "file $(BUILDIR)/caos.elf" >>gdb.conf
 	@echo $(EH)  $(C_RED )[GDB]$C_RESTORE
 	@$(CROSS_GDB) -x gdb.conf
-	@echo sim ...done.
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 		
 	
 		
 distclean: clean 
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 	@rm -rf $(BUILDIR)/$(DEPEND)
 	@rm -rf $(BUILDIR)
-	@echo distclean ...done	
-	@echo "----------------------------------------------------------------------"
+	@echo $(SEP)
 
 
 

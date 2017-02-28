@@ -137,44 +137,48 @@ typedef struct tag_mem_dump_addr {
 
 class caSysLog;
 
-class IDevice {
+/* base of all devices classes : manual  vtable 
+ */
+struct IDevice {
 public:
-    // METHOD TO SYSTEM MODE
-
-    virtual u32 Open(caIDeviceConfigure *conf, caDeviceHandle *port) = 0;
-
-    virtual u32 Close(caDeviceHandle *port) = 0;
-
-    virtual u32 Write(caDeviceHandle *port) = 0;
-
-    virtual u32 Read(caDeviceHandle *port) = 0;
-
-    virtual u32 Flush(caDeviceHandle *port) = 0;
-
-    virtual u32 IoCtrl(caDeviceHandle *port, caIDeviceCtrl *ctrl) = 0;
-
-    virtual u32 GetOpenFlag(void) = 0;
-
-    virtual caSysLog * GetDeviceLog(void) = 0;
-
-    virtual const char * toString(void) = 0;
-
-    virtual u32 IrqService1(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService2(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService3(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService4(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService5(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService6(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService7(u8 * buff, s_t size, s_t & iosize) = 0;
-
-    virtual u32 IrqService8(u8 * buff, s_t size, s_t & iosize) = 0;
+    typedef u32(*functor_Open) (IDevice *dev, caIDeviceConfigure *conf, caDeviceHandle *port);
+    typedef u32(*functor_Close)(IDevice *dev, caDeviceHandle *port);
+    typedef u32(*functor_Write)(IDevice *dev, caDeviceHandle *port);
+    typedef u32(*functor_Read)(IDevice *dev, caDeviceHandle *port);
+    typedef u32(*functor_Flush)(IDevice *dev, caDeviceHandle *port);
+    typedef u32(*functor_IoCtrl)(IDevice *dev, caDeviceHandle *port, caIDeviceCtrl *ctrl);
+    typedef u32(*functor_GetOpenFlag)(IDevice *dev);
+    typedef caSysLog * (*functor_GetDeviceLog)(IDevice *dev);
+    typedef const char * (*functor_toString)(void);
+    typedef u32(*functor_IrqService1)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService2)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService3)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService4)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService5)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService6)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService7)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+    typedef u32(*functor_IrqService8)(IDevice *dev, u8 * buff, s_t size, s_t & iosize);
+public:    
+    // METHOD TO SYSTEM or HYPERVISOR MODE
+    functor_Open IOpen;
+    functor_Close IClose;
+    functor_Write IWrite;
+    functor_Read IRead;
+    functor_Flush IFlush;
+    functor_IoCtrl IIoCtrl;
+    functor_GetOpenFlag IGetOpenFlag;
+    functor_GetDeviceLog IGetDeviceLog;
+    functor_toString ItoString;
+    functor_IrqService1 IIrqService1;
+    functor_IrqService2 IIrqService2;
+    functor_IrqService3 IIrqService3;
+    functor_IrqService4 IIrqService4;
+    functor_IrqService5 IIrqService5;
+    functor_IrqService6 IIrqService6;
+    functor_IrqService7 IIrqService7;
+    functor_IrqService8 IIrqService8;
     // METHOD LAUNCHED BY SVC FROM USER MODE
+    IDevice(void);
 };
 
 class caHalDeviceRules {

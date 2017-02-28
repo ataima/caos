@@ -27,42 +27,64 @@ caHalJobDevice::caHalJobDevice(hal_llc_scheduler_io *iface, u32 mask) {
     link = iface;
     handle_guid = BASE_HANDLE;
     mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-
+    IOpen=caHalJobDevice::Open;
+    IClose=caHalJobDevice::Close;
+    IWrite=caHalJobDevice::Write;
+    IRead=caHalJobDevice::Read;
+    IFlush=caHalJobDevice::Flush;
+    IIoCtrl=caHalJobDevice::IoCtrl;
+    IGetOpenFlag=caHalJobDevice::GetOpenFlag;
+    IGetDeviceLog=caHalJobDevice::GetDeviceLog;
+    ItoString=caHalJobDevice::toString;
+    IIrqService1=caHalJobDevice::IrqService1;
+    IIrqService2=caHalJobDevice::IrqService2;
+    IIrqService3=caHalJobDevice::IrqService3;
+    IIrqService4=caHalJobDevice::IrqService4;
+    IIrqService5=caHalJobDevice::IrqService5;
+    IIrqService6=caHalJobDevice::IrqService6;
+    IIrqService7=caHalJobDevice::IrqService7;
+    IIrqService8=caHalJobDevice::IrqService8;
 }
 
-u32 caHalJobDevice::Open(caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {
+u32 caHalJobDevice::Open(IDevice * instance,caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     //caJobConfigure *conf = (caJobConfigure *) (setup);
-    isOpen++;
-    port->handle = caHalDeviceRules::addHandle(handle_guid, mask_guid);
+    dev->isOpen++;
+    port->handle = caHalDeviceRules::addHandle(dev->handle_guid, dev->mask_guid);
     port->status = caDeviceHandle::statusHandle::Open;
-    port->tStart = link->hll_tick();
+    port->tStart = dev->link->hll_tick();
     port->tLast = port->tStart;
     port->tStop = port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionOpen;
-    LOG(caLog, device) << " handle = " << port->handle << caEnd::endl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " handle = " << port->handle << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalJobDevice::Close(caDeviceHandle *port) {
+u32 caHalJobDevice::Close(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
-    isOpen = 0;
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
+    dev->isOpen = 0;
     port->status = caDeviceHandle::statusHandle::Close;
-    port->tStop = link->hll_tick();
+    port->tStop = dev->link->hll_tick();
     port->tLast = port->tStop;
     port->tLastCmd = caDeviceAction::caActionClose;
-    port->handle = mask_guid | BASE_HANDLE;
+    port->handle = dev->mask_guid | BASE_HANDLE;
     port->wrError = port->rdError = 0;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalJobDevice::Write(caDeviceHandle *port) {
+u32 caHalJobDevice::Write(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     if (port->wrSize != 0) {
         u32 size = port->wrSize;
         //u32 * ptr = (u32*) port->wrBuff;
@@ -70,21 +92,23 @@ u32 caHalJobDevice::Write(caDeviceHandle *port) {
         port->writed += size;
         port->wrBuff += size;
         port->wrSize -= size;
-        port->tLast = link->hll_tick();
+        port->tLast = dev->link->hll_tick();
         port->tLastCmd = caDeviceAction::caActionWrite;
         port->wrError = port->rdError = 0;
     } else {
         res = deviceError::error_invalid_handle_port_wr_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
                 << port->wrSize << caEnd::endl;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalJobDevice::Read(caDeviceHandle *port) {
+u32 caHalJobDevice::Read(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     if (port->rdSize != 0) {
         s_t pSize = port->rdSize;
         if (pSize>sizeof (caThreadContext))
@@ -100,22 +124,23 @@ u32 caHalJobDevice::Read(caDeviceHandle *port) {
         port->wrError = port->rdError = 0;
     } else {
         res = deviceError::error_invalid_handle_port_rd_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_rd_size:"
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port_rd_size:"
                 << port->rdSize << caEnd::endl;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalJobDevice::Flush(caDeviceHandle *port) {
+u32 caHalJobDevice::Flush(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    port->tLast = dev->link->hll_tick();
     port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionFlush;
     return res;
 }
 
-u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
+u32 caHalJobDevice::IoCtrl(IDevice * instance,caDeviceHandle *port,
         caIDeviceCtrl *inp) {
 
     struct param {
@@ -127,25 +152,27 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
         u32 stack;
     };
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    port->tLast = dev->link->hll_tick();
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     caJobDeviceCtrl *in = static_cast<caJobDeviceCtrl *> (inp);
     switch (in->command) {
         default:
-            LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
+            PLOG(pLog, error) << " deviceError::error_ioctrl_command_error"
                     << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroyAll:
             if (caScheduler::RemoveAllJobs() == false) {
-                LOG(caLog, error) << " deviceError::error_hal_jobs_remove_all"
+                PLOG(pLog, error) << " deviceError::error_hal_jobs_remove_all"
                         << caEnd::endl;
                 res = deviceError::error_hal_jobs_remove_all;
             }
             break;
         case caJobDeviceCtrl::IoJobCtrlDirect::jobDestroy:
             if (caScheduler::RemoveJob(inp->params[0]) == false) {
-                LOG(caLog, error) << " deviceError::error_hal_job_remove"
+                PLOG(pLog, error) << " deviceError::error_hal_job_remove"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_remove;
             }
@@ -155,7 +182,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             u32 size = caScheduler::Dump(*inp->ss);
             inp->params[0] = size;
             if (size == 0) {
-                LOG(caLog, error) << " deviceError::error_hal_job_dump"
+                PLOG(pLog, error) << " deviceError::error_hal_job_dump"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_dump;
             }
@@ -171,7 +198,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
                     input->func, input->par1, input->par2, input->stack);
             inp->params[0] = result;
             if (result == (u32) CreateThreadResult::FailCreate) {
-                LOG(caLog, error) << " deviceError::error_hal_job_dump"
+                PLOG(pLog, error) << " deviceError::error_hal_job_dump"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_dump;
             }
@@ -184,7 +211,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
                     input->par1, input->par2, input->stack);
             inp->params[0] = result;
             if (result == (u32) CreateThreadResult::FailCreate) {
-                LOG(caLog, error) << " deviceError::error_hal_job_sys_create"
+                PLOG(pLog, error) << " deviceError::error_hal_job_sys_create"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_sys_create;
             }
@@ -197,7 +224,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
                     input->par1, input->par2, input->stack);
             inp->params[0] = result;
             if (result == (u32) CreateThreadResult::FailCreate) {
-                LOG(caLog, error) << " deviceError::error_hal_job_user_create"
+                PLOG(pLog, error) << " deviceError::error_hal_job_user_create"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_user_create;
             }
@@ -206,7 +233,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
         case caJobDeviceCtrl::IoJobCtrlDirect::jobWaitForSignal:
             res = caScheduler::WaitForSignal();
             if (res != deviceError::error_generic) {
-                LOG(caLog, error) << " deviceError::error_hal_job_wait_for_signal"
+                PLOG(pLog, error) << " deviceError::error_hal_job_wait_for_signal"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_wait_for_signal;
             }
@@ -214,7 +241,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
         case caJobDeviceCtrl::IoJobCtrlDirect::jobSleep:
             res = caScheduler::Sleep(in->params[0]);
             if (res != deviceError::error_generic) {
-                LOG(caLog, error) << " deviceError::error_hal_job_sleep"
+                PLOG(pLog, error) << " deviceError::error_hal_job_sleep"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_sleep;
             }
@@ -223,7 +250,7 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             res = caScheduler::ChangePriority(in->params[0],
                     (caJobPriority) in->params[1]);
             if (res != deviceError::error_generic) {
-                LOG(caLog, error) << " deviceError::error_hal_job_change_priority"
+                PLOG(pLog, error) << " deviceError::error_hal_job_change_priority"
                         << caEnd::endl;
                 res = deviceError::error_hal_job_change_priority;
             }
@@ -233,55 +260,63 @@ u32 caHalJobDevice::IoCtrl(caDeviceHandle *port,
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
-
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalJobDevice::IrqService1(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
-
+u32 caHalJobDevice::IrqService1(IDevice * instance,u8 *, s_t size, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService2(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
-
+u32 caHalJobDevice::IrqService2(IDevice * instance,u8 *, s_t size, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService3(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_3) << " IrqService3 " << caEnd::endl;
-
+u32 caHalJobDevice::IrqService3(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_3) << " IrqService3 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService4(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_4) << " IrqService4 " << caEnd::endl;
-
+u32 caHalJobDevice::IrqService4(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_4) << " IrqService4 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService5(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_5) << " IrqService5 " << caEnd::endl;
-
+u32 caHalJobDevice::IrqService5(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_5) << " IrqService5 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService6(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_6) << " IrqService6 " << caEnd::endl;
-
+u32 caHalJobDevice::IrqService6(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_6) << " IrqService6 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService7(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_7) << " IrqService7 " << caEnd::endl;
-
+u32 caHalJobDevice::IrqService7(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_7) << " IrqService7 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalJobDevice::IrqService8(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_8) << " IrqService8 " << caEnd::endl;
+u32 caHalJobDevice::IrqService8(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_8) << " IrqService8 " << caEnd::endl;
     return 1;
 }
 

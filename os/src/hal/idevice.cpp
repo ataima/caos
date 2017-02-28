@@ -21,10 +21,14 @@
 #include "memaux.h"
 #include "syslog.h"
 
+IDevice::IDevice(void) {
+    caMemAux<u8>::MemZero(reinterpret_cast<u8*> (this), sizeof (IDevice));
+}
+
 u32 caHalDeviceRules::isOpen(IDevice *device) {
     u32 res = 0;
     if (device)
-        res = device->GetOpenFlag();
+        res = device->IGetOpenFlag(device);
     return res;
 }
 
@@ -44,7 +48,7 @@ u32 caHalDeviceRules::Open(IDevice *dev, caIDeviceConfigure * setup,
             res = deviceError::error_device_already_opened;
         } else {
             caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
-            res = dev->Open(setup, port);
+            res = dev->IOpen(dev, setup, port);
             if (res != deviceError::no_error) {
                 caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
             } else
@@ -73,7 +77,7 @@ u32 caHalDeviceRules::Close(IDevice *dev, caDeviceHandle *port, u32 guid) {
             if (!IsValidHandle(port->handle, guid)) {
             res = deviceError::error_invalid_handle_port;
         } else {
-            res = dev->Close(port);
+            res = dev->IClose(dev, port);
             port->wrBuff = port->rdBuff = nullptr;
             port->wrSize = port->writed = port->wrError =
                     port->rdSize = port->readed = port->rdError = 0;
@@ -99,7 +103,7 @@ u32 caHalDeviceRules::Write(IDevice *dev, caDeviceHandle *port, u32 guid) {
             if (port->wrBuff != nullptr) {
                 // return no error... wrSize == 0 flush ? TODO ,can perform 
                 //write action...
-                res = dev->Write(port);
+                res = dev->IWrite(dev, port);
             } else {
                 res = deviceError::error_invalid_null_buffer_port;
             }
@@ -124,7 +128,7 @@ u32 caHalDeviceRules::Read(IDevice *dev, caDeviceHandle *port, u32 guid) {
         } else {
             if (port->rdBuff != nullptr) {
                 // return no error... can perfom read action
-                res = dev->Read(port);
+                res = dev->IRead(dev, port);
             } else {
                 res = deviceError::error_invalid_null_buffer_port;
             }
@@ -147,7 +151,7 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
         switch (inp->command) {
             case caIDeviceCtrl::IoCtrlDirect::ctrl_LogCreate:
             {
-                caSysLog *caLog = dev->GetDeviceLog();
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
                 if (caLog != nullptr) {
                     if (!caLog->IsValid()) {
                         if (caLog->Init(inp->params[0],
@@ -163,7 +167,7 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                 break;
             case caIDeviceCtrl::IoCtrlDirect::ctrl_LogDestroy:
             {
-                caSysLog *caLog = dev->GetDeviceLog();
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
                 if (caLog != nullptr) {
                     if (caLog->IsValid()) {
                         if (caLog->Destroy() != true)
@@ -178,11 +182,11 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                 break;
             case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStart:
             {
-                caSysLog *caLog = dev->GetDeviceLog();
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
                 if (caLog != nullptr) {
                     if (!caLog->IsEnabled()) {
                         caLog->Enable();
-                        PLOG(caLog, device) << dev->toString() << " START "
+                        PLOG(caLog, device) << dev->ItoString() << " START "
                                 << caEnd::endl;
                     } else {
                         res = deviceError::error_log_already_set;
@@ -194,10 +198,10 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                 break;
             case caIDeviceCtrl::IoCtrlDirect::ctrl_LogStop:
             {
-                caSysLog *caLog = dev->GetDeviceLog();
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
                 if (caLog != nullptr) {
                     if (caLog->IsEnabled()) {
-                        PLOG(caLog, device) << dev->toString() << " STOP "
+                        PLOG(caLog, device) << dev->ItoString() << " STOP "
                                 << caEnd::endl;
                         caLog->Disable();
                     } else {
@@ -210,7 +214,7 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                 break;
             case caIDeviceCtrl::IoCtrlDirect::ctrl_LogGet:
             {
-                caSysLog *caLog = dev->GetDeviceLog();
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
                 if (caLog != nullptr) {
                     if (caLog->IsValid()) {
                         if (inp->ss != nullptr) {
@@ -233,7 +237,7 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                     if (!IsValidHandle(port->handle, guid)) {
                     res = deviceError::error_invalid_handle_port;
                 } else {
-                    res = dev->IoCtrl(port, inp);
+                    res = dev->IIoCtrl(dev, port, inp);
 
                 }
                 break;
@@ -259,7 +263,7 @@ u32 caHalDeviceRules::Flush(IDevice *dev, caDeviceHandle *port, u32 guid) {
             if (isOpen(dev) == 0) {
             res = deviceError::error_device_not_opened;
         } else {
-            res = dev->Flush(port);
+            res = dev->IFlush(dev, port);
         }
     } else
         if (dev == nullptr)
@@ -275,7 +279,7 @@ u32 caHalDeviceRules::IrqService1(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService1(buff, size, iosize);
+            res = dev->IIrqService1(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -288,7 +292,7 @@ u32 caHalDeviceRules::IrqService2(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService2(buff, size, iosize);
+            res = dev->IIrqService2(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -301,7 +305,7 @@ u32 caHalDeviceRules::IrqService3(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService3(buff, size, iosize);
+            res = dev->IIrqService3(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -314,7 +318,7 @@ u32 caHalDeviceRules::IrqService4(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService4(buff, size, iosize);
+            res = dev->IIrqService4(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -327,7 +331,7 @@ u32 caHalDeviceRules::IrqService5(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService5(buff, size, iosize);
+            res = dev->IIrqService5(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -340,7 +344,7 @@ u32 caHalDeviceRules::IrqService6(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService6(buff, size, iosize);
+            res = dev->IIrqService6(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -353,7 +357,7 @@ u32 caHalDeviceRules::IrqService7(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService7(buff, size, iosize);
+            res = dev->IIrqService7(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;
@@ -366,7 +370,7 @@ u32 caHalDeviceRules::IrqService8(void *obj, u8 * buff, s_t size, s_t & iosize) 
     if (obj != nullptr) {
         IDevice *dev = reinterpret_cast<IDevice *> (obj);
         if (dev != nullptr) {
-            res = dev->IrqService8(buff, size, iosize);
+            res = dev->IIrqService8(dev, buff, size, iosize);
         }
     } else {
         res = deviceError::error_invalid_null_device;

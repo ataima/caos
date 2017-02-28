@@ -27,6 +27,23 @@ caHalPipeDevice::caHalPipeDevice(hal_llc_mem_io *iface, u32 mask) {
     link = iface;
     handle_guid = BASE_HANDLE;
     mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    IOpen = caHalPipeDevice::Open;
+    IClose = caHalPipeDevice::Close;
+    IWrite = caHalPipeDevice::Write;
+    IRead = caHalPipeDevice::Read;
+    IFlush = caHalPipeDevice::Flush;
+    IIoCtrl = caHalPipeDevice::IoCtrl;
+    IGetOpenFlag = caHalPipeDevice::GetOpenFlag;
+    IGetDeviceLog = caHalPipeDevice::GetDeviceLog;
+    ItoString = caHalPipeDevice::toString;
+    IIrqService1 = caHalPipeDevice::IrqService1;
+    IIrqService2 = caHalPipeDevice::IrqService2;
+    IIrqService3 = caHalPipeDevice::IrqService3;
+    IIrqService4 = caHalPipeDevice::IrqService4;
+    IIrqService5 = caHalPipeDevice::IrqService5;
+    IIrqService6 = caHalPipeDevice::IrqService6;
+    IIrqService7 = caHalPipeDevice::IrqService7;
+    IIrqService8 = caHalPipeDevice::IrqService8;
 }
 
 caPipeDeviceDescriptor * caHalPipeDevice::FindDescriptor(caPipeDeviceConfigure* setup) {
@@ -46,34 +63,36 @@ caPipeDeviceDescriptor * caHalPipeDevice::GetDescriptor(u32 handle) {
     return &descriptors[index];
 }
 
-u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
+u32 caHalPipeDevice::Open(IDevice * instance, caIDeviceConfigure * set_up, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
     u32 i;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     caPipeDeviceConfigure *setup = static_cast<caPipeDeviceConfigure *> (set_up);
     if (setup != nullptr) {
         if (setup->name != nullptr) {
             if (caStrAux::StrLen(setup->name) == 0) {
-                LOG(caLog, error) << " deviceError::error_pipe_invalid_name " << caEnd::endl;
+                PLOG(pLog, error) << " deviceError::error_pipe_invalid_name " << caEnd::endl;
                 res = deviceError::error_pipe_invalid_name;
             } else {
-                caPipeDeviceDescriptor * desc = FindDescriptor(setup);
+                caPipeDeviceDescriptor * desc = dev->FindDescriptor(setup);
                 if (desc == nullptr && setup->host_guest == caPipeDeviceConfigure::host) {
                     //check if available empty descriptor
                     for (i = 0; i < MAX_PIPE_BLOCK; i++) {
-                        if (descriptors[i].name[0] == '\0')
+                        if (dev->descriptors[i].name[0] == '\0')
                             break;
                     }
                     if (i < MAX_PIPE_BLOCK) {
                         //create new
-                        desc = &descriptors[i];
+                        desc = &dev->descriptors[i];
                         desc->index = i;
                         //copy name block
                         caStrAux::StrCpy(desc->name, setup->name);
                         desc->size = (setup->size / sizeof (u32)) + 1;
                         u32 *buff = (u32 *) caMemory::Allocate(desc->size * sizeof (u32));
                         if (buff == nullptr) {
-                            LOG(caLog, error) << " deviceError::error_pipe_no_memory " << caEnd::endl;
+                            PLOG(pLog, error) << " deviceError::error_pipe_no_memory " << caEnd::endl;
                             res = deviceError::error_pipe_no_memory;
                             caMemAux<u32>::MemSet((u32*) desc, 0,
                                     sizeof (caPipeDeviceDescriptor));
@@ -82,17 +101,17 @@ u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
                             desc->action = caPipeDeviceDescriptor::actionMem::opened;
                         }
                     } else {
-                        LOG(caLog, error) << " deviceError::error_pipe_queue_full " << caEnd::endl;
+                        PLOG(pLog, error) << " deviceError::error_pipe_queue_full " << caEnd::endl;
                         res = deviceError::error_pipe_queue_full;
                     }
                 } else
                     if (desc == nullptr && setup->host_guest == caPipeDeviceConfigure::guest) {
-                    LOG(caLog, error) << " deviceError::error_pipe_not_exist " << caEnd::endl;
+                    PLOG(pLog, error) << " deviceError::error_pipe_not_exist " << caEnd::endl;
                     res = deviceError::error_pipe_not_exist;
                 }
                 if (desc != nullptr && res == deviceError::no_error) {
-                    isOpen++;
-                    port->handle = caHalDeviceRules::addHandle(desc->index, mask_guid);
+                    dev->isOpen++;
+                    port->handle = caHalDeviceRules::addHandle(desc->index, dev->mask_guid);
                     port->status = caDeviceHandle::statusHandle::Open;
                     port->tStart = hal_llc_time_1.hll_tick();
                     port->tLast = port->tStart;
@@ -100,29 +119,31 @@ u32 caHalPipeDevice::Open(caIDeviceConfigure * set_up, caDeviceHandle *port) {
                     port->tLastCmd = caDeviceAction::caActionOpen;
                     if (setup->host_guest == caPipeDeviceConfigure::host) {
                         desc->host = port->handle;
-                        LOG(caLog, device) << " Pipe " << setup->name << " Open as Host" << caEnd::endl;
+                        PLOG(pLog, device) << " Pipe " << setup->name << " Open as Host" << caEnd::endl;
                     } else {
                         desc->guest = port->handle;
-                        LOG(caLog, device) << " Pipe " << setup->name << " Open as device" << caEnd::endl;
+                        PLOG(pLog, device) << " Pipe " << setup->name << " Open as device" << caEnd::endl;
                     }
                 }
             }
 
         } else {
-            LOG(caLog, error) << " deviceError::error_pipe_invalid_name " << caEnd::endl;
+            PLOG(pLog, error) << " deviceError::error_pipe_invalid_name " << caEnd::endl;
             res = deviceError::error_pipe_invalid_name;
         }
     }
     //
-    LOG(caLog, device) << " handle = " << port->handle << caEnd::endl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " handle = " << port->handle << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalPipeDevice::Close(caDeviceHandle *port) {
+u32 caHalPipeDevice::Close(IDevice * instance, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
-    caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
+    caPipeDeviceDescriptor * desc = dev->GetDescriptor(port->handle);
     if (desc != nullptr) {
         if (desc->guest == port->handle) {
             desc->guest = 0;
@@ -131,27 +152,29 @@ u32 caHalPipeDevice::Close(caDeviceHandle *port) {
             caMemory::Free(desc->queue.GetBase(), nullptr);
             caMemAux<u32>::MemSet((u32*) desc, 0, sizeof (caPipeDeviceDescriptor));
         }
-        isOpen--;
+        dev->isOpen--;
         port->status = caDeviceHandle::statusHandle::Close;
         port->tStop = hal_llc_time_1.hll_tick();
         port->tLast = port->tStop;
         port->tLastCmd = caDeviceAction::caActionClose;
-        port->handle = mask_guid | BASE_HANDLE;
+        port->handle = dev->mask_guid | BASE_HANDLE;
         port->wrError = port->rdError = 0;
-        LOG(caLog, device) << "Close port : " << isOpen << caEnd::endl;
+        PLOG(pLog, device) << "Close port : " << dev->isOpen << caEnd::endl;
     } else {
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port " << caEnd::endl;
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port " << caEnd::endl;
         res = deviceError::error_invalid_handle_port;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalPipeDevice::Write(caDeviceHandle *port) {
+u32 caHalPipeDevice::Write(IDevice * instance, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     if (port->wrSize != 0) {
-        caPipeDeviceDescriptor *desc = GetDescriptor(port->handle);
+        caPipeDeviceDescriptor *desc = dev->GetDescriptor(port->handle);
         if (desc != nullptr) {
             if (desc->host == port->handle) {
                 u32 wSize;
@@ -173,35 +196,37 @@ u32 caHalPipeDevice::Write(caDeviceHandle *port) {
                         port->tLastCmd = caDeviceAction::caActionWrite;
                         port->wrError = port->rdError = 0;
                         desc->action = caPipeDeviceDescriptor::actionMem::writed;
-                        LOG(caLog, device) << "Writed port : " << pSize << caEnd::endl;
+                        PLOG(pLog, device) << "Writed port : " << pSize << caEnd::endl;
                     }
                 } else {
-                    LOG(caLog, error) << " deviceError::error_pipe_queue_full" << caEnd::endl;
+                    PLOG(pLog, error) << " deviceError::error_pipe_queue_full" << caEnd::endl;
                     res = deviceError::error_pipe_queue_full;
                 }
             } else {
-                LOG(caLog, error) << " deviceError::error_pipe_port_not_host" << caEnd::endl;
+                PLOG(pLog, error) << " deviceError::error_pipe_port_not_host" << caEnd::endl;
                 res = deviceError::error_pipe_port_not_host;
             }
         } else {
-            LOG(caLog, error) << " deviceError::error_pipe_invalid_descriptor" << caEnd::endl;
+            PLOG(pLog, error) << " deviceError::error_pipe_invalid_descriptor" << caEnd::endl;
             res = deviceError::error_pipe_invalid_descriptor;
         }
     } else {
         res = deviceError::error_invalid_handle_port_wr_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
                 << port->wrSize << caEnd::endl;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalPipeDevice::Read(caDeviceHandle *port) {
+u32 caHalPipeDevice::Read(IDevice * instance, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     if (port->rdSize != 0) {
         u32 rSize, pSize;
-        caPipeDeviceDescriptor *desc = GetDescriptor(port->handle);
+        caPipeDeviceDescriptor *desc = dev->GetDescriptor(port->handle);
         if (desc != nullptr) {
             if (desc->guest == port->handle) {
                 pSize = (port->rdSize / sizeof (u32)) + 1;
@@ -220,28 +245,29 @@ u32 caHalPipeDevice::Read(caDeviceHandle *port) {
                     port->tLastCmd = caDeviceAction::caActionRead;
                     port->wrError = port->rdError = 0;
                     desc->action = caPipeDeviceDescriptor::actionMem::readed;
-                    LOG(caLog, device) << "Readed port : " << pSize << caEnd::endl;
+                    PLOG(pLog, device) << "Readed port : " << pSize << caEnd::endl;
                 }
             } else {
-                LOG(caLog, error) << " deviceError::error_pipe_port_not_guest" << caEnd::endl;
+                PLOG(pLog, error) << " deviceError::error_pipe_port_not_guest" << caEnd::endl;
                 res = deviceError::error_pipe_port_not_guest;
             }
         } else {
-            LOG(caLog, error) << " deviceError::error_pipe_invalid_descriptor" << caEnd::endl;
+            PLOG(pLog, error) << " deviceError::error_pipe_invalid_descriptor" << caEnd::endl;
             res = deviceError::error_pipe_invalid_descriptor;
         }
     } else {
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_rd_size:"
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port_rd_size:"
                 << port->rdSize << caEnd::endl;
         res = deviceError::error_invalid_handle_port_rd_size;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalPipeDevice::Flush(caDeviceHandle *port) {
+u32 caHalPipeDevice::Flush(IDevice * instance, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    port->tLast = dev->link->hll_tick();
     port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionFlush;
     return res;
@@ -288,30 +314,32 @@ u32 caHalPipeDevice::Dump(caDeviceHandle *port, caStringStream<s8> *ss) {
     return res;
 }
 
-u32 caHalPipeDevice::IoCtrl(caDeviceHandle *port,
+u32 caHalPipeDevice::IoCtrl(IDevice * instance, caDeviceHandle *port,
         caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    port->tLast = dev->link->hll_tick();
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     caPipeDeviceCtrl *in = static_cast<caPipeDeviceCtrl *> (inp);
     switch (in->command) {
         default:
-            LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
+            PLOG(pLog, error) << " deviceError::error_ioctrl_command_error"
                     << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
 
         case caPipeDeviceCtrl::IoPipeCtrlDirect::Resize:
-            res = Resize(port, inp->params[0]);
+            res = dev->Resize(port, inp->params[0]);
             break;
 
         case caPipeDeviceCtrl::IoPipeCtrlDirect::Dump:
-            res = Dump(port, inp->ss);
+            res = dev->Dump(port, inp->ss);
             break;
 
         case caPipeDeviceCtrl::IoPipeCtrlDirect::Reset:
         {
-            caPipeDeviceDescriptor * desc = GetDescriptor(port->handle);
+            caPipeDeviceDescriptor * desc = dev->GetDescriptor(port->handle);
             if (desc != nullptr) {
                 desc->queue.Clean();
             } else {
@@ -321,54 +349,63 @@ u32 caHalPipeDevice::IoCtrl(caDeviceHandle *port,
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalPipeDevice::IrqService1(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService1(IDevice * instance, u8 *, s_t size, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService2(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService2(IDevice * instance, u8 *, s_t size, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService3(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_3) << " IrqService3 " << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService3(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_3) << " IrqService3 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService4(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_4) << " IrqService4 " << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService4(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_4) << " IrqService4 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService5(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_5) << " IrqService5 " << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService5(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_5) << " IrqService5 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService6(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_6) << " IrqService6 " << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService6(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_6) << " IrqService6 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService7(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_7) << " IrqService7 " << caEnd::endl;
-
+u32 caHalPipeDevice::IrqService7(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_7) << " IrqService7 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalPipeDevice::IrqService8(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_8) << " IrqService8 " << caEnd::endl;
+u32 caHalPipeDevice::IrqService8(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    caSysLog *pLog = dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_8) << " IrqService8 " << caEnd::endl;
     return 1;
 }
 

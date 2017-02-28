@@ -27,91 +27,119 @@ caHalMemDevice::caHalMemDevice(hal_llc_mem_io *iface, u32 mask) {
     link = iface;
     handle_guid = BASE_HANDLE;
     mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    IOpen=caHalMemDevice::Open;
+    IClose=caHalMemDevice::Close;
+    IWrite=caHalMemDevice::Write;
+    IRead=caHalMemDevice::Read;
+    IFlush=caHalMemDevice::Flush;
+    IIoCtrl=caHalMemDevice::IoCtrl;
+    IGetOpenFlag=caHalMemDevice::GetOpenFlag;
+    IGetDeviceLog=caHalMemDevice::GetDeviceLog;
+    ItoString=caHalMemDevice::toString;
+    IIrqService1=caHalMemDevice::IrqService1;
+    IIrqService2=caHalMemDevice::IrqService2;
+    IIrqService3=caHalMemDevice::IrqService3;
+    IIrqService4=caHalMemDevice::IrqService4;
+    IIrqService5=caHalMemDevice::IrqService5;
+    IIrqService6=caHalMemDevice::IrqService6;
+    IIrqService7=caHalMemDevice::IrqService7;
+    IIrqService8=caHalMemDevice::IrqService8;
 }
 
-u32 caHalMemDevice::Open(caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {
+u32 caHalMemDevice::Open(IDevice * instance,caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     //caJobConfigure *conf = (caJobConfigure *) (setup);
-    isOpen++;
-    port->handle = caHalDeviceRules::addHandle(handle_guid, mask_guid);
+    dev->isOpen++;
+    port->handle = caHalDeviceRules::addHandle(dev->handle_guid, dev->mask_guid);
     port->status = caDeviceHandle::statusHandle::Open;
-    port->tStart = link->hll_tick();
+    port->tStart = dev->link->hll_tick();
     port->tLast = port->tStart;
     port->tStop = port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionOpen;
-    LOG(caLog, device) << " handle = " << port->handle << caEnd::endl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " handle = " << port->handle << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalMemDevice::Close(caDeviceHandle *port) {
+u32 caHalMemDevice::Close(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
-    isOpen = 0;
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
+    dev->isOpen = 0;
     port->status = caDeviceHandle::statusHandle::Close;
-    port->tStop = link->hll_tick();
+    port->tStop = dev->link->hll_tick();
     port->tLast = port->tStop;
     port->tLastCmd = caDeviceAction::caActionClose;
-    port->handle = mask_guid | BASE_HANDLE;
+    port->handle = dev->mask_guid | BASE_HANDLE;
     port->wrError = port->rdError = 0;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
 
 /// Write to device memDevice -> allocate memory : in port->wrSize,out  port->wrBuff size
 
-u32 caHalMemDevice::Write(caDeviceHandle *port) {
+u32 caHalMemDevice::Write(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     if (port->wrSize != 0) {
         port->writed = 0;
         port->wrBuff = (u8*) caMemory::Allocate(port->wrSize);
-        port->tLast = link->hll_tick();
+        port->tLast = dev->link->hll_tick();
         port->tLastCmd = caDeviceAction::caActionWrite;
         port->wrError = port->rdError = 0;
     } else {
         res = deviceError::error_invalid_handle_port_wr_size;
-        LOG(caLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
+        PLOG(pLog, error) << " deviceError::error_invalid_handle_port_wr_size:"
                 << port->wrSize << caEnd::endl;
     }
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalMemDevice::Read(caDeviceHandle *port) {
+u32 caHalMemDevice::Read(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     port->readed = caMemory::Free(port->rdBuff, &port->rdSize);
     port->rdBuff=nullptr;
     port->tLast = hal_llc_time_1.hll_tick();
     port->tLastCmd = caDeviceAction::caActionRead;
     port->wrError = port->rdError = 0;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalMemDevice::Flush(caDeviceHandle *port) {
+u32 caHalMemDevice::Flush(IDevice * instance,caDeviceHandle *port) {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    port->tLast = dev->link->hll_tick();
     port->wrError = port->rdError = 0;
     port->tLastCmd = caDeviceAction::caActionFlush;
     return res;
 }
 
-u32 caHalMemDevice::IoCtrl(caDeviceHandle *port,
+u32 caHalMemDevice::IoCtrl(IDevice * instance,caDeviceHandle *port,
         caIDeviceCtrl *inp) {
     u32 res = deviceError::no_error;
-    port->tLast = link->hll_tick();
-    LOG(caLog, device) << " in : isOpen = " << isOpen << caEnd::endl;
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    port->tLast = dev->link->hll_tick();
+    PLOG(pLog, device) << " in : isOpen = " << dev->isOpen << caEnd::endl;
     caMemoryDeviceCtrl *in = static_cast<caMemoryDeviceCtrl *> (inp);
     switch (in->command) {
         case caMemoryDeviceCtrl::IoMemCtrlDirect::memReallocate:
             //todo 
             break;
         default:
-            LOG(caLog, error) << " deviceError::error_ioctrl_command_error"
+            PLOG(pLog, error) << " deviceError::error_ioctrl_command_error"
                     << caEnd::endl;
             res = deviceError::error_ioctrl_command_error;
             break;
@@ -126,47 +154,63 @@ u32 caHalMemDevice::IoCtrl(caDeviceHandle *port,
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;
-    LOG(caLog, device) << " out : res = " << res << caEnd::endl;
+    PLOG(pLog, device) << " out : res = " << res << caEnd::endl;
     return res;
 }
 
-u32 caHalMemDevice::IrqService1(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
+u32 caHalMemDevice::IrqService1(IDevice * instance,u8 *, s_t size, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_1) << " IrqService1 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService2(u8 *, s_t size, s_t &) {
-    LOG(caLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
+u32 caHalMemDevice::IrqService2(IDevice * instance,u8 *, s_t size, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_2) << " IrqService2 S=" << size << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService3(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_3) << " IrqService3 " << caEnd::endl;
+u32 caHalMemDevice::IrqService3(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_3) << " IrqService3 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService4(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_4) << " IrqService4 " << caEnd::endl;
+u32 caHalMemDevice::IrqService4(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_4) << " IrqService4 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService5(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_5) << " IrqService5 " << caEnd::endl;
+u32 caHalMemDevice::IrqService5(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_5) << " IrqService5 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService6(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_6) << " IrqService6 " << caEnd::endl;
+u32 caHalMemDevice::IrqService6(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_6) << " IrqService6 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService7(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_7) << " IrqService7 " << caEnd::endl;
+u32 caHalMemDevice::IrqService7(IDevice * instance,u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_7) << " IrqService7 " << caEnd::endl;
     return 1;
 }
 
-u32 caHalMemDevice::IrqService8(u8 *, s_t, s_t &) {
-    LOG(caLog, irq_8) << " IrqService8 " << caEnd::endl;
+u32 caHalMemDevice::IrqService8(IDevice * instance, u8 *, s_t, s_t &) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    caSysLog *pLog=dev->GetDeviceLog(dev);
+    PLOG(pLog, irq_8) << " IrqService8 " << caEnd::endl;
     return 1;
 }
 

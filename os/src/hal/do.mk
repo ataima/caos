@@ -49,11 +49,7 @@ OBJS:= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM)
 DEP_OBJ:= $(DEP_CPP)  $(DEP_C) 
 
 define width_s40
-    $(shell printf "%-40s %s" "$1")
-endef
-
-define width_40
-    $(shell printf "%-40s %s" $1)
+    $(shell printf "%-35s %s" "$1")
 endef
 
 define add_cpp_msg_rules
@@ -65,11 +61,11 @@ define add_c_msg_rules
 endef
 
 define add_list_msg
-    @echo $(EH) $(C_CYAN)"[LST]    :"$(C_WHITE) "$(shell printf "%-40s %s" $1)" $(C_RED)$2$(C_RESET) >/dev/stderr
+    @echo $(EH) $(C_GREEN)"[LST] :" $(C_WHITE)"$(call width_s40, $1)"$(C_RED)$2$(C_RESET) >/dev/stderr
 endef
 
 define add_asm_msg
-    @echo $(EH) $(C_CYAN)"[AS ]    :"$(C_WHITE) "$(shell printf "%-40s %s" $1)" $(C_RED)$2$(C_RESET) >/dev/stderr
+    @echo $(EH) $(C_GREEN)"[AS ] :" $(C_WHITE)"$(call width_s40, $1)"$(C_RED)$2$(C_RESET) >/dev/stderr
 endef
 
 $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
@@ -99,19 +95,19 @@ $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F) $<
-	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.cpp,%.s,$(@F)) )
+	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.cpp,%.s,$(@F)) )
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.c,%.s,$(@F)))
+	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.c,%.s,$(@F)))
 
 $(BUILDIR)/$(GE_ASM)/%.s:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
 	@mkdir -p $(BUILDIR)/$(GE_ASM)
 	cp $< $(BUILDIR)/$(GE_ASM)/$(@F) 
-	$(call add_list_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.s,$(@F)))
+	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.s,%.s,$(@F)))
 
 $(BUILDIR)/$(OBJ_OUT)/%.o:$(SRC)/%.s
 	@mkdir -p $(BUILDIR)
