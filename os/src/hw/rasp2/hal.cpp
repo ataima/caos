@@ -48,12 +48,12 @@ static u32 mem_phy_size(void) {
     return __ram_size__;
 }
 
-static u32 mem_heap_start_addr(void) {
-    return __heap_base__;
+static u32 *mem_heap_start_addr(void) {
+    return &__heap_base__;
 }
 
-static u32 mem_heap_end_addr(void) {
-    return __heap_end__;
+static u32 *mem_heap_end_addr(void) {
+    return &__heap_end__;
 }
 
 
@@ -98,6 +98,29 @@ hal_llc_com_io hal_llc_com1 = {
     caMiniUart::Recv
 };
 
+static u32 start_system_timer(void) {
+    u32 res = false;
+    if (caSysTimer::Init(SYS_CLOCK_TIMER, SYS_TIMER_TICK)) {
+        if (caSysTimer::EnableCounter(1)) {
+            if (caSysTimer::EnableTimer(1)) {
+                res = caSysTimer::IrqEnable();
+            }
+        }
+    }
+    caArmCpu::EnableIrqFiq();
+    return res;
+}
+
+static u32 stop_system_timer(void) {
+    u32 res = false;
+    if (caSysTimer::EnableCounter(0)) {
+        if (caSysTimer::EnableTimer(0)) {
+            res = caSysTimer::IrqDisable();
+        }
+    }
+    caArmCpu::DisableIrqFiq();
+    return res;
+}
 
 
 // Hardware connectors sys timer
@@ -116,8 +139,8 @@ hal_llc_sys_time hal_llc_time_1 = {
     caSysTimer::SetTime,
     caSysTimer::Dump,
     caSysTimer::ToTick,
-    not_implemented_base, // systimer 1 alway run...
-    not_implemented_base,
+    start_system_timer, // systimer 1 alway run...
+    stop_system_timer,
     caScheduler::WakeUp,
     caScheduler::WakeUp,
     caHalDeviceRules::IrqService1,

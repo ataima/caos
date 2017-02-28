@@ -149,10 +149,30 @@ qemu-deb:
 	@echo $(SEP)
 		
 jtag:
-	@echo $(SEP)	
+	@openocd -f ./raspi2.cfg &
+	@sleep 1
+	@echo "file ./$(BUILDIR)/caOS.elf" >gdb.conf
+	@echo "target remote :3333" >>gdb.conf
+	@echo "monitor halt" >>gdb.conf
+	@echo "monitor reset_config srst_only" >>gdb.conf
+	@echo "monitor reset" >>gdb.conf
+	@echo "monitor targets rpi2.cpu0" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf 	
+	@echo "monitor targets rpi2.cpu1" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu2" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu3" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu0" >> gdb.conf
+	@echo "load" >> gdb.conf
+	@echo "monitor targets" >> gdb.conf
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
-	@$(CROSS_GDB) ./$(BUILDIR)/caOS.elf
+	@$(CROSS_GDB) -x gdb.conf
+	@killall openocd
+	@echo jtag ...done.
 	@echo $(SEP)
+
 
 sim:
 	@echo $(SEP)

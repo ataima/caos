@@ -33,8 +33,8 @@ hal_llc_mem_io *caMemory::link=nullptr;
 void caMemory::Init(hal_llc_mem_io *lnk) {
     link=lnk;
     if (link != nullptr) {
-        start_mem = static_cast<u32*> (uint_to_ptr(lnk->hll_heap_start()));
-        end_mem = static_cast<u32*> (uint_to_ptr(lnk->hll_heap_end()));
+        start_mem = lnk->hll_heap_start();
+        end_mem   = lnk->hll_heap_end();
     } else {
         start_mem = 0;
         end_mem = 0;

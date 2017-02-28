@@ -55,7 +55,6 @@ u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 #define CONS_LINE_LENGHT 1024
 
 u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
-    Dbg::Put("Console live..\r\n");
     u8 buff_in[CONS_LINE_LENGHT];
     caComDeviceConfigure in;
     caDeviceHandle port;

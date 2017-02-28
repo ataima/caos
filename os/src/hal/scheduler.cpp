@@ -554,7 +554,7 @@ void caScheduler::CheckValid(u32 p) {
         Panic();
     }
     if (current_task->pcb[1] != current_task->pcb[16]) {
-        if (current_task->pcb[16] > hal_llc_mem.hll_heap_start()) {
+        if (current_task->pcb[16] > ptr_to_uint(hal_llc_mem.hll_heap_start())) {
             Dbg::Put("ERROR : TASK JUMP ADDRESS FAULT : HIGHER", p);
             Dbg::Put("TASK :");
             Dbg::Put((const char *) current_task->name);
