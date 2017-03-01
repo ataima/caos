@@ -104,6 +104,7 @@ private:
     static bool GetDevice(const char * name, s32 & offset);
     static bool GetDevice(caDeviceHandle & port, s32 & offset);
 public:
+    static deviceError Init(void);
     //  methos available only in supervisor mode device to device or user to device by software isr
     static deviceError Open(const char * device, caIDeviceConfigure & in, caDeviceHandle & out);
     static deviceError Close(caDeviceHandle & port);

@@ -25,70 +25,70 @@
 #include "memory.h"
 #include "caos.h"
 
-caHalJobDevice caOS::scheduler(&hal_llc_scheduler, ioCtrlRequest::Task);
+caHalJobDevice caOS::scheduler;
 
-caHalSysTimerDevice caOS::timer1(&hal_llc_time_1, ioCtrlRequest::SysTimer1);
+caHalSysTimerDevice caOS::timer1;
 
-caHalMemDevice caOS::memory(&hal_llc_mem, ioCtrlRequest::Memory);
+caHalMemDevice caOS::memory;
 
-caHalPipeDevice caOS::pipe(&hal_llc_mem, ioCtrlRequest::Pipe);
+caHalPipeDevice caOS::pipe;
 
 #if SYS_TIMER_2_DEVICE
-caHalSysTimerDevice caOS::timer2(&hal_llc_time_2, ioCtrlRequest::SysTimer2);
+caHalSysTimerDevice caOS::timer2;
 #endif
 
 #if SYS_TIMER_3_DEVICE
-caHalSysTimerDevice caOS::timer3(&hal_llc_time_3, ioCtrlRequest::SysTimer3);
+caHalSysTimerDevice caOS::timer3;
 #endif
 
 #if SYS_TIMER_4_DEVICE
-caHalSysTimerDevice caOS::timer4(&hal_llc_time_4, ioCtrlRequest::SysTimer4);
+caHalSysTimerDevice caOS::timer4;
 #endif
 
 #if SYS_TIMER_5_DEVICE
-caHalSysTimerDevice caOS::timer5(&hal_llc_time_5, ioCtrlRequest::SysTimer5);
+caHalSysTimerDevice caOS::timer5;
 #endif
 
 #if SYS_TIMER_6_DEVICE
-caHalSysTimerDevice caOS::timer6(&hal_llc_time_6, ioCtrlRequest::SysTimer6);
+caHalSysTimerDevice caOS::timer6;
 #endif
 
 #if SYS_TIMER_7_DEVICE
-caHalSysTimerDevice caOS::timer7(&hal_llc_time_7, ioCtrlRequest::SysTimer7);
+caHalSysTimerDevice caOS::timer7;
 #endif
 
 #if SYS_TIMER_8_DEVICE
-caHalSysTimerDevice caOS::timer8(&hal_llc_time_8, ioCtrlRequest::SysTimer8);
+caHalSysTimerDevice caOS::timer8;
 #endif
 
-caHalComDevice caOS::com1(&hal_llc_com1, ioCtrlRequest::Com1);
+caHalComDevice caOS::com1;
 
 #if COM2_DEVICE
-caHalComDevice caOS::com2(&hal_llc_com2, ioCtrlRequest::Com2);
+caHalComDevice caOS::com2;
 #endif
 
 #if COM3_DEVICE
-caHalComDevice caOS::com3(&hal_llc_com3, ioCtrlRequest::Com3);
+caHalComDevice caOS::com3;
 #endif
 
 #if COM4_DEVICE
-caHalComDevice caOS::com4(&hal_llc_com4, ioCtrlRequest::Com4);
+caHalComDevice caOS::com4;
 #endif
 
 #if COM5_DEVICE
-caHalComDevice caOS::com5(&hal_llc_com5, ioCtrlRequest::Com5);
+caHalComDevice caOS::com5;
 #endif
 
 #if COM6_DEVICE
-caHalComDevice caOS::com6(&hal_llc_com6, ioCtrlRequest::Com6);
+caHalComDevice caOS::com6;
 #endif
 
 #if COM7_DEVICE
-caHalComDevice caOS::com7(&hal_llc_com7, ioCtrlRequest::Com7);
+caHalComDevice caOS::com7;
 #endif
 
 #if COM8_DEVICE
-caHalComDevice caOS::com8(&hal_llc_com8, ioCtrlRequest::Com8);
+caHalComDevice caOS::com8;
 #endif
 
 
@@ -145,6 +145,75 @@ caOS::devicePair caOS::allDevices[] = {
     {"TTY8", ioCtrlRequest::Com8, &com8},
 #endif
 };
+
+deviceError caOS::Init(void) {
+    caHalJobDevice::Init(&scheduler, &hal_llc_scheduler, ioCtrlRequest::Task);
+
+    caHalSysTimerDevice::Init(&timer1, &hal_llc_time_1, ioCtrlRequest::SysTimer1);
+
+    caHalMemDevice::Init(&memory, &hal_llc_mem, ioCtrlRequest::Memory);
+
+    caHalPipeDevice::Init(&pipe,&hal_llc_mem, ioCtrlRequest::Pipe);
+
+#if SYS_TIMER_2_DEVICE
+    caHalSysTimerDevice::Init(&timer2,&hal_llc_time_2, ioCtrlRequest::SysTimer2);
+#endif
+
+#if SYS_TIMER_3_DEVICE
+    caHalSysTimerDevice::Init(&timer3,&hal_llc_time_3, ioCtrlRequest::SysTimer3);
+#endif
+
+#if SYS_TIMER_4_DEVICE
+    caHalSysTimerDevice::Init(&timer4,&hal_llc_time_4, ioCtrlRequest::SysTimer4);
+#endif
+
+#if SYS_TIMER_5_DEVICE
+    caHalSysTimerDevice::Init(&timer5,caHalSysTimerDevice::Init(&timer&hal_llc_time_5, ioCtrlRequest::SysTimer5);
+#endif
+
+#if SYS_TIMER_6_DEVICE
+    caHalSysTimerDevice::Init(&timer6,&hal_llc_time_6, ioCtrlRequest::SysTimer6);
+#endif
+
+#if SYS_TIMER_7_DEVICE
+    caHalSysTimerDevice::Init(&timer7,&hal_llc_time_7, ioCtrlRequest::SysTimer7);
+#endif
+
+#if SYS_TIMER_8_DEVICE
+    caHalSysTimerDevice::Init(&timer8,&hal_llc_time_8, ioCtrlRequest::SysTimer8);
+#endif
+
+    caHalComDevice::Init(&com1,&hal_llc_com1, ioCtrlRequest::Com1);
+
+#if COM2_DEVICE
+    caHalComDevice::Init(&com2,&hal_llc_com2, ioCtrlRequest::Com2);
+#endif
+
+#if COM3_DEVICE
+    caHalComDevice::Init(&com3,&hal_llc_com3, ioCtrlRequest::Com3);
+#endif
+
+#if COM4_DEVICE
+    caHalComDevice::Init(&com4,&hal_llc_com4, ioCtrlRequest::Com4);
+#endif
+
+#if COM5_DEVICE
+    caHalComDevice::Init(&com5,&hal_llc_com5, ioCtrlRequest::Com5);
+#endif
+
+#if COM6_DEVICE
+    caHalComDevice::Init(&com6,&hal_llc_com6, ioCtrlRequest::Com6);
+#endif
+
+#if COM7_DEVICE
+    caHalComDevice::Init(&com7,&hal_llc_com7, ioCtrlRequest::Com7);
+#endif
+
+#if COM8_DEVICE
+    caHalComDevice::Init(&com8,&hal_llc_com8, ioCtrlRequest::Com8);
+#endif
+    return deviceError::no_error;
+}
 
 bool caOS::GetDevice(const char * name, s32 & offset) {
     bool res = false;

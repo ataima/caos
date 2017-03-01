@@ -87,7 +87,7 @@ private:
     hal_llc_com_io *link;
 
 public:
-    caHalComDevice(hal_llc_com_io *com, u32 mask_handle);
+    static void Init (IDevice * instance,hal_llc_com_io *com, u32 mask_handle);
     static u32 Open(IDevice * instance,caIDeviceConfigure *conf, caDeviceHandle *port);
     static u32 Close(IDevice * instance,caDeviceHandle *port);
     static u32 Write(IDevice * instance,caDeviceHandle *port);

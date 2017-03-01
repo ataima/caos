@@ -65,7 +65,7 @@ private:
     caSysLog caLog;
     hal_llc_sys_time *link;
 public:
-    caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask_handle);
+    static void Init(IDevice * instance,hal_llc_sys_time *st, u32 mask_handle);
     static u32 Open(IDevice * instance,caIDeviceConfigure *conf, caDeviceHandle *port);
     static u32 Close(IDevice * instance,caDeviceHandle *port);
     static u32 Write(IDevice * instance,caDeviceHandle *port);

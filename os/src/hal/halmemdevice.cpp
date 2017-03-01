@@ -22,28 +22,29 @@
 #include "halmemdevice.h"
 #include "memaux.h"
 
-caHalMemDevice::caHalMemDevice(hal_llc_mem_io *iface, u32 mask) {
-    isOpen = 0;
-    link = iface;
-    handle_guid = BASE_HANDLE;
-    mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    IOpen=caHalMemDevice::Open;
-    IClose=caHalMemDevice::Close;
-    IWrite=caHalMemDevice::Write;
-    IRead=caHalMemDevice::Read;
-    IFlush=caHalMemDevice::Flush;
-    IIoCtrl=caHalMemDevice::IoCtrl;
-    IGetOpenFlag=caHalMemDevice::GetOpenFlag;
-    IGetDeviceLog=caHalMemDevice::GetDeviceLog;
-    ItoString=caHalMemDevice::toString;
-    IIrqService1=caHalMemDevice::IrqService1;
-    IIrqService2=caHalMemDevice::IrqService2;
-    IIrqService3=caHalMemDevice::IrqService3;
-    IIrqService4=caHalMemDevice::IrqService4;
-    IIrqService5=caHalMemDevice::IrqService5;
-    IIrqService6=caHalMemDevice::IrqService6;
-    IIrqService7=caHalMemDevice::IrqService7;
-    IIrqService8=caHalMemDevice::IrqService8;
+void caHalMemDevice::Init(IDevice * instance,hal_llc_mem_io *iface, u32 mask) {
+    caHalMemDevice* dev=static_cast<caHalMemDevice*>(instance);
+    dev->isOpen = 0;
+    dev->link = iface;
+    dev->handle_guid = BASE_HANDLE;
+    dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    dev->IOpen=caHalMemDevice::Open;
+    dev->IClose=caHalMemDevice::Close;
+    dev->IWrite=caHalMemDevice::Write;
+    dev->IRead=caHalMemDevice::Read;
+    dev->IFlush=caHalMemDevice::Flush;
+    dev->IIoCtrl=caHalMemDevice::IoCtrl;
+    dev->IGetOpenFlag=caHalMemDevice::GetOpenFlag;
+    dev->IGetDeviceLog=caHalMemDevice::GetDeviceLog;
+    dev->ItoString=caHalMemDevice::toString;
+    dev->IIrqService1=caHalMemDevice::IrqService1;
+    dev->IIrqService2=caHalMemDevice::IrqService2;
+    dev->IIrqService3=caHalMemDevice::IrqService3;
+    dev->IIrqService4=caHalMemDevice::IrqService4;
+    dev->IIrqService5=caHalMemDevice::IrqService5;
+    dev->IIrqService6=caHalMemDevice::IrqService6;
+    dev->IIrqService7=caHalMemDevice::IrqService7;
+    dev->IIrqService8=caHalMemDevice::IrqService8;
 }
 
 u32 caHalMemDevice::Open(IDevice * instance,caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {

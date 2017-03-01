@@ -22,28 +22,29 @@
 #include "memaux.h"
 #include "scheduler.h"
 
-caHalJobDevice::caHalJobDevice(hal_llc_scheduler_io *iface, u32 mask) {
-    isOpen = 0;
-    link = iface;
-    handle_guid = BASE_HANDLE;
-    mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    IOpen=caHalJobDevice::Open;
-    IClose=caHalJobDevice::Close;
-    IWrite=caHalJobDevice::Write;
-    IRead=caHalJobDevice::Read;
-    IFlush=caHalJobDevice::Flush;
-    IIoCtrl=caHalJobDevice::IoCtrl;
-    IGetOpenFlag=caHalJobDevice::GetOpenFlag;
-    IGetDeviceLog=caHalJobDevice::GetDeviceLog;
-    ItoString=caHalJobDevice::toString;
-    IIrqService1=caHalJobDevice::IrqService1;
-    IIrqService2=caHalJobDevice::IrqService2;
-    IIrqService3=caHalJobDevice::IrqService3;
-    IIrqService4=caHalJobDevice::IrqService4;
-    IIrqService5=caHalJobDevice::IrqService5;
-    IIrqService6=caHalJobDevice::IrqService6;
-    IIrqService7=caHalJobDevice::IrqService7;
-    IIrqService8=caHalJobDevice::IrqService8;
+void caHalJobDevice::Init(IDevice * instance,hal_llc_scheduler_io *iface, u32 mask) {
+    caHalJobDevice* dev=static_cast<caHalJobDevice*>(instance);
+    dev->isOpen = 0;
+    dev->link = iface;
+    dev->handle_guid = BASE_HANDLE;
+    dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    dev->IOpen=caHalJobDevice::Open;
+    dev->IClose=caHalJobDevice::Close;
+    dev->IWrite=caHalJobDevice::Write;
+    dev->IRead=caHalJobDevice::Read;
+    dev->IFlush=caHalJobDevice::Flush;
+    dev->IIoCtrl=caHalJobDevice::IoCtrl;
+    dev->IGetOpenFlag=caHalJobDevice::GetOpenFlag;
+    dev->IGetDeviceLog=caHalJobDevice::GetDeviceLog;
+    dev->ItoString=caHalJobDevice::toString;
+    dev->IIrqService1=caHalJobDevice::IrqService1;
+    dev->IIrqService2=caHalJobDevice::IrqService2;
+    dev->IIrqService3=caHalJobDevice::IrqService3;
+    dev->IIrqService4=caHalJobDevice::IrqService4;
+    dev->IIrqService5=caHalJobDevice::IrqService5;
+    dev->IIrqService6=caHalJobDevice::IrqService6;
+    dev->IIrqService7=caHalJobDevice::IrqService7;
+    dev->IIrqService8=caHalJobDevice::IrqService8;
 }
 
 u32 caHalJobDevice::Open(IDevice * instance,caIDeviceConfigure * /*setup*/, caDeviceHandle *port) {

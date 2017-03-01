@@ -21,30 +21,31 @@
 #include "halsystimerdevice.h"
 #include "memaux.h"
 
-caHalSysTimerDevice::caHalSysTimerDevice(hal_llc_sys_time *st, u32 mask) {
-    isOpen = 0;
-    link = st;
-    handle_guid = BASE_HANDLE;
-    mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    link->hll_lnk_obj = (void *) this;
-    signal_1 = signal_2 = 0;
-    IOpen = caHalSysTimerDevice::Open;
-    IClose = caHalSysTimerDevice::Close;
-    IWrite = caHalSysTimerDevice::Write;
-    IRead = caHalSysTimerDevice::Read;
-    IFlush = caHalSysTimerDevice::Flush;
-    IIoCtrl = caHalSysTimerDevice::IoCtrl;
-    IGetOpenFlag = caHalSysTimerDevice::GetOpenFlag;
-    IGetDeviceLog = caHalSysTimerDevice::GetDeviceLog;
-    ItoString = caHalSysTimerDevice::toString;
-    IIrqService1 = caHalSysTimerDevice::IrqService1;
-    IIrqService2 = caHalSysTimerDevice::IrqService2;
-    IIrqService3 = caHalSysTimerDevice::IrqService3;
-    IIrqService4 = caHalSysTimerDevice::IrqService4;
-    IIrqService5 = caHalSysTimerDevice::IrqService5;
-    IIrqService6 = caHalSysTimerDevice::IrqService6;
-    IIrqService7 = caHalSysTimerDevice::IrqService7;
-    IIrqService8 = caHalSysTimerDevice::IrqService8;
+void caHalSysTimerDevice::Init(IDevice * instance,hal_llc_sys_time *st, u32 mask) {
+    caHalSysTimerDevice* dev = static_cast<caHalSysTimerDevice*> (instance);
+    dev->isOpen = 0;
+    dev->link = st;
+    dev->handle_guid = BASE_HANDLE;
+    dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    dev->link->hll_lnk_obj = (void *) dev;
+    dev->signal_1 = dev->signal_2 = 0;
+    dev->IOpen = caHalSysTimerDevice::Open;
+    dev->IClose = caHalSysTimerDevice::Close;
+    dev->IWrite = caHalSysTimerDevice::Write;
+    dev->IRead = caHalSysTimerDevice::Read;
+    dev->IFlush = caHalSysTimerDevice::Flush;
+    dev->IIoCtrl = caHalSysTimerDevice::IoCtrl;
+    dev->IGetOpenFlag = caHalSysTimerDevice::GetOpenFlag;
+    dev->IGetDeviceLog = caHalSysTimerDevice::GetDeviceLog;
+    dev->ItoString = caHalSysTimerDevice::toString;
+    dev->IIrqService1 = caHalSysTimerDevice::IrqService1;
+    dev->IIrqService2 = caHalSysTimerDevice::IrqService2;
+    dev->IIrqService3 = caHalSysTimerDevice::IrqService3;
+    dev->IIrqService4 = caHalSysTimerDevice::IrqService4;
+    dev->IIrqService5 = caHalSysTimerDevice::IrqService5;
+    dev->IIrqService6 = caHalSysTimerDevice::IrqService6;
+    dev->IIrqService7 = caHalSysTimerDevice::IrqService7;
+    dev->IIrqService8 = caHalSysTimerDevice::IrqService8;
 }
 
 u32 caHalSysTimerDevice::Open(IDevice * instance, caIDeviceConfigure * setup,

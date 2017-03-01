@@ -21,30 +21,31 @@
 #include "hal.h"
 #include "halcomdevice.h"
 
-caHalComDevice::caHalComDevice(hal_llc_com_io *com, u32 mask) {
-    isOpen = 0;
-    signalRx = signalTx = 0;
-    link = com;
-    handle_guid = BASE_HANDLE;
-    mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    link->hll_lnk_obj = (void *) this;
-    IOpen=caHalComDevice::Open;
-    IClose=caHalComDevice::Close;
-    IWrite=caHalComDevice::Write;
-    IRead=caHalComDevice::Read;
-    IFlush=caHalComDevice::Flush;
-    IIoCtrl=caHalComDevice::IoCtrl;
-    IGetOpenFlag=caHalComDevice::GetOpenFlag;
-    IGetDeviceLog=caHalComDevice::GetDeviceLog;
-    ItoString=caHalComDevice::toString;
-    IIrqService1=caHalComDevice::IrqService1;
-    IIrqService2=caHalComDevice::IrqService2;
-    IIrqService3=caHalComDevice::IrqService3;
-    IIrqService4=caHalComDevice::IrqService4;
-    IIrqService5=caHalComDevice::IrqService5;
-    IIrqService6=caHalComDevice::IrqService6;
-    IIrqService7=caHalComDevice::IrqService7;
-    IIrqService8=caHalComDevice::IrqService8;
+void caHalComDevice::Init(IDevice * instance,hal_llc_com_io *com, u32 mask) {
+    caHalComDevice* dev=static_cast<caHalComDevice*>(instance);
+    dev->isOpen = 0;
+    dev->signalRx = dev->signalTx = 0;
+    dev->link = com;
+    dev->handle_guid = BASE_HANDLE;
+    dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    dev->link->hll_lnk_obj = (void *) dev;
+    dev->IOpen=caHalComDevice::Open;
+    dev->IClose=caHalComDevice::Close;
+    dev->IWrite=caHalComDevice::Write;
+    dev->IRead=caHalComDevice::Read;
+    dev->IFlush=caHalComDevice::Flush;
+    dev->IIoCtrl=caHalComDevice::IoCtrl;
+    dev->IGetOpenFlag=caHalComDevice::GetOpenFlag;
+    dev->IGetDeviceLog=caHalComDevice::GetDeviceLog;
+    dev->ItoString=caHalComDevice::toString;
+    dev->IIrqService1=caHalComDevice::IrqService1;
+    dev->IIrqService2=caHalComDevice::IrqService2;
+    dev->IIrqService3=caHalComDevice::IrqService3;
+    dev->IIrqService4=caHalComDevice::IrqService4;
+    dev->IIrqService5=caHalComDevice::IrqService5;
+    dev->IIrqService6=caHalComDevice::IrqService6;
+    dev->IIrqService7=caHalComDevice::IrqService7;
+    dev->IIrqService8=caHalComDevice::IrqService8;
 }
 
 u32 caHalComDevice::Open(IDevice * instance,caIDeviceConfigure * in,

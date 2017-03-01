@@ -22,28 +22,29 @@
 #include "halpipedevice.h"
 #include "memaux.h"
 
-caHalPipeDevice::caHalPipeDevice(hal_llc_mem_io *iface, u32 mask) {
-    isOpen = 0;
-    link = iface;
-    handle_guid = BASE_HANDLE;
-    mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    IOpen = caHalPipeDevice::Open;
-    IClose = caHalPipeDevice::Close;
-    IWrite = caHalPipeDevice::Write;
-    IRead = caHalPipeDevice::Read;
-    IFlush = caHalPipeDevice::Flush;
-    IIoCtrl = caHalPipeDevice::IoCtrl;
-    IGetOpenFlag = caHalPipeDevice::GetOpenFlag;
-    IGetDeviceLog = caHalPipeDevice::GetDeviceLog;
-    ItoString = caHalPipeDevice::toString;
-    IIrqService1 = caHalPipeDevice::IrqService1;
-    IIrqService2 = caHalPipeDevice::IrqService2;
-    IIrqService3 = caHalPipeDevice::IrqService3;
-    IIrqService4 = caHalPipeDevice::IrqService4;
-    IIrqService5 = caHalPipeDevice::IrqService5;
-    IIrqService6 = caHalPipeDevice::IrqService6;
-    IIrqService7 = caHalPipeDevice::IrqService7;
-    IIrqService8 = caHalPipeDevice::IrqService8;
+void caHalPipeDevice::Init(IDevice * instance,hal_llc_mem_io *iface, u32 mask) {
+    caHalPipeDevice* dev = static_cast<caHalPipeDevice*> (instance);
+    dev->isOpen = 0;
+    dev->link = iface;
+    dev->handle_guid = BASE_HANDLE;
+    dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
+    dev->IOpen = caHalPipeDevice::Open;
+    dev->IClose = caHalPipeDevice::Close;
+    dev->IWrite = caHalPipeDevice::Write;
+    dev->IRead = caHalPipeDevice::Read;
+    dev->IFlush = caHalPipeDevice::Flush;
+    dev->IIoCtrl = caHalPipeDevice::IoCtrl;
+    dev->IGetOpenFlag = caHalPipeDevice::GetOpenFlag;
+    dev->IGetDeviceLog = caHalPipeDevice::GetDeviceLog;
+    dev->ItoString = caHalPipeDevice::toString;
+    dev->IIrqService1 = caHalPipeDevice::IrqService1;
+    dev->IIrqService2 = caHalPipeDevice::IrqService2;
+    dev->IIrqService3 = caHalPipeDevice::IrqService3;
+    dev->IIrqService4 = caHalPipeDevice::IrqService4;
+    dev->IIrqService5 = caHalPipeDevice::IrqService5;
+    dev->IIrqService6 = caHalPipeDevice::IrqService6;
+    dev->IIrqService7 = caHalPipeDevice::IrqService7;
+    dev->IIrqService8 = caHalPipeDevice::IrqService8;
 }
 
 caPipeDeviceDescriptor * caHalPipeDevice::FindDescriptor(caPipeDeviceConfigure* setup) {
