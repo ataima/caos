@@ -148,7 +148,7 @@ qemu-deb:
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
 		
-jtag:
+jtag:   all
 	@openocd -f ./raspi2.cfg &
 	@sleep 1
 	@echo "file ./$(BUILDIR)/caOS.elf" >gdb.conf
@@ -167,7 +167,12 @@ jtag:
 	@echo "monitor targets rpi2.cpu0" >> gdb.conf
 	@echo "load" >> gdb.conf
 	@echo "monitor targets" >> gdb.conf
+	@echo "b caInterruptRequest::Undefined" >> gdb.conf
+	@echo "b caInterruptRequest::Software" >> gdb.conf
+	@echo "b caInterruptRequest::Abort" >> gdb.conf
+	@echo "b caInterruptRequest::IRQ" >> gdb.conf
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
+	@echo  $(EH)  $(C_RESTORE)
 	@$(CROSS_GDB) -x gdb.conf
 	@killall openocd
 	@echo jtag ...done.

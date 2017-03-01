@@ -179,7 +179,8 @@ void caHalComDevice_test_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com1);
+    caHalComDevice comDev;
+    caHalComDevice::Init(&comDev,& hal_llc_com1, ioCtrlRequest::Com1);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -214,7 +215,8 @@ void caHalComDevice_test_class::test2(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev;
+    caHalComDevice::Init(&comDev,& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -264,7 +266,8 @@ void caHalComDevice_test_class::test3(void) {
     _STOP();
     param_reset();
     u32 rd;
-    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev;
+    caHalComDevice::Init(&comDev,& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
@@ -326,7 +329,8 @@ void caHalComDevice_test_class::test4(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalComDevice comDev(& hal_llc_com1, ioCtrlRequest::Com5);
+    caHalComDevice comDev;
+    caHalComDevice::Init(&comDev,& hal_llc_com1, ioCtrlRequest::Com5);
     caComDeviceConfigure setup;
     setup.speed = 12345678;
     setup.stop = 11223344;
