@@ -1,8 +1,12 @@
-#!/bin/sh 
+#!/bin/bash -x
 
-VERSION=$(ls  $HOME/baremetal  | grep gcc-arm-none-eabi- | sed -e 's/gcc-arm-none-eabi-*//g')
-CROSSGCC=$HOME/baremetal/gcc-arm-none-eabi-$VERSION
+PWD=$(pwd)
+NAME=$(cat gcc-cross/conf.mk | grep "CROSS_GCC_NAME:=" | sed -e 's/CROSS_GCC_NAME:=//g')
 
-echo "GCC VERSION = $VERSION"
+CROSSGCC=$PWD/$NAME
+
 echo "GCC PATH    = $CROSSGCC"
-export PATH=$CROSSGCC/bin:$CROSSGCC/arm-none-eabi/bin:/usr/bin:/bin
+CROSSPLATFORM=$(ls $CROSSGCC)
+ALL_BIN_PATH=""
+for i in $CROSSPLATFORM ; do ALL_BIN_PATH+=$CROSSGCC/$i/bin:;done
+export PATH=$ALL_BIN_PATH/usr/bin:/bin

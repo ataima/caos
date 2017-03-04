@@ -7,7 +7,7 @@ MPFR:=mpfr-3.1.5.tar.xz
 MPC:=mpc-1.0.3.tar.gz
 
 #SET DESTINATION PATH
-CROSS_GCC_NAME:=../gcc-self-build
+CROSS_GCC_NAME:=cross-gcc-self-build
 
 #SET TARGET TYPE
 #TARGET:=i686-elf

@@ -16,7 +16,7 @@ B_CROSS_GCC:=$(V_CROSS_GCC)-build
 
 
 ROOT:=$(shell pwd)
-DEST_PATH:=$(ROOT)/$(CROSS_GCC_NAME)/$(TARGET)
+DEST_PATH:=$(ROOT)/../$(CROSS_GCC_NAME)/$(TARGET)
 
 test:
 	@echo "TEST MAKE VAR"

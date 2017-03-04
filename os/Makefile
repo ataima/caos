@@ -1,19 +1,5 @@
 include rules.mk
-V=$(SILENT)
 
-HAL:=src/hal/do.mk
-ifeq ($(HARDWARE),RASPI2)
-    HW:=src/hw/rasp2/do.mk
-    TEST:=test/rasp2/do.mk
-endif
-ifeq ($(HARDWARE),686)
-    HW:=src/hw/686/do.mk
-    TEST:=test/686/do.mk
-endif
-ifeq ($(HARDWARE),SIMULA)
-    HW:=src/hw/simula/do.mk
-    TEST:=test/simula/do.mk
-endif
 
 
 default: all
@@ -24,109 +10,98 @@ doversion :
 	@echo $(EH) $(C_RESTORE)
 
 
+
+define dump_var    
+    @echo  $(EH) $(C_YELLOW)"$(shell printf "%-30s %s = " $1)"$(C_WHITE)$2$(C_RESET)
+endef
+
 info:	
 	@echo $(SEP)
-	@make $(V) -f $(HAL) info 
+	$(call dump_var,"Current HARDWARE","$(HARDWARE)")
+	$(call dump_var,"Current TOOLS CHAIN","$(ARMGNU)")
+	$(call dump_var,"Current TOOLS CHAIN PATH","$(ARMPATH)")
+	$(call dump_var,"Current TOOLS CHAIN CC","$(CROSS_CC)")
+	$(call dump_var,"Current TOOLS CHAIN CPP","$(CROSS_CPP)") 
+	$(call dump_var,"Current TOOLS CHAIN AS","$(CROSS_AS)") 
+	$(call dump_var,"Current TOOLS CHAIN LD","$(CROSS_LD)")
+	$(call dump_var,"Current TOOLS CHAIN OBJDUMP","$(CROSS_OBJDUMP)") 
+	$(call dump_var,"Current TOOLS CHAIN OBJCOPY","$(CROSS_OBJCOPY)")
+	$(call dump_var,"Current TOOLS CHAIN LD","$(CROSS_GDB)")
+	$(call dump_var,"Current Debug level","$(DBG)")
+	$(call dump_var,"Current Options for depend  files","$(DEP_OPTS)")
+	$(call dump_var,"Current Options for C(*.c) files","$(C_OPTS)")
+	$(call dump_var,"Current Options for CPP(*.cpp) files","$(CPP_OPTS)")
+	$(call dump_var,"Current Options for ASM(*.s) files","$(ASM_OPTS)")
+	$(call dump_var,"Current Options for LINKER files","$(LK_OPTS)")
+	$(call dump_var,"Current Download Program","$(DWLOAD)")
+	$(call dump_var,"Current Terminal Program","$(PUTTY)")
+	$(call dump_var,"MAIN ROOT","$(ROOT_DIR)")
+	$(call dump_var,"OUTPUT BUILD DIR","$(BUILD_DIR)")
+	$(call dump_var,"All objs","$(OBJS)")
 	@echo $(SEP)
-	@make $(V) -f $(HW) info 
+	@$(MAKE) $(V) -C $(HAL) info 
 	@echo $(SEP)
-	@make $(V) -f $(TEST) info 
-	@echo $(SEP)
+
+	
 	
 
 depend:	
 	@echo $(SEP)
-	@make $(V) -f $(HAL) depend 
+	@$(MAKE) $(V) -C $(HAL) depend 
 	@echo $(SEP)
-	@make $(V) -f $(HW) depend
-	@echo $(SEP)
-	@make $(V) -f $(TEST) depend
-	@echo $(SEP)
+
 	
 
 
 
 all_obj:		
 	@echo $(SEP)
-	@make $(V) -f $(HAL) all 
-	@echo $(SEP)
-	@make $(V) -f $(HW) all
-	@echo $(SEP)
-	@make $(V) -f $(TEST) all
-	@echo $(SEP)
+	@$(MAKE) $(V) -C $(HAL) all 	
 	
-
-define find_objs =
-ALLOBJS:= $(wildcard $1/*.o)
-ALLOBJS+= $(wildcard $1/hw/*.o)	
-endef
-
-define width_s40
-    $(shell printf "%-35s %s" "$1")
-endef
-	
-define add_msg
-    @echo $(EH) $(C_GREEN)"[$1] :" $(C_WHITE)"$(call width_s40, $2)"$(C_RED)$2$(C_RESET) >/dev/stderr
-endef
 	
 	
 link_file: all_obj
-	$(eval $(call find_objs,$(BUILDIR)/$(OBJ_OUT)))
-	@$(CROSS_LD)  $(ALLOBJS) $(LK_OPTS) -o $(BUILDIR)/caOS.elf > $(BUILDIR)/caOS.map
-	$(call add_msg,"LINKER ",$(BUILDIR)/caOS.elf)
+	 @$(MAKE) $(V) -C $(HAL) link_file
 	
 	
-objdump_file:
-	@$(CROSS_OBJDUMP) -D $(BUILDIR)/caOS.elf -S > $(BUILDIR)/caOS.list
-	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.list)
-	@$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O ihex $(BUILDIR)/caOS.hex
-	$(call add_msg,"OBJCOPY",$(BUILDIR)/caOS.hex)
-	@$(CROSS_OBJCOPY) $(BUILDIR)/caOS.elf -O binary $(BUILDIR)/caOS.bin
-	$(call add_msg,"OBJCOPY",$(BUILDIR)/caOS.bin)
-	@cp $(BUILDIR)/caOS.bin kernel7.img
-	$(call add_msg,"OBJCOPY",kernel7.img)
-	@$(CROSS_OBJDUMP) $(OBJD_CPU) -b ihex -D $(BUILDIR)/caOS.hex > $(BUILDIR)/caOS.s
-	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.s)
-	@$(CROSS_OBJCOPY) --only-keep-debug $(BUILDIR)/caOS.elf $(BUILDIR)/caOS.syms
-	$(call add_msg,"OBJDUMP",$(BUILDIR)/caOS.syms)
 
 dwload_1: kernel7.img
-	$(call add_msg,"DOWNLOAD",$(BUILDIR)/caOS.hex)
-	@$(DWLOAD) $(BUILDIR)/caOS.hex
+	$(call add_msg,"DOWNLOAD",$(BUILD_DIR)/caOS.hex)
+	@$(DWLOAD) $(BUILD_DIR)/caOS.hex
 
 
 dwload: dwload_1 		
 	@echo $(SEP)
 
 
-kernel7.img: link_file objdump_file
+kernel7.img: link_file
+	@$(MAKE) $(V) -C $(HAL) kernel7.img
 	
 
 asm:		
 	@echo $(SEP)
-	@make $(V) -f $(HAL) asm 
+	@$(MAKE) $(V) -C $(HAL) asm 
 	@echo $(SEP)
-	@make $(V) -f $(HW) asm	
+	@$(MAKE) $(V) -C $(HW) asm	
 	@echo $(SEP)
-	@make $(V) -f $(TEST) asm
-	@echo $(SEP)
+
 	
 clean:	
 	@echo $(SEP)	
-	@rm -rf  $(BUILDIR)/$(OBJ_OUT)
-	@rm -rf  $(BUILDIR)
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	@rm -f $(BUILDIR)/*.bin
-	@rm -f $(BUILDIR)/*.hex
-	@rm -f $(BUILDIR)/*.elf
-	@rm -f $(BUILDIR)/*.lst
-	@rm -f $(BUILDIR)/*.list
-	@rm -f $(BUILDIR)/*.img
-	@rm -f $(BUILDIR)/*.s
+	@rm -rf  $(BUILD_DIR)/$(OBJ_OUT)
+	@rm -rf  $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)
+	@rm -f $(BUILD_DIR)/*.bin
+	@rm -f $(BUILD_DIR)/*.hex
+	@rm -f $(BUILD_DIR)/*.elf
+	@rm -f $(BUILD_DIR)/*.lst
+	@rm -f $(BUILD_DIR)/*.list
+	@rm -f $(BUILD_DIR)/*.img
+	@rm -f $(BUILD_DIR)/*.s
 	@rm -f  trace-*
 	@rm -f kernel7.img
-	@echo $(SEP)
+
 	
 
 
@@ -143,7 +118,7 @@ qemu-deb:
 	@echo $(SEP)	
 	@qemu-system-arm -M raspi2 -cpu bcm2836 -m 1G -s  -kernel kernel7.img  &
 	@echo "target remote :1234" >gdb.conf
-	@echo "file ./$(BUILDIR)/caOS.elf" >>gdb.conf
+	@echo "file ./$(BUILD_DIR)/caOS.elf" >>gdb.conf
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
@@ -151,7 +126,7 @@ qemu-deb:
 jtag:   all
 	@openocd -f ./raspi2.cfg &
 	@sleep 1
-	@echo "file ./$(BUILDIR)/caOS.elf" >gdb.conf
+	@echo "file ./$(BUILD_DIR)/caOS.elf" >gdb.conf
 	@echo "target remote :3333" >>gdb.conf
 	@echo "monitor halt" >>gdb.conf
 	@echo "monitor reset_config srst_only" >>gdb.conf
@@ -182,7 +157,7 @@ jtag:   all
 sim:
 	@echo $(SEP)
 	echo "target sim" >gdb.conf
-	echo "file $(BUILDIR)/caos.elf" >>gdb.conf
+	echo "file $(BUILD_DIR)/caos.elf" >>gdb.conf
 	@echo $(EH)  $(C_RED )[GDB]$C_RESTORE
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
@@ -190,10 +165,9 @@ sim:
 	
 		
 distclean: clean 
-	@echo $(SEP)
-	@rm -rf $(BUILDIR)/$(DEPEND)
-	@rm -rf $(BUILDIR)
-	@echo $(SEP)
+	@rm -rf $(BUILD_DIR)/$(DEPEND)
+	@rm -rf $(BUILD_DIR)
+
 
 
 
