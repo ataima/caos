@@ -5,14 +5,15 @@ include rules.mk
 default: all
 
 doversion :
+	@echo $(SEP)
 	$(eval BUILD_NUMBER=`./version.sh $(CAOS_VERSION_1) $(CAOS_VERSION_2) $(CAOS_VERSION_3)`)
-	@echo $(EH)  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED)$(BUILD_NUMBER) $(C_RESTORE)
-	@echo $(EH) $(C_RESTORE)
+	@echo $(EH)  $(C_GREEN)[VERSION] $(C_WHITE)= Vers. $(C_MAGENTA)$(CAOS_VERSION_1)$(C_WHITE)"."$(C_YELLOW)$(CAOS_VERSION_2)$(C_WHITE)"."$(C_PURPLE)$(CAOS_VERSION_3) $(C_WHITE)Build Number $(C_RED_LIGHT)$(BUILD_NUMBER) $(C_RESET)
+	@echo $(EH) $(C_RESET)
 
 
 
 define dump_var    
-    @echo  $(EH) $(C_YELLOW)"$(shell printf "%-30s %s = " $1)"$(C_WHITE)$2$(C_RESET)
+    @echo  $(EH) $(C_YELLOW) '$(shell printf "%-30s %s = " $1)' $(C_WHITE) $2 $(C_RESET)
 endef
 
 info:	
@@ -67,7 +68,7 @@ link_file: all_obj
 
 dwload_1: kernel7.img
 	$(call add_msg,"DOWNLOAD",$(BUILD_DIR)/caOS.hex)
-	@$(DWLOAD) $(BUILD_DIR)/caOS.hex
+	$(DWLOAD) $(BUILD_DIR)/caOS.hex
 
 
 dwload: dwload_1 		
@@ -75,7 +76,7 @@ dwload: dwload_1
 
 
 kernel7.img: link_file
-	@$(MAKE) $(V) -C $(HAL) kernel7.img
+	
 	
 
 asm:		
@@ -119,7 +120,7 @@ qemu-deb:
 	@qemu-system-arm -M raspi2 -cpu bcm2836 -m 1G -s  -kernel kernel7.img  &
 	@echo "target remote :1234" >gdb.conf
 	@echo "file ./$(BUILD_DIR)/caOS.elf" >>gdb.conf
-	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
+	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
 		
@@ -146,8 +147,8 @@ jtag:   all
 	@echo "b caInterruptRequest::Software" >> gdb.conf
 	@echo "b caInterruptRequest::Abort" >> gdb.conf
 	@echo "b caInterruptRequest::IRQ" >> gdb.conf
-	@echo  $(EH)  $(C_RED )[GDB] $(C_RESTORE)
-	@echo  $(EH)  $(C_RESTORE)
+	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
+	@echo  $(EH)  $(C_RESET)
 	@$(CROSS_GDB) -x gdb.conf
 	@killall openocd
 	@echo jtag ...done.
@@ -158,7 +159,7 @@ sim:
 	@echo $(SEP)
 	echo "target sim" >gdb.conf
 	echo "file $(BUILD_DIR)/caos.elf" >>gdb.conf
-	@echo $(EH)  $(C_RED )[GDB]$C_RESTORE
+	@echo $(EH)  $(C_RED )[GDB]$C_RESET
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
 		

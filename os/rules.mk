@@ -1,4 +1,4 @@
-export
+
 #SELECT CURRENT HARDWARE RASPI2  686   SIMULA
 # ===========================================	
  HARDWARE=RASPI2
@@ -35,14 +35,13 @@ I_TAB="\"\t\""
  CAOS_VERSION_2:= 00
  CAOS_VERSION_3:= 023
  BUILD_NUMBER:=
-
 #CUSTOMIZE ENVIROMENT FROM SELECTED HARDWARE
 #CASE 1: RASPBERRY-2
 ifeq ($(HARDWARE),RASPI2)	
 	#CROSS TOOLS 
 	 ARMGNU:=arm-none-eabi
 	# CURRENT DEBUG LEVEL
-	 DBG:=  -O0 -g
+	 DBG:=  -O2
 	# OBJDUMP CPU SPEC
 	 OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS
@@ -163,3 +162,7 @@ ifeq ($(HARDWARE),SIMULA)
  TEST:=test/simula
 endif
  V=$(SILENT)
+ ######################
+ # EXPORT ALL VARIABLE
+ ######################
+ export
