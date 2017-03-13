@@ -124,12 +124,12 @@ u32 caMiniUart::Dump(caStringStream<s8> * ptr_ss) {
 }
 
 u32 caMiniUart::Configure(u32 speed, u32 stop, u32 parity, u32 data) {
-    u32 res = deviceError::error_hal_configure;
+    u32 res =1;
     if (caMiniUart::Init(speed, stop, parity, data)) {
         caMiniUart::ClearFifos();
         caMiniUart::Enable(0, 0);
         caMiniUart::Enable(1, 1);
-        res = deviceError::no_error;
+        res =0;
     }
     return res;
 }

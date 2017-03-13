@@ -33,7 +33,7 @@ I_TAB="\"\t\""
  OS=$(shell uname -s)
  CAOS_VERSION_1:= 1
  CAOS_VERSION_2:= 00
- CAOS_VERSION_3:= 023
+ CAOS_VERSION_3:= 024
  BUILD_NUMBER:=
 #CUSTOMIZE ENVIROMENT FROM SELECTED HARDWARE
 #CASE 1: RASPBERRY-2
@@ -41,7 +41,7 @@ ifeq ($(HARDWARE),RASPI2)
 	#CROSS TOOLS 
 	 ARMGNU:=arm-none-eabi
 	# CURRENT DEBUG LEVEL
-	 DBG:=  -O2
+	 DBG:= -O2
 	# OBJDUMP CPU SPEC
 	 OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS
@@ -54,7 +54,7 @@ ifeq ($(HARDWARE),RASPI2)
 	 LK_OPTS= -M -T $(ROOT_DIR)/src/hw/rasp2/ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN
 	# ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
-	 ARMPATH:=
+	 ARMPATH:=$(shell pwd)/../cross-gcc-self-build/$(ARMGNU)/bin/
 	# CROSS TOOOL PROGRAMS
 	 CROSS_CC:=$(ARMPATH)$(ARMGNU)-gcc 
 	 CROSS_CPP:=$(ARMPATH)$(ARMGNU)-g++ 

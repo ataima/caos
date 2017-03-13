@@ -342,6 +342,12 @@ public:
 
     static inline void WaitForInterrupt(void) {
         asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
     }
 
     static inline void DisableAll(void) {

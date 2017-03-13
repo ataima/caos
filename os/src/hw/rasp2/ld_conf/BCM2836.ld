@@ -41,6 +41,8 @@ SECTIONS
 	{
         _text = .;
         KEEP(*(vectors))
+        *(.sec_start)
+        *(.sec_start.*)
         *(.text)
         *(.text.*)
         *(.rodata)

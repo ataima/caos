@@ -106,9 +106,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -116,19 +115,17 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/devicehandle.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hal</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -136,9 +133,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -146,9 +142,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -156,9 +151,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -166,9 +160,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -176,9 +169,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -186,9 +178,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -196,29 +187,26 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/kdebug.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/memaux.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -226,9 +214,8 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -236,38 +223,35 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
+            <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
             <pElem>src/hal</pElem>
-            <pElem>.</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/stub_gdb.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hal</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hal/syslog.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hal</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hal</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -275,10 +259,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -286,21 +269,19 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hw/rasp2/gpio.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>inc/hw/rasp2</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -309,9 +290,8 @@
           <incDir>
             <pElem>inc/hal</pElem>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -319,10 +299,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -330,20 +309,18 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hw/rasp2/interrupt.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -351,10 +328,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -362,10 +338,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -373,18 +348,17 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="src/hw/rasp2/softreq.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="1">
           <incDir>
+            <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -392,10 +366,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hal</pElem>
-            <pElem>src/hw/rasp2</pElem>
-            <pElem>inc/hw/rasp2</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>inc/hw/rasp2</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -403,10 +376,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -414,10 +386,9 @@
         <ccTool flags="1">
           <incDir>
             <pElem>inc/hw/rasp2</pElem>
-            <pElem>src/hw/rasp2</pElem>
             <pElem>inc/hal</pElem>
             <pElem>inc</pElem>
-            <pElem>.</pElem>
+            <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>
       </item>

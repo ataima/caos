@@ -41,7 +41,7 @@
 // CLOK FOR SYSTEM TIMER USUALLY 1Mhz
 #define SYS_CLOCK_TIMER 1000000
 // SYSTEM TIMER FOR SCHEDULER
-#define SYS_TIMER_TICK  5000
+#define SYS_TIMER_TICK  1000
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
 // soft request interrupt true or simulated
@@ -73,7 +73,7 @@
 
 
 // check before switch the task the validity of address to jump and size of stack
-#define DEBUG_CHECK_TASK        1  
+#define DEBUG_CHECK_TASK        1
 //
 #define DEBUG_CHECK_SCHEDULER   0
 // DUMP REQUEST OF SOFTWARE INTERRUPT

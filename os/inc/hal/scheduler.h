@@ -60,26 +60,26 @@ typedef enum tag_ca_thread_status {
 } caJobStatus;
 
 typedef struct tag_ca_thread_context {
-    volatile u32 pcb[32];
+    u32 pcb[32];
     u32 thid;
     u32 index; //index over taskList array
     u32 stack_start;
     u32 stack_end;
     caJobMode mode; // th mode
     caJobPriority priority; // th pripority
-    volatile u32 cur_prio; // temporary priority from priority to lowest 
-    volatile caJobStatus status; // th status
-    volatile u32 count;
-    volatile u32 sleep;
-    volatile u32 time;
-    volatile u32 result;
-    volatile u32 nswitch;
+     u32 cur_prio; // temporary priority from priority to lowest 
+     caJobStatus status; // th status
+     u32 count;
+     u32 sleep;
+     u32 time;
+     u32 result;
+     u32 nswitch;    
     char name[64];
 } caThreadContext;
 
-typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
+typedef caThreadContext * (*ptrGetNextContext)( caThreadContext *current);
 
-inline bool less(caThreadContext* a, caThreadContext* b) {
+inline bool less( caThreadContext* a,  caThreadContext* b) {
     // TEST true SWAP TARGET
     if (a->cur_prio == b->cur_prio)
         return (a->nswitch / a->priority) > (b->nswitch / b->priority);
@@ -89,7 +89,7 @@ inline bool less(caThreadContext* a, caThreadContext* b) {
 
 typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
 
-#define TH_MIN_STACK_BLK       4096
+#define TH_MIN_STACK_BLK       0x8000
 
 
 
@@ -97,20 +97,20 @@ typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
 
 class caNextTaskManager {
 private:
-    static caArray<caThreadContext *> table;
+    static caArray< caThreadContext *> table;
     static u32 cur_index;
 public:
-    static bool Init(caThreadContext ** ebuff, s_t max_task);
+    static bool Init( caThreadContext ** ebuff, s_t max_task);
     static bool Detach(void);
     static bool AddTask(caThreadContext *ctx);
     static bool RemoveTask(s_t idx);
-    static caThreadContext * RoundRobinNextContext(caThreadContext *current);
-    static caThreadContext * PriorityNextContext(caThreadContext *current);
+    static caThreadContext * RoundRobinNextContext( caThreadContext *current);
+    static caThreadContext * PriorityNextContext( caThreadContext *current);
     static bool IsValidContext(u32 thIdx);
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
     static bool ChangePriority(s_t thIdx, caJobPriority newPrio);
-
+ 
     static inline s_t Size(void) {
         return table.Size();
     }
@@ -129,29 +129,33 @@ class caScheduler {
 private:
 
     class caThread {
+
     public:
 
+        
         static u32 CreateThread(const char *name, caJobMode mode,
                 caJobPriority p, thFunc func,
                 u32 par1, u32 par2, u32 stack);
 
         static void LaunchThread(thFunc f, u32 p1, u32 p2);
 
-        static void Dump(caStringStream<s8> & ss, caThreadContext *ctx);
+        static void Dump(caStringStream<s8> & ss,  caThreadContext *ctx);
+        static void DumpPcb(caStringStream<s8> & ss,   caThreadContext *ctx);
 
     };
 
 private:
+
     static caNextTaskManager mng;
     static ptrGetNextContext getnextcontext;
     static caThreadContext *taskList[MAX_TASK];
     static caThreadContext main_ctx;
     static caThreadContext *current_task;
+    static u32 switch_time;
 #if DEBUG_CHECK_TASK    
-    static void CheckValid(u32 p);
+    static void CheckValid( caThreadContext *ctx,u32 p);
     static void Panic(void);
 #endif        
-    static void SwitchContext(void);
     static void EndTask(u32 result);
     static u32 StartTask(void);
     //static u32 IoCtrl(caDevicePort *port, caSchedulerDeviceCtrl *in);
@@ -162,14 +166,14 @@ public:
 
     static void GetNextContext(void);
 
-    static inline caThreadContext *GetCurrentContext(void) {
+    static inline  caThreadContext *GetCurrentContext(void) {
         return current_task;
     }
 
     static u32 GetCurrentTaskId(void);
     static u32 SetSleepMode(u32 tick, u32 thIdx);
     static u32 Dump(caStringStream<s8> & ss);
-
+    static u32 DumpPcb(caStringStream<s8> & ss);
     static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio) {
         return mng.ChangePriority(thIdx, newPrio);
     }
@@ -182,6 +186,10 @@ public:
         mng.WakeUp(thid);
     }
 
+    static inline u32 GetSwitchTime(void){
+        return switch_time;
+    }    
+    
     static inline bool IsValidContext(u32 thid) {
         return mng.IsValidContext(thid);
     }

@@ -10,10 +10,11 @@ V_CROSS_GCC:=$(subst .tar.gz,,$(CROSS_GCC))
 V_GMP:=$(subst .tar.bz2,,$(GMP))
 V_MPFR:=$(subst .tar.xz,,$(MPFR))
 V_MPC:=$(subst .tar.gz,,$(MPC))
+V_GDB:=$(subst .tar.gz,,$(GDB))
 
 B_BINUTILS:=$(V_BINUTILS)-build
 B_CROSS_GCC:=$(V_CROSS_GCC)-build
-
+B_GDB:=$(V_GDB)-build
 
 ROOT:=$(shell pwd)
 DEST_PATH:=$(ROOT)/../$(CROSS_GCC_NAME)/$(TARGET)
@@ -26,23 +27,34 @@ test:
 	@echo "gmp pack:"$(GMP)
 	@echo "mpfr pack:"$(MPFR)
 	@echo "mpc pack:"$(MPC)
+	@echo "gdb pack:"$(GDB)
 	@echo "binutils version:"$(V_BINUTILS)
 	@echo "gcc version: "$(V_CROSS_GCC)
 	@echo "gmp version:"$(V_GMP)
 	@echo "mpfr version:"$(V_MPFR)
 	@echo "mpc version:"$(V_MPC)
+	@echo "gdb version:"$(V_GDB)
 	@echo "build binutils:"$(B_BINUTILS)
 	@echo "build gcc:"$(B_CROSS_GCC)
+	@echo "build gcc:"$(B_GDB)
 
-clean_all : download_clean expand_clean binutils_clean gcc_clean
+clean_all : download_clean expand_clean binutils_clean gcc_clean gdb_clean
 
 download_clean:
-	@rm $(BINUTILS)
-	@rm $(CROSS_GCC)
-	@rm $(GMP)
-	@rm $(MPFR)
-	@rm $(MPC)
-
+	@rm -f  $(BINUTILS)
+	@rm -f  $(BINUTILS).*
+	@rm -f  $(CROSS_GCC)
+	@rm -f  $(CROSS_GCC).*
+	@rm -f  $(GMP)
+	@rm -f  $(GMP).*
+	@rm -f  $(MPFR)
+	@rm -f  $(MPFR).*
+	@rm -f  $(MPC)
+	@rm -f  $(MPC).*
+	@rm -f  $(GDB)
+	@rm -f  $(GDB).*
+	
+	
 download_binutils:
 	@echo "get binutils ("$(BINUTILS)")"
 	@wget ftp://ftp.gnu.org/gnu/binutils/$(BINUTILS)
@@ -68,15 +80,22 @@ download_mpc:
 	@wget ftp://ftp.gnu.org/gnu/mpc/$(MPC)	
 	@wget ftp://ftp.gnu.org/gnu/mpc/$(MPC).sig	
 
-download:download_binutils  download_gcc download_gmp download_mpfr download_mpc
+download_gdb:
+	@echo "get gdb ("$(GDB)")"
+	@wget http://ftp.gnu.org/gnu/gdb/$(GDB)	
+	@wget http://ftp.gnu.org/gnu/gdb/$(GDB).sig	
+
+
+download:download_binutils  download_gcc download_gmp download_mpfr download_mpc download_gdb
 	@echo "done..."
 	
 expand_clean:
-	@rm -rf $(V_BINUTILS)
-	@rm -rf $(V_CROSS_GCC)
-	@rm -rf $(V_GMP)
-	@rm -rf $(V_MPFR)
-	@rm -rf $(V_MPC)
+	@rm -f  -rf $(V_BINUTILS)
+	@rm -f  -rf $(V_CROSS_GCC)
+	@rm -f  -rf $(V_GMP)
+	@rm -f  -rf $(V_MPFR)
+	@rm -f  -rf $(V_MPC)
+	@rm -f  -rf $(V_GDB)
 	
 	
 expand_binutils:
@@ -99,13 +118,17 @@ expand_mpc:
 	@tar -xvf $(MPC)
 	@echo "mpc:"$(V_MPC)
 
-expand:	expand_binutils expand_gcc expand_gmp expand_mpfr expand_mpc
+expand_gdb:
+	@tar -xvf $(GDB)
+	@echo "gdb:"$(V_GDB)
+	
+expand:	expand_binutils expand_gcc expand_gmp expand_mpfr expand_mpc expand_gdb
 	@echo "done ...."
 	
 	
 binutils_clean:
 	@echo "REMOVE OLD BINUTILS BUILD"
-	@rm -rfv $(ROOT)/$(B_BINUTILS)
+	@rm -f  -rfv $(ROOT)/$(B_BINUTILS)
 	@echo "done.."	
   
 binutils_configure: binutils_clean
@@ -119,7 +142,7 @@ binutils_build:
 
 binutils_install:
 	@cd $(ROOT)/$(B_BINUTILS) && make install
-	@echo "have to do: export PATH:=$(DEST_PATH): <char dollar>PATH"
+	@echo "have to do: export PATH=$(DEST_PATH):/usr/bin:/bin"
 	@echo " and make with command phase2"
 
 
@@ -162,24 +185,47 @@ gcc_rebuild: gcc_clean gcc_configure gcc_build
 gcc_install:
 	@cd $(ROOT)/$(B_CROSS_GCC) && make install-gcc && make install-target-libgcc
 
+
+gdb_clean:
+	@echo "REMOVE OLD GDB BUILD"
+	rm -rfv $(ROOT)/$(B_GDB)
+
+
+gdb_configure:
+	@mkdir $(ROOT)/$(B_GDB)
+	@cd $(ROOT)/$(B_GDB) && \
+	../$(V_GDB)/configure --prefix=$(DEST_PATH) --target=$(TARGET) --enable-languages=c,c++ --disable-nls --without-headers 
+
+
+gdb_build:
+	nice make -C $(B_GDB) -j8 all
+	
+	
+gdb_install:
+	@cd $(ROOT)/$(B_GDB) && make install
+	
+	
+gdb_rebuild: gdb_clean gdb_configure gdb_build 
+	
+	
 phase1: 	download expand binutils_rebuild
 	@echo "END PHASE 1"
-	@echo "have to do: sudo make binutils_install"
+	@echo "have to do: ( opt sudo ) make binutils_install"
 	@echo " and export PATH:=$(DEST_PATH): <char dollar>PATH"
 	@echo " and redo make with command phase2"
 
 
 phase1_2:  expand binutils_rebuild
 	@echo "END PHASE 1"
-	@echo "have to do: sudo make binutils_install"
+	@echo "have to do: ( opt sudo ) make binutils_install"
 	@echo " and export PATH:=$(DEST_PATH): <char dollar>PATH"
 	@echo " and set on conf.mk file the new CROSS target , ex arm-none-eabihf"	
 	@echo " and redo make with command phase2"
 
 
-phase2: gcc_rebuild
+phase2: gcc_rebuild gdb_rebuild
 	@echo "END PHASE 2"
-	@ echo "have to do: sudo make gcc_install"
+	@ echo "have to do: ( opt sudo ) make gcc_install gdb_install"
 	@ echo " and redo make with command phase3"
 	
 phase3: clean_all

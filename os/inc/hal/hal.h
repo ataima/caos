@@ -25,9 +25,8 @@
 #include "caos_c_types.h"
 #include "stream.h"
 #include "devicehandle.h"
-#include "idevice.h"
 #include "scheduler.h"
-
+#include "idevice.h"
 
 
 /* Hardware abstract layer functor   */
@@ -73,6 +72,8 @@ typedef struct tag_hal_llc_scheduler_io {
     const abstract_functor_bool_void_func hll_lock;
     const abstract_functor_bool_void_func hll_unlock;
     const abstract_functor_void_func hll_req_scheduler; // call software req cpu dependent
+    const abstract_functor_void_func hll_start_scheduler;
+    const abstract_functor_void_func hll_stop_scheduler;
 } hal_llc_scheduler_io;
 
 
@@ -112,6 +113,7 @@ typedef struct tag_hal_llc_sys_time {
     const abstract_functor_int_void_func hll_hour;
     const abstract_functor_int_void_func hll_day;
     const abstract_functor_int_4_int_func hll_settime;
+    const abstract_functor_int_void_func hll_free_counter;
     const abstract_functor_spec_dump hll_dump;
     const abstract_functor_int_int_func hll_to_tick;
     const abstract_functor_int_void_func hll_start;

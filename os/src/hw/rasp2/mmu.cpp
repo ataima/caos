@@ -25,7 +25,6 @@
 #include "cache.h"
 #include "mmu.h"
 
-#include "idevice.h"
 #include "stream.h"
 #include "systimer.h"
 

@@ -42,18 +42,20 @@ void caIrqCtrl::Init(void) {
 
 bool caIrqCtrl::LockSwitchContext() {
     bool res = false;
-    if (Lock.Get() == LOCK_FREE && Lock.Lock() == 1) {
-        //Dbg::Put("Locked ! : ",Lock.Get());
-        res = true;
+    if (Lock.Get() == LOCK_FREE) {
+        if (Lock.Lock() == 1) {
+            res = true;
+        }
     }
     return res;
 }
 
 bool caIrqCtrl::UnLockSwitchContext() {
     bool res = false;
-    if (Lock.Get() == LOCK_V && Lock.UnLock() == 1) {
-        //Dbg::Put("UnLocked ! : ",Lock.Get());
-        res = true;
+    if (Lock.Get() == LOCK_V) {
+        if (Lock.UnLock() == 1) {
+            res = true;
+        }
     }
     return res;
 }
@@ -64,17 +66,18 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
     system_irq_control(irq);
     // MAX PRIORITY
     if (irq->basepending.asBit.timer) {
-        //Dbg::Put("TIMER = ", irq->basepending.asReg);
         caSysTimer::IrqService();
-        if (Lock.Get() == LOCK_FREE && Lock.Lock() == 1) {
-            res = -1;
-            Lock.UnLock();
+        if (Lock.Get() != LOCK_FREE) {
+            Dbg::Put("Lock BUsy skip scheduler\n");
         }
-        //Dbg::Put("TIMER = ", irq->basepending.asReg);
+        else
+        {
+        res = -1;
+        }
     }
     if (irq->basepending.asBit.pending1) {
         if (irq->gpu0.asBit.irqaux29 == 1) {
-            //Dbg::Put("AUX = ", irq->basepending.asReg);
+            Dbg::Put("AUX = ", irq->basepending.asReg);
             system_aux(aux);
             if (aux->irq.asBit.miniuart) {
                 caMiniUart::IrqService();

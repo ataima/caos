@@ -20,6 +20,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //To survive with coprocessor
+#include "bcm2836.h"
+#include "stream.h"
 
 class caArmCprs {
 public:
@@ -325,30 +327,6 @@ public:
         asm volatile ("BX LR");
     }
 
-    static u32 GetDataFaultStatus(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c5,c0,0" : "=r" (res));
-        asm volatile ("BX LR");
-        return res;
-    }
-
-    static void GetDataFaultStatus(u32 val) __attribute__ ((naked)) {
-        asm volatile ("MCR p15,0,%0,c5,c0,0" : "=r" (val));
-        asm volatile ("BX LR");
-    }
-
-    static u32 GetInstructionFaultStatus(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c5,c0,1" : "=r" (res));
-        asm volatile ("BX LR");
-        return res;
-    }
-
-    static void SetInstructionFaultStatus(register u32) __attribute__ ((naked)) {
-        asm volatile ("MCR p15,0,r0,c5,c0,1");
-        asm volatile ("BX LR");
-    }
-
     static u32 GetConfigurationBaseAddress(void) __attribute__ ((naked)) {
         register u32 res = 0;
         asm volatile ("MRC p15,4,%0,c15,c0,0" : "=r" (res));
@@ -512,10 +490,25 @@ public:
         asm volatile ("BX LR");
     }
 
-
+    static u32 DumpDFSR(caStringStream<s8> & ss);
+    static u32 DumpISR(caStringStream<s8> & ss);
 };
 
+typedef union tag_dfsr {
 
+    struct tag_dfsr_bit {
+        _RW_ u32 fault_status : 4; // bit0..3
+        _RW_ u32 domain : 4; //bit 4..7
+        _RW_ u32 reserved : 2; //bit 8
+        _RW_ u32 raz : 1; // bit9
+        _RW_ u32 most_fault_bit : 1; // bit10
+        _RW_ u32 wnr : 1; // bit11
+        _RW_ u32 ext : 1; // bit12
+        _RW_ u32 cache_m : 1; // bit13
+        _RW_ u32 unused : 18; // bit14-31
+    } asBit;
+    _RW_ u32 asReg;
+} cprs_dfsr;
 
 
 #endif /* CAARMCOPR_H */

@@ -41,12 +41,6 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_und) {
     caArmCpu::DisableInt();
     caArmCpu::Dump(caArmCpu::GetStackPointerR13());
-    Dbg::Put("---->Undefined EXCEPTION !\r\n");
-    Dbg::Put("---->LR USR = ", lr_usr);
-    Dbg::Put("---->LR SVC = ", lr_svc);
-    Dbg::Put("---->LR IRQ = ", lr_irq);
-    Dbg::Put("---->LR UND = ", lr_und);
-
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -55,7 +49,10 @@ void caInterruptRequest::Undefined(u32 lr_usr, u32 lr_svc,
     ss << "USR = " << lr_usr << caEnd::endl;
     ss << "SVC = " << lr_svc << caEnd::endl;
     ss << "IRQ = " << lr_irq << caEnd::endl;
-    ss << "UND = " << lr_und << caEnd::endl;
+    ss << "UND = " << lr_und-4 << caEnd::endl;
+    caArmCprs::DumpDFSR(ss);
+    u32 v=caArmCprs::GetIFSR();
+    ss << "IFSR= " << v << caEnd::endl;
     Dbg::Put(ss.Str());
     while (1);
 }
@@ -111,6 +108,7 @@ void caInterruptRequest::Software(u32 ioctl,
 void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
         u32 lr_irq, u32 lr_abt) {
     caArmCpu::DisableInt();
+    caArmCpu::Dump(caArmCpu::GetStackPointerR13());
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -119,7 +117,10 @@ void caInterruptRequest::Abort(u32 lr_usr, u32 lr_svc,
     ss << "USR = " << lr_usr << caEnd::endl;
     ss << "SVC = " << lr_svc << caEnd::endl;
     ss << "IRQ = " << lr_irq << caEnd::endl;
-    ss << "ABT = " << lr_abt << caEnd::endl;
+    ss << "ABT = " << lr_abt-4 << caEnd::endl;
+    caArmCprs::DumpDFSR(ss);
+    u32 v=caArmCprs::GetIFSR();
+    ss << "IFSR= " << v << caEnd::endl;
     Dbg::Put(ss.Str());
     while (1);
 }
@@ -134,6 +135,7 @@ u32 caInterruptRequest::FIQ(void) {
 
 void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt) {
     caArmCpu::DisableInt();
+    caArmCpu::Dump(caArmCpu::GetStackPointerR13());    
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -143,12 +145,16 @@ void caInterruptRequest::Prefetch(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt
     ss << "SVC = " << lr_svc << caEnd::endl;
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
+    caArmCprs::DumpDFSR(ss);
+    u32 v=caArmCprs::GetIFSR();
+    ss << "IFSR= " << v << caEnd::endl;
     Dbg::Put(ss.Str());
     while (1);
 }
 
 void caInterruptRequest::Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_abt) {
     caArmCpu::DisableInt();
+    caArmCpu::Dump(caArmCpu::GetStackPointerR13());  
     s8 buffio[512];
     caStringStream<s8> ss;
     ss.Init(buffio, 512);
@@ -158,6 +164,9 @@ void caInterruptRequest::Hypervisor(u32 lr_usr, u32 lr_svc, u32 lr_irq, u32 lr_a
     ss << "SVC = " << lr_svc << caEnd::endl;
     ss << "IRQ = " << lr_irq << caEnd::endl;
     ss << "ABT = " << lr_abt << caEnd::endl;
+    caArmCprs::DumpDFSR(ss);
+    u32 v=caArmCprs::GetIFSR();
+    ss << "IFSR= " << v << caEnd::endl;    
     Dbg::Put(ss.Str());
     while (1);
 }

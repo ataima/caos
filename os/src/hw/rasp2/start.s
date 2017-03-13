@@ -77,7 +77,7 @@ _fiq:
 
 
 
-.section .text
+.section .sec_start
 .code 32
 .balign 4
 
@@ -101,7 +101,7 @@ _fiq:
 
 .globl ResetISR
 ResetISR:
-       mrs	r0, cpsr
+        mrs	r0, cpsr
 	and	r1, r0, #0x1f		
 	cmp	r1, #MODE_HYP		
         bne     no_Monitor  
@@ -284,9 +284,6 @@ go_software:
 
 
 req_switch_context:
-    @STMFD    sp!,  {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}
-    @BL      msgSchedule
-    @LDMFD    sp!,  {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}
     MSR     SPSR_cxsf,R2  
     LDMFD   SP!,  {r0,r1,r2}
     B switchContext 

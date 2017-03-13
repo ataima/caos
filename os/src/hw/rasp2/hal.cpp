@@ -68,6 +68,20 @@ hal_llc_mem_io hal_llc_mem = {
 
 
 
+static void req_svc_7961(void){
+    Dbg::Put("reschedule\n");
+    caArmCpu::SVC_7961();
+}
+
+static void stop_scheduler(void){
+    caSysTimer::EnableTimer(0);
+}
+
+static void start_scheduler(void){
+    caSysTimer::EnableTimer(1);
+}
+
+
 hal_llc_scheduler_io hal_llc_scheduler = {
     caSysTimer::GetCount,
     caSysTimer::ToTick,
@@ -75,9 +89,21 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     caScheduler::IsValidContext,
     caIrqCtrl::LockSwitchContext,
     caIrqCtrl::UnLockSwitchContext,
-    caArmCpu::SVC_7961
+    req_svc_7961,
+    start_scheduler,
+    stop_scheduler
 };
 
+
+static u32 irq_request_tx(void *, u8 * , s_t , s_t & ){
+    caMiniUart::Send('t');
+    return 0;
+}
+
+static u32 irq_request_rx(void *, u8 * , s_t , s_t & ){
+    caMiniUart::Send('r');
+    return 0;
+}
 
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
@@ -92,8 +118,8 @@ hal_llc_com_io hal_llc_com1 = {
     caMiniUart::GetErrors, //hll_get_errors
     caScheduler::WakeUp, //hll_wakeuprx
     caScheduler::WakeUp, //hll_wakeuptx
-    caHalDeviceRules::IrqService1, //hll_irq_tx : set from device obj
-    caHalDeviceRules::IrqService2, //hll_irq_rx : set from device obj   
+    irq_request_tx, //hll_irq_tx : set from device obj
+    irq_request_rx, //hll_irq_rx : set from device obj   
     caMiniUart::Send,
     caMiniUart::Recv
 };
@@ -108,6 +134,7 @@ static u32 start_system_timer(void) {
         }
     }
     caArmCpu::EnableIrqFiq();
+    caArmCpu::EnableInt();    
     return res;
 }
 
@@ -119,9 +146,19 @@ static u32 stop_system_timer(void) {
         }
     }
     caArmCpu::DisableIrqFiq();
+    caArmCpu::DisableInt();
     return res;
 }
 
+static u32 irq_request_1(void *, u8 * , s_t , s_t & ){
+    caMiniUart::Send('1');
+    return 0;
+}
+
+static u32 irq_request_2(void *, u8 * , s_t , s_t & ){
+    caMiniUart::Send('2');
+    return 0;
+}
 
 // Hardware connectors sys timer
 hal_llc_sys_time hal_llc_time_1 = {
@@ -137,14 +174,15 @@ hal_llc_sys_time hal_llc_time_1 = {
     caSysTimer::GetHour,
     caSysTimer::GetDay, // TO DO mounth, year , millenium
     caSysTimer::SetTime,
+    caSysTimer::ReadFreeCounter,
     caSysTimer::Dump,
     caSysTimer::ToTick,
     start_system_timer, // systimer 1 alway run...
     stop_system_timer,
     caScheduler::WakeUp,
     caScheduler::WakeUp,
-    caHalDeviceRules::IrqService1,
-    caHalDeviceRules::IrqService2,
+    irq_request_1,
+    irq_request_2
 };
 
 

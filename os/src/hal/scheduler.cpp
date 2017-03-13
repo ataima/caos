@@ -18,9 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
-
-
-
 #include "atomiclock.h"
 #include "memory.h"
 #include "memaux.h"
@@ -31,12 +28,13 @@
 extern u32 __svc_stack_pos__;
 extern u32 __sys_stack_pos__;
 
-caArray<caThreadContext *> caNextTaskManager::table;
+caArray< caThreadContext *> caNextTaskManager::table;
 u32 caNextTaskManager::cur_index;
 
 ptrGetNextContext caScheduler::getnextcontext;
 caNextTaskManager caScheduler::mng;
 caThreadContext *caScheduler::current_task;
+u32 caScheduler::switch_time;
 caThreadContext caScheduler::main_ctx;
 caThreadContext *caScheduler::taskList[MAX_TASK];
 
@@ -61,13 +59,13 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         a_stk = (((stack) / TH_MIN_STACK_BLK) + 1) * TH_MIN_STACK_BLK;
     base = ptr_to_uint(caMemory::Allocate(a_stk));
     if (base != 0) {
-        ctx = static_cast<caThreadContext *> ((void *)uint_to_ptr(a_stk + base - sizeof (caThreadContext)));
+        ctx = static_cast<caThreadContext *> ((void *) uint_to_ptr(a_stk + base - sizeof (caThreadContext)));
         pst = ptr_to_uint(ctx) - 64; //64 guard
         ctx->thid = ptr_to_uint(ctx);
         ctx->status = caJobStatus::thInit;
         ctx->priority = p;
         ctx->mode = mode;
-        caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, 32);
+        caMemAux<u32>::MemSet((u32 *) ctx->pcb, 0, sizeof (u32)*32);
         ctx->pcb[0] = mode; //SPSR
         ctx->pcb[1] = ptr_to_uint((void *) caThread::LaunchThread);
         ctx->pcb[2] = ptr_to_uint((void *) func); //r0
@@ -194,6 +192,31 @@ void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) 
     }
 }
 
+void caScheduler::caThread::DumpPcb(caStringStream<s8> & ss, caThreadContext *ctx) {
+    u32 i;
+    if (ctx != nullptr) {
+        ss << "----------------------------------" << caEnd::endl;
+        ss << "name=" << (const char *) ctx->name << caEnd::endl;
+        ss << "ctx=" << caStringFormat::hex << ptr_to_uint(ctx) << caEnd::endl;
+        for (i = 0; i < 32; i++) {
+            ss << "PCB [ " << caStringFormat::dec << i << " ] = " <<
+                    caStringFormat::hex << ctx->pcb[i] << caEnd::endl;
+        }
+        ss << "thid=" << caStringFormat::dec << ctx->thid << caEnd::endl;
+        ss << "index=" << caStringFormat::dec << ctx->index << caEnd::endl;
+        ss << "stack_start=" << caStringFormat::hex << ctx->stack_start << caEnd::endl;
+        ss << "stack_end=" << caStringFormat::hex << ctx->stack_end << caEnd::endl;
+        ss << "mode=" << caStringFormat::dec << (u32) ctx->mode << caEnd::endl;
+        ss << "priority=" << caStringFormat::dec << (u32) ctx->priority << caEnd::endl;
+        ss << "cur_prio=" << caStringFormat::dec << (u32) ctx->cur_prio << caEnd::endl;
+        ss << "status=" << caStringFormat::dec << (u32) ctx->status << caEnd::endl;
+        ss << "count=" << caStringFormat::dec << (u32) ctx->count << caEnd::endl;
+        ss << "sleep=" << caStringFormat::dec << (u32) ctx->sleep << caEnd::endl;
+        ss << "time=" << caStringFormat::dec << (u32) ctx->time << caEnd::endl;
+        ss << "result=" << caStringFormat::dec << (u32) ctx->result << caEnd::endl;
+        ss << "nswitch=" << caStringFormat::dec << (u32) ctx->nswitch << caEnd::endl;
+    }
+}
 
 
 
@@ -234,7 +257,7 @@ bool caNextTaskManager::RemoveTask(s_t idx) {
 }
 
 bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
-    bool res = deviceError::no_error;
+    bool res = 0;
     if (IsValidContext(thIdx)) {
         caThreadContext *ctx = nullptr;
         if (table.At(ctx, thIdx) && (ctx != nullptr)) {
@@ -245,7 +268,7 @@ bool caNextTaskManager::ChangePriority(s_t thIdx, caJobPriority newPrio) {
             while (hal_llc_scheduler.hll_lock() == false) {
             };
         } else {
-            res = deviceError::error_generic;
+            res = 1;
         }
     }
     return res;
@@ -261,7 +284,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
             tmp->time++; // always time ++ staus ignored also current
             if (tmp->status == caJobStatus::thRemove) {
                 table.Remove(i);
-                caMemory::Free(tmp);
+                caMemory::Free((void *) tmp);
                 if (table.Size() == i) {
                     break; // no more context 
                 } else {
@@ -299,7 +322,7 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
         }
     }
     //TOUT();
-    return tmp;
+    return (caThreadContext *) tmp;
 }
 
 /*
@@ -323,7 +346,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
             tmp->time++; // always time ++ staus ignored also current
             if (tmp->status == caJobStatus::thRemove) {
                 table.Remove(i);
-                caMemory::Free(tmp);
+                caMemory::Free((void *) tmp);
                 if (table.Size() == i) {
                     break; // no more context 
                 } else {
@@ -335,9 +358,11 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
             }
             if (tmp->sleep != SLEEP_FOR_EVER && tmp->status == caJobStatus::thSleep) {
                 if (tmp->sleep != 0) {
+                    tmp->cur_prio = 0;
                     tmp->sleep--;
                 } else {
                     tmp->status = caJobStatus::thRun;
+                    tmp->cur_prio = tmp->priority;
                 }
             }
             if (tmp != current && (tmp->status & caJobStatus::thRunning)) {
@@ -362,7 +387,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
             current->cur_prio = current->priority;
         current->nswitch++;
     }
-    return target;
+    return (caThreadContext *) target;
 }
 
 bool caNextTaskManager::IsValidContext(u32 thIdx) {
@@ -378,9 +403,8 @@ void caNextTaskManager::WakeUp(u32 thid) {
     }
 }
 
-/* from svc iorequest sleep*/
 u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     if (thid < table.Size()) {
         caThreadContext * tmp = nullptr;
         table.At(tmp, thid);
@@ -390,7 +414,7 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
             tmp->status = caJobStatus::thSleep;
             tmp->sleep = tick;
         } else {
-            res = deviceError::error_generic;
+            res = 1;
         }
         while (hal_llc_scheduler.hll_unlock() == false) {
         };
@@ -401,7 +425,14 @@ u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
 
 ///////////////////////////////////////////////////////////////////////
 
+static u32 nullTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
+    for (;;) {
+        hal_llc_int_req.hll_wait_for_interrupt();
+    }
+}
+
 bool caScheduler::Init(caSchedulerMode req) {
+    bool res = false;
     if (req == caSchedulerMode::RoundRobin) {
         getnextcontext = caNextTaskManager::RoundRobinNextContext;
     } else {
@@ -413,7 +444,15 @@ bool caScheduler::Init(caSchedulerMode req) {
     main_ctx.stack_start = 0x40000000;
     main_ctx.stack_end = 0x0;
     current_task = &main_ctx;
-    return mng.Init(taskList, MAX_TASK);
+    res = mng.Init(taskList, MAX_TASK);
+    // idle task always RUN task in scheduler , low priority     
+    caScheduler::AddJob("idle1",
+            caJobPriority::caThLevel1,
+            nullTask);
+    //caScheduler::AddJob("idle2",
+    //        caJobPriority::caThLevel1,
+    //        nullTask);
+    return res;
 }
 
 bool caScheduler::Destroy(void) {
@@ -461,23 +500,46 @@ bool caScheduler::RemoveAllJobs(void) {
 
 /* Calling under IRQ  ISR */
 void caScheduler::GetNextContext(void) {
+    hal_llc_scheduler.hll_stop_scheduler();
 #if DEBUG_CHECK_TASK
-    CheckValid(1);
+    //static s8 dbgbuff[4096];
+    //caStringStream<s8> ss;
+    //ss.Init(dbgbuff, sizeof (dbgbuff));
+
+    CheckValid(current_task, 1);
+    //Dbg::Put("\r\nSP = ",current_task->pcb[15]);
+    //ss << "\r\nIN : CURRENT TASK  = " << (const char*) current_task->name << caEnd::endl;
+    //caScheduler::Dump(ss);
+    //Dbg::Put(ss.Str());
+
 #endif
+    u32 start_c = hal_llc_time_1.hll_free_counter();
     if (current_task != &main_ctx)
         current_task = getnextcontext(current_task);
     else
         current_task = getnextcontext(nullptr);
-
-#if DEBUG_CHECK_TASK
-    CheckValid(2);
-#endif
     if (current_task == nullptr)
         current_task = &main_ctx;
+    u32 stop_c = hal_llc_time_1.hll_free_counter();
+    if (start_c > stop_c) {
+        switch_time = 0xffffffff - start_c + stop_c;
+    } else {
+        switch_time = stop_c - start_c;
+    }
+#if DEBUG_CHECK_TASK    
+    //ss.Clear();
+    //ss << "\r\nOUT : CURRENT TASK  = " << (const char*) current_task->name << caEnd::endl;
+    //caScheduler::Dump(ss);
+    //Dbg::Put(ss.Str());
+    CheckValid(current_task, 2);
+    //Dbg::Put("\r\nSP = ",current_task->pcb[15]);
+
+#endif
+    hal_llc_scheduler.hll_start_scheduler();
 }
 
 u32 caScheduler::SetSleepMode(u32 ms, u32 thIdx) {
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     if (IsValidContext(thIdx)) {
         u32 tick = hal_llc_scheduler.hll_to_tick(ms);
         res = mng.ToSleep(thIdx, tick);
@@ -494,37 +556,39 @@ u32 caScheduler::Dump(caStringStream<s8> & ss) {
     return ss.Size();
 }
 
+u32 caScheduler::DumpPcb(caStringStream<s8> & ss) {
+    u32 i;
+    for (i = 0; i < mng.Size(); i++) {
+        caThread::DumpPcb(ss, taskList[i]);
+    }
+    ss.Str();
+    return ss.Size();
+}
+
 u32 caScheduler::Sleep(u32 ms) {
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     res = caScheduler::SetSleepMode(ms, caScheduler::GetCurrentTaskId());
-    if (res == deviceError::no_error) {
-        caScheduler::SwitchContext();
+    if (res == 0) {
+        while ((current_task->status & caJobStatus::thRunning) == 0) {
+        };
     }
     return res;
 }
 
 u32 caScheduler::StartTask(void) {
     u32 res = 0xffffffff;
-    while (hal_llc_scheduler.hll_lock() == false) {
-    };
     if (current_task != nullptr) {
         current_task->status = caJobStatus::thRun;
         res = current_task->index;
     }
-    while (hal_llc_scheduler.hll_lock() == false) {
-    };
     return res;
 }
 
 void caScheduler::EndTask(u32 result) {
-    while (hal_llc_scheduler.hll_lock() == false) {
-    };
     if (current_task != nullptr) {
         current_task->result = result;
         current_task->status = caJobStatus::thStop;
     }
-    while (hal_llc_scheduler.hll_lock() == false) {
-    };
 }
 
 
@@ -546,69 +610,69 @@ void caScheduler::Panic(void) {
     while (1);
 }
 
-void caScheduler::CheckValid(u32 p) {
-    if (p == 1 && current_task == &main_ctx)
+void caScheduler::CheckValid(caThreadContext *ctx, u32 p) {
+    if (p == 1 && ctx == &main_ctx)
         return;
-    if (current_task == nullptr) {
+    if (ctx == nullptr) {
         Dbg::Put("ERROR : nullptr CONTEXT : ", p);
         Panic();
     }
-    if (current_task->pcb[1] != current_task->pcb[16]) {
-        if (current_task->pcb[16] > ptr_to_uint(hal_llc_mem.hll_heap_start())) {
+    if (ctx->pcb[1] != ctx->pcb[16]) {
+        if (ctx->pcb[16] > ptr_to_uint(hal_llc_mem.hll_heap_start())) {
             Dbg::Put("ERROR : TASK JUMP ADDRESS FAULT : HIGHER", p);
             Dbg::Put("TASK :");
-            Dbg::Put((const char *) current_task->name);
+            Dbg::Put((const char *) ctx->name);
             Dbg::Put("\r\n");
-            Dbg::Put("pcb[16] = ", current_task->pcb[16]);
-            Dbg::Put("pcb[1] = ", current_task->pcb[1]);
-            current_task->pcb[16] = current_task->pcb[1];
-            Dbg::Put("pcb[15] = ", current_task->pcb[15]);
-            Dbg::Put("stack_start = ", current_task->stack_start);
-            Dbg::Put("stack_end = ", current_task->stack_end);
+            Dbg::Put("pcb[16] = ", ctx->pcb[16]);
+            Dbg::Put("pcb[1] = ", ctx->pcb[1]);
+            ctx->pcb[16] = ctx->pcb[1];
+            Dbg::Put("pcb[15] = ", ctx->pcb[15]);
+            Dbg::Put("stack_start = ", ctx->stack_start);
+            Dbg::Put("stack_end = ", ctx->stack_end);
         }
-        if (current_task->pcb[16] < 0x8000) {
+        if (ctx->pcb[16] < 0x8000) {
             Dbg::Put("TASK :");
-            Dbg::Put((const char *) current_task->name);
+            Dbg::Put((const char *) ctx->name);
             Dbg::Put("\r\n");
             Dbg::Put("ERROR : TASK JUMP ADDRESS FAULT : LOWER ", p);
-            Dbg::Put("pcb[16] = ", current_task->pcb[16]);
-            Dbg::Put("pcb[1] = ", current_task->pcb[1]);
-            Dbg::Put("pcb[15] = ", current_task->pcb[15]);
-            Dbg::Put("stack_start = ", current_task->stack_start);
-            Dbg::Put("stack_end = ", current_task->stack_end);
-            current_task->pcb[16] = current_task->pcb[1];
+            Dbg::Put("pcb[16] = ", ctx->pcb[16]);
+            Dbg::Put("pcb[1] = ", ctx->pcb[1]);
+            Dbg::Put("pcb[15] = ", ctx->pcb[15]);
+            Dbg::Put("stack_start = ", ctx->stack_start);
+            Dbg::Put("stack_end = ", ctx->stack_end);
+            ctx->pcb[16] = ctx->pcb[1];
         }
     }
-    if (current_task->pcb[15] > current_task->stack_start)// pcb 1 = r14
+    if (ctx->pcb[15] > ctx->stack_start)// pcb 1 = r14
     {
         Dbg::Put("ERROR : TASK STACK POINTER TOO BIGGER : ", p);
         Dbg::Put("TASK :");
-        Dbg::Put((const char *) current_task->name);
+        Dbg::Put((const char *) ctx->name);
         Dbg::Put("\r\n");
-        Dbg::Put("pcb[15] = ", current_task->pcb[15]);
-        Dbg::Put("stack_start = ", current_task->stack_start);
-        Dbg::Put("stack_end = ", current_task->stack_end);
+        Dbg::Put("pcb[15] = ", ctx->pcb[15]);
+        Dbg::Put("stack_start = ", ctx->stack_start);
+        Dbg::Put("stack_end = ", ctx->stack_end);
         Panic();
     }
-    if (current_task->pcb[15] < current_task->stack_end)// pcb 1 = r14
+    if (ctx->pcb[15] < ctx->stack_end)// pcb 1 = r14
     {
         Dbg::Put("ERROR : TASK STACK POINTER TOO LOWER : ", p);
         Dbg::Put("TASK :");
-        Dbg::Put((const char *) current_task->name);
+        Dbg::Put((const char *) ctx->name);
         Dbg::Put("\r\n");
-        Dbg::Put("pcb[15] = ", current_task->pcb[15]);
-        Dbg::Put("stack_start = ", current_task->stack_start);
-        Dbg::Put("stack_end = ", current_task->stack_end);
+        Dbg::Put("pcb[15] = ", ctx->pcb[15]);
+        Dbg::Put("stack_start = ", ctx->stack_start);
+        Dbg::Put("stack_end = ", ctx->stack_end);
         Panic();
     }
-    if (ptr_to_uint(current_task) != current_task->stack_start + 64) {
+    if (ptr_to_uint(ctx) != ctx->stack_start + 64) {
         Dbg::Put("ERROR : TASK UNALIGNED TO STACK POINTER : ", p);
         Dbg::Put("TASK :");
-        Dbg::Put((const char *) current_task->name);
+        Dbg::Put((const char *) ctx->name);
         Dbg::Put("\r\n");
-        Dbg::Put("pcb[15] = ", current_task->pcb[15]);
-        Dbg::Put("stack_start = ", current_task->stack_start);
-        Dbg::Put("stack_end = ", current_task->stack_end);
+        Dbg::Put("pcb[15] = ", ctx->pcb[15]);
+        Dbg::Put("stack_start = ", ctx->stack_start);
+        Dbg::Put("stack_end = ", ctx->stack_end);
         Panic();
     }
 }
@@ -616,12 +680,6 @@ void caScheduler::CheckValid(u32 p) {
 
 
 #endif
-
-void caScheduler::SwitchContext(void) {
-    hal_llc_scheduler.hll_req_scheduler();
-    while ((current_task->status & caJobStatus::thRunning) == 0) {
-    };
-}
 
 u32 caScheduler::GetCurrentTaskId(void) {
     if (current_task == nullptr || current_task == &main_ctx) {

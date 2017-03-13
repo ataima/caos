@@ -42,6 +42,8 @@ extern "C" {
         s8 buff[256];
         caIrqCtrl::Init(); // start all fiq/irq disabled 
         caMiniUart::Init(115200, 8, 1, 8);
+        caMiniUart::DisableIrqRx();
+        caMiniUart::DisableIrqTx();
         caMiniUart::Enable(1, 1);
         Dbg::Put("> c.a.O.S. : [ ");
         caArmCpu::DumpCPSR();
@@ -53,7 +55,7 @@ extern "C" {
 #if CACHE_DEVICE    
         if (caCache::Start()) {
             Dbg::Put("> c.a.O.S. : [ ");
-            Dbg::Put("MMU : Flat Model Started Ok");
+            Dbg::Put("MMU : Flat Model");
             Dbg::Put(" ]\r\n");
             Dbg::Put("> c.a.O.S. : [ ");
             Dbg::Put("Cache : Instruction,Data And Branch Prediction is On ");

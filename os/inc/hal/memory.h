@@ -27,6 +27,15 @@
 #define BLOCKSIZE ((u32)(sizeof(caMemory::blockMem)))
 #define MIN_SLICE 256-BLOCKSIZE  /* min alloC SIZE */
 
+
+typedef struct tag_mem_dump_addr {
+    s8 *buffo;
+    s_t size;
+    s_t addr;
+} dumpAddrReq;
+
+
+
 class caMemory {
 private:
 

@@ -127,7 +127,7 @@ qemu-deb:
 jtag:   all
 	@openocd -f ./raspi2.cfg &
 	@sleep 1
-	@echo "file ./$(BUILD_DIR)/caOS.elf" >gdb.conf
+	@echo "file $(BUILD_DIR)/caOS.elf" >gdb.conf
 	@echo "target remote :3333" >>gdb.conf
 	@echo "monitor halt" >>gdb.conf
 	@echo "monitor reset_config srst_only" >>gdb.conf
@@ -142,11 +142,7 @@ jtag:   all
 	@echo "monitor reg cpsr 0" >> gdb.conf
 	@echo "monitor targets rpi2.cpu0" >> gdb.conf
 	@echo "load" >> gdb.conf
-	@echo "monitor targets" >> gdb.conf
-	@echo "b caInterruptRequest::Undefined" >> gdb.conf
-	@echo "b caInterruptRequest::Software" >> gdb.conf
-	@echo "b caInterruptRequest::Abort" >> gdb.conf
-	@echo "b caInterruptRequest::IRQ" >> gdb.conf
+	@echo "monitor targets" >> gdb.conf	
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
 	@echo  $(EH)  $(C_RESET)
 	@$(CROSS_GDB) -x gdb.conf

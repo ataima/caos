@@ -83,7 +83,7 @@ extern "C" {
 
         asm volatile ("LDMFD SP!, {R0-R3}"); //R0, R1 restored from Stack//
         asm volatile ("STMIA R4!, {R0-R3}"); //R0, R1 stored in PCB
-
+    
         caScheduler::GetNextContext();
 
         asm volatile ("LDR R2, =_ZN11caScheduler12current_taskE");

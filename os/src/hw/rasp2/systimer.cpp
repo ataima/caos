@@ -144,7 +144,7 @@ u32 caSysTimer::FastIrqEnable(void) {
 }
 
 u32 caSysTimer::SetTime(u32 day, u32 hour, u32 min, u32 sec) {
-    u32 res = deviceError::no_error;
+    u32 res = 0;
     if (sec > 59)sec = 0;
     if (min > 59)min = 0;
     if (hour > 23)hour = 0;
@@ -159,17 +159,21 @@ u32 caSysTimer::SetTime(u32 day, u32 hour, u32 min, u32 sec) {
 /// irq service is called from IRQ interrupt
 
 void caSysTimer::IrqService(void) {
-    s_t dummy;
+    s_t dummy = 0;
     st.mn_IrqCount++;
     st.mn_Msec++;
-    hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
     if (st.mn_Msec == SYS_TIMER_TICK) {
         st.mn_Msec = 0;
         st.mn_Sec++;
-        hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
+        if (hal_llc_time_1.hll_lnk_obj != nullptr) {
+            hal_llc_time_1.hll_irq_1(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
+        }
         if (st.mn_Sec == 60) {
             st.mn_Sec = 0;
             st.mn_Min++;
+            if (hal_llc_time_1.hll_lnk_obj != nullptr) {
+                hal_llc_time_1.hll_irq_2(hal_llc_time_1.hll_lnk_obj, nullptr, 0, dummy);
+            }
             if (st.mn_Min == 60) {
                 st.mn_Min = 0;
                 st.mn_Hour++;

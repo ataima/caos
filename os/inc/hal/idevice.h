@@ -127,11 +127,6 @@ typedef enum tag_software_request {
     caSchedulerListAll
 } ioCtrlFunction;
 
-typedef struct tag_mem_dump_addr {
-    s8 *buffo;
-    s_t size;
-    s_t addr;
-} dumpAddrReq;
 
 
 
@@ -259,7 +254,6 @@ typedef enum tag_device_error {
     error_systimer_configure_error,
     error_systimer_dump,
     error_ioctrl_command_error,
-    error_hal_configure,
     error_hal_job_remove,
     error_hal_jobs_remove_all,
     error_hal_job_dump,

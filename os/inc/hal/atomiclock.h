@@ -29,7 +29,7 @@ class caAtomicLock {
     static inline u32 AtomicSwap(u32 *ptr, u32 v_old, u32 v_new) {
         u32 oldval;
         u32 res;
-#if __arm__ 
+#ifdef HW_RASPI2 
 #if HAVE_ATOMIC_LOCK
         asm volatile("pldw %a0"::"p" (ptr));
 
