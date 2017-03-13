@@ -27,7 +27,6 @@ void caHalSysTimerDevice::Init(IDevice * instance,hal_llc_sys_time *st, u32 mask
     dev->link = st;
     dev->handle_guid = BASE_HANDLE;
     dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);
-    dev->link->hll_lnk_obj = (void *) dev;
     dev->signal_1 = dev->signal_2 = 0;
     dev->IOpen = caHalSysTimerDevice::Open;
     dev->IClose = caHalSysTimerDevice::Close;
@@ -57,6 +56,7 @@ u32 caHalSysTimerDevice::Open(IDevice * instance, caIDeviceConfigure * setup,
     caSysTimerConfigure *conf = (caSysTimerConfigure *) (setup);
     if (conf != nullptr) {
         if (dev->link->hll_config(conf->tick_ps, conf->clock_ps, conf->prescaler_ps, conf->irq_ps)) {
+            dev->link->hll_lnk_obj = (void *) dev;
             dev->isOpen++;
             port->handle = caHalDeviceRules::addHandle(dev->handle_guid, dev->mask_guid);
             port->status = caDeviceHandle::statusHandle::Open;

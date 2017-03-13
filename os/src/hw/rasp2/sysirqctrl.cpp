@@ -77,7 +77,7 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
     }
     if (irq->basepending.asBit.pending1) {
         if (irq->gpu0.asBit.irqaux29 == 1) {
-            Dbg::Put("AUX = ", irq->basepending.asReg);
+            //Dbg::Put("AUX = ", irq->basepending.asReg);
             system_aux(aux);
             if (aux->irq.asBit.miniuart) {
                 caMiniUart::IrqService();

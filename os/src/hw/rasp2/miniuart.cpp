@@ -147,6 +147,7 @@ void caMiniUart::IrqServiceTx(void) {
     muLsrReg lsr;
     stat.asReg = caMiniUart::GetStat();
     u32 writed, symbol = 7 - stat.asBit.txfifo;
+    if(hal_llc_com1.hll_lnk_obj)
     hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, txBuff, symbol, writed);
     if (writed) {
         for (txPos = 0; txPos < writed; txPos++) {
@@ -161,7 +162,6 @@ void caMiniUart::IrqServiceTx(void) {
 }
 
 void caMiniUart::IrqServiceRx(void) {
-
     muLsrReg lsr;
     muStatReg stat;
     u32 symbol, readed;
@@ -174,7 +174,8 @@ void caMiniUart::IrqServiceRx(void) {
         rxBuff[rxPos++] = caMiniUart::GetIO();
         symbol--;
     }
-    hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, rxBuff, rxPos, readed);
+    if(hal_llc_com1.hll_lnk_obj!=nullptr)
+        hal_llc_com1.hll_irq_rx(hal_llc_com1.hll_lnk_obj, rxBuff, rxPos, readed);
     rxPos -= readed;
     if (rxPos) { // ERROR INCOMPLETE COPY : TRY TO REALIGN BUFFER AT NEXT READ
         symbol = 0;

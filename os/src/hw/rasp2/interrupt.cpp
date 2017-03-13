@@ -60,16 +60,16 @@ extern "C" {
 
     void switchContext(void) {
 
-        asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
+        //asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
 
-        asm volatile ("DSB"); //TOTEST
-        asm volatile ("ISB"); //TOTEST
+        //asm volatile ("DSB"); //TOTEST
+        //asm volatile ("ISB"); //TOTEST
 
         asm volatile ("STMFD SP!, {R0-R3}"); //PUSH r1-r3        
         asm volatile ("LDR R2, =_ZN11caScheduler12current_taskE");
         asm volatile ("LDR R0, [R2]"); //Load PCB_[0] into R0	
         // TO TEST 
-        asm volatile ("PLD [R0]");
+        //asm volatile ("PLD [R0]");
         asm volatile ("MRS R1, SPSR"); //Copy SPSR into R1
 #if DEBUG_CHECK_SCHEDULER        
         asm volatile ("STMIA R0!, {R1}"); //Store SPSR into PCB[0] - no R14 so not jump to thread
@@ -90,7 +90,7 @@ extern "C" {
         asm volatile ("MOV R0,R2");
         asm volatile ("LDR R0, [R2]"); //Load PCB_[0] into R0	
         // TO TEST 
-        asm volatile ("PLDW [R0]");
+        //asm volatile ("PLDW [R0]");
 #if DEBUG_CHECK_SCHEDULER        
         asm volatile ("LDMIA R0!, {R1}"); //Copy only. SPSR only check
 #else        
@@ -100,7 +100,7 @@ extern "C" {
 
         asm volatile ("LDMIA R0, {R0-R14}^"); //Load from PCB R0-R14
 
-        asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
+        //asm volatile ("CPSIE IAF"); //ENABLE INTERRUPT
 
         asm volatile ("ERET");
     }

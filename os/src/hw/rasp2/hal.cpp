@@ -56,7 +56,6 @@ static u32 *mem_heap_end_addr(void) {
     return &__heap_end__;
 }
 
-
 hal_llc_mem_io hal_llc_mem = {
     caSysTimer::GetCount,
     mem_phy_min_addr,
@@ -95,16 +94,6 @@ hal_llc_scheduler_io hal_llc_scheduler = {
 };
 
 
-static u32 irq_request_tx(void *, u8 * , s_t , s_t & ){
-    caMiniUart::Send('t');
-    return 0;
-}
-
-static u32 irq_request_rx(void *, u8 * , s_t , s_t & ){
-    caMiniUart::Send('r');
-    return 0;
-}
-
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
     nullptr,
@@ -118,8 +107,8 @@ hal_llc_com_io hal_llc_com1 = {
     caMiniUart::GetErrors, //hll_get_errors
     caScheduler::WakeUp, //hll_wakeuprx
     caScheduler::WakeUp, //hll_wakeuptx
-    irq_request_tx, //hll_irq_tx : set from device obj
-    irq_request_rx, //hll_irq_rx : set from device obj   
+    caHalDeviceRules::IrqService1, //hll_irq_tx : set from device obj
+    caHalDeviceRules::IrqService2, //hll_irq_rx : set from device obj   
     caMiniUart::Send,
     caMiniUart::Recv
 };
