@@ -699,7 +699,6 @@ public:
 
     s_t Remove(T *ptr, s_t num) {
         s_t removed = 0;
-        bool res;
         T out;
         do {
             if (Remove(out)) {

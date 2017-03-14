@@ -50,6 +50,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     caComDeviceConfigure in;
     caDeviceHandle port;
     deviceError res;
+    caStringStream<s8> tt;
     caConsole::Init();
     in.speed = 115200;
     in.data = 8;
@@ -104,16 +105,15 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
         } else {
             Dbg::Put("Cannot Register Rx signalling\r\n");
         }
-    }else{
-        Dbg::Put("Cannot open com1\r\n");
-    }
-        
+    } else {
+        Dbg::Put("Cannot open com1\r\n",res);
+    }   
     return 0;
 }
 
 int hal_main(void) {
     caOS::Init();
-    caScheduler::Init(caSchedulerMode::Priority);   
+    caScheduler::Init(caSchedulerMode::Priority);
     caScheduler::AddSystemJob("main",
             caJobPriority::caThLevel3,
             mainTask);

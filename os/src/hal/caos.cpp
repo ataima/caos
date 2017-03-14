@@ -24,6 +24,7 @@
 #include "scheduler.h"
 #include "memory.h"
 #include "caos.h"
+#include "kdebug.h"
 
 caHalJobDevice caOS::scheduler;
 
@@ -153,97 +154,101 @@ deviceError caOS::Init(void) {
 
     caHalMemDevice::Init(&memory, &hal_llc_mem, ioCtrlRequest::Memory);
 
-    caHalPipeDevice::Init(&pipe,&hal_llc_mem, ioCtrlRequest::Pipe);
+    caHalPipeDevice::Init(&pipe, &hal_llc_mem, ioCtrlRequest::Pipe);
 
 #if SYS_TIMER_2_DEVICE
-    caHalSysTimerDevice::Init(&timer2,&hal_llc_time_2, ioCtrlRequest::SysTimer2);
+    caHalSysTimerDevice::Init(&timer2, &hal_llc_time_2, ioCtrlRequest::SysTimer2);
 #endif
 
 #if SYS_TIMER_3_DEVICE
-    caHalSysTimerDevice::Init(&timer3,&hal_llc_time_3, ioCtrlRequest::SysTimer3);
+    caHalSysTimerDevice::Init(&timer3, &hal_llc_time_3, ioCtrlRequest::SysTimer3);
 #endif
 
 #if SYS_TIMER_4_DEVICE
-    caHalSysTimerDevice::Init(&timer4,&hal_llc_time_4, ioCtrlRequest::SysTimer4);
+    caHalSysTimerDevice::Init(&timer4, &hal_llc_time_4, ioCtrlRequest::SysTimer4);
 #endif
 
 #if SYS_TIMER_5_DEVICE
-    caHalSysTimerDevice::Init(&timer5,caHalSysTimerDevice::Init(&timer&hal_llc_time_5, ioCtrlRequest::SysTimer5);
+
+    caHalSysTimerDevice::Init(&timer5, caHalSysTimerDevice::Init(&timer&hal_llc_time_5, ioCtrlRequest::SysTimer5);
 #endif
 
 #if SYS_TIMER_6_DEVICE
-    caHalSysTimerDevice::Init(&timer6,&hal_llc_time_6, ioCtrlRequest::SysTimer6);
+            caHalSysTimerDevice::Init(&timer6, &hal_llc_time_6, ioCtrlRequest::SysTimer6);
 #endif
 
 #if SYS_TIMER_7_DEVICE
-    caHalSysTimerDevice::Init(&timer7,&hal_llc_time_7, ioCtrlRequest::SysTimer7);
+            caHalSysTimerDevice::Init(&timer7, &hal_llc_time_7, ioCtrlRequest::SysTimer7);
 #endif
 
 #if SYS_TIMER_8_DEVICE
-    caHalSysTimerDevice::Init(&timer8,&hal_llc_time_8, ioCtrlRequest::SysTimer8);
+            caHalSysTimerDevice::Init(&timer8, &hal_llc_time_8, ioCtrlRequest::SysTimer8);
 #endif
 
-    caHalComDevice::Init(&com1,&hal_llc_com1, ioCtrlRequest::Com1);
+            caHalComDevice::Init(&com1, &hal_llc_com1, ioCtrlRequest::Com1);
 
 #if COM2_DEVICE
-    caHalComDevice::Init(&com2,&hal_llc_com2, ioCtrlRequest::Com2);
+            caHalComDevice::Init(&com2, &hal_llc_com2, ioCtrlRequest::Com2);
 #endif
 
 #if COM3_DEVICE
-    caHalComDevice::Init(&com3,&hal_llc_com3, ioCtrlRequest::Com3);
+            caHalComDevice::Init(&com3, &hal_llc_com3, ioCtrlRequest::Com3);
 #endif
 
 #if COM4_DEVICE
-    caHalComDevice::Init(&com4,&hal_llc_com4, ioCtrlRequest::Com4);
+            caHalComDevice::Init(&com4, &hal_llc_com4, ioCtrlRequest::Com4);
 #endif
 
 #if COM5_DEVICE
-    caHalComDevice::Init(&com5,&hal_llc_com5, ioCtrlRequest::Com5);
+            caHalComDevice::Init(&com5, &hal_llc_com5, ioCtrlRequest::Com5);
 #endif
 
 #if COM6_DEVICE
-    caHalComDevice::Init(&com6,&hal_llc_com6, ioCtrlRequest::Com6);
+            caHalComDevice::Init(&com6, &hal_llc_com6, ioCtrlRequest::Com6);
 #endif
 
 #if COM7_DEVICE
-    caHalComDevice::Init(&com7,&hal_llc_com7, ioCtrlRequest::Com7);
+            caHalComDevice::Init(&com7, &hal_llc_com7, ioCtrlRequest::Com7);
 #endif
 
 #if COM8_DEVICE
-    caHalComDevice::Init(&com8,&hal_llc_com8, ioCtrlRequest::Com8);
+            caHalComDevice::Init(&com8, &hal_llc_com8, ioCtrlRequest::Com8);
 #endif
-    return deviceError::no_error;
+            return deviceError::no_error;
 }
 
 bool caOS::GetDevice(const char * name, s32 & offset) {
     bool res = false;
-    offset = -1;
-    u32 i;
-    u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair));
+            offset = -1;
+            u32 i;
+            u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair));
     for (i = 0; i < mnDevices; i++) {
         // TO DO BINARY SEARCH ON allDevices
         if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {
             offset = (s32) i;
             res = true;
+            Dbg::Put("offset = ",offset);
             break;
         }
     }
+            Dbg::Put("res = ",res);
     return res;
 }
 
 bool caOS::GetDevice(caDeviceHandle & port, s32 & offset) {
     bool res = false;
-    offset = -1;
-    u32 mask = ioCtrlRequest::maskIoCtrl & port.handle;
-    u32 base = ioCtrlRequest::maskHandle & port.handle;
+            offset = -1;
+            u32 mask = ioCtrlRequest::maskIoCtrl & port.handle;
+            u32 base = ioCtrlRequest::maskHandle & port.handle;
     if (base > BASE_HANDLE) {
         u32 i;
-        u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) + 1;
+                u32 mnDevices = (sizeof (allDevices) / sizeof (devicePair)) + 1;
         for (i = 0; i < mnDevices; i++) {
             // TO DO BINARY SEARCH ON allDevices
             if (allDevices[i].mask == mask) {
                 offset = (s32) i;
-                res = true;
+                        res = true;
+
                 break;
             }
         }
@@ -256,13 +261,15 @@ bool caOS::GetDevice(caDeviceHandle & port, s32 & offset) {
 deviceError caOS::Open(const char * name,
         caIDeviceConfigure & in, caDeviceHandle & out) {
     u32 res = deviceError::no_error;
-    s32 offset;
+            s32 offset;
     if (name == nullptr) {
         res = deviceError::error_unknow_device_name;
     } else {
         if (caOS::GetDevice(name, offset)) {
+            Dbg::Put(__func__);
             res = caHalDeviceRules::Open(allDevices[offset].device, &in, &out, allDevices[offset].mask);
         } else {
+
             res = deviceError::error_unknow_device_name;
         }
     }
@@ -271,10 +278,11 @@ deviceError caOS::Open(const char * name,
 
 deviceError caOS::Close(caDeviceHandle & port) {
     u32 res = deviceError::no_error;
-    s32 offset;
+            s32 offset;
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::Close(allDevices[offset].device, &port, allDevices[offset].mask);
     } else {
+
         res = deviceError::error_invalid_handle_port;
     }
     return (deviceError) res;
@@ -282,10 +290,11 @@ deviceError caOS::Close(caDeviceHandle & port) {
 
 deviceError caOS::Write(caDeviceHandle & port) {
     u32 res = deviceError::no_error;
-    s32 offset;
+            s32 offset;
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::Write(allDevices[offset].device, &port, allDevices[offset].mask);
     } else {
+
         res = deviceError::error_invalid_handle_port;
     }
     return (deviceError) res;
@@ -293,16 +302,18 @@ deviceError caOS::Write(caDeviceHandle & port) {
 
 deviceError caOS::Write(caDeviceHandle & port, caStringStream<s8> &ss) {
     port.wrBuff = reinterpret_cast<u8*> (ss.Str());
-    port.wrSize = ss.Size();
+            port.wrSize = ss.Size();
+
     return caOS::Write(port);
 }
 
 deviceError caOS::Read(caDeviceHandle & port) {
     u32 res = deviceError::no_error;
-    s32 offset;
+            s32 offset;
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::Read(allDevices[offset].device, &port, allDevices[offset].mask);
     } else {
+
         res = deviceError::error_invalid_handle_port;
     }
     return (deviceError) res;
@@ -310,11 +321,150 @@ deviceError caOS::Read(caDeviceHandle & port) {
 
 deviceError caOS::IoCtrl(caDeviceHandle & port, caIDeviceCtrl & in) {
     u32 res = deviceError::no_error;
-    s32 offset;
+            s32 offset;
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::IoCtrl(allDevices[offset].device, &port, &in, allDevices[offset].mask);
     } else {
+
         res = deviceError::error_invalid_handle_port;
+    }
+    return (deviceError) res;
+}
+
+
+
+deviceError caOS::LogCreate(const char * name, s_t size, deviceloglevels level) {
+    u32 res = deviceError::no_error;
+            s32 offset;
+    if (name == nullptr) {
+        res = deviceError::error_unknow_device_name;
+    } else {
+        if (caOS::GetDevice(name, offset)) {
+            IDevice * dev = allDevices[offset].device;
+                    caSysLog *caLog = dev->IGetDeviceLog(dev);
+            if (caLog != nullptr) {
+                if (!caLog->IsValid()) {
+                    if (caLog->Init(size,
+                            level) != true)
+                            res = deviceError::error_cannot_create_log;
+                    } else {
+                    res = deviceError::error_log_already_set;
+                }
+            } else {
+                res = deviceError::error_log_null;
+            }
+        } else {
+
+            res = deviceError::error_unknow_device_name;
+        }
+    }
+    return (deviceError) res;
+}
+
+
+deviceError caOS::LogDestroy(const char * name) {
+    u32 res = deviceError::no_error;
+            s32 offset;
+    if (name == nullptr) {
+        res = deviceError::error_unknow_device_name;
+    } else {
+        if (caOS::GetDevice(name, offset)) {
+            IDevice * dev = allDevices[offset].device;
+                    caSysLog *caLog = dev->IGetDeviceLog(dev);
+            if (caLog != nullptr) {
+                if (caLog->IsValid()) {
+                    if (caLog->Destroy() != true)
+                            res = deviceError::error_cannot_destroy_log;
+                    } else {
+                    res = deviceError::error_log_not_set;
+                }
+            } else {
+                res = deviceError::error_log_null;
+            }
+        } else {
+
+            res = deviceError::error_unknow_device_name;
+        }
+    }
+    return (deviceError) res;
+}
+deviceError caOS::LogStart(const char * name) {
+    u32 res = deviceError::no_error;
+            s32 offset;
+    if (name == nullptr) {
+        res = deviceError::error_unknow_device_name;
+    } else {
+        if (caOS::GetDevice(name, offset)) {
+            IDevice * dev = allDevices[offset].device;
+                    caSysLog *caLog = dev->IGetDeviceLog(dev);
+            if (caLog != nullptr) {
+                if (!caLog->IsEnabled()) {
+                    caLog->Enable();
+                            PLOG(caLog, device) << dev->ItoString() << " START "
+                            << caEnd::endl;
+                } else {
+                    res = deviceError::error_log_already_set;
+                }
+            } else {
+                res = deviceError::error_log_null;
+            }
+        } else {
+
+            res = deviceError::error_unknow_device_name;
+        }
+    }
+    return (deviceError) res;
+}
+deviceError caOS::LogStop(const char * name) {
+    u32 res = deviceError::no_error;
+            s32 offset;
+    if (name == nullptr) {
+        res = deviceError::error_unknow_device_name;
+    } else {
+        if (caOS::GetDevice(name, offset)) {
+            IDevice * dev = allDevices[offset].device;
+                    caSysLog *caLog = dev->IGetDeviceLog(dev);
+            if (caLog != nullptr) {
+                if (caLog->IsEnabled()) {
+                    PLOG(caLog, device) << dev->ItoString() << " STOP "
+                            << caEnd::endl;
+                            caLog->Disable();
+                } else {
+                    res = deviceError::error_log_not_set;
+                }
+            } else {
+                res = deviceError::error_log_null;
+            }
+        } else {
+
+            res = deviceError::error_unknow_device_name;
+        }
+    }
+    return (deviceError) res;
+}
+
+deviceError caOS::LogGet(const char * name, deviceloglevels v,s8 & out) {
+    u32 res = deviceError::no_error;
+            s32 offset;
+    if (name == nullptr) {
+        res = deviceError::error_unknow_device_name;
+    } else {
+        if (caOS::GetDevice(name, offset)) {
+            IDevice * dev = allDevices[offset].device;            
+                caSysLog *caLog = dev->IGetDeviceLog(dev);
+                if (caLog != nullptr) {
+                    if (caLog->IsValid()) {
+                            caLog->Stream(v).Remove(&out,1);
+                    } else {
+                        res = deviceError::error_log_not_set;
+                    }
+                } else {
+                    res = deviceError::error_log_null;
+                }
+        } else {
+
+            res = deviceError::error_unknow_device_name;
+        }
     }
     return (deviceError) res;
 }

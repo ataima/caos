@@ -84,7 +84,7 @@
 // to check memory list 
 #define CONFIG_CHK_MEMORY_ALLOC  0
 
-
+#define DO_LOG                  1
 // TO EXECUTE TESTS
 #define TEST                    0
 #endif

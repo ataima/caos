@@ -114,14 +114,13 @@ public:
     static deviceError Read(caDeviceHandle & port, caTokenizeSStream<s8> &in);
     static deviceError IoCtrl(caDeviceHandle & port, caIDeviceCtrl &in);
     // method avaiable only in supervisor mode device to device or  isr to device
+    static deviceError LogCreate(const char * device,s_t size,deviceloglevels level);
+    static deviceError LogDestroy(const char * devicle);
+    static deviceError LogStart(const char * device);
+    static deviceError LogStop(const char * devicle);
+    static deviceError LogGet(const char * devicle,deviceloglevels v,s8 &out);
+    
 
-    static inline caHalJobDevice & getScheduler(void) {
-        return scheduler;
-    }
-
-    static inline caHalComDevice & getCom1(void) {
-        return com1;
-    }
 
 #if COM2_DEVICE
 

@@ -20,10 +20,8 @@
 
 #include "memaux.h"
 #include "syslog.h"
+#include "kdebug.h"
 
-IDevice::IDevice(void) {
-    caMemAux<u8>::MemZero(reinterpret_cast<u8*> (this), sizeof (IDevice));
-}
 
 u32 caHalDeviceRules::isOpen(IDevice *device) {
     u32 res = 0;
@@ -47,6 +45,7 @@ u32 caHalDeviceRules::Open(IDevice *dev, caIDeviceConfigure * setup,
         if (isOpen(dev) != 0) {
             res = deviceError::error_device_already_opened;
         } else {
+            Dbg::Put(__func__);
             caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
             res = dev->IOpen(dev, setup, port);
             if (res != deviceError::no_error) {

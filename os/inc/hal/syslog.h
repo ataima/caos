@@ -96,7 +96,7 @@ public:
 
 
 
-#define DO_LOG 1
+
 
 #if DO_LOG
 

@@ -20,6 +20,7 @@
 
 #include "hal.h"
 #include "halcomdevice.h"
+#include "kdebug.h"
 
 void caHalComDevice::Init(IDevice * instance,hal_llc_com_io *com, u32 mask) {
     caHalComDevice* dev=static_cast<caHalComDevice*>(instance);

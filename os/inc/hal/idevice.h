@@ -173,7 +173,6 @@ public:
     functor_IrqService7 IIrqService7;
     functor_IrqService8 IIrqService8;
     // METHOD LAUNCHED BY SVC FROM USER MODE
-    IDevice(void);
 };
 
 class caHalDeviceRules {
