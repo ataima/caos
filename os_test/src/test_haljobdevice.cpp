@@ -78,7 +78,8 @@ void caHalJobDevice_test_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
-    caHalJobDevice jobber(&hal_llc_scheduler, ioCtrlRequest::Task);
+    caHalJobDevice jobber;
+    caHalJobDevice::Init(&jobber,&hal_llc_scheduler, ioCtrlRequest::Task);
     caJobConfigure conf;
     caDeviceHandle port;
     u32 res1 = caHalDeviceRules::Open(&jobber, &conf,
@@ -95,7 +96,7 @@ void caHalJobDevice_test_class::test1(void) {
     CA_ASSERT(res1 == deviceError::no_error);
     ctrl.command = caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize;
     res1 = caHalDeviceRules::IoCtrl(&jobber, &port, &ctrl, ioCtrlRequest::Task);
-    CA_ASSERT(ctrl.params[0] == (1));
+    CA_ASSERT(ctrl.params[0] == (2));
     CA_ASSERT(res1 == deviceError::no_error);
     caScheduler::GetNextContext();
     caThreadContext ctx;
@@ -105,11 +106,9 @@ void caHalJobDevice_test_class::test1(void) {
     CA_ASSERT(res1 == deviceError::no_error);
     CA_ASSERT(port.rdSize == 0);
     CA_ASSERT(port.readed == sizeof (caThreadContext));
-    u32 res = memcmp(ctx.name, "PROVA", 5);
+    u32 res = memcmp(ctx.name, "idle", 4);
     CA_ASSERT(res == 0);
-    CA_ASSERT(ctx.cur_prio == caJobPriority::caThLevel6);
-    CA_ASSERT(ctx.pcb[3] == 1000);
-    CA_ASSERT(ctx.pcb[4] == 2000);
+    CA_ASSERT(ctx.cur_prio == caJobPriority::caThLevel0);
     CA_ASSERT((ctx.stack_start - ctx.stack_end) > 0x4000);
     CA_ASSERT(ctx.status == caJobStatus::thInit);
     ctrl.command = caJobDeviceCtrl::IoJobCtrlDirect::jobDestroy;
@@ -125,7 +124,8 @@ void caHalJobDevice_test_class::test2(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::Priority);
-    caHalJobDevice jobber(&hal_llc_scheduler, ioCtrlRequest::Task);
+    caHalJobDevice jobber;
+    caHalJobDevice::Init(&jobber,&hal_llc_scheduler, ioCtrlRequest::Task);
     caJobConfigure conf;
     caDeviceHandle port;
     u32 res1 = caHalDeviceRules::Open(&jobber, &conf,
@@ -142,7 +142,7 @@ void caHalJobDevice_test_class::test2(void) {
     CA_ASSERT(res1 == deviceError::no_error);
     ctrl.command = caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize;
     res1 = caHalDeviceRules::IoCtrl(&jobber, &port, &ctrl, ioCtrlRequest::Task);
-    CA_ASSERT(ctrl.params[0] == (1));
+    CA_ASSERT(ctrl.params[0] == (2));
     CA_ASSERT(res1 == deviceError::no_error);
     jobParam input1{"PROVA2", caJobPriority::caThLevel2,
         dummy, 1000, 2000, 0x4000};
@@ -152,7 +152,7 @@ void caHalJobDevice_test_class::test2(void) {
     CA_ASSERT(res1 == deviceError::no_error);
     ctrl.command = caJobDeviceCtrl::IoJobCtrlDirect::jobGetSize;
     res1 = caHalDeviceRules::IoCtrl(&jobber, &port, &ctrl, ioCtrlRequest::Task);
-    CA_ASSERT(ctrl.params[0] == (2));
+    CA_ASSERT(ctrl.params[0] == (3));
     CA_ASSERT(res1 == deviceError::no_error);
     for (res1 = 0; res1 < 1000; res1++)
         caScheduler::GetNextContext();

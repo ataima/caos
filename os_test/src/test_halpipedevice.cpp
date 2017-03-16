@@ -144,6 +144,7 @@ void caHalPipeDevice_test_class::test1(void) {
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
+    caOS::Init();
     sourceTask();
     destTask();
 
@@ -155,5 +156,6 @@ void caHalPipeDevice_test_class::test2(void) {
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-
+    caOS::Init();
+    
 }

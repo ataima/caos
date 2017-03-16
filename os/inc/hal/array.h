@@ -100,9 +100,10 @@ public:
 
     s_t PushBack(T obj) {
         s_t res = -1; // check !=-1
-        if (size < capacity) {
+        if (size < capacity) {                        
+            buff[size] = obj;
+            size++;
             res = size;
-            buff[size++] = obj;
             good = true;
         } else {
             good = false;

@@ -64,7 +64,7 @@ hal_llc_sys_time hal_llc_time{
     hll_dummy,
     hll_dummy,
     nullptr, nullptr, nullptr, nullptr, nullptr,
-    nullptr, nullptr, nullptr, nullptr};
+    nullptr, nullptr, nullptr, nullptr,nullptr};
 
 class caSysLog_test_class
 : public caTester {

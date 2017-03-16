@@ -115,6 +115,11 @@ static u32 hll_getday(void) {
     return 7;
 }
 
+
+static u32  hll_free_counter(void) {
+    return rand();
+}
+
 static u32 hll_dump(caStringStream<s8> *ss) {
     (*ss) << "IOCTRL DUMP" << caEnd::endl;
     timer_dump = 1;
@@ -179,6 +184,7 @@ hal_llc_sys_time hal_llc_time_1 = {
     hll_gethour,
     hll_getday, // TO DO mounth, year , millenium
     hll_settime,
+    hll_free_counter,
     hll_dump,
     hll_totick,
     hll_start,
@@ -232,7 +238,8 @@ void caHalSysTimerDevice_test_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer1);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer1);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -268,7 +275,8 @@ void caHalSysTimerDevice_test_class::test2(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer5);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer5);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -318,7 +326,8 @@ void caHalSysTimerDevice_test_class::test3(void) {
     _STOP();
     param_reset();
     u32 rd;
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer5);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer5);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -382,7 +391,8 @@ void caHalSysTimerDevice_test_class::test4(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer5);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer5);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -447,7 +457,8 @@ void caHalSysTimerDevice_test_class::test5(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer6);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer6);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -513,7 +524,8 @@ void caHalSysTimerDevice_test_class::test6(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer6);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer6);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -580,7 +592,8 @@ void caHalSysTimerDevice_test_class::test8(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer6);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer6);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -660,7 +673,8 @@ void caHalSysTimerDevice_test_class::test9(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer6);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer6);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;
@@ -753,7 +767,8 @@ void caHalSysTimerDevice_test_class::test10(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     param_reset();
-    caHalSysTimerDevice timerDev(& hal_llc_time_1, ioCtrlRequest::SysTimer6);
+    caHalSysTimerDevice timerDev;
+    caHalSysTimerDevice::Init(&timerDev,& hal_llc_time_1, ioCtrlRequest::SysTimer6);
     caSysTimerConfigure setup;
     setup.tick_ps = 12345678;
     setup.clock_ps = 11223344;

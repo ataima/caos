@@ -80,6 +80,12 @@ static bool hll_add_task(caThreadContext *ctx) {
     return true;
 }
 
+static void hll_start_scheduler(void) {
+}
+
+static void hll_stop_scheduler(void) {
+}
+
 hal_llc_scheduler_io hal_llc_scheduler = {
     hll_time,
     hll_totick,
@@ -87,7 +93,9 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     isvalidcontext,
     hll_enable_lock,
     hll_enable_unlock,
-    hll_req_schedule
+    hll_req_schedule,
+    hll_start_scheduler,
+    hll_stop_scheduler
 };
 
 void start_time_scheduler(void) {
@@ -171,9 +179,10 @@ void test_caThread_class::test1(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
+    CA_ASSERT(caScheduler::RemoveJob(0) == true);
     u32 index = caScheduler::AddJob("PROVA", caJobPriority::caThLevel6,
             dummy, 1000, 2000, 0x4000);
-    CA_ASSERT(index == (0));
+    CA_ASSERT(index == (1));
     caScheduler::GetNextContext();
     caThreadContext *ctx = caScheduler::GetCurrentContext();
     u32 res = memcmp(ctx->name, "PROVA", 5);
@@ -193,12 +202,13 @@ void test_caThread_class::test2(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
+    CA_ASSERT(caScheduler::RemoveJob(0) == true);
     u32 index1 = caScheduler::AddJob("PROVA1", caJobPriority::caThLevel6,
             dummy, 1000, 2000, 0x4000);
     u32 index2 = caScheduler::AddJob("PROVA2", caJobPriority::caThLevel1,
             dummy, 1000, 2000, 0x4000);
-    CA_ASSERT(index1 == (0));
-    CA_ASSERT(index2 == (1));
+    CA_ASSERT(index1 == (1));
+    CA_ASSERT(index2 == (2));
     caScheduler::GetNextContext();
     caThreadContext *ctx = caScheduler::GetCurrentContext();
     CA_ASSERT(ctx->status == caJobStatus::thInit);
@@ -233,12 +243,12 @@ void test_caThread_class::test3(void) {
     _PROJECT("C.A.O.S");
     _STOP();
     caScheduler::Init(caSchedulerMode::RoundRobin);
-    u32 i;
+    CA_ASSERT(caScheduler::RemoveJob(0) == true);
+    u32 i, index1;
     s8 buff[100];
-
     for (i = 0; i < 20; i++) {
         sprintf(buff, "PROVA%03d", i);
-        u32 index1 = caScheduler::AddJob(buff, caJobPriority::caThLevel6,
+        index1 = caScheduler::AddJob(buff, caJobPriority::caThLevel6,
                 dummy, 1000, 2000);
         CA_ASSERT(index1 == (i));
     }
@@ -265,6 +275,7 @@ void test_caThread_class::test4(void) {
     caScheduler::Init(caSchedulerMode::RoundRobin);
     u32 i, u;
     s8 buff[100];
+    CA_ASSERT(caScheduler::RemoveJob(0) == true);
     caThreadContext * ctxs[20];
     for (i = 0; i < 20; i++) {
         sprintf(buff, "PROVA%03d", i);
@@ -275,9 +286,9 @@ void test_caThread_class::test4(void) {
     CA_ASSERT(caScheduler::Size() == 20);
     for (i = 0; i < 100; i++) {
         sprintf(buff, "PROVA%03d", i % 20);
-        caScheduler::GetNextContext();
-        caThreadContext *ctx = caScheduler::GetCurrentContext();
-        CA_ASSERT(ctx->status == caJobStatus::thInit);
+    caScheduler::GetNextContext();
+    caThreadContext *ctx = caScheduler::GetCurrentContext();
+    CA_ASSERT(ctx->status == caJobStatus::thInit);
         ctxs[i % 20] = ctx;
         CA_ASSERT(ctx->cur_prio == caJobPriority::caThLevel6);
         CA_ASSERT(memcmp(ctx->name, buff, 8) == 0);

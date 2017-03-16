@@ -83,8 +83,9 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         ctx->nswitch = 0;
         caStrAux::StrNCpy(ctx->name, name, 64);
         //caScheduler::AddTask(ctx);
-        hal_llc_scheduler.hll_scheduler_add_atsk(ctx);
-        return ctx->index;
+        if (hal_llc_scheduler.hll_scheduler_add_atsk(ctx)) {
+            return ctx->index;
+        }
     }
     return CreateThreadResult::FailCreate;
 }
@@ -233,19 +234,24 @@ bool caNextTaskManager::Detach(void) {
     return true;
 }
 
+#include <stdio.h>
+
 bool caNextTaskManager::AddTask(caThreadContext *ctx) {
     bool res = false;
-    ctx->index = table.PushBack(ctx);
+    ctx->index = table.PushBack(ctx) - 1;
     res = (ctx->index != (s_t) - 1);
+    printf("ctx->index = %d   ",ctx->index);
+    printf("table.Size() = %d   ",table.Size());
+    printf("table.Capacity() = %d   \r\n",table.Capacity());
     if (res) {
         res = IsValidContext(ctx->index);
+        printf("Valid = %d   \r\n",res);
     }
     return res;
 }
 
 bool caNextTaskManager::RemoveTask(s_t idx) {
     bool res = false;
-
     if (IsValidContext(idx)) {
         caThreadContext *ctx = nullptr;
         if (table.At(ctx, idx) && (ctx != nullptr)) {
@@ -391,7 +397,7 @@ caThreadContext * caNextTaskManager::PriorityNextContext(caThreadContext *curren
 }
 
 bool caNextTaskManager::IsValidContext(u32 thIdx) {
-    return (thIdx < table.Size());
+    return ( thIdx < table.Size());
 }
 
 /* from interrupt service routine : must be fast!!*/
@@ -405,7 +411,7 @@ void caNextTaskManager::WakeUp(u32 thid) {
 
 u32 caNextTaskManager::ToSleep(u32 thid, u32 tick) {
     u32 res = 0;
-    if (thid < table.Size()) {
+    if (thid <= table.Size()) {
         caThreadContext * tmp = nullptr;
         table.At(tmp, thid);
         while (hal_llc_scheduler.hll_lock() == false) {
@@ -446,12 +452,9 @@ bool caScheduler::Init(caSchedulerMode req) {
     current_task = &main_ctx;
     res = mng.Init(taskList, MAX_TASK);
     // idle task always RUN task in scheduler , low priority     
-    caScheduler::AddJob("idle1",
-            caJobPriority::caThLevel1,
+    caScheduler::AddJob("idle",
+            caJobPriority::caThLevel0,
             nullTask);
-    //caScheduler::AddJob("idle2",
-    //        caJobPriority::caThLevel1,
-    //        nullTask);
     return res;
 }
 
@@ -533,7 +536,6 @@ void caScheduler::GetNextContext(void) {
     //Dbg::Put(ss.Str());
     CheckValid(current_task, 2);
     //Dbg::Put("\r\nSP = ",current_task->pcb[15]);
-
 #endif
     hal_llc_scheduler.hll_start_scheduler();
 }

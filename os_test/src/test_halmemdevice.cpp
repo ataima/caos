@@ -62,7 +62,8 @@ void caHalMemDevice_test_class::test1(void) {
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    caHalMemDevice mem(&hal_llc_mem, ioCtrlRequest::Memory);
+    caHalMemDevice mem;
+    caHalMemDevice::Init(&mem,&hal_llc_mem, ioCtrlRequest::Memory);
     caDeviceHandle port;
     caMemConfigure conf;
     u32 res1 = caHalDeviceRules::Open(&mem, &conf,
@@ -91,7 +92,8 @@ void caHalMemDevice_test_class::test2(void) {
     _AUTHOR("Coppi Angelo");
     _PROJECT("C.A.O.S");
     _STOP();
-    caHalMemDevice mem(&hal_llc_mem, ioCtrlRequest::Memory);
+    caHalMemDevice mem;
+    caHalMemDevice::Init(&mem,&hal_llc_mem, ioCtrlRequest::Memory);
     caDeviceHandle port;
     caMemConfigure conf;
     u32 res1 = caHalDeviceRules::Open(&mem, &conf,

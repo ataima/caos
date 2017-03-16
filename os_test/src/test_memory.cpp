@@ -23,10 +23,11 @@
 #include "memory.h"
 #include <iostream>
 
+#define MEM_SIZE  (1024*1024)
 
-static u32 theHeap[100000];
+static u32 theHeap[MEM_SIZE];
 u32* __heap_base__ = &theHeap[0];
-u32* __heap_end__ = &theHeap[100000];
+u32* __heap_end__ = &theHeap[MEM_SIZE];
 
 static u32 getstartmem(void) {
     return ptr_to_uint(__heap_base__);
@@ -37,7 +38,7 @@ static u32 getstopmem(void) {
 }
 
 static u32 getsizemem(void) {
-    return 100000*sizeof(u32);
+    return MEM_SIZE*sizeof(u32);
 }
 
 static u32 tick(void) {
@@ -94,8 +95,8 @@ void caMemory_test_class::test1(void) {
     CA_ASSERT(caMemory::Good() != 0);
     CA_ASSERT(caMemory::GetStartAddress() == __heap_base__);
     CA_ASSERT(caMemory::GetEndAddress() == __heap_end__);
-    CA_ASSERT(caMemory::GetTotalSize() == 100000 * sizeof (u32));
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetTotalSize() == MEM_SIZE * sizeof (u32));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     CA_ASSERT(caMemory::GetHeaderBlock() == BLOCKSIZE);
 }
 
@@ -110,8 +111,8 @@ void caMemory_test_class::test2(void) {
     CA_ASSERT(caMemory::Good() != 0);
     CA_ASSERT(caMemory::GetStartAddress() == __heap_base__);
     CA_ASSERT(caMemory::GetEndAddress() == __heap_end__);
-    CA_ASSERT(caMemory::GetTotalSize() == 100000 * sizeof (u32));
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetTotalSize() == MEM_SIZE * sizeof (u32));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     CA_ASSERT(caMemory::GetHeaderBlock() == BLOCKSIZE);
     caMemory::Clean();
     CA_ASSERT(caMemory::Good() == 0);
@@ -132,17 +133,17 @@ void caMemory_test_class::test3(void) {
     CA_ASSERT(caMemory::Good() != 0);
     CA_ASSERT(caMemory::GetStartAddress() == __heap_base__);
     CA_ASSERT(caMemory::GetEndAddress() == __heap_end__);
-    CA_ASSERT(caMemory::GetTotalSize() == 100000 * sizeof (u32));
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetTotalSize() == MEM_SIZE * sizeof (u32));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     CA_ASSERT(caMemory::GetHeaderBlock() == BLOCKSIZE);
     void * p = caMemory::Allocate(caMemory::GetHeaderBlock()*100);
     CA_ASSERT(p != nullptr);
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(5 * BLOCKSIZE) - caMemory::GetHeaderBlock()*100));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(5 * BLOCKSIZE) - caMemory::GetHeaderBlock()*100));
     u32 size = 0;
     u32 res = caMemory::Free(p, &size);
     CA_ASSERT(res == true);
     CA_ASSERT(caMemory::GetHeaderBlock()*101 == size);
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     caMemory::Clean();
 }
 
@@ -156,19 +157,19 @@ void caMemory_test_class::test4(void) {
     CA_ASSERT(caMemory::Good() != 0);
     CA_ASSERT(caMemory::GetStartAddress() == __heap_base__);
     CA_ASSERT(caMemory::GetEndAddress() == __heap_end__);
-    CA_ASSERT(caMemory::GetTotalSize() == 100000 * sizeof (u32));
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetTotalSize() == MEM_SIZE * sizeof (u32));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     CA_ASSERT(caMemory::GetHeaderBlock() == BLOCKSIZE);
     void * p = caMemory::Allocate(caMemory::GetHeaderBlock()*100);
     CA_ASSERT(p != nullptr);
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(5 * BLOCKSIZE) - caMemory::GetHeaderBlock()*100));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(5 * BLOCKSIZE) - caMemory::GetHeaderBlock()*100));
     u32 res = caMemory::Find(p);
     CA_ASSERT(caMemory::GetHeaderBlock()*101 == res);
     u32 size = 0;
     res = caMemory::Free(p, &size);
     CA_ASSERT(res == true);
     CA_ASSERT(caMemory::GetHeaderBlock()*101 == size);
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     caMemory::Clean();
 }
 
@@ -189,13 +190,13 @@ void caMemory_test_class::test5(void) {
     CA_ASSERT(caMemory::Good() != 0);
     CA_ASSERT(caMemory::GetStartAddress() == __heap_base__);
     CA_ASSERT(caMemory::GetEndAddress() == __heap_end__);
-    CA_ASSERT(caMemory::GetTotalSize() == 100000 * sizeof (u32));
-    CA_ASSERT(caMemory::GetAvailMemory() == ((100000 * sizeof (u32))-(3 * BLOCKSIZE)));
+    CA_ASSERT(caMemory::GetTotalSize() == MEM_SIZE * sizeof (u32));
+    CA_ASSERT(caMemory::GetAvailMemory() == ((MEM_SIZE * sizeof (u32))-(3 * BLOCKSIZE)));
     CA_ASSERT(caMemory::GetHeaderBlock() == BLOCKSIZE);
     u32 u;
-    s8 buff[100000];
+    s8 buff[MEM_SIZE];
     caStringStream <s8>ss;
-    ss.Init(buff, 100000);
+    ss.Init(buff, MEM_SIZE);
     for (u = 0; u < 1000; u++) {
         u32 size = randomgen(32, 1000);
         void * p = caMemory::Allocate(size);

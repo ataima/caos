@@ -21,7 +21,7 @@
 
 
 
-#define MAX_TASK        128
+#define MAX_TASK                 128
 
 #define HAVE_DUMP_OBJ           0
 //MINIUART 

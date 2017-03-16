@@ -112,7 +112,7 @@ void caArray_test_class::test3(void) {
     int i;
     for (i = 0; (s_t) (i) < v.Capacity(); i++) {
         t = v.PushBack(i);
-        CA_ASSERT(t == (s_t) i);
+        CA_ASSERT(t == (s_t) i+1);
         CA_ASSERT(v.Good() == true);
     }
     t = v.PushBack(i);
@@ -161,7 +161,7 @@ void caArray_test_class::test4(void) {
     s_t t;
     int i, u;
     for (t = 0; t < v.Capacity(); t++) {
-        CA_ASSERT(v.PushBack(0) == t); // size++
+        CA_ASSERT(v.PushBack(0) == t+1); // size++
     }
     for (i = 0, t = 0; t < v.Capacity(); t++, i++) {
         CA_ASSERT(v.SetAt(i, t) == true);
@@ -193,9 +193,9 @@ void caArray_test_class::test5(void) {
     CA_ASSERT(v.Good() == true);
     CA_ASSERT(v.Empty() == true);
     int u;
-    CA_ASSERT(v.PushBack(5) == 0); // size++
-    CA_ASSERT(v.PushBack(10) == 1); // size++
-    CA_ASSERT(v.PushBack(15) == 2); // size++
+    CA_ASSERT(v.PushBack(5) == 1); // size++
+    CA_ASSERT(v.PushBack(10) == 2); // size++
+    CA_ASSERT(v.PushBack(15) == 3); // size++
     CA_ASSERT(v.Swap(0, 2) == true);
     CA_ASSERT(v.At(u, 2) == true);
     CA_ASSERT(u == 5);
@@ -225,10 +225,10 @@ void caArray_test_class::test6(void) {
     CA_ASSERT(v.Good() == true);
     CA_ASSERT(v.Empty() == true);
     int u;
-    CA_ASSERT(v.PushBack(5) == 0); // size++
-    CA_ASSERT(v.PushBack(10) == 1); // size++
-    CA_ASSERT(v.PushBack(15) == 2); // size++
-    CA_ASSERT(v.PushBack(20) == 3); // size++
+    CA_ASSERT(v.PushBack(5) == 1); // size++
+    CA_ASSERT(v.PushBack(10) == 2); // size++
+    CA_ASSERT(v.PushBack(15) == 3); // size++
+    CA_ASSERT(v.PushBack(20) == 4); // size++
     CA_ASSERT(v.Size() == 4); // size++
     CA_ASSERT(v.Good() == true);
     CA_ASSERT(v.Empty() == false);
@@ -258,10 +258,10 @@ void caArray_test_class::test7(void) {
     CA_ASSERT(v.Good() == true);
     CA_ASSERT(v.Empty() == true);
     int u;
-    CA_ASSERT(v.PushBack(5) == 0); // size++
-    CA_ASSERT(v.PushBack(10) == 1); // size++
-    CA_ASSERT(v.PushBack(15) == 2); // size++
-    CA_ASSERT(v.PushBack(20) == 3); // size++
+    CA_ASSERT(v.PushBack(5) == 1); // size++
+    CA_ASSERT(v.PushBack(10) == 2); // size++
+    CA_ASSERT(v.PushBack(15) == 3); // size++
+    CA_ASSERT(v.PushBack(20) == 4); // size++
     CA_ASSERT(v.Size() == 4); // size++
     CA_ASSERT(v.Good() == true);
     CA_ASSERT(v.Empty() == false);
