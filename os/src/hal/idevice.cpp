@@ -45,7 +45,6 @@ u32 caHalDeviceRules::Open(IDevice *dev, caIDeviceConfigure * setup,
         if (isOpen(dev) != 0) {
             res = deviceError::error_device_already_opened;
         } else {
-            Dbg::Put(__func__);
             caMemAux<u32>::MemSet((u32 *) port, 0, sizeof (caDeviceHandle));
             res = dev->IOpen(dev, setup, port);
             if (res != deviceError::no_error) {
@@ -237,7 +236,6 @@ u32 caHalDeviceRules::IoCtrl(IDevice *dev, caDeviceHandle *port,
                     res = deviceError::error_invalid_handle_port;
                 } else {
                     res = dev->IIoCtrl(dev, port, inp);
-
                 }
                 break;
         }

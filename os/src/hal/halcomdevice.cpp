@@ -25,7 +25,7 @@
 void caHalComDevice::Init(IDevice * instance,hal_llc_com_io *com, u32 mask) {
     caHalComDevice* dev=static_cast<caHalComDevice*>(instance);
     dev->isOpen = 0;
-    dev->signalRx = dev->signalTx = 0;
+    dev->signalRx = dev->signalTx = -1;
     dev->link = com;
     dev->handle_guid = BASE_HANDLE;
     dev->mask_guid = (mask & ioCtrlRequest::maskIoCtrl);    
@@ -61,7 +61,7 @@ u32 caHalComDevice::Open(IDevice * instance,caIDeviceConfigure * in,
         dev->Tx.Init(dev->TxBuffer, QUEUESIZE);
         dev->link->hll_lnk_obj = (void *) dev;
         dev->isOpen++;
-        dev->signalTx = dev->signalRx = 0;
+        dev->signalTx = dev->signalRx = -1;
         port->handle = caHalDeviceRules::addHandle(dev->handle_guid, dev->mask_guid);
         port->status = caDeviceHandle::statusHandle::Open;
         port->tStart = dev->link->hll_tick();

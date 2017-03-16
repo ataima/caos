@@ -38,7 +38,7 @@ u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
             hal_llc_reset_req.hll_led_on(1);
         }
         st = !st;
-        caScheduler::Sleep(1000);
+        caScheduler::Sleep(250);
     };
     return 0;
 }
@@ -103,7 +103,7 @@ u32 consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
             }
             res = caOS::Close(port);
         } else {
-            Dbg::Put("Cannot Register Rx signalling\r\n");
+            Dbg::Put("Cannot Register Rx signalling\r\n",res);
         }
     } else {
         Dbg::Put("Cannot open com1\r\n",res);
@@ -120,12 +120,9 @@ int hal_main(void) {
     caScheduler::AddJob("console",
             caJobPriority::caThLevel6,
             consoleTask);
-    //caScheduler::AddJob("TTY",
-    //        caJobPriority::caThLevel6,
-    //        consoleTask );
     hal_llc_time_1.hll_start();
     hal_llc_int_req.hll_wait_for_interrupt();
-    hal_llc_time_1.hll_stop();
     caScheduler::RemoveAllJobs();
+    hal_llc_time_1.hll_stop();
     return 0;
 }

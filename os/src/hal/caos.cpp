@@ -227,11 +227,9 @@ bool caOS::GetDevice(const char * name, s32 & offset) {
         if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {
             offset = (s32) i;
             res = true;
-            Dbg::Put("offset = ",offset);
             break;
         }
     }
-            Dbg::Put("res = ",res);
     return res;
 }
 
@@ -265,11 +263,9 @@ deviceError caOS::Open(const char * name,
     if (name == nullptr) {
         res = deviceError::error_unknow_device_name;
     } else {
-        if (caOS::GetDevice(name, offset)) {
-            Dbg::Put(__func__);
+        if (caOS::GetDevice(name, offset)) {            
             res = caHalDeviceRules::Open(allDevices[offset].device, &in, &out, allDevices[offset].mask);
         } else {
-
             res = deviceError::error_unknow_device_name;
         }
     }
@@ -325,7 +321,6 @@ deviceError caOS::IoCtrl(caDeviceHandle & port, caIDeviceCtrl & in) {
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::IoCtrl(allDevices[offset].device, &port, &in, allDevices[offset].mask);
     } else {
-
         res = deviceError::error_invalid_handle_port;
     }
     return (deviceError) res;

@@ -234,18 +234,12 @@ bool caNextTaskManager::Detach(void) {
     return true;
 }
 
-#include <stdio.h>
-
 bool caNextTaskManager::AddTask(caThreadContext *ctx) {
     bool res = false;
     ctx->index = table.PushBack(ctx) - 1;
     res = (ctx->index != (s_t) - 1);
-    printf("ctx->index = %d   ",ctx->index);
-    printf("table.Size() = %d   ",table.Size());
-    printf("table.Capacity() = %d   \r\n",table.Capacity());
     if (res) {
         res = IsValidContext(ctx->index);
-        printf("Valid = %d   \r\n",res);
     }
     return res;
 }
@@ -310,6 +304,10 @@ caThreadContext * caNextTaskManager::RoundRobinNextContext(caThreadContext *) {
         }
     }
     //SELECT
+    if (table.Size() == 0) {
+        cur_index = -1;
+        return nullptr;
+    }
     cur_index++;
     if (cur_index >= table.Size())
         cur_index = 0;
