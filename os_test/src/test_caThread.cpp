@@ -35,6 +35,8 @@ static bool isvalidcontext(u32 num) {
         return false;
     if (num == 0)
         return false;
+    if (num == -1)
+        return false;
     return true;
 }
 
