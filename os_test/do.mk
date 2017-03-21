@@ -96,6 +96,7 @@ add_ext_src:
 	$(call link_ext_file,memory.cpp)
 	$(call link_ext_file,scheduler.cpp)
 	$(call link_ext_file,kdebug.cpp)
+	$(call link_ext_file,console.cpp)
 
 
 remove_ext_src:
@@ -111,7 +112,7 @@ remove_ext_src:
 	$(call detach_ext_file,memory.cpp)
 	$(call detach_ext_file,scheduler.cpp)
 	$(call detach_ext_file,kdebug.cpp)
-
+	$(call detach_ext_file,console.cpp)
 	
 	
 

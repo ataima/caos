@@ -67,11 +67,7 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
     // MAX PRIORITY
     if (irq->basepending.asBit.timer) {
         caSysTimer::IrqService();
-        if (Lock.Get() != LOCK_FREE) {
-            Dbg::Put("Lock BUsy skip scheduler\n");
-        }
-        else
-        {
+        if (Lock.Get() == LOCK_FREE) {
         res = -1;
         }
     }
@@ -92,12 +88,14 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
             Dbg::Put("BASE = ", irq->basepending.asReg);
             Dbg::Put("GPU0 = ", irq->gpu0.asReg);
             Dbg::Put("MISSING ISR TO CALL\r\n");
+            while(1){};
         }
     }
     if (irq->basepending.asBit.pending2) {
         Dbg::Put("BASE = ", irq->basepending.asReg);
         Dbg::Put("GPU1 = ", irq->gpu1.asReg);
         Dbg::Put("MISSING ISR TO CALL\r\n");
+        while(1){};
     }
     return res;
 }

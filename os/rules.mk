@@ -41,7 +41,7 @@ ifeq ($(HARDWARE),RASPI2)
 	#CROSS TOOLS 
 	 ARMGNU:=arm-none-eabi
 	# CURRENT DEBUG LEVEL
-	 DBG:= -O2
+	 DBG:= -O0 -ggdb
 	# OBJDUMP CPU SPEC
 	 OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS

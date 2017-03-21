@@ -29,10 +29,7 @@ public:
     static void Hex(u32 d);
     static void Dec(s32 d);
     static void Bin(u32 d);
-    static void ByeBye(void);
-    static void MMU(void);
-    static void CACHE(void);
-    static void START(void);
+
 
     static inline void uSend(u32 c) {
         hal_llc_com1.hll_send(c);
@@ -146,6 +143,11 @@ namespace Dbg {
     void Put(const char *msg) {
         caLowLevelDebug::Msg(msg);
     }
+    
+    void Put(const char c) {
+        caLowLevelDebug::uSend(c);
+    }
+    
 }
 
 

@@ -172,7 +172,6 @@ void caMiniUart::IrqServiceRx(void) {
         if (lsr.asBit.overrun)rxOverrun++;
         if (lsr.asBit.rxready == 0) break;
         rxBuff[rxPos] = caMiniUart::GetIO();
-        caMiniUart::SetIO(rxBuff[rxPos]);
         rxPos++;
         symbol--;
     }

@@ -25,6 +25,7 @@
         <df name="hw">
           <df name="rasp2">
             <in>cache.cpp</in>
+            <in>coprocessor.cpp</in>
             <in>cpu.cpp</in>
             <in>gpio.cpp</in>
             <in>hal.cpp</in>
@@ -261,6 +262,16 @@
             <pElem>inc/hw/rasp2</pElem>
             <pElem>inc</pElem>
             <pElem>inc/hal</pElem>
+            <pElem>src/hw/rasp2</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/hw/rasp2/coprocessor.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>inc/hw/rasp2</pElem>
+            <pElem>inc/hal</pElem>
+            <pElem>inc</pElem>
             <pElem>src/hw/rasp2</pElem>
           </incDir>
         </ccTool>

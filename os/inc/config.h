@@ -32,8 +32,6 @@
 #define HAVE_SPI_2      0
 //LEDS 
 #define HAVE_LEDS               1
-// ATOMIC LOCK
-#define  HAVE_ATOMIC_LOCK       1
 // ARM AP804 SYSTEM TIMER
 #define HAVE_AP804_SYS_TIMER    1
 // SYSTEM MEROY LOG

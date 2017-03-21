@@ -226,7 +226,8 @@ bool caOS::GetDevice(const char * name, s32 & offset) {
         // TO DO BINARY SEARCH ON allDevices
         if (caStrAux::StrICmp(allDevices[i].name, name) == 0) {
             offset = (s32) i;
-            res = true;
+                    res = true;
+
             break;
         }
     }
@@ -263,9 +264,10 @@ deviceError caOS::Open(const char * name,
     if (name == nullptr) {
         res = deviceError::error_unknow_device_name;
     } else {
-        if (caOS::GetDevice(name, offset)) {            
+        if (caOS::GetDevice(name, offset)) {
             res = caHalDeviceRules::Open(allDevices[offset].device, &in, &out, allDevices[offset].mask);
         } else {
+
             res = deviceError::error_unknow_device_name;
         }
     }
@@ -297,8 +299,24 @@ deviceError caOS::Write(caDeviceHandle & port) {
 }
 
 deviceError caOS::Write(caDeviceHandle & port, caStringStream<s8> &ss) {
-    port.wrBuff = reinterpret_cast<u8*> (ss.Str());
+    port.wrBuff = (u8*) ss.Str();
             port.wrSize = ss.Size();
+            port.writed = 0;
+
+    return caOS::Write(port);
+}
+
+deviceError caOS::Write(caDeviceHandle & port, const char *msg) {
+    port.wrBuff = (u8*) msg;
+            port.wrSize = caStrAux::StrLen(msg);
+            port.writed = 0;
+
+    return caOS::Write(port);
+}
+
+deviceError caOS::Write(caDeviceHandle & port, s8 *msg, s_t size) {
+    port.wrBuff = (u8*) msg;
+            port.wrSize = size;
 
     return caOS::Write(port);
 }
@@ -321,6 +339,7 @@ deviceError caOS::IoCtrl(caDeviceHandle & port, caIDeviceCtrl & in) {
     if (caOS::GetDevice(port, offset)) {
         res = caHalDeviceRules::IoCtrl(allDevices[offset].device, &port, &in, allDevices[offset].mask);
     } else {
+
         res = deviceError::error_invalid_handle_port;
     }
     return (deviceError) res;
@@ -438,24 +457,24 @@ deviceError caOS::LogStop(const char * name) {
     return (deviceError) res;
 }
 
-deviceError caOS::LogGet(const char * name, deviceloglevels v,s8 & out) {
+deviceError caOS::LogGet(const char * name, deviceloglevels v, s8 & out) {
     u32 res = deviceError::no_error;
             s32 offset;
     if (name == nullptr) {
         res = deviceError::error_unknow_device_name;
     } else {
         if (caOS::GetDevice(name, offset)) {
-            IDevice * dev = allDevices[offset].device;            
-                caSysLog *caLog = dev->IGetDeviceLog(dev);
-                if (caLog != nullptr) {
-                    if (caLog->IsValid()) {
-                            caLog->Stream(v).Remove(&out,1);
-                    } else {
-                        res = deviceError::error_log_not_set;
-                    }
+            IDevice * dev = allDevices[offset].device;
+                    caSysLog *caLog = dev->IGetDeviceLog(dev);
+            if (caLog != nullptr) {
+                if (caLog->IsValid()) {
+                    caLog->Stream(v).Remove(&out, 1);
                 } else {
-                    res = deviceError::error_log_null;
+                    res = deviceError::error_log_not_set;
                 }
+            } else {
+                res = deviceError::error_log_null;
+            }
         } else {
 
             res = deviceError::error_unknow_device_name;

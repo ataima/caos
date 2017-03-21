@@ -27,6 +27,8 @@
 #include "scheduler.h"
 #include "memory.h"
 #include "caos.h"
+#include "kdebug.h"
+
 
 s8 caConsole::buffio[2048];
 pairCmd caConsole::commands[MAX_CONSOLE_COMMAND];
@@ -138,7 +140,7 @@ void caConsole::Dump(u8 * buff, u32 readed, caStringStream<s8> &ss) {
     ss << caStringFormat::hex;
     for (i = 0; i < readed;) {
         if (!ss.Good())break;
-        ss << ptr_to_uint(ptr)<< " - ";
+        ss << ptr_to_uint(ptr) << " - ";
         for (u = 0; u < 4 && i < readed; u++, i++) {
             if (!ss.Good())break;
             ss << *ptr++ << "  ";
@@ -424,6 +426,7 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
     ss << ":" << hal_llc_time_1.hll_min() << ":" << hal_llc_time_1.hll_sec();
     ss << ":" << hal_llc_time_1.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
     res = caOS::Write(port, ss);
+    /*
     TokenString<u8> tmp;
     iss>>tmp;
     if (iss.Good()) {
@@ -440,6 +443,75 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
             SyntaxError(port, iss);
         }
     }
+     * */
     return res;
 }
 
+
+
+//////////////////////////////////////////////////////////////////////
+//// ENTRY POINT TASK CONSOLE
+//////////////////////////////////////////////////////////////////////
+// TO DO FROM P1 port point to any king of io device...
+// FOR NOW ONLY SERIAL....
+
+u32 caConsole::consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
+    u8 buff_in[CONS_LINE_LENGHT];
+    caComDeviceConfigure in;
+    caDeviceHandle port;
+    deviceError res;
+    caStringStream<s8> tt;
+    caConsole::Init();
+    in.speed = 115200;
+    in.data = 8;
+    in.parity = 0;
+    in.stop = 1;
+    res = caOS::Open("TTY1", in, port);
+    if (res == deviceError::no_error) {
+        caOS::Write(port,"Welcome to caOS console....\n");
+        caComDeviceCtrl comCtrl;
+        comCtrl.command = caComDeviceCtrl::IoComCtrlDirect::comAddSignalRx;
+        comCtrl.params[0] = thIdx;
+        res = caOS::IoCtrl(port, comCtrl);
+        if (res == deviceError::no_error) {
+            while (1) {
+                port.rdBuff = buff_in;
+                port.readed = 0;
+                do {
+                    port.rdSize = 1;
+                    caScheduler::WaitForSignal();
+                    res = caOS::Read(port);
+                    if (res == deviceError::no_error) {
+                        if (port.readed > 0) {
+                            //echo to sender
+                            port.wrBuff = port.rdBuff - 1;
+                            port.writed = 0;
+                            port.wrSize = 1;
+                            res = caOS::Write(port);
+                        }
+                        if (port.readed > 0 && buff_in[port.readed - 1] == '\r') {    
+                            res = caOS::Write(port,"\n");
+                            break;
+                        }
+                    } else {
+                        res = caOS::Write(port,"read error !");
+                    }
+                } while (port.readed < (CONS_LINE_LENGHT - 1));
+                if (port.readed > 0) {
+                    u32 endC = port.readed - 1;
+                    buff_in[endC] = '\0';
+                    caTokenizeSStream<u8> iss;
+                    iss.Init(buff_in, endC, 0);
+                    iss.Forward(endC);
+                    caConsole::Execute(iss, port);
+                }
+            }
+            res = caOS::Close(port);
+        } else {
+            res = caOS::Write(port,"tty ioctrl add signal rx error !");
+        }
+    } else {
+        Dbg::Put("Cannot open com1\r\n", res);
+    }
+    return res;
+}

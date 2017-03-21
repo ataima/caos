@@ -33,6 +33,7 @@ typedef struct tag_pair_str_func {
 
 
 #define MAX_CONSOLE_COMMAND   8
+#define CONS_LINE_LENGHT 1024 
 
 class caConsole {
 private:
@@ -50,9 +51,10 @@ private:
     static deviceError Command_READ_DEVICE(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
     static deviceError Command_WRITE_DEVICE(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
     static deviceError Command_QUIT(caDeviceHandle &port, caTokenizeSStream <u8> & iss);
-public:
-    static u32 Init(void);
     static deviceError Execute(caTokenizeSStream <u8> & in, caDeviceHandle &out);
+public:
+    static u32 Init(void);  // from caos::Init
+    static u32 consoleTask(u32 thIdx, u32 p1, u32 p2 );  //from main
 };
 
 

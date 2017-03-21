@@ -109,6 +109,8 @@ public:
     static deviceError Open(const char * device, caIDeviceConfigure & in, caDeviceHandle & out);
     static deviceError Close(caDeviceHandle & port);
     static deviceError Write(caDeviceHandle & port);
+    static deviceError Write(caDeviceHandle & port,const char *msg);
+    static deviceError Write(caDeviceHandle & port,s8 *msg, s_t size);
     static deviceError Write(caDeviceHandle & port, caStringStream<s8> &ss);
     static deviceError Read(caDeviceHandle & port);
     static deviceError Read(caDeviceHandle & port, caTokenizeSStream<s8> &in);
