@@ -9,7 +9,7 @@ GDB:=gdb-7.12.1.tar.gz
 
 
 #SET DESTINATION PATH
-CROSS_GCC_NAME:=cross-gcc-self-build
+CROSS_GCC_NAME:=../cross-gcc-self-build
 
 #SET TARGET TYPE
 #TARGET:=i686-elf

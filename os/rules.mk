@@ -54,7 +54,7 @@ ifeq ($(HARDWARE),RASPI2)
 	 LK_OPTS= -M -T $(ROOT_DIR)/src/hw/rasp2/ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN
 	# ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
-	 ARMPATH:=$(shell pwd)/../cross-gcc-self-build/$(ARMGNU)/bin/
+	 ARMPATH:=$(shell pwd)/../$(ARMGNU)/bin/
 	# CROSS TOOOL PROGRAMS
 	 CROSS_CC:=$(ARMPATH)$(ARMGNU)-gcc 
 	 CROSS_CPP:=$(ARMPATH)$(ARMGNU)-g++ 
