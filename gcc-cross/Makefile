@@ -133,7 +133,7 @@ binutils_clean:
   
 binutils_configure: binutils_clean
 	@mkdir $(ROOT)/$(B_BINUTILS)
-	@echo "configure binutils to target"	
+	@echo "configure binutils to target --prefix=$(DEST_PATH) --target=$(TARGET)"	
 	@cd $(ROOT)/$(B_BINUTILS) && \
 	../$(V_BINUTILS)/configure --prefix=$(DEST_PATH) --target=$(TARGET)  --disable-nls 
 
@@ -150,16 +150,16 @@ binutils_test:
 	make -C $(B_BINUTILS) check
 
 
-binutils_rebuild: binutils_clean binutils_configure binutils_build binutils_test
+binutils_rebuild: binutils_clean binutils_configure binutils_build binutils_test binutils_install
 
 gcc_clean:
 	@echo "REMOVE OLD GCC BUILD"
 	rm -rfv $(ROOT)/$(B_CROSS_GCC)
 	
 gcc_configure:
-	@if [ -a $(ROOT)/$(V_CROSS_GCC)/gmp ] ; then rm $(ROOT)/$(V_CROSS_GCC)/gmp ; fi;
-	@if [ -a $(ROOT)/$(V_CROSS_GCC)/mpc ] ; then rm $(ROOT)/$(V_CROSS_GCC)/mpc ; fi;
-	@if [ -a $(ROOT)/$(V_CROSS_GCC)/mpfr ] ; then rm $(ROOT)/$(V_CROSS_GCC)/mpfr ; fi;
+	@if [ -a $(ROOT)/$(V_CROSS_GCC)/gmp ] ; then rm -rf $(ROOT)/$(V_CROSS_GCC)/gmp ; fi;
+	@if [ -a $(ROOT)/$(V_CROSS_GCC)/mpc ] ; then rm -rf $(ROOT)/$(V_CROSS_GCC)/mpc ; fi;
+	@if [ -a $(ROOT)/$(V_CROSS_GCC)/mpfr ] ; then rm -rf $(ROOT)/$(V_CROSS_GCC)/mpfr ; fi;
 	@cd $(ROOT)/$(V_CROSS_GCC) &&\
 	ln -s $(ROOT)/$(V_GMP) gmp &&\
 	ls -al gmp &&\

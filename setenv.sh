@@ -1,8 +1,8 @@
 #!/bin/bash -x
 
 PWD=$(pwd)
-NAME=arm-none-eabi
+NAME=$(cat ./gcc-cross/conf.mk | grep TARGET:= | sed 's/:=/ /g'| awk '{print $2}')
 
 CROSSGCC=$PWD/$NAME
-
-export PATH=$CROSSGCC/bin:$CROSSGCC/arm-none-eabi/bin:/usr/bin:/bin
+echo "CURRENT CROSS PLATFORM : $NAME"
+export PATH=$CROSSGCC/bin:$CROSSGCC/$NAME/bin:/usr/bin:/bin

@@ -71,7 +71,7 @@
         <element flagsID="0"
                  commonFlags="-Wpedantic -std=c++11 -nostdlib -fno-rtti -fno-exceptions -ffreestanding -m32"/>
         <element flagsID="1"
-                 commonFlags="-march=armv7ve -mtune=cortex-a7 -std=c++11 -fno-rtti -fno-exceptions -ffreestanding"/>
+                 commonFlags="-mtune=cortex-a7 -march=armv7ve+simd -std=c++11 -fno-rtti -fno-exceptions -ffreestanding"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -87,6 +87,14 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <folder path="0/src/hal">
+        <ccTool>
+          <incDir>
+            <pElem>inc</pElem>
+            <pElem>inc/hal</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <folder path="0/src/hw">
         <ccTool>
           <incDir>
@@ -95,165 +103,72 @@
           </incDir>
         </ccTool>
       </folder>
-      <folder path="0/src/hw/simula">
-        <ccTool>
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
       <item path="src/hal/caos.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/console.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/devicehandle.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halcomdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/haljobdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halmain.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halmemdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halpipedevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/halsystimerdevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/idevice.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/kdebug.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/memaux.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/memory.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/scheduler.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/stream.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/stub_gdb.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hal/syslog.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>inc/hal</pElem>
-            <pElem>inc</pElem>
-            <pElem>src/hal</pElem>
-          </incDir>
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/hw/rasp2/cache.cpp" ex="false" tool="1" flavor2="8">
@@ -405,10 +320,21 @@
       </item>
       <item path="src/hw/simula/hal.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>inc/hw/simula</pElem>
+            <pElem>.</pElem>
+            <pElem>inc</pElem>
+            <pElem>inc/hal</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/hw/simula/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>inc</pElem>
+            <pElem>inc/hal</pElem>
+            <pElem>inc/hw/simula</pElem>
+          </incDir>
         </ccTool>
       </item>
     </conf>

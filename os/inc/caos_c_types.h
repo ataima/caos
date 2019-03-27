@@ -74,11 +74,11 @@ inline void * uint_to_ptr(u32 v) {
 
 
 
-/* READ ONLY !*/
+/* READ ONLY ! : todo*/
 #define _R_  
-/* WRITE ONLY !*/
+/* WRITE ONLY ! : todo*/
 #define _W_   
-/* READ AND WRITE  !*/
+/* READ AND WRITE !: todo*/
 #define _RW_  
 
 

@@ -9,7 +9,7 @@ and then :
 
 do: make phase 1
 ----> donwload source package, expand package, build binutils, check binutils
- 
+----> make phase1_2 for skip download  
 do: sudo make binutils_install
  ---> install binutils 
  
@@ -20,7 +20,7 @@ do: sudo make binutils_install
  
  sudo make gcc_install
  
- do make phase3
+ do make phase3 ( optional , remove all !!)
  ---> clean all subdir
  
 

@@ -50,13 +50,16 @@ typedef enum tag_ca_thread_priority {
 
 typedef enum tag_ca_thread_status {
     thUnknow = 0,
-    //thFreeze = 1,
+    thSleepForSignal = 1,
     thStop = 2,
     thSleep = 4,
     thRemove = 8,
     thRun = 0x40,
     thInit = 0x80,
-    thRunning = 0xc0
+    thRunning = 0xc0,
+    thFreezing = 0x81,
+    thStopping = 0x82,
+    thSleeping = 0x84
 } caJobStatus;
 
 typedef struct tag_ca_thread_context {
@@ -109,6 +112,7 @@ public:
     static bool IsValidContext(u32 thIdx);
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
+    static u32 ToSleepForSignal(u32 thid);
     static bool ChangePriority(s_t thIdx, caJobPriority newPrio);
  
     static inline s_t Size(void) {
@@ -143,7 +147,8 @@ private:
         static void DumpPcb(caStringStream<s8> & ss,   caThreadContext *ctx);
 
     };
-
+public: 
+    static caThreadContext *GetContextFromIdx(u32 idx);
 private:
 
     static caNextTaskManager mng;
@@ -155,6 +160,13 @@ private:
 #if DEBUG_CHECK_TASK    
     static void CheckValid( caThreadContext *ctx,u32 p);
     static void Panic(void);
+    static void InvalidTask(u32 idx);
+    static void InfoSwitchTask(u32 oldIdx, u32 newIdx);
+#else
+    #define    Panic()       
+    #define    CheckValid(ctx,p)
+    #define    InvalidTask(idx)
+    #define    InfoSwitchTask(oldidx,newidx)
 #endif        
     static void EndTask(u32 result);
     static u32 StartTask(void);
@@ -216,14 +228,9 @@ public:
 
     static bool RemoveAllJobs(void);
 
-
-#define SLEEP_FOR_EVER 0xffffffff
-
     static u32 Sleep(u32 ms);
 
-    static inline u32 WaitForSignal(void) {
-        return Sleep(SLEEP_FOR_EVER);
-    }
+    static u32 WaitForSignal(void) ;
 };
 
 #endif /* SCHEDULER_H */

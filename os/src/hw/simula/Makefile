@@ -1,11 +1,9 @@
-# set environment variables
-include rules.mk
-#define includes 
-INC=-I inc -I inc/hal -I inc/hw/simula 
- 
-#dependences and objs 
 
-SRC:=src/hw/simula
+#define includes 
+INC+= -I $(ROOT_DIR)/inc/hw/simula
+
+SRC:=.
+
 
 #SOURCE FILES
 SRC_CPP:=$(wildcard $(SRC)/*.cpp) 
@@ -16,32 +14,32 @@ SRC_ASM:=$(wildcard $(SRC)/*.s)
 
 
 #OBJ FILES
-OBJ_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_CPP))
+OBJ_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILD_DIR)/$(OBJ_OUT)/hw/%.o,$(SRC_CPP))
 
-OBJ_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_C))
+OBJ_C:=$(patsubst $(SRC)/%.c,$(BUILD_DIR)/$(OBJ_OUT)/hw/%.o,$(SRC_C))
 
-OBJ_ASM:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(OBJ_OUT)/hw/%.o,$(SRC_ASM))
+OBJ_ASM:=$(patsubst $(SRC)/%.s,$(BUILD_DIR)/$(OBJ_OUT)/hw/%.o,$(SRC_ASM))
 
 
 
 #DEPEND FILES
-DEP_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(DEPEND)/hw/%.d,$(SRC_CPP))
+DEP_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILD_DIR)/$(DEPEND)/hw/%.d,$(SRC_CPP))
 
-DEP_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(DEPEND)/hw/%.d,$(SRC_C))
+DEP_C:=$(patsubst $(SRC)/%.c,$(BUILD_DIR)/$(DEPEND)/hw/%.d,$(SRC_C))
 
 
 #GENERATED ASM FILES
-ASM_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_CPP))
+ASM_CPP:= $(patsubst $(SRC)/%.cpp,$(BUILD_DIR)/$(GE_ASM)/hw/%.s,$(SRC_CPP))
 
-ASM_C:=$(patsubst $(SRC)/%.c,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_C))
+ASM_C:=$(patsubst $(SRC)/%.c,$(BUILD_DIR)/$(GE_ASM)/hw/%.s,$(SRC_C))
 
-ASM_S:=$(patsubst $(SRC)/%.s,$(BUILDIR)/$(GE_ASM)/hw/%.s,$(SRC_ASM))
+ASM_S:=$(patsubst $(SRC)/%.s,$(BUILD_DIR)/$(GE_ASM)/hw/%.s,$(SRC_ASM))
 
 
 ASM_OBJ:= $(ASM_CPP)  $(ASM_C) $(ASM_S) $(TEST_ASM_CPP)
 
 #ALL OBJS
-OBJS:= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM) 
+OBJS+= $(OBJ_C) $(OBJ_CPP)  $(OBJ_ASM) 
 
 #ALL DEPEND
 DEP_OBJ:= $(DEP_CPP)  $(DEP_C)  
@@ -69,15 +67,15 @@ define add_asm_msg
 endef
 
 
-$(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.cpp
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(DEPEND)
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	@mkdir -p $(BUILDIR)/$(DEPEND)/hw
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)/hw
-	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/hw/$(@F) -c $<
-	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/hw/$(@F)
-	$(call add_cpp_msg_rules, $< ,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
+$(BUILD_DIR)/$(DEPEND)/hw/%.d:$(SRC)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(DEPEND)
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)
+	@mkdir -p $(BUILD_DIR)/$(DEPEND)/hw
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)/hw
+	$(CROSS_CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILD_DIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILD_DIR)/$(DEPEND)/hw/$(@F) -c $<
+	@echo "	"$(CROSS_CPP) $(INC)   $(CPP_OPTS)  -o $(BUILD_DIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILD_DIR)/$(DEPEND)/hw/$(@F)
+	$(call add_cpp_msg_rules, $< ,$(BUILD_DIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
 	@echo>>$@
 
 
@@ -85,46 +83,46 @@ $(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.cpp
 
 
 
-$(BUILDIR)/$(DEPEND)/hw/%.d:$(SRC)/%.c
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(DEPEND)
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	@mkdir -p $(BUILDIR)/$(DEPEND)/hw
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)/hw	
-	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/hw/$(@F) -c $<
-	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/hw/$(@F)
-	$(call add_c_msg_rules, $< ,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
+$(BUILD_DIR)/$(DEPEND)/hw/%.d:$(SRC)/%.c
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(DEPEND)
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)
+	@mkdir -p $(BUILD_DIR)/$(DEPEND)/hw
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)/hw	
+	$(CROSS_C) $(C_OPTS) $(DEP_OPTS) $(BUILD_DIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILD_DIR)/$(DEPEND)/hw/$(@F) -c $<
+	@echo "	"$(CROSS_C) $(INC)   $(C_OPTS)  -o $(BUILD_DIR)/$(OBJ_OUT)/hw/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILD_DIR)/$(DEPEND)/hw/$(@F)
+	$(call add_c_msg_rules, $< ,$(BUILD_DIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)), $@)
 	@echo>>$@
 
 #double pass : first create dependences with compile command so build it
 
 -include $(DEP_OBJ) 
 
-$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.cpp
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(GE_ASM)
-	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILDIR)/$(GE_ASM)/$(@F) $<
-	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.cpp,%.s,$(@F)) )
+$(BUILD_DIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(GE_ASM)
+	$(CROSS_CPP) $(CPP_OPTS)  $(INC) -S -fverbose-asm -g -O2 -o $(BUILD_DIR)/$(GE_ASM)/$(@F) $<
+	$(call add_list_msg,$<,$(BUILD_DIR)/$(GE_ASM)/$(patsubst %.cpp,%.s,$(@F)) )
 
 
 
-$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.c
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(GE_ASM)
-	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILDIR)/$(GE_ASM)/$(@F) -c $<
-	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.c,%.s,$(@F)))
+$(BUILD_DIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.c
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(GE_ASM)
+	$(CROSS_C) $(C_OPTS)  $(INC) -S -o $(BUILD_DIR)/$(GE_ASM)/$(@F) -c $<
+	$(call add_list_msg,$<,$(BUILD_DIR)/$(GE_ASM)/$(patsubst %.c,%.s,$(@F)))
 
-$(BUILDIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.s
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(GE_ASM)
-	cp $< $(BUILDIR)/$(GE_ASM)/$(@F) 
-	$(call add_list_msg,$<,$(BUILDIR)/$(GE_ASM)/$(patsubst %.s,%.s,$(@F)))
+$(BUILD_DIR)/$(GE_ASM)/hw/%.s:$(SRC)/%.s
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(GE_ASM)
+	cp $< $(BUILD_DIR)/$(GE_ASM)/$(@F) 
+	$(call add_list_msg,$<,$(BUILD_DIR)/$(GE_ASM)/$(patsubst %.s,%.s,$(@F)))
 
-$(BUILDIR)/$(OBJ_OUT)/hw/%.o:$(SRC)/%.s
-	@mkdir -p $(BUILDIR)
-	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
-	$(CROSS_AS) -o $(BUILDIR)/$(OBJ_OUT)/$(@F)  $(ASM_OPTS)  $<
-	$(call add_asm_msg,$<,$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F)))
+$(BUILD_DIR)/$(OBJ_OUT)/hw/%.o:$(SRC)/%.s
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(OBJ_OUT)
+	$(CROSS_AS) -o $(BUILD_DIR)/$(OBJ_OUT)/$(@F)  $(ASM_OPTS)  $<
+	$(call add_asm_msg,$<,$(BUILD_DIR)/$(OBJ_OUT)/$(patsubst %.s,%.o,$(@F)))
 
 
 .PHONY: doversion all clean info dwload qemu asm
@@ -176,9 +174,29 @@ info:
 	$(call dump_var,"All dep = ", "$(DEP_OBJ)")
 	$(call dump_var,"Asm = ", "$(ASM_OBJ)")
 	$(call dump_var,"MAIN ROOT = ", "$(ROOT)")
-	$(call dump_var,"OUTPUT BUILD DIR = " , "$(BUILDIR)")
+	$(call dump_var,"OUTPUT BUILD DIR = " , "$(BUILD_DIR)")
 	
 
 asm:    $(ASM_OBJ)
 
 
+link_obj:
+	$(CROSS_LD)  $(OBJS)  $(LK_OPTS) -o $(BUILD_DIR)/caOS.elf
+	$(call add_msg,"LNK",caOS.elf)
+
+
+objdump_file:
+	@$(CROSS_OBJDUMP) $(OBJD_CPU) -D $(BUILD_DIR)/caOS.elf -S > $(BUILD_DIR)/caOS.list
+	$(call add_msg,"DMP",caOS.list)
+	@$(CROSS_OBJCOPY) $(BUILD_DIR)/caOS.elf -O ihex $(BUILD_DIR)/caOS.hex
+	$(call add_msg,"OCP",caOS.hex)
+	@$(CROSS_OBJCOPY) $(BUILD_DIR)/caOS.elf -O binary $(BUILD_DIR)/caOS.bin
+	$(call add_msg,"OCP",caOS.bin)
+	@cp $(BUILD_DIR)/caOS.bin kernel7.img
+	$(call add_msg,"OCP",kernel7.img)
+	@$(CROSS_OBJDUMP) $(OBJD_CPU) -b ihex -D $(BUILD_DIR)/caOS.hex > $(BUILD_DIR)/caOS.s
+	$(call add_msg,"DMP",caOS.s)
+	@$(CROSS_OBJCOPY) --only-keep-debug $(BUILD_DIR)/caOS.elf $(BUILD_DIR)/caOS.syms
+	$(call add_msg,"OCP",caOS.syms)
+	
+link_file: link_obj objdump_file

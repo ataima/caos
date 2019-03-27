@@ -1,7 +1,7 @@
 
 #SELECT CURRENT HARDWARE RASPI2  686   SIMULA
 # ===========================================	
- HARDWARE=RASPI2
+HARDWARE=SIMULA
 #        ^^^^^^^^^^^^^^^ 
 # ===========================================	
 #COLOURED TERMINAL....
@@ -53,7 +53,6 @@ ifeq ($(HARDWARE),RASPI2)
 	# LINKER OPTIONS
 	 LK_OPTS= -M -T $(ROOT_DIR)/src/hw/rasp2/ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN
-	# ARMPATH:=$(HOME)/baremetal/gcc-arm-none-eabi-5_4-2016q3/bin
 	 ARMPATH:=$(shell pwd)/../$(ARMGNU)/bin/
 	# CROSS TOOOL PROGRAMS
 	 CROSS_CC:=$(ARMPATH)$(ARMGNU)-gcc 
@@ -91,11 +90,12 @@ ifeq ($(HARDWARE),686)
 	 CROSS_OBJCOPY:=$(GNU686PATH)$(GNU686)objcopy
 	 CROSS_GDB:=$(GNU686PATH)$(GNU686)gdb
 endif
-#CASE 3 SIMULA
+
 ifeq ($(HARDWARE),SIMULA)	
+	#CROSS TOOLS 
+         GNU686:=i686-elf-
 	# CURRENT DEBUG LEVEL
-	#DBG:=  -O2
-	 DBG:=  -O0 -g
+	 DBG:=  -ggdb -O0
 	# OBJDUMP CPU SPEC
 	 OBJD_CPU=-m i386
 	 C_MODE:=-m32
@@ -106,24 +106,50 @@ ifeq ($(HARDWARE),SIMULA)
 	# ASM LANGUAGE OPTIONS
 	 CPU_SPEC_ASM:=  
 	# LINKER OPTIONS
-	ifeq ($(C_MODE),-m32)
-	 LK_OPTS= -lpthread -lstdc++ 
-	else
-	 LK_OPTS= -lpthread -lstdc++
-	endif	
-	# CROSS TOOOL PROGRAMS
-	 CROSS_CC:=gcc 
-	 CROSS_CPP:=g++ 
-	 CROSS_AS:=as 
-	 CROSS_LD:=g++ $(C_MODE)
-	 CROSS_OBJDUMP:=objdump 
-	 CROSS_OBJCOPY:=objcopy 
-	 CROSS_GDB:=gdb 
+	 LK_OPTS= -m32 -lpthread -lstdc++ -L/usr/lib/x86_64-linux-gnu/  -L /usr/lib/gcc/x86_64-linux-gnu/8/32
+        # ABSOLUTE PATH TO CROSS TOOLCHAIN
+          GNU686PATH:=
+        # CROSS TOOOL PROGRAMS
+         CROSS_CC:=gcc
+         CROSS_CPP:=g++
+         CROSS_AS:=as
+         CROSS_LD:=g++
+         CROSS_OBJDUMP:=objdump
+         CROSS_OBJCOPY:=objcopy
+         CROSS_GDB:=gdb	
 endif
+#CASE 4: IMX6 : OLIVETTI
+ifeq ($(HARDWARE),IMX6)	
+	#CROSS TOOLS 
+	 ARMGNU:=arm-none-eabi
+	# CURRENT DEBUG LEVEL
+	 DBG:= -g -O0
+	# OBJDUMP CPU SPEC
+	 OBJD_CPU=-m arm
+	# C LANGUAGE OPTIONS
+	 CPU_SPEC_C:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_IMX6_Q
+	# CPP LANGUAGE OPTIONS
+	 CPU_SPEC_CPP:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_IMX6_Q
+	# ASM LANGUAGE OPTIONS
+	 CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
+	# LINKER OPTIONS
+	 LK_OPTS= -M -T $(ROOT_DIR)/src/hw/imx6/ld_conf/imx6.ld
+	# ABSOLUTE PATH TO CROSS TOOLCHAIN
+	 ARMPATH:=$(shell pwd)/../$(ARMGNU)/bin/
+	# CROSS TOOOL PROGRAMS
+	 CROSS_CC:=$(ARMPATH)$(ARMGNU)-gcc 
+	 CROSS_CPP:=$(ARMPATH)$(ARMGNU)-g++ 
+	 CROSS_AS:=$(ARMPATH)$(ARMGNU)-as 
+	 CROSS_LD:=$(ARMPATH)$(ARMGNU)-ld 
+	 CROSS_OBJDUMP:=$(ARMPATH)$(ARMGNU)-objdump 
+	 CROSS_OBJCOPY:=$(ARMPATH)$(ARMGNU)-objcopy 
+	 CROSS_GDB:=$(ARMPATH)$(ARMGNU)-gdb 
+endif
+
 #SILENT --silent no gcc cmd printed
- SILENT:=--silent
+SILENT:=--silent
 # C LANGUAGE OPTIONS
- C_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
+ C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
  CPP_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
 # ASM LANGUAGE OPTIONS
@@ -133,7 +159,7 @@ endif
 # OPTIONAL TERMINAL PROGRAM TO CONNECT TO BOARD
 ifeq ($(OS),Linux)  
      PUTTY:= putty -load "pi-tty"     
-     EH:=
+     EH:= -e
 else	    
      PUTTY:= putty.exe -load "pi-tty"      
      EH:=-e	
@@ -161,7 +187,17 @@ ifeq ($(HARDWARE),SIMULA)
  HW:=$(ROOT_DIR)/src/hw/simula
  TEST:=test/simula
 endif
- V=$(SILENT)
+ifeq ($(HARDWARE),IMX6)
+ HW:=$(ROOT_DIR)/src/hw/imx6
+ TEST:=test/imx6
+endif
+
+ifeq ($(CROSS_CPP),)
+@echo "invalid configuration"
+@exit
+endif
+
+V=$(SILENT)
  ######################
  # EXPORT ALL VARIABLE
  ######################

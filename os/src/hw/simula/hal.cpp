@@ -38,12 +38,12 @@ static u32 mem_phy_size(void) {
     return __heap_end__-__heap_base__;
 }
 
-static u32 mem_heap_start_addr(void) {
-    return __heap_base__;
+static u32 *mem_heap_start_addr(void) {
+    return (u32*)(__heap_base__);
 }
 
-static u32 mem_heap_end_addr(void) {
-    return __heap_end__;
+static u32 *mem_heap_end_addr(void) {
+    return (u32 *)(__heap_end__);
 }
 
 
@@ -65,6 +65,8 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     sim_lock_switch_context,
     sim_unlock_switch_context,
     sim_svc_request,
+    sim_start_scheduler,
+    sim_stop_scheduler
 };
 
 
@@ -102,10 +104,11 @@ hal_llc_sys_time hal_llc_time_1 = {
     sim_timer_get_hour,
     sim_timer_get_day, // TO DO mounth, year , millenium
     sim_timer_set_time,
+    sim_free_counter,
     sim_timer_dump,
     sim_to_tick,
-    not_implemented_base, // systimer 1 alway run...
-    not_implemented_base,
+    sim_timer_start, // systimer 1 alway run...
+    sim_timer_stop,
     caScheduler::WakeUp,
     caScheduler::WakeUp,
     caHalDeviceRules::IrqService1,
@@ -116,7 +119,8 @@ hal_llc_sys_time hal_llc_time_1 = {
 hal_llc_interrupt hal_llc_int_req = {
     sim_int_enable_all,
     sim_int_disable_all,
-    sim_int_wait_for_interrupt
+    sim_int_wait_for_interrupt,
+    sim_wait_for_ever
 };
 
 

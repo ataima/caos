@@ -245,7 +245,7 @@ protected:
     //Tested
 
     inline void Stopper(void) {
-        if (start <= stop) {
+        if (start!=nullptr && start <= stop) {
             *start = 0;
         }
     }

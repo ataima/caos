@@ -71,9 +71,9 @@
 
 
 // check before switch the task the validity of address to jump and size of stack
-#define DEBUG_CHECK_TASK        0
+#define DEBUG_CHECK_TASK        1
 //
-#define DEBUG_CHECK_SCHEDULER   0
+#define DEBUG_CHECK_SCHEDULER   1
 // DUMP REQUEST OF SOFTWARE INTERRUPT
 #define DEBUG_IOCTL_SVC_REQ     1
 // DUMP IO COM1 DEVICE

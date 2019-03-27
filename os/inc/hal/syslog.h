@@ -100,11 +100,11 @@ public:
 
 #if DO_LOG
 
-#define LOG(LOG,LEVEL) if(LOG.IsEnabled() && (s32)(deviceloglevels::LEVEL)<=LOG.GetCurLogLevel()) \
-                        LOG.Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
+#define LOG(pLOG,LEVEL) if(pLOG.IsEnabled() && (s32)(deviceloglevels::LEVEL)<=pLOG.GetCurLogLevel()) \
+                        pLOG.Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
-#define PLOG(LOG,LEVEL) if(LOG!=nullptr && LOG->IsEnabled() && (s32)(deviceloglevels::LEVEL)<=LOG->GetCurLogLevel()) \
-                        LOG->Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
+#define PLOG(pLOG,LEVEL) if(pLOG!=nullptr && pLOG->IsEnabled() && (s32)(deviceloglevels::LEVEL)<=pLOG->GetCurLogLevel()) \
+                        pLOG->Stream(deviceloglevels::LEVEL)<<"["<<hal_llc_time_1.hll_tick()<<"] : "<<#LEVEL<<" : "<<__func__<<" : "
 
 #else
 #define LOG(LOG,LEVEL)

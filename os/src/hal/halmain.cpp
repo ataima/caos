@@ -45,7 +45,7 @@ u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
 
 
 
-int hal_main(void) {
+void hal_main(void) {
     caOS::Init();
     caScheduler::Init(caSchedulerMode::Priority);
     caScheduler::AddSystemJob("mainled",
@@ -56,8 +56,12 @@ int hal_main(void) {
             caJobPriority::caThLevel6,
             caConsole::consoleTask);
     hal_llc_time_1.hll_start();
-    hal_llc_int_req.hll_wait_for_interrupt();
+    hal_llc_int_req.hll_wait_for_ever();
+
+}
+
+void hal_main_stop(void){
+    //never called 
     caScheduler::RemoveAllJobs();
     hal_llc_time_1.hll_stop();
-    return 0;
 }

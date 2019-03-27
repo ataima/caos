@@ -426,7 +426,6 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
     ss << ":" << hal_llc_time_1.hll_min() << ":" << hal_llc_time_1.hll_sec();
     ss << ":" << hal_llc_time_1.hll_ms() << "] : c.a.O.S >" << caEnd::endl;
     res = caOS::Write(port, ss);
-    /*
     TokenString<u8> tmp;
     iss>>tmp;
     if (iss.Good()) {
@@ -443,7 +442,6 @@ deviceError caConsole::Execute(caTokenizeSStream <u8> & iss, caDeviceHandle &por
             SyntaxError(port, iss);
         }
     }
-     * */
     return res;
 }
 

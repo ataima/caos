@@ -49,11 +49,11 @@ static u32 mem_phy_size(void) {
 }
 
 static u32 *mem_heap_start_addr(void) {
-    return &__heap_base__;
+    return (u32*)(__heap_base__);
 }
 
 static u32 *mem_heap_end_addr(void) {
-    return &__heap_end__;
+    return (u32*)(__heap_end__);
 }
 
 hal_llc_mem_io hal_llc_mem = {
@@ -178,7 +178,7 @@ hal_llc_sys_time hal_llc_time_1 = {
 hal_llc_interrupt hal_llc_int_req = {
     caArmCpu::EnableAll,
     caArmCpu::DisableAll,
-    caArmCpu::WaitForInterrupt
+    caArmCpu::WaitForInterrupt,    
 };
 
 

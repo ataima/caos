@@ -130,7 +130,10 @@ typedef struct tag_hal_llc_sys_time {
 typedef struct tag_hal_llc_interrupt {
     const abstract_functor_void_func hll_enable;
     const abstract_functor_void_func hll_disable;
-    const abstract_functor_void_func hll_wait_for_interrupt;
+    // change after test on simula mode : wait for interrupt can manipulate task context
+    const abstract_functor_bool_ctx_func hll_wait_for_interrupt;
+    // change after test on simula mode : enter from main process and never exit 
+    const abstract_functor_void_func hll_wait_for_ever;
 } hal_llc_interrupt;
 
 //Hardware connector to system reset

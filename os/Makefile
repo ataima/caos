@@ -66,6 +66,8 @@ link_file: all_obj
 	
 	
 
+caOS.elf: link_file
+
 dwload_1: kernel7.img
 	$(call add_msg,"DOWNLOAD",$(BUILD_DIR)/caOS.hex)
 	$(DWLOAD) $(BUILD_DIR)/caOS.hex
@@ -154,7 +156,7 @@ jtag:   all
 sim:
 	@echo $(SEP)
 	echo "target sim" >gdb.conf
-	echo "file $(BUILD_DIR)/caos.elf" >>gdb.conf
+	echo "file $(BUILD_DIR)/caOS.elf" >>gdb.conf
 	@echo $(EH)  $(C_RED )[GDB]$C_RESET
 	@$(CROSS_GDB) -x gdb.conf
 	@echo $(SEP)
