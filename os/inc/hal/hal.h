@@ -68,6 +68,7 @@ typedef struct tag_hal_llc_scheduler_io {
     const abstract_functor_int_void_func hll_tick;
     const abstract_functor_int_int_func hll_to_tick;
     const abstract_functor_bool_ctx_func hll_scheduler_add_atsk;
+    const abstract_functor_int_void_func hll_scheduler_end_tsk;
     const abstract_functor_bool_int_func hll_scheduler_valid_handle;
     const abstract_functor_bool_void_func hll_lock;
     const abstract_functor_bool_void_func hll_unlock;

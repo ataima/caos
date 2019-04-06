@@ -28,6 +28,8 @@ void hal_main(void);
 void hal_main_stop(void);
 
 bool sim_add_task(caThreadContext *task);
+u32  sim_end_task(void);
+
 bool sim_is_valid_context(u32 thid);
 bool sim_lock_switch_context(void);
 bool sim_unlock_switch_context(void);

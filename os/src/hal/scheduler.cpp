@@ -94,7 +94,7 @@ void caScheduler::caThread::LaunchThread(thFunc f, u32 p1, u32 p2) {
     idx = caScheduler::StartTask();
     res = f(idx, p1, p2);
     caScheduler::EndTask(res);
-    while (1); // wait cancellation from scheduler
+    hal_llc_scheduler.hll_scheduler_end_tsk();    
 }
 
 void caScheduler::caThread::Dump(caStringStream<s8> & ss, caThreadContext *ctx) {

@@ -103,6 +103,14 @@
           </incDir>
         </ccTool>
       </folder>
+      <folder path="0/src/hw/simula">
+        <ccTool>
+          <incDir>
+            <pElem>inc</pElem>
+            <pElem>inc/hal</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <item path="src/hal/caos.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
@@ -320,21 +328,10 @@
       </item>
       <item path="src/hw/simula/hal.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc/hw/simula</pElem>
-            <pElem>.</pElem>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/hw/simula/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>inc</pElem>
-            <pElem>inc/hal</pElem>
-            <pElem>inc/hw/simula</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>

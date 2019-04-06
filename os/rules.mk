@@ -106,7 +106,7 @@ ifeq ($(HARDWARE),SIMULA)
 	# ASM LANGUAGE OPTIONS
 	 CPU_SPEC_ASM:=  
 	# LINKER OPTIONS
-	 LK_OPTS= -m32 -lpthread -lstdc++ -L/usr/lib/x86_64-linux-gnu/  -L /usr/lib/gcc/x86_64-linux-gnu/8/32
+	 LK_OPTS= -m32 -lpthread -lstdc++ -L/usr/lib/i386-linux-gnu/  
         # ABSOLUTE PATH TO CROSS TOOLCHAIN
           GNU686PATH:=
         # CROSS TOOOL PROGRAMS

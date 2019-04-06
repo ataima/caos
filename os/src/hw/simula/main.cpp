@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include <hal.h>
 #include <pthread.h>
-#include <errno.h>
 #include <unistd.h>
 #include "adapter.h"
 #include "memory.h"
@@ -71,7 +70,7 @@ pthread_t *CreateThread(functor entry, void *param, const char *name) {
     thread_id = new pthread_t();
     if (thread_id != nullptr) {
         ret = pthread_attr_init(&tattr);
-        if (ret == 0 || ret == EBUSY) {
+        if (ret == 0) {
             ret = pthread_attr_setdetachstate(&tattr, PTHREAD_CREATE_JOINABLE);
             if (ret == 0) {
                 ret = pthread_create(thread_id, &tattr, entry, param);
@@ -442,7 +441,12 @@ bool sim_add_task(caThreadContext *task) {
      */
     caScheduler::AddTask(task);
     return true;
-    ;
+}
+
+u32 sim_end_task(void) {
+    printf("[%06d] >>  %s\n", st.mn_IrqCount, __func__);
+
+    return true;
 }
 
 int main(void) {
