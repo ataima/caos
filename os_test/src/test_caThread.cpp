@@ -35,7 +35,7 @@ static bool isvalidcontext(u32 num) {
         return false;
     if (num == 0)
         return false;
-    if (num == -1)
+    if (num == (u32)(-1))
         return false;
     return true;
 }
@@ -117,16 +117,21 @@ static void hll_disable(void) {
     th_disable = 1;
 }
 
-static void hll_wait(void) {
+static void hll_wait(__attribute__((unused)) caThreadContext *ctx) {
     th_wait = 1;
 }
 
+static void hll_wait_for_ever(void){
+	while(1){}
+}
 
 
 hal_llc_interrupt hal_llc_int_req{
     hll_enable,
     hll_disable,
-    hll_wait};
+    hll_wait,
+    hll_wait_for_ever
+};
 
 extern void start_time_scheduler(void);
 

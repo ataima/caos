@@ -41,7 +41,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.cpp
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(CPP) $(CPP_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(CPP) $(INC)   $(CPP_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(EH) $(I_CRED)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH) $(I_GREEN)"[CPP]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_CRED)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 
@@ -51,7 +51,7 @@ $(BUILDIR)/$(DEPEND)/%.d:$(SRC)/%.c
 	@mkdir -p $(BUILDIR)/$(OBJ_OUT)
 	$(C) $(C_OPTS) $(DEP_OPTS) $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))  $(INC) -o $(BUILDIR)/$(DEPEND)/$(@F) -c $<
 	@echo "	"$(C) $(INC)   $(C_OPTS)  -o $(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F)) $< >>$(BUILDIR)/$(DEPEND)/$(@F)
-	@echo "	@echo "$(EH) $(I_CRED)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_GREEN)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
+	@echo "	@echo "$(EH) $(I_GREEN)"[ C ]"$(I_RESET)" $<"$(I_RED)$(I_TAB)": "$(I_RESET) $(I_CRED)"$(BUILDIR)/$(OBJ_OUT)/$(patsubst %.d,%.o,$(@F))"$(I_RESET)">/dev/stderr">>$@
 	@echo>>$@
 
 #double pass : first create dependences with compile command so build it
@@ -96,7 +96,7 @@ add_ext_src:
 	$(call link_ext_file,memory.cpp)
 	$(call link_ext_file,scheduler.cpp)
 	$(call link_ext_file,kdebug.cpp)
-	$(call link_ext_file,console.cpp)
+#	$(call link_ext_file,console.cpp)
 
 
 remove_ext_src:

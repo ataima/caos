@@ -53,8 +53,8 @@ void _mn_Ident_Mem::dump(int nm, FILE *out_file) {
 #ifdef WIN32
 #pragma warning( default : 4311)
 #endif
-    // if (strlen(file)==0)
-    if (file == '\0') {
+    if (strlen(file)==0)
+    /* if (file == '\0')*/  {
         fprintf(out_file, "=> ");
         size_t i;
         size_t p = 60;

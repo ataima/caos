@@ -147,7 +147,7 @@ ifeq ($(HARDWARE),IMX6)
 endif
 
 #SILENT --silent no gcc cmd printed
-#SILENT:=--silent
+SILENT:=--silent
 # C LANGUAGE OPTIONS
  C_OPTS:= -Wno-ignored-qualifiers -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
