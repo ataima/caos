@@ -61,7 +61,6 @@ hal_llc_scheduler_io hal_llc_scheduler = {
     sim_get_tick,
     sim_to_tick,
     sim_add_task,
-    sim_end_task,
     sim_is_valid_context,
     sim_lock_switch_context,
     sim_unlock_switch_context,

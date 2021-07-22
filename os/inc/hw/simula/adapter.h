@@ -63,7 +63,7 @@ u32 sim_timer_dump(caStringStream<s8> * ss);
 void sim_int_disable_all(void);
 void sim_int_enable_all(void);
 void sim_wait_for_ever(void);
-bool sim_int_wait_for_interrupt(caThreadContext *ctx);
+void sim_int_wait_for_interrupt(caThreadContext *ctx);
 void sim_reset_reset(void);
 void sim_reset_shutdown(void);
 void sim_reset_restart(void);

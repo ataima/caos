@@ -69,8 +69,7 @@ extern "C" {
 
     void sysStop(void) {
         Dbg::Put("bye. [ from c.a.O.S. main proc ! ]\r\n");
-        caArmCpu::DisableAll();
-        caArmCpu::WaitForInterrupt();
+        caArmCpu::WaitForEver();
     }
 
     void msgSchedule(void) {

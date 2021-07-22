@@ -178,7 +178,9 @@ hal_llc_sys_time hal_llc_time_1 = {
 hal_llc_interrupt hal_llc_int_req = {
     caArmCpu::EnableAll,
     caArmCpu::DisableAll,
-    caArmCpu::WaitForInterrupt,    
+    caArmCpu::WaitForInterrupt,  
+    caArmCpu::WaitForEver,  
+    
 };
 
 
@@ -190,4 +192,5 @@ hal_llc_reset hal_llc_reset_req{
     caSysLed::LedsOff,
     caSysLed::LedsOn,
     caSysLed::LedOff,
-    caSysLed::LedOn};
+    caSysLed::LedOn
+};

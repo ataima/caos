@@ -1,7 +1,7 @@
-
 #SELECT CURRENT HARDWARE RASPI2  686   SIMULA
 # ===========================================	
 HARDWARE=SIMULA
+#HARDWARE=RASPI2
 #        ^^^^^^^^^^^^^^^ 
 # ===========================================	
 #COLOURED TERMINAL....
@@ -147,11 +147,11 @@ ifeq ($(HARDWARE),IMX6)
 endif
 
 #SILENT --silent no gcc cmd printed
-SILENT:=--silent
+#SILENT:=--silent
 # C LANGUAGE OPTIONS
- C_OPTS:= -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
+ C_OPTS:= -Wno-ignored-qualifiers -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c99 -nostdlib -nostartfiles -ffreestanding $(CPU_SPEC_C) -c 
 # CPP LANGUAGE OPTIONS
- CPP_OPTS:=-Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
+ CPP_OPTS:=-Wno-ignored-qualifiers  -Wfatal-errors -Wextra -Wpedantic -Wconversion -Wshadow  -Wall $(DBG) -std=c++11 -nostdlib -nostartfiles -fno-rtti  -fno-exceptions  -ffreestanding  -fverbose-asm $(CPU_SPEC_CPP) -c 
 # ASM LANGUAGE OPTIONS
  ASM_OPTS:= -g $(CPU_SPEC_ASM)  
 # OPTIONAL PROGTAM TO DOWNLOAD NEW FIRMWARE

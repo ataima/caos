@@ -340,7 +340,16 @@ public:
         asm volatile("cpsid iaf");
     }
 
-    static inline void WaitForInterrupt(void) {
+    static inline void WaitForInterrupt(__attribute__((unused)) caThreadContext *ctx ) {
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
+        asm volatile("wfi");
         asm volatile("wfi");
         asm volatile("wfi");
         asm volatile("wfi");
@@ -354,13 +363,17 @@ public:
         caArmCpu::DisableInt();
         caArmCpu::DisableIrqFiq();
     }
-
+    
     static inline void EnableAll(void) {
         caArmCpu::EnableInt();
         caArmCpu::EnableIrqFiq();
     }
 
-
+    static inline void WaitForEver(void){
+            DisableAll();
+            while(1){};
+    }
+    
 };
 
 //// tempate to help 

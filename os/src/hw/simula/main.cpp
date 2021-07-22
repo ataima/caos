@@ -27,6 +27,10 @@
 #include "kdebug.h"
 #include "caos_version.h"
 #include "scheduler.h"
+
+#include "hal.h"
+#include "halcomdevice.h"
+#include "kdebug.h"
 // in sim mode have to create the funcion for all HAL_CONNECTORS...
 // how work ?
 // create a 1ms thread starting with scheduler start
@@ -260,6 +264,13 @@ u32 sim_uart_enable_int(void) {
 
 u32 sim_uart_EnableIrqTx(void) {
     printf("[%06d] >>  %s\n", st.mn_IrqCount, __func__);
+    u8 txBuff[128];
+    u32   writed;
+    writed=1;
+    if (hal_llc_com1.hll_lnk_obj)
+        hal_llc_com1.hll_irq_tx(hal_llc_com1.hll_lnk_obj, txBuff, 128, writed);
+    u32 i;
+    for(i=0;i<writed;i++)putchar(txBuff[i]);
     return 0;
 }
 
@@ -380,7 +391,7 @@ void sim_wait_for_ever(void) {
     }
 }
 
-bool sim_int_wait_for_interrupt(caThreadContext *ctx) {
+void sim_int_wait_for_interrupt(caThreadContext *ctx) {
     printf("[%06d] >>  %s\n", st.mn_IrqCount, __func__);
     while (1) {
         if (ctx != nullptr) {
