@@ -25,7 +25,7 @@ endif
 CROSS_GCC_NAME:=../cross-gcc-self-build
 
 #SET TARGET TYPE
-TARGET:=i686-elf
+TARGET:=arm-none-eabi
 #arm-none-eabi
 #i686-elf
 

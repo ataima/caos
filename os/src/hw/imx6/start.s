@@ -119,7 +119,6 @@ no_Monitor:
 	orr	r0, r0, #(A_BIT|F_BIT|I_BIT)
 	msr	cpsr,r0
         /* check Supervisor - Hypervisor mode */
-
         mrs	r0, cpsr
 	and	r1, r0, #0x1f		
 	cmp	r1, #MODE_HYP		

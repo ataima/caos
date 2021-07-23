@@ -1,7 +1,7 @@
 #SELECT CURRENT HARDWARE RASPI2  686   SIMULA
 # ===========================================	
-HARDWARE=SIMULA
-#HARDWARE=RASPI2
+#HARDWARE=SIMULA
+HARDWARE=RASPI2
 #        ^^^^^^^^^^^^^^^ 
 # ===========================================	
 #COLOURED TERMINAL....

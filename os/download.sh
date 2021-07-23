@@ -10,6 +10,7 @@ echo "000000000000000000000000000000000g">/dev/ttyUSB0
 sleep 0.1
 while read line; do  
     echo "$line" >  /dev/ttyUSB0
+    sleep 0.01
 done < build/caOS.hex 
 echo "g">/dev/ttyUSB0
 else
