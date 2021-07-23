@@ -136,13 +136,13 @@ jtag:   all
 	@echo "monitor reset" >>gdb.conf
 	@echo "monitor targets rpi2.cpu0" >> gdb.conf
 	@echo "monitor reg cpsr 0" >> gdb.conf 	
-	#@echo "monitor targets rpi2.cpu1" >> gdb.conf
-	#@echo "monitor reg cpsr 0" >> gdb.conf
-	#@echo "monitor targets rpi2.cpu2" >> gdb.conf
-	#@echo "monitor reg cpsr 0" >> gdb.conf
-	#@echo "monitor targets rpi2.cpu3" >> gdb.conf
-	#@echo "monitor reg cpsr 0" >> gdb.conf
-	#@echo "monitor targets rpi2.cpu0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu1" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu2" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu3" >> gdb.conf
+	@echo "monitor reg cpsr 0" >> gdb.conf
+	@echo "monitor targets rpi2.cpu0" >> gdb.conf
 	@echo "load" >> gdb.conf
 	@echo "monitor targets" >> gdb.conf	
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
