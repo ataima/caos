@@ -1,12 +1,12 @@
-__und_stack_size__	= 0x1000;
-__abt_stack_size__	= 0x1000;
-__fiq_stack_size__	= 0x1000;
-__irq_stack_size__	= 0x1000;
-__svc_stack_size__	= 0x1000;
-__sys_stack_size__	= 0x1000;
-__hyp_stack_size__	= 0x1000;
-__mon_stack_size__	= 0x1000;
-__user_stack_size__	= 0x1000;
+__und_stack_size__	= 0x10000;
+__abt_stack_size__	= 0x10000;
+__fiq_stack_size__	= 0x10000;
+__irq_stack_size__	= 0x10000;
+__svc_stack_size__	= 0x10000;
+__sys_stack_size__	= 0x10000;
+__hyp_stack_size__	= 0x10000;
+__mon_stack_size__	= 0x10000;
+__user_stack_size__	= 0x1000000;
 __stacks_total_size__	= __und_stack_size__ + __abt_stack_size__ + __fiq_stack_size__ + __irq_stack_size__ + __svc_stack_size__ + __sys_stack_size__ + __hyp_stack_size__ + __mon_stack_size__ + __user_stack_size__;
 
 
@@ -30,7 +30,7 @@ __sys_stack_pos__	= ABSOLUTE(__svc_stack_pos__ - __svc_stack_size__);
 __hyp_stack_pos__	= ABSOLUTE(__sys_stack_pos__ - __sys_stack_size__);
 __mon_stack_pos__	= ABSOLUTE(__hyp_stack_pos__ - __hyp_stack_size__);
 __user_stack_pos__	= ABSOLUTE(__mon_stack_pos__ - __mon_stack_size__);
-
+__user_stack_pos__end   = ABSOLUTE(__user_stack_pos__ - __user_stack_size__);
 
 
 SECTIONS
@@ -96,8 +96,8 @@ SECTIONS
 }
 
 
-__heap_base__              = .;
-__heap_end__               = __ram_end__ - __stacks_total_size__;
+__heap_end__              = .;
+__heap_base__             = __ram_end__ - __stacks_total_size__ - 0xf00000;
 __main_thread_stack_base__ = __ram_end__ - __stacks_total_size__;
 PROVIDE(end = .);
 _end = .;

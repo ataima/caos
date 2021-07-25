@@ -279,6 +279,15 @@ s8* caMemory::DumpAvail(s8 * buff, s_t size) {
     return buff;
 }
 
+void caMemory::DumpAll(hal_llc_mem_io *lnk) {
+    Dbg::Put("MEMORY START = ",lnk->hll_mem_min_phy());
+    Dbg::Put("MEMORY STOP  = ",lnk->hll_mem_max_phy());
+    Dbg::Put("MEMORY SIZE  = ",lnk->hll_mem_size_phy());
+    Dbg::Put("HEAP   START = ",(u32 )lnk->hll_heap_start());
+    Dbg::Put("HEAP   STOP  = ",(u32 )lnk->hll_heap_end());
+    Dbg::Put("HEAP   SIZE  = ",(u32 )lnk->hll_heap_start()-(u32 )lnk->hll_heap_end());
+}
+
 u32 caMemory::Dump(dumpAddrReq *req) {
     caStringStream<s8> ss;
     if (req != nullptr) {

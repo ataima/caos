@@ -56,6 +56,7 @@ void hal_main(void) {
             caJobPriority::caThLevel6,
             caConsole::consoleTask);
     hal_llc_time_1.hll_start();
+    hal_llc_int_req.hll_wait_for_interrupt(nullptr);
     hal_llc_int_req.hll_wait_for_ever();
 
 }

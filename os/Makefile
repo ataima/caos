@@ -130,21 +130,12 @@ jtag:   all
 	@openocd -f ./raspi2.cfg &
 	@sleep 1
 	@echo "file $(BUILD_DIR)/caOS.elf" >gdb.conf
-	@echo "target remote :3333" >>gdb.conf
+	@echo "target extended-remote :3333" >>gdb.conf
+	#@echo "monitor reset init" >>gdb.conf
 	@echo "monitor halt" >>gdb.conf
-	@echo "monitor reset_config srst_only" >>gdb.conf
-	@echo "monitor reset" >>gdb.conf
-	@echo "monitor targets rpi2.cpu0" >> gdb.conf
-	@echo "monitor reg cpsr 0" >> gdb.conf 	
-	@echo "monitor targets rpi2.cpu1" >> gdb.conf
-	@echo "monitor reg cpsr 0" >> gdb.conf
-	@echo "monitor targets rpi2.cpu2" >> gdb.conf
-	@echo "monitor reg cpsr 0" >> gdb.conf
-	@echo "monitor targets rpi2.cpu3" >> gdb.conf
-	@echo "monitor reg cpsr 0" >> gdb.conf
-	@echo "monitor targets rpi2.cpu0" >> gdb.conf
+	@echo "monitor targets bcm2836.cpu0" >> gdb.conf
 	@echo "load" >> gdb.conf
-	@echo "monitor targets" >> gdb.conf	
+	@echo "continue" >> gdb.conf
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
 	@echo  $(EH)  $(C_RESET)
 	@$(CROSS_GDB) -x gdb.conf
@@ -152,6 +143,11 @@ jtag:   all
 	@echo jtag ...done.
 	@echo $(SEP)
 
+start_openocd: all
+	@openocd -f ./raspi2.cfg &
+
+stop_openocd:
+	@killall openocd
 
 sim:
 	@echo $(SEP)

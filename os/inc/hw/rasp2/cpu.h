@@ -38,6 +38,7 @@ public:
     static u32 GetControl(eReq v);
     static void SetControl(eReq v, u32 value);
     static void GetMainIdCpuInfo(void);
+    static void DumpRegs();
     static void DumpRegs(CpuRegs *regs);
     static void GetRegs(CpuRegs *regs);
 
@@ -340,7 +341,7 @@ public:
         asm volatile("cpsid iaf");
     }
 
-    static inline void WaitForInterrupt(__attribute__((unused)) caThreadContext *ctx ) {
+    static inline void WaitForInterrupt(__attribute__((unused)) caThreadContext *ctx=nullptr ) {
         asm volatile("wfi");
         asm volatile("wfi");
         asm volatile("wfi");
@@ -371,6 +372,8 @@ public:
 
     static inline void WaitForEver(void){
             DisableAll();
+            Dbg::Put("Disabled all interrupt\r\n");
+            Dbg::Put("System is blocked on WaitForEver\r\n");
             while(1){};
     }
     

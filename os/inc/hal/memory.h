@@ -82,6 +82,7 @@ public:
     static u32 Ascii(dumpAddrReq *req);
     static void Dump(caStringStream<s8> & ss, blockMem *s);
 
+
     //T
     static void Init(hal_llc_mem_io *lnk);
 
@@ -95,6 +96,7 @@ public:
     static u32 Find(void *p);
 
     static s8* DumpAvail(s8* buff, s_t size);
+    static void DumpAll(hal_llc_mem_io *lnk);
 
     //T
 

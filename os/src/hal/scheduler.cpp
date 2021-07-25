@@ -25,8 +25,6 @@
 #include "kdebug.h"
 
 
-extern u32 __svc_stack_pos__;
-extern u32 __sys_stack_pos__;
 
 caArray< caThreadContext *> caNextTaskManager::table;
 u32 caNextTaskManager::cur_index;
@@ -464,8 +462,8 @@ bool caScheduler::Init(caSchedulerMode req) {
     caMemAux<u32>::MemSet((u32 *) taskList, 0, sizeof (taskList));
     caMemAux<u32>::MemSet((u32 *) & main_ctx, 0, sizeof (caThreadContext));
     caStrAux::StrNCpy(main_ctx.name, "Default Main Context", 64);
-    main_ctx.stack_start = 0x40000000;
-    main_ctx.stack_end = 0x0;
+    main_ctx.stack_start = 0x3ef80000;
+    main_ctx.stack_end = 0x3df80000;
     current_task = &main_ctx;
     res = mng.Init(taskList, MAX_TASK);
     // idle task always RUN task in scheduler , low priority     
@@ -640,14 +638,18 @@ void caScheduler::InvalidTask(u32 idx){
 
 void caScheduler::InfoSwitchTask(u32 oldIdx,u32 newIdx){
     if(oldIdx!=0xffffffff && oldIdx < MAX_TASK){
-        Dbg::Put("SCHEDULER : old task = ");Dbg::Put(taskList[oldIdx]->name);Dbg::Put("\n");
+        Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
+        Dbg::Put("SCHEDULER : old task = ");Dbg::Put(taskList[oldIdx]->name);Dbg::Put("\r\n");
     } else {
-        Dbg::Put("SCHEDULER : old task = unassigned !\n");
+        Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
+        Dbg::Put("SCHEDULER : old task = unassigned !\r\n");
     }
     if(newIdx!=0xffffffff && newIdx < MAX_TASK ){
-        Dbg::Put("SCHEDULER : new task = ");Dbg::Put(taskList[newIdx]->name);Dbg::Put("\n");
+        Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
+        Dbg::Put("SCHEDULER : new task = ");Dbg::Put(taskList[newIdx]->name);Dbg::Put("\r\n");
     } else {
-        Dbg::Put("SCHEDULER : new task = unassigned !\n");
+        Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
+        Dbg::Put("SCHEDULER : new task = unassigned !\r\n");
     }
 }
 

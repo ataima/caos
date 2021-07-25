@@ -30,11 +30,40 @@
 #include "scheduler.h"
 #include "sysleds.h"
 
+/* cannot read right value 
 extern u32 __ram_start__;
 extern u32 __ram_end__;
 extern u32 __ram_size__;
 extern u32 __heap_base__;
 extern u32 __heap_end__;
+ 
+ * from caOS.map :
+                0x0000000000008000                __ram_start__ = ORIGIN (ram)
+                0x000000003eff8000                __ram_size__ = LENGTH (ram)
+                0x000000003f000000                __ram_end__ = (__ram_start__ + __ram_size__)
+                0x000000003f000000                __und_stack_pos__ = ABSOLUTE (__ram_end__)
+                0x000000003effc000                __abt_stack_pos__ = ABSOLUTE ((__und_stack_pos__ - __und_stack_size__))
+                0x000000003eff8000                __fiq_stack_pos__ = ABSOLUTE ((__abt_stack_pos__ - __abt_stack_size__))
+                0x000000003eff4000                __irq_stack_pos__ = ABSOLUTE ((__fiq_stack_pos__ - __fiq_stack_size__))
+                0x000000003eff0000                __svc_stack_pos__ = ABSOLUTE ((__irq_stack_pos__ - __irq_stack_size__))
+                0x000000003efec000                __sys_stack_pos__ = ABSOLUTE ((__svc_stack_pos__ - __svc_stack_size__))
+                0x000000003efe8000                __hyp_stack_pos__ = ABSOLUTE ((__sys_stack_pos__ - __sys_stack_size__))
+                0x000000003efe4000                __mon_stack_pos__ = ABSOLUTE ((__hyp_stack_pos__ - __hyp_stack_size__))
+                0x000000003efe0000                __user_stack_pos__ = ABSOLUTE ((__mon_stack_pos__ - __mon_stack_size__))
+
+                0x0000000000045da4                __heap_end__ = .
+                0x000000003e0dc000                __heap_base__ = ((__ram_end__ - __stacks_total_size__) - 0xf00000)
+                0x000000003efdc000                __main_thread_stack_base__ = (__ram_end__ - __stacks_total_size__)
+
+  
+*/
+
+#define __ram_start__       0x8000
+#define __ram_end__         0x3f000000
+#define __ram_size__        0x3eff8000
+#define __heap_base__       0x3e0dc000
+#define __heap_end__        0x45da4
+
 
 static u32 mem_phy_min_addr(void) {
     return __ram_start__;
@@ -64,7 +93,6 @@ hal_llc_mem_io hal_llc_mem = {
     mem_heap_start_addr,
     mem_heap_end_addr
 };
-
 
 
 static void req_svc_7961(void){

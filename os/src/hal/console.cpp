@@ -459,6 +459,7 @@ u32 caConsole::consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     caDeviceHandle port;
     deviceError res;
     caStringStream<s8> tt;
+    while(1){}
     caConsole::Init();
     in.speed = 115200;
     in.data = 8;

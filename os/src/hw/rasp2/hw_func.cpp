@@ -39,15 +39,19 @@
 extern "C" {
 
     void sysInit(void) {
-        s8 buff[256];
+        s8 buff[512];
+        caArmCpu::DumpRegs();
+        Dbg::Put("> c.a.O.S. : [ ");
+        caArmCpu::DumpCPSR();
+        Dbg::Put(" ]\r\n");
+        caArmCpu::DumpRegs();
+        caMemory::DumpAll(&hal_llc_mem);
+        caArmCpu::DumpRegs();
         caIrqCtrl::Init(); // start all fiq/irq disabled 
         caMiniUart::Init(115200, 8, 1, 8);
         caMiniUart::DisableIrqRx();
         caMiniUart::DisableIrqTx();
         caMiniUart::Enable(1, 1);
-        Dbg::Put("> c.a.O.S. : [ ");
-        caArmCpu::DumpCPSR();
-        Dbg::Put(" ]\r\n");
         caMemory::Init(&hal_llc_mem);
         caMemory::DumpAvail(buff, sizeof (buff));
         Dbg::Put(buff);

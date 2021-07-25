@@ -135,24 +135,33 @@ void caArmCpu::GetMainIdCpuInfo(void) {
 
 void caArmCpu::DumpRegs(CpuRegs * regs) {
     Dbg::Put("CPU REGS :\r\n");
-    Dbg::Put("R0      = ", regs->r[0]);
-    Dbg::Put("R1      = ", regs->r[1]);
-    Dbg::Put("R2      = ", regs->r[2]);
-    Dbg::Put("R3      = ", regs->r[3]);
-    Dbg::Put("R4      = ", regs->r[4]);
-    Dbg::Put("R5      = ", regs->r[5]);
-    Dbg::Put("R6      = ", regs->r[6]);
-    Dbg::Put("R7      = ", regs->r[7]);
-    Dbg::Put("R8      = ", regs->r[8]);
-    Dbg::Put("R9      = ", regs->r[9]);
-    Dbg::Put("R10     = ", regs->r[10]);
-    Dbg::Put("R11     = ", regs->r[11]);
-    Dbg::Put("R12     = ", regs->r[12]);
-    Dbg::Put("R13(SP) = ", regs->r[13]);
-    Dbg::Put("R14(LR) = ", regs->r[14]);
-    Dbg::Put("R15(PC) = ", regs->r[15], Dbg::kformat::hex, false);
-    Dbg::Put("  <-- Call from here !\r\n");
+    Dbg::Put("  R0     = ", regs->r[0],Dbg::kformat::hex, false);
+    Dbg::Put("  R1     = ", regs->r[1],Dbg::kformat::hex, false);
+    Dbg::Put("  R2     = ", regs->r[2],Dbg::kformat::hex, false);
+    Dbg::Put("  R3     = ", regs->r[3]);
+    Dbg::Put("  R4     = ", regs->r[4],Dbg::kformat::hex, false);
+    Dbg::Put("  R5     = ", regs->r[5],Dbg::kformat::hex, false);
+    Dbg::Put("  R6     = ", regs->r[6],Dbg::kformat::hex, false);
+    Dbg::Put("  R7     = ", regs->r[7]);
+    Dbg::Put("  R8     = ", regs->r[8],Dbg::kformat::hex, false);
+    Dbg::Put("  R9     = ", regs->r[9],Dbg::kformat::hex, false);
+    Dbg::Put("  R10    = ", regs->r[10],Dbg::kformat::hex, false);
+    Dbg::Put("  R11    = ", regs->r[11]);
+    Dbg::Put("  R12    = ", regs->r[12],Dbg::kformat::hex, false);
+    Dbg::Put("  R13(SP)= ", regs->r[13],Dbg::kformat::hex, false);
+    Dbg::Put("  R14(LR)= ", regs->r[14],Dbg::kformat::hex, false);
+    Dbg::Put("  R15(PC)= ", regs->r[15]);
+    //Dbg::Put("  <-- Call from here !\r\n");
 }
+
+void caArmCpu::DumpRegs() {
+    CpuRegs reg;
+    //caMemAux<u32>::MemSet((u32 *)&reg,0,sizeof(CpuRegs));
+    GetRegs(&reg);
+    DumpRegs(&reg);
+}
+
+
 
 void caArmCpu::DumpCPSR(void) {
     u32 st = caArmCpu::GetCPSR()&0x1f;

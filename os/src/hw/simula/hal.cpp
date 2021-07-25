@@ -56,7 +56,6 @@ hal_llc_mem_io hal_llc_mem = {
     mem_heap_end_addr
 };
 
-
 hal_llc_scheduler_io hal_llc_scheduler = {
     sim_get_tick,
     sim_to_tick,

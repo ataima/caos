@@ -200,11 +200,15 @@ bssloop:
         blo     bssloop
 
 
+
+        // bl cpu_init_cp15 // from uboot no diff
         /*
          * Main program invocation.
          */
         // to SUPERVISOR MODE 
-        mov r0,#(F_BIT|I_BIT|MODE_SYS)
+
+
+        mov r0,#(F_BIT|I_BIT|MODE_SVC)   
         bl  changeCPSR
         ldr r0,=0x8000;   @entry point 
         MSR LR_usr,R0
@@ -369,6 +373,54 @@ fiq_scheduler:
     LDMFD    sp!,   {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}
     B switchContext   
     eret
+
+
+
+/*************************************************************************
+ *
+ * cpu_init_cp15
+ *
+ * Setup CP15 registers (cache, MMU, TLBs). The I-cache is turned on unless
+ * CONFIG_SYS_ICACHE_OFF is defined.
+ *
+ *************************************************************************/
+cpu_init_cp15:
+	/*
+	 * Invalidate L1 I/D
+	 */
+	mov	r0, #0			@ set up for MCR
+	mcr	p15, 0, r0, c8, c7, 0	@ invalidate TLBs
+	mcr	p15, 0, r0, c7, c5, 0	@ invalidate icache
+	mcr	p15, 0, r0, c7, c5, 6	@ invalidate BP array
+	mcr     p15, 0, r0, c7, c10, 4	@ DSB
+	mcr     p15, 0, r0, c7, c5, 4	@ ISB
+
+	/*
+	 * disable MMU stuff and caches
+	 */
+	mrc	p15, 0, r0, c1, c0, 0
+	bic	r0, r0, #0x00002000	@ clear bits 13 (--V-)
+	bic	r0, r0, #0x00000007	@ clear bits 2:0 (-CAM)
+	orr	r0, r0, #0x00000002	@ set bit 1 (--A-) Align
+	orr	r0, r0, #0x00000800	@ set bit 11 (Z---) BTB
+	bic	r0, r0, #0x00001000	@ clear bit 12 (I) I-cache
+	mcr	p15, 0, r0, c1, c0, 0
+
+
+	mov	r5, lr			@ Store my Caller
+	mrc	p15, 0, r1, c0, c0, 0	@ r1 has Read Main ID Register (MIDR)
+	mov	r3, r1, lsr #20		@ get variant field
+	and	r3, r3, #0xf		@ r3 has CPU variant
+	and	r4, r1, #0xf		@ r4 has CPU revision
+	mov	r2, r3, lsl #4		@ shift variant field for combined value
+	orr	r2, r4, r2		@ r2 has combined CPU variant + revision
+
+	ldr	r0, =__user_stack_pos__
+
+	bic	r0, r0, #7	/* 8-byte alignment for ABI compliance */
+	mov	sp, r0
+
+	mov	pc, r5			@ back to my caller
 
 
 

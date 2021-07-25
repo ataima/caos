@@ -25,6 +25,15 @@
 #include "coprocessor.h"
 
 
+
+u32 caArmCprs::DumpDFSR(){       
+    s8 buff[512];
+    caStringStream<s8> ss;
+    ss.Init(buff,512);
+    DumpDFSR(ss);
+    Dbg::Put(ss.Str());
+}
+
 u32 caArmCprs::DumpDFSR(caStringStream<s8> & ss){       
     u32 res = 0;
     cprs_dfsr dfsr;
@@ -143,6 +152,8 @@ u32 caArmCprs::DumpDFSR(caStringStream<s8> & ss){
         res = ss.Size();
     return res;
 }
+
+
 
 u32 caArmCprs::DumpISR(caStringStream<s8> & /*ss*/){
     return 0;

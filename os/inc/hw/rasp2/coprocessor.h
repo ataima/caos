@@ -492,6 +492,8 @@ public:
 
     static u32 DumpDFSR(caStringStream<s8> & ss);
     static u32 DumpISR(caStringStream<s8> & ss);
+    static u32 DumpDFSR();
+    
 };
 
 typedef union tag_dfsr {
