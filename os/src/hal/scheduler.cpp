@@ -639,17 +639,17 @@ void caScheduler::InvalidTask(u32 idx){
 void caScheduler::InfoSwitchTask(u32 oldIdx,u32 newIdx){
     if(oldIdx!=0xffffffff && oldIdx < MAX_TASK){
         Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
-        Dbg::Put("SCHEDULER : old task = ");Dbg::Put(taskList[oldIdx]->name);Dbg::Put("\r\n");
+        Dbg::Put(" : SCHEDULER : old task = ");Dbg::Put(taskList[oldIdx]->name);Dbg::Put("\r\n");
     } else {
         Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
-        Dbg::Put("SCHEDULER : old task = unassigned !\r\n");
+        Dbg::Put(" : SCHEDULER : old task = unassigned !\r\n");
     }
     if(newIdx!=0xffffffff && newIdx < MAX_TASK ){
         Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
-        Dbg::Put("SCHEDULER : new task = ");Dbg::Put(taskList[newIdx]->name);Dbg::Put("\r\n");
+        Dbg::Put(" : SCHEDULER : new task = ");Dbg::Put(taskList[newIdx]->name);Dbg::Put("\r\n");
     } else {
         Dbg::Put(">",hal_llc_time_1.hll_tick(),Dbg::kformat::dec,false);
-        Dbg::Put("SCHEDULER : new task = unassigned !\r\n");
+        Dbg::Put(" : SCHEDULER : new task = unassigned !\r\n");
     }
 }
 

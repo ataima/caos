@@ -24,6 +24,9 @@
 #include "circularbuffer.h"
 
 
+typedef u64 pointer_reference;
+
+
 #define BLOCKSIZE ((u32)(sizeof(caMemory::blockMem)))
 #define MIN_SLICE 256-BLOCKSIZE  /* min alloC SIZE */
 
@@ -63,9 +66,9 @@ public:
 
 
 private:
-    static u64 start_mem;
-    static u64 end_mem;
-    static u64 avail_mem;
+    static pointer_reference start_mem;
+    static pointer_reference end_mem;
+    static pointer_reference avail_mem;
 private:
     static blockMem * GetFreePrev(blockMem *s);
     static blockMem * GetFreeNext(blockMem *s);
@@ -101,25 +104,25 @@ public:
 
     //T
 
-    static inline u64 GetStartAddress() {
+    static inline pointer_reference GetStartAddress() {
         return start_mem;
     }
 
     //T
 
-    static inline u64 GetEndAddress() {
+    static inline pointer_reference GetEndAddress() {
         return end_mem;
     }
 
     //T
 
-    static inline u64 GetTotalSize() {
+    static inline pointer_reference GetTotalSize() {
         return end_mem - start_mem;
     }
 
     //T
 
-    static inline u64 GetAvailMemory() {
+    static inline pointer_reference GetAvailMemory() {
         return avail_mem;
     }
 

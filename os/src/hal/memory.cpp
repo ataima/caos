@@ -35,7 +35,10 @@ u64 caMemory::avail_mem;
 
 void caMemory::Init() {
     start_mem = hal_llc_mem.hll_user_start();
+    //allign 64 
+    start_mem=((start_mem/1024)+1)*1024;
     end_mem   = hal_llc_mem.hll_user_end();
+    end_mem=((end_mem/1024)-1)*1024;
     avail_mem = ptr_to_uint(end_mem)  - ptr_to_uint(start_mem) ;
     if(avail_mem==0){
         hal_llc_mem.hll_memory_failure();
@@ -43,31 +46,26 @@ void caMemory::Init() {
 }
 
 void caMemory::Start(void)    {
-    blockMem *start = (blockMem *)(uint_to_ptr(start_mem));
+    blockMem *start =static_cast<blockMem *> (uint_to_ptr(start_mem));
     start->addr = start;
-    start->size = 0LL;
+    start->size = 0;
     start->status = statusBlock::start_lbl;
-    Dbg::Put("step 1");
     avail_mem -= BLOCKSIZE;
     blockMem *free = static_cast<blockMem *> (uint_to_ptr(start_mem + BLOCKSIZE));
-    Dbg::Put("free=",(u32)free);
     start->next = free;
     start->prev = nullptr;
     free->addr = free;
-    Dbg::Put("step 2");
-    avail_mem -= (2 * BLOCKSIZE);
+    avail_mem -= (2*BLOCKSIZE);
     free->size = avail_mem;
-    free->next = static_cast<blockMem *> (uint_to_ptr((u64) (free->addr) + avail_mem));
+    free->next = static_cast<blockMem *> (uint_to_ptr(end_mem-BLOCKSIZE));
     free->prev = start;
     free->status = statusBlock::free_lbl;
     blockMem *end = free->next;
-    Dbg::Put("end=",(u32)end);
     end->prev = free;
     end->addr = end;
     end->next = 0;
-    end->size = 0LL;
-    end->status = statusBlock::end_lbl;
-    Dbg::Put("step 3");
+    end->size = 0;
+    end->status = statusBlock::end_lbl;    
 }
 
 void caMemory::Clean(void) {

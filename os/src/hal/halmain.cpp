@@ -26,10 +26,10 @@
 
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
     u32 st = 0;
-    //u32 counter=0;
+    u32 counter=0;
     hal_llc_reset_req.hll_leds_off();
     while (1) {
-        //Dbg::Put("Main : ",counter++);
+        Dbg::Put("Main : ",counter++);
         if (st) {
             hal_llc_reset_req.hll_led_off(1);
             hal_llc_reset_req.hll_led_on(2);
@@ -52,9 +52,9 @@ void hal_main(void) {
             caJobPriority::caThLevel3,
             mainTask);
     // todo set io port from xml init file....
-    caScheduler::AddJob("console",
-            caJobPriority::caThLevel6,
-            caConsole::consoleTask);
+    //caScheduler::AddJob("console",
+    //        caJobPriority::caThLevel6,
+    //        caConsole::consoleTask);
     hal_llc_time_1.hll_start();
     hal_llc_int_req.hll_wait_for_interrupt(nullptr);
     hal_llc_int_req.hll_wait_for_ever();

@@ -45,11 +45,11 @@ ifeq ($(HARDWARE),RASPI2)
 	# OBJDUMP CPU SPEC
 	 OBJD_CPU=-m arm
 	# C LANGUAGE OPTIONS
-	 CPU_SPEC_C:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
+	 CPU_SPEC_C:=-mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7  -DHW_RASPI2
 	# CPP LANGUAGE OPTIONS
-	 CPU_SPEC_CPP:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve -mtune=cortex-a7 -DHW_RASPI2
+	 CPU_SPEC_CPP:=-mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7  -DHW_RASPI2
 	# ASM LANGUAGE OPTIONS
-	 CPU_SPEC_ASM:=-mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve  
+	 CPU_SPEC_ASM:=-mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4
 	# LINKER OPTIONS
 	 LK_OPTS= -M -T $(ROOT_DIR)/src/hw/rasp2/ld_conf/BCM2836.ld
 	# ABSOLUTE PATH TO CROSS TOOLCHAIN

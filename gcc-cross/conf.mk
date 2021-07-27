@@ -1,6 +1,17 @@
 
 # SETUP VERSION TO DOWNLOAD
-VERSION:=8.3
+VERSION:=11.1
+
+ifeq ($(VERSION),11.1)
+BINUTILS :=binutils-2.37.tar.gz
+GCC:=gcc-11.1.0
+GMP:=gmp-6.2.1.tar.bz2
+MPFR:=mpfr-4.1.0.tar.xz
+MPC:=mpc-1.2.1.tar.gz
+GDB:=gdb-10.2.tar.gz
+endif
+
+
 
 ifeq ($(VERSION),8.3)
 BINUTILS :=binutils-2.32.tar.gz

@@ -221,6 +221,7 @@ start_1:
         MSR LR_fiq,R0
         MSR LR_und,R0
         MSR LR_abt,R0
+        bl enableVFP
 start_2:
         /* User */
 
@@ -381,15 +382,6 @@ fiq_scheduler:
     eret
 
 
-
-/*************************************************************************
- *
- * cpu_init_cp15
- *
- * Setup CP15 registers (cache, MMU, TLBs). The I-cache is turned on unless
- * CONFIG_SYS_ICACHE_OFF is defined.
- *
- *************************************************************************/
 cpu_init_cp15:
 	/*
 	 * Invalidate L1 I/D
@@ -428,6 +420,21 @@ cpu_init_cp15:
 
 	mov	pc, r5			@ back to my caller
 
+
+/*******************************
+to enable istr vmoc ex vmov.32 d16,#0 
+********************************/
+enableVFP:
+	mov	r5, lr			@ Store my Caller
+        // Enable CP10 and CP11
+        mrc p15, 0, r0, c1, c0, 2
+        orr r0, r0, #0xf00000
+        mcr p15, 0, r0, c1, c0, 2
+        // Enable VFP in FPEXC
+        mov r0, #0x40000000
+        vmsr fpexc, r0                  @ exception if not work
+        vmov s1, r3
+	mov	pc, r5			@ back to my caller
 
 
 /*
