@@ -52,7 +52,7 @@ public:
         tag_block_mem* addr; // this block
         tag_block_mem* prev; // this block
         tag_block_mem* next; // this block
-        u32 size; // size of block        
+        u64 size; // size of block        
         statusBlock status;
         // TO DO TO CHECK MEMORY LEACKS        
 #if CONFIG_CHK_MEMORY_ALLOC
@@ -63,10 +63,9 @@ public:
 
 
 private:
-    static u32* start_mem;
-    static u32* end_mem;
-    static u32 avail_mem;
-    static hal_llc_mem_io *link;
+    static u64 start_mem;
+    static u64 end_mem;
+    static u64 avail_mem;
 private:
     static blockMem * GetFreePrev(blockMem *s);
     static blockMem * GetFreeNext(blockMem *s);
@@ -74,8 +73,9 @@ private:
     static blockMem * GetBusyNext(blockMem *s);
     static blockMem *GetStartBlock(void);
     static blockMem *GetEndBlock(void);
-    static void *SplitBlock(blockMem *free, u32 size);
+    static void *SplitBlock(blockMem *free, u64 size);
     static void UnionBlock(blockMem * s);
+    static void AssertLink(void);
 public:
     static u32 List(caStringStream<s8>  & ss);
     static u32 Dump(dumpAddrReq *req);
@@ -84,7 +84,9 @@ public:
 
 
     //T
-    static void Init(hal_llc_mem_io *lnk);
+    static void Init();
+    
+    static void Start(void);
 
     static void Clean(void);
 
@@ -95,36 +97,35 @@ public:
 
     static u32 Find(void *p);
 
-    static s8* DumpAvail(s8* buff, s_t size);
-    static void DumpAll(hal_llc_mem_io *lnk);
+    static void DumpAll();
 
     //T
 
-    static inline u32* GetStartAddress() {
+    static inline u64 GetStartAddress() {
         return start_mem;
     }
 
     //T
 
-    static inline u32* GetEndAddress() {
+    static inline u64 GetEndAddress() {
         return end_mem;
     }
 
     //T
 
-    static inline u32 GetTotalSize() {
-        return ptr_to_uint(end_mem) - ptr_to_uint(start_mem);
+    static inline u64 GetTotalSize() {
+        return end_mem - start_mem;
     }
 
     //T
 
-    static inline u32 GetAvailMemory() {
+    static inline u64 GetAvailMemory() {
         return avail_mem;
     }
 
     //T   
 
-    static inline u32 Good() {
+    static inline bool Good() {
         return (avail_mem > MIN_SLICE);
     }
 

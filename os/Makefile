@@ -134,8 +134,7 @@ jtag:   all
 	#@echo "monitor reset init" >>gdb.conf
 	@echo "monitor halt" >>gdb.conf
 	@echo "monitor targets bcm2836.cpu0" >> gdb.conf
-	@echo "load" >> gdb.conf
-	@echo "continue" >> gdb.conf
+	@echo "load" >> gdb.conf	
 	@echo  $(EH)  $(C_RED )[GDB] $(C_RESET)
 	@echo  $(EH)  $(C_RESET)
 	@$(CROSS_GDB) -x gdb.conf

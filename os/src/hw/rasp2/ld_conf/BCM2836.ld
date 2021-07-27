@@ -95,10 +95,12 @@ SECTIONS
     } > ram    
 }
 
-
-__heap_end__              = .;
-__heap_base__             = __ram_end__ - __stacks_total_size__ - 0xf00000;
-__main_thread_stack_base__ = __ram_end__ - __stacks_total_size__;
+/* heap + thread stack for os  todo 2 memory allocator  */
+__heap_base__              = .;
+__heap_end__             = __heap_base__ + 0x4000000;
+__main_thread_stack_base__ = __heap_base__ +0x4000000;
+__user_ram_start__ = __main_thread_stack_base__ +0x200 ;
+__user_ram_end__ = __ram_end__ - __stacks_total_size__  ;
 PROVIDE(end = .);
 _end = .;
 

@@ -66,7 +66,7 @@
 #define COM8_DEVICE             0    
 //
 #define MEM_PIPE_DEVICE         1    
-#define CACHE_DEVICE            1
+#define CACHE_DEVICE             1  
 #define SCHEDULER_DEVICE        1
 
 
@@ -77,7 +77,7 @@
 // DUMP REQUEST OF SOFTWARE INTERRUPT
 #define DEBUG_IOCTL_SVC_REQ     1
 // DUMP IO COM1 DEVICE
-#define DEBUG_ALLOC_MEM         0
+#define DEBUG_ALLOC_MEM          1 
 
 // to check memory list 
 #define CONFIG_CHK_MEMORY_ALLOC  0

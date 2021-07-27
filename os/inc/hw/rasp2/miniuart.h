@@ -133,8 +133,9 @@ public:
 
     static void Send(u32 c) {
         system_aux_mini_uart(mu);
-        while (!mu->lsr.asBit.txempty);
+        while (!mu->lsr.asBit.txempty){};
         mu->io.asReg = c;
+        while (!mu->lsr.asBit.txempty){};        
     }
 
     static inline void Ready(void) {

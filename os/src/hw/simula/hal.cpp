@@ -47,7 +47,7 @@ static u32 *mem_heap_end_addr(void) {
 }
 
 
-hal_llc_mem_io hal_llc_mem = {
+static hal_llc_mem_io hal_llc_mem = {
     sim_get_tick,
     mem_phy_min_addr,
     mem_phy_max_addr,
@@ -56,7 +56,7 @@ hal_llc_mem_io hal_llc_mem = {
     mem_heap_end_addr
 };
 
-hal_llc_scheduler_io hal_llc_scheduler = {
+static hal_llc_scheduler_io hal_llc_scheduler = {
     sim_get_tick,
     sim_to_tick,
     sim_add_task,
@@ -70,7 +70,7 @@ hal_llc_scheduler_io hal_llc_scheduler = {
 
 
 // Hardware connectors to COM1 (usually debug)
-hal_llc_com_io hal_llc_com1 = {
+static hal_llc_com_io hal_llc_com1 = {
     nullptr,
     sim_uart_configure, //hll_config
     sim_get_tick, //hll_time
@@ -90,7 +90,7 @@ hal_llc_com_io hal_llc_com1 = {
 
 
 // Hardware connectors sys timer
-hal_llc_sys_time hal_llc_time_1 = {
+static hal_llc_sys_time hal_llc_time_1 = {
     nullptr,
     sim_timer_configure, // empthy funzion base timer fix conf to scheduler task
     sim_get_tick, //system tick count
@@ -115,7 +115,7 @@ hal_llc_sys_time hal_llc_time_1 = {
 };
 
 
-hal_llc_interrupt hal_llc_int_req = {
+static hal_llc_interrupt hal_llc_int_req = {
     sim_int_enable_all,
     sim_int_disable_all,
     sim_int_wait_for_interrupt,
@@ -123,7 +123,7 @@ hal_llc_interrupt hal_llc_int_req = {
 };
 
 
-hal_llc_reset hal_llc_reset_req{
+static hal_llc_reset hal_llc_reset_req{
     sim_reset_reset, //TODO FIX
     sim_reset_shutdown,
     sim_reset_restart,

@@ -33,7 +33,9 @@
 .extern msgByeBye
 .extern switchContext
 .extern msgSchedule    
-
+.extern sysInit
+.extern sysStop
+.extern memory_check_dram
 
 
 
@@ -162,8 +164,8 @@ retry_pos:
 
 
         /* IRQ */
-         ldr     r0, =__irq_stack_pos__
-       msr     CPSR_c, #MODE_IRQ | I_BIT | F_BIT
+        ldr     r0, =__irq_stack_pos__
+        msr     CPSR_c, #MODE_IRQ | I_BIT | F_BIT
         mov     sp, r0
 
 
@@ -187,9 +189,10 @@ retry_pos:
 
 
         /* Hyp */
-         ldr     r0, =__hyp_stack_pos__
+        ldr     r0, =__hyp_stack_pos__
         msr     CPSR_c, #MODE_HYP | I_BIT | F_BIT
         mov     sp, r0
+
 
         mov     r0, #0
         ldr     r1, =_bss_start
@@ -207,9 +210,10 @@ bssloop:
          */
         // to SUPERVISOR MODE 
 
-
-        mov r0,#(F_BIT|I_BIT|MODE_SVC)   
-        bl  changeCPSR
+start_1:
+        ldr     r0, =__user_stack_pos__
+        msr     CPSR_c,#(F_BIT|I_BIT|MODE_SYS)   
+        mov     sp, r0
         ldr r0,=0x8000;   @entry point 
         MSR LR_usr,R0
         MSR LR_svc,R0
@@ -217,6 +221,9 @@ bssloop:
         MSR LR_fiq,R0
         MSR LR_und,R0
         MSR LR_abt,R0
+start_2:
+        /* User */
+
         ldr r0,=0;
         mov r1,r0
         mov r2,r0
@@ -230,7 +237,6 @@ bssloop:
         mov r10,r0
         mov r11,r0
         mov r12,r0
-        mov r14,r0
         bl      sysInit 
         bl      _Z8hal_mainv
         bl      sysStop 
@@ -430,8 +436,6 @@ cpu_init_cp15:
 .global _main_exit_handler
 _main_exit_handler:
 .loop:  b       .loop
-
-
 
 
 

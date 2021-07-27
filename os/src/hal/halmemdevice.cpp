@@ -150,8 +150,8 @@ u32 caHalMemDevice::IoCtrl(IDevice * instance,caDeviceHandle *port,
         case caMemoryDeviceCtrl::IoMemCtrlDirect::memInfo:
             inp->params[0]=ptr_to_uint(caMemory::GetStartAddress());
             inp->params[1]=ptr_to_uint(caMemory::GetEndAddress());
-            inp->params[2]=caMemory::GetAvailMemory();
-            inp->params[3]=caMemory::GetTotalSize();
+            inp->params[2]=ptr_to_uint(caMemory::GetAvailMemory());
+            inp->params[3]=ptr_to_uint(caMemory::GetTotalSize());
             break;
     }
     port->tLastCmd = caDeviceAction::caActionIoCtrl;

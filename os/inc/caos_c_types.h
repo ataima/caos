@@ -32,7 +32,7 @@ typedef long long s64;
 
 typedef u32 s_t;
 
-
+/*  VERIFY AND TODO CLEAN 
 #if __LP64__
 //#warning "platform 64 bit !!"
 #define _IS_64_ 1
@@ -70,6 +70,11 @@ inline void * uint_to_ptr(u32 v) {
 #if !_IS_64_ && !_IS_32_
 #error "You must define platform 32/64 bit on caos_c_types.h"
 #endif 
+*/
+
+#define ptr_to_uint(p) ((u32)(p))
+#define uint_to_ptr(p) ((void*)(p))
+
 
 
 

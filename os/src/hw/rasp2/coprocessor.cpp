@@ -26,7 +26,7 @@
 
 
 
-u32 caArmCprs::DumpDFSR(){       
+void caArmCprs::DumpDFSR(){       
     s8 buff[512];
     caStringStream<s8> ss;
     ss.Init(buff,512);

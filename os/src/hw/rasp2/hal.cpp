@@ -30,60 +30,83 @@
 #include "scheduler.h"
 #include "sysleds.h"
 
-/* cannot read right value 
-extern u32 __ram_start__;
-extern u32 __ram_end__;
-extern u32 __ram_size__;
-extern u32 __heap_base__;
-extern u32 __heap_end__;
+/* WARNING DO NO TOUCH DECLARATION OF LINKER SEGMENT ITS OK!!!*/
+
+extern s8 __ram_start__;
+extern s8 __ram_end__;
+extern s8 __ram_size__;
+extern s8 __heap_base__;
+extern s8 __heap_end__;
  
- * from caOS.map :
-                0x0000000000008000                __ram_start__ = ORIGIN (ram)
-                0x000000003eff8000                __ram_size__ = LENGTH (ram)
-                0x000000003f000000                __ram_end__ = (__ram_start__ + __ram_size__)
-                0x000000003f000000                __und_stack_pos__ = ABSOLUTE (__ram_end__)
-                0x000000003effc000                __abt_stack_pos__ = ABSOLUTE ((__und_stack_pos__ - __und_stack_size__))
-                0x000000003eff8000                __fiq_stack_pos__ = ABSOLUTE ((__abt_stack_pos__ - __abt_stack_size__))
-                0x000000003eff4000                __irq_stack_pos__ = ABSOLUTE ((__fiq_stack_pos__ - __fiq_stack_size__))
-                0x000000003eff0000                __svc_stack_pos__ = ABSOLUTE ((__irq_stack_pos__ - __irq_stack_size__))
-                0x000000003efec000                __sys_stack_pos__ = ABSOLUTE ((__svc_stack_pos__ - __svc_stack_size__))
-                0x000000003efe8000                __hyp_stack_pos__ = ABSOLUTE ((__sys_stack_pos__ - __sys_stack_size__))
-                0x000000003efe4000                __mon_stack_pos__ = ABSOLUTE ((__hyp_stack_pos__ - __hyp_stack_size__))
-                0x000000003efe0000                __user_stack_pos__ = ABSOLUTE ((__mon_stack_pos__ - __mon_stack_size__))
-
-                0x0000000000045da4                __heap_end__ = .
-                0x000000003e0dc000                __heap_base__ = ((__ram_end__ - __stacks_total_size__) - 0xf00000)
-                0x000000003efdc000                __main_thread_stack_base__ = (__ram_end__ - __stacks_total_size__)
-
-  
-*/
-
-#define __ram_start__       0x8000
-#define __ram_end__         0x3f000000
-#define __ram_size__        0x3eff8000
-#define __heap_base__       0x3e0dc000
-#define __heap_end__        0x45da4
+extern s8 __user_ram_start__;
+extern s8 __user_ram_end__;
 
 
-static u32 mem_phy_min_addr(void) {
-    return __ram_start__;
+
+
+static u64 mem_phy_min_addr(void) {
+    return (u64)(&__ram_start__);
 }
 
-static u32 mem_phy_max_addr(void) {
-    return __ram_end__;
+static u64 mem_phy_max_addr(void) {
+    return (u64)(&__ram_end__);
 }
 
-static u32 mem_phy_size(void) {
-    return __ram_size__;
+static u64 mem_phy_size(void) {
+    return (u64)(&__ram_size__);
 }
 
-static u32 *mem_heap_start_addr(void) {
-    return (u32*)(__heap_base__);
+static u64 mem_heap_start_addr(void) {
+    return (u64)(&__heap_end__);
 }
 
-static u32 *mem_heap_end_addr(void) {
-    return (u32*)(__heap_end__);
+static u64 mem_heap_end_addr(void) {
+    return (u64)(&__heap_base__);
 }
+
+static u64 mem_user_start_addr(void) {
+    return (u64)(&__user_ram_start__);
+}
+
+static u64 mem_user_end_addr(void) {
+    return (u64)(&__user_ram_end__);
+}
+
+
+extern "C" {   // test as first call after start ...
+    
+    void memory_check_one(u32 *where){
+        *where=0x5a5a5a5a;
+        if(*where!=0x5a5a5a5a){
+            Dbg::Put("Dram Error 0x5a5a5a5a at ",(u32)where);
+        }
+        *where=0xa5a5a5a5;
+        if(*where!=0xa5a5a5a5){
+            Dbg::Put("Dram Error 0xa5a5a5a5 at ",(u32)where);
+        }
+        *where=0;
+    }
+    
+       // first call after start.s
+    void memory_check_dram(void){
+        u32 *h_start;
+        u32 *h_end;
+        h_start=(u32*)(mem_user_start_addr());
+        h_end=(u32*)(mem_user_end_addr());
+        Dbg::Put("START=",(u32)h_start);
+        Dbg::Put("STOP=",(u32)h_end);        
+        while(h_start<h_end){
+            memory_check_one(h_start);
+            h_start++;
+            u32 v=(u32)(h_start)%0x100000;
+            if(!v){
+                Dbg::Put("Checking at ",(u32)h_start);   
+            }
+        }        
+    }
+}
+
+
 
 hal_llc_mem_io hal_llc_mem = {
     caSysTimer::GetCount,
@@ -91,7 +114,10 @@ hal_llc_mem_io hal_llc_mem = {
     mem_phy_max_addr,
     mem_phy_size,
     mem_heap_start_addr,
-    mem_heap_end_addr
+    mem_heap_end_addr,
+    mem_user_start_addr,
+    mem_user_end_addr,
+    caArmCpu::MemoryFailure
 };
 
 
@@ -210,7 +236,6 @@ hal_llc_interrupt hal_llc_int_req = {
     caArmCpu::WaitForEver,  
     
 };
-
 
 
 hal_llc_reset hal_llc_reset_req{

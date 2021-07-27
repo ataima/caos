@@ -75,29 +75,28 @@ void caArmCpu::GetRegs(CpuRegs *regs) {
 
 void caArmCpu::GetMainIdCpuInfo(void) {
     MainIdRegister mid;
-    Dbg::Put("> c.a.O.S. : [ ");
     mid.asReg = caArmCprs::GetMainId();
     switch (mid.asBit.manft) {
         case 0x41:
-            Dbg::Put("CPU : ARM Limited");
+            Dbg::Put("@CPU : ARM Limited");
             break;
         case 0x44:
-            Dbg::Put("CPU : DEC");
+            Dbg::Put("@CPU : DEC");
             break;
         case 0x4d:
-            Dbg::Put("CPU : FreeScale");
+            Dbg::Put("@CPU : FreeScale");
             break;
         case 0x51:
-            Dbg::Put("CPU : QualComm");
+            Dbg::Put("@CPU : QualComm");
             break;
         case 0x56:
-            Dbg::Put("CPU : Marvell");
+            Dbg::Put("@CPU : Marvell");
             break;
         case 0x69:
-            Dbg::Put("CPU : Intel Corporation");
+            Dbg::Put("@CPU : Intel Corporation");
             break;
         default:
-            Dbg::Put("CPU : MFT = ", mid.asBit.manft, Dbg::kformat::dec, false);
+            Dbg::Put("@CPU : MFT = ", mid.asBit.manft, Dbg::kformat::dec, false);
             break;
     }
     switch (mid.asBit.arch) {
@@ -129,7 +128,7 @@ void caArmCpu::GetMainIdCpuInfo(void) {
     Dbg::Put(" V:", mid.asBit.variant, Dbg::kformat::dec, false);
     Dbg::Put(" N:", mid.asBit.part_number, Dbg::kformat::dec, false);
     Dbg::Put(" R:", mid.asBit.revision, Dbg::kformat::dec, false);
-    Dbg::Put(" ]\r\n");
+    Dbg::Put("\r\n");
 
 }
 

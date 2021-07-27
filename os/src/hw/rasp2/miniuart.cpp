@@ -52,7 +52,18 @@ u32 caMiniUart::txOverrun = 0;
 // error rx overrun
 u32 caMiniUart::rxOverrun = 0;
 
+// loss time on setup to flush char in cache
+static inline void debounce(){
+    u32 counter=0;
+    while(counter<1000){
+        u32 a=5;
+        a++;
+        counter++;                           
+    }
+}
+
 u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
+    debounce();
     system_aux_mini_uart(mu);
     caGpio::SetAlt5(14);
     caGpio::SetAlt5(15);

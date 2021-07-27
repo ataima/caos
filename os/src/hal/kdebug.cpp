@@ -37,8 +37,13 @@ public:
 };
 
 void caLowLevelDebug::Msg(const char *s) {
-    char c;
-    while ((c = *s++)) uSend(c);
+    u32 c;
+    do{
+        c=(u32)*s;
+        s++;
+        uSend(c);
+    }
+    while (*s!=0);
 }
 
 void caLowLevelDebug::Msg(const char *s, u32 v, Dbg::kformat f, u32 cr) {
@@ -73,21 +78,20 @@ void caLowLevelDebug::Msg(const char *s, void *p, u32 v, Dbg::kformat f, u32 cr)
 }
 
 void caLowLevelDebug::Hex(u32 d) {
-    u32 rb;
+    s32 rb;
     u32 rc;
     uSend('0');
     uSend('x');
-    rb = 32;
-    while (1) {
-        rb -= 4;
+    rb = 28;
+    do{
         rc = (d >> rb)&0xF;
         if (rc > 9)
             rc += 0x37;
         else
             rc += 0x30;
         uSend(rc);
-        if (rb == 0) break;
-    }
+        rb=rb-4;
+    }while (rb >= 0);
 }
 
 void caLowLevelDebug::Bin(u32 d) {
@@ -147,6 +151,19 @@ namespace Dbg {
     void Put(const char c) {
         caLowLevelDebug::uSend(c);
     }
+    
+    void PutA(const char *msg, u32 val, const char *fin) {
+        caLowLevelDebug::Msg(msg, val, Dbg::kformat::hex, 0);
+        caLowLevelDebug::Msg(fin);
+    }
+    
+    
+    void Put(const char *msg, const char *info, u32 cr) {
+        caLowLevelDebug::Msg(msg);
+        caLowLevelDebug::Msg(info);
+        if(cr)caLowLevelDebug::Msg("\r\n");
+    }
+    
     
 }
 

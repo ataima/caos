@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Author : Angelo Coppi (coppi dot angelo at virgilio dot it )
 // History:        
+//    2021-07  -> rebuild to u64 
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "hal.h"
@@ -25,55 +26,62 @@
 
 
 
-u32* caMemory::start_mem;
-u32* caMemory::end_mem;
-u32 caMemory::avail_mem;
-hal_llc_mem_io *caMemory::link=nullptr;
+u64 caMemory::start_mem;
 
-void caMemory::Init(hal_llc_mem_io *lnk) {
-    link=lnk;
-    if (link != nullptr) {
-        start_mem = lnk->hll_heap_start();
-        end_mem   = lnk->hll_heap_end();
-    } else {
-        start_mem = 0;
-        end_mem = 0;
+u64 caMemory::end_mem;
+
+u64 caMemory::avail_mem;
+
+
+void caMemory::Init() {
+    start_mem = hal_llc_mem.hll_user_start();
+    end_mem   = hal_llc_mem.hll_user_end();
+    avail_mem = ptr_to_uint(end_mem)  - ptr_to_uint(start_mem) ;
+    if(avail_mem==0){
+        hal_llc_mem.hll_memory_failure();
     }
-    avail_mem = (ptr_to_uint(end_mem) - ptr_to_uint(start_mem));
-    blockMem *start = reinterpret_cast<blockMem *> (start_mem);
+}
+
+void caMemory::Start(void)    {
+    blockMem *start = (blockMem *)(uint_to_ptr(start_mem));
     start->addr = start;
-    start->size = 0;
+    start->size = 0LL;
     start->status = statusBlock::start_lbl;
+    Dbg::Put("step 1");
     avail_mem -= BLOCKSIZE;
-    blockMem *free = reinterpret_cast<blockMem *> (start_mem + BLOCKSIZE);
+    blockMem *free = static_cast<blockMem *> (uint_to_ptr(start_mem + BLOCKSIZE));
+    Dbg::Put("free=",(u32)free);
     start->next = free;
     start->prev = nullptr;
     free->addr = free;
+    Dbg::Put("step 2");
     avail_mem -= (2 * BLOCKSIZE);
     free->size = avail_mem;
-    free->next = reinterpret_cast<blockMem *> ((u8*) (free->addr) + avail_mem);
+    free->next = static_cast<blockMem *> (uint_to_ptr((u64) (free->addr) + avail_mem));
     free->prev = start;
     free->status = statusBlock::free_lbl;
     blockMem *end = free->next;
+    Dbg::Put("end=",(u32)end);
     end->prev = free;
     end->addr = end;
     end->next = 0;
-    end->size = 0;
+    end->size = 0LL;
     end->status = statusBlock::end_lbl;
+    Dbg::Put("step 3");
 }
 
 void caMemory::Clean(void) {
-    start_mem = end_mem = nullptr;
+    start_mem = end_mem = 0;
     avail_mem = 0;
 }
 
 caMemory::blockMem *caMemory::GetStartBlock(void) {
-    blockMem *s = reinterpret_cast<blockMem *> (start_mem);
+    blockMem *s = static_cast<blockMem *> (uint_to_ptr(start_mem));
     return s;
 }
 
 caMemory::blockMem *caMemory::GetEndBlock(void) {
-    blockMem *s = reinterpret_cast<blockMem *> ((u8*) end_mem - (2 * BLOCKSIZE));
+    blockMem *s = static_cast<blockMem *>( uint_to_ptr( end_mem - (2 * BLOCKSIZE)));
     return s;
 }
 
@@ -113,15 +121,15 @@ caMemory::blockMem * caMemory::GetBusyNext(blockMem *s) {
     return nullptr;
 }
 
-void *caMemory::SplitBlock(blockMem *s, u32 size) {
+void *caMemory::SplitBlock(blockMem *s, u64 size) {
     void *p = nullptr;
     if (s->size > size) {
         if ((s->size - size) < MIN_SLICE) {
             s->status = statusBlock::busy_lbl;
             avail_mem -= size;
-            p = reinterpret_cast<void *> (ptr_to_uint(s->addr) + BLOCKSIZE);
+            p = static_cast<void *> (uint_to_ptr(ptr_to_uint(s->addr) + BLOCKSIZE));
         } else {
-            blockMem *nb = reinterpret_cast<blockMem *> ((u8*) (s->addr)+(s->size - size));
+            blockMem *nb = static_cast<blockMem *>(uint_to_ptr (ptr_to_uint(s->addr)+(s->size - size)));
             nb->prev = s;
             nb->next = s->next;
             nb->addr = nb;
@@ -133,7 +141,7 @@ void *caMemory::SplitBlock(blockMem *s, u32 size) {
             }
             nb->status = statusBlock::busy_lbl;
             avail_mem -= size;
-            p = reinterpret_cast<void *> ((u8*) (nb->addr) + BLOCKSIZE);
+            p = static_cast<void *> ((u8*) (nb->addr) + BLOCKSIZE);
         }
     }
     return p;
@@ -188,12 +196,12 @@ u32 caMemory::Free(void * p, u32 *size) {
     if (size != nullptr)
         *size = 0;
     if (ptr_to_uint(p) > hal_llc_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_llc_mem.hll_mem_max_phy()) {
-        blockMem *s = reinterpret_cast<blockMem *> ((u8*) (p) - BLOCKSIZE);
+        blockMem *s = static_cast<blockMem *>(uint_to_ptr (ptr_to_uint(p) - BLOCKSIZE));
         if (s != nullptr && s->status == statusBlock::busy_lbl) {
             // Ok
             s->status = statusBlock::free_lbl;
             if (size != nullptr) {
-                *size = s->size;
+                *size = ptr_to_uint(s->size);
             }
             avail_mem += s->size + BLOCKSIZE;
             UnionBlock(s);
@@ -204,17 +212,17 @@ u32 caMemory::Free(void * p, u32 *size) {
 }
 
 u32 caMemory::FreeAll(void) {
-    caMemory::Init(link);
+    caMemory::Init();
     return true;
 }
 
 u32 caMemory::Find(void *p) {
     u32 res = 0;
     if (ptr_to_uint(p) > hal_llc_mem.hll_mem_min_phy() && ptr_to_uint(p) < hal_llc_mem.hll_mem_max_phy()) {
-        blockMem *s = reinterpret_cast<blockMem *> ((u8*) (p) - BLOCKSIZE);
+        blockMem *s = static_cast<blockMem *> (uint_to_ptr(ptr_to_uint(p) - BLOCKSIZE));
         if (s != nullptr && s->status == statusBlock::busy_lbl) {
             // Ok
-            res = s->size;
+            res = ptr_to_uint(s->size);
         }
     }
     return res;
@@ -250,7 +258,7 @@ u32 caMemory::List(caStringStream<s8> & ss) {
     caStringFiller p(' ', 12);
     u32 i = 1;
     ss << " --- MEMORY LIST ---\r\n";
-    blockMem *start = reinterpret_cast<blockMem *> (start_mem);
+    blockMem *start = static_cast<blockMem *>( uint_to_ptr(start_mem));
     while (start != nullptr) {
         ss << caStringFormat::dec << i << caStringFormat::hex;
         Dump(ss, start);
@@ -260,32 +268,25 @@ u32 caMemory::List(caStringStream<s8> & ss) {
     ss << caStringFormat::dec;
     ss << "Free Memory  : ";
     ss.Fix(p);
-    ss << GetAvailMemory() << p << " bytes" << caEnd::endl;
+    ss << ptr_to_uint(GetAvailMemory()) << p << " bytes" << caEnd::endl;
     ss << "Busy Memory  : ";
     ss.Fix(p);
-    ss << (ptr_to_uint(end_mem) - ptr_to_uint(start_mem)) - GetAvailMemory() << p << " bytes" << caEnd::endl;
+    ss << ptr_to_uint(GetTotalSize()) - ptr_to_uint(GetAvailMemory()) << p << " bytes" << caEnd::endl;
     ss << "Total Memory : ";
     ss.Fix(p);
-    ss << (ptr_to_uint(end_mem) - ptr_to_uint(start_mem)) << p << " bytes" << caEnd::endl;
+    ss << ptr_to_uint(GetTotalSize()) << p << " bytes" << caEnd::endl;
     ss.Str();
     return ss.Size();
 }
 
-s8* caMemory::DumpAvail(s8 * buff, s_t size) {
-    caStringStream<s8> ss;
-    ss.Init(buff, size);
-    ss << "> c.a.O.S. : [ Avaiable memory  " <<
-            caMemory::GetAvailMemory() << " bytes ]\r\n";
-    return buff;
-}
 
-void caMemory::DumpAll(hal_llc_mem_io *lnk) {
-    Dbg::Put("MEMORY START = ",lnk->hll_mem_min_phy());
-    Dbg::Put("MEMORY STOP  = ",lnk->hll_mem_max_phy());
-    Dbg::Put("MEMORY SIZE  = ",lnk->hll_mem_size_phy());
-    Dbg::Put("HEAP   START = ",(u32 )lnk->hll_heap_start());
-    Dbg::Put("HEAP   STOP  = ",(u32 )lnk->hll_heap_end());
-    Dbg::Put("HEAP   SIZE  = ",(u32 )lnk->hll_heap_start()-(u32 )lnk->hll_heap_end());
+void caMemory::DumpAll(void) {
+    Dbg::Put("MEMORY START = ",ptr_to_uint(hal_llc_mem.hll_mem_min_phy()));
+    Dbg::Put("MEMORY STOP  = ",ptr_to_uint(hal_llc_mem.hll_mem_max_phy()));
+    Dbg::Put("MEMORY SIZE  = ",ptr_to_uint(hal_llc_mem.hll_mem_size_phy()));
+    Dbg::Put("HEAP   START = ",ptr_to_uint(hal_llc_mem.hll_heap_start()));
+    Dbg::Put("HEAP   STOP  = ",ptr_to_uint(hal_llc_mem.hll_heap_end()));
+    Dbg::Put("HEAP   SIZE  = ",ptr_to_uint(hal_llc_mem.hll_heap_end())-ptr_to_uint(hal_llc_mem.hll_heap_start()));    
 }
 
 u32 caMemory::Dump(dumpAddrReq *req) {

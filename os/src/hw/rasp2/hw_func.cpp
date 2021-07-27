@@ -37,38 +37,33 @@
 
 
 extern "C" {
+    
+  
+    
 
     void sysInit(void) {
-        s8 buff[512];
-        caArmCpu::DumpRegs();
-        Dbg::Put("> c.a.O.S. : [ ");
+        Dbg::Put("> c.a.O.S. : \r\n");
+        Dbg::Put("@Mode : ");
         caArmCpu::DumpCPSR();
-        Dbg::Put(" ]\r\n");
-        caArmCpu::DumpRegs();
-        caMemory::DumpAll(&hal_llc_mem);
-        caArmCpu::DumpRegs();
+        Dbg::Put("\r\n");
+        caMemory::Init();
+        Dbg::Put("@Avaiable memory : ",ptr_to_uint(caMemory::GetAvailMemory()));
         caIrqCtrl::Init(); // start all fiq/irq disabled 
         caMiniUart::Init(115200, 8, 1, 8);
         caMiniUart::DisableIrqRx();
         caMiniUart::DisableIrqTx();
         caMiniUart::Enable(1, 1);
-        caMemory::Init(&hal_llc_mem);
-        caMemory::DumpAvail(buff, sizeof (buff));
-        Dbg::Put(buff);
         caArmCpu::GetMainIdCpuInfo();
 #if CACHE_DEVICE    
         if (caCache::Start()) {
-            Dbg::Put("> c.a.O.S. : [ ");
-            Dbg::Put("MMU : Flat Model");
-            Dbg::Put(" ]\r\n");
-            Dbg::Put("> c.a.O.S. : [ ");
-            Dbg::Put("Cache : Instruction,Data And Branch Prediction is On ");
-            Dbg::Put(" ]\r\n");
+            Dbg::Put("@MMU : Flat Model\r\n");
+            Dbg::Put("@Cache : Instruction,Data And Branch Prediction is On\r\n");
         }
 #endif
-        Dbg::Put("> c.a.O.S. : [ ");
+        Dbg::Put("@Version : ");
         Dbg::Put(caos_version);
-        Dbg::Put(" ]\r\n");
+        Dbg::Put("\r\n");
+        caMemory::Start();
     }
 
     void sysStop(void) {

@@ -376,6 +376,10 @@ public:
             Dbg::Put("System is blocked on WaitForEver\r\n");
             while(1){};
     }
+    static inline void MemoryFailure(void){
+            Dbg::Put("PANIC : Memory failure\r\n");
+            WaitForEver();
+    }
     
 };
 
