@@ -80,7 +80,7 @@ u32 caScheduler::caThread::CreateThread(const char * name, caJobMode mode, caJob
         ctx->cur_prio = ctx->priority;
         ctx->nswitch = 0;
         caStrAux::StrNCpy(ctx->name, name, 64);
-        if (hal_llc_scheduler.hll_scheduler_add_atsk(ctx)) {
+        if (hal_llc_scheduler.hll_scheduler_add_task(ctx)) {
             return ctx->index;
         }
     }
@@ -229,6 +229,7 @@ bool caNextTaskManager::Detach(void) {
     table.Detach();
     return true;
 }
+
 
 bool caNextTaskManager::AddTask(caThreadContext *ctx) {
     bool res = false;
@@ -525,16 +526,16 @@ bool caScheduler::RemoveAllJobs(void) {
 void caScheduler::GetNextContext(void) {
     hal_llc_scheduler.hll_stop_scheduler();
     CheckValid(current_task, 1);
-    u32 curIdx=0xffffffff,nextIdx=0xffffffff;
-    u32 start_c = hal_llc_time_1.hll_free_counter();
-    if(current_task!=nullptr)curIdx=current_task->index;
+    //u32 curIdx=0xffffffff,nextIdx=0xffffffff;
+    u32 start_c = hal_llc_time_1.hll_free_counter();    
+    //if(current_task!=nullptr)curIdx=current_task->index;
     if (current_task != &main_ctx)
         current_task = getnextcontext(current_task);
     else
         current_task = getnextcontext(nullptr);
     if (current_task == nullptr)
         current_task = &main_ctx;
-    if(current_task!=nullptr)nextIdx=current_task->index;
+    //if(current_task!=nullptr)nextIdx=current_task->index;
     
     u32 stop_c = hal_llc_time_1.hll_free_counter();
     if (start_c > stop_c) {
@@ -543,7 +544,7 @@ void caScheduler::GetNextContext(void) {
         switch_time = stop_c - start_c;
     }    
     CheckValid(current_task, 2);
-    InfoSwitchTask(curIdx,nextIdx);
+    //InfoSwitchTask(curIdx,nextIdx);
     hal_llc_scheduler.hll_start_scheduler();
 }
 
@@ -654,12 +655,17 @@ void caScheduler::InfoSwitchTask(u32 oldIdx,u32 newIdx){
 }
 
 void caScheduler::CheckValid(caThreadContext *ctx, u32 p) {
+    s8 buff[1024];
+    caStringStream<s8> ss;
+    ss.Init(buff,sizeof(buff));                
     if (p == 1 && ctx == &main_ctx)
         return;
     if (ctx == nullptr) {
         Dbg::Put("ERROR : nullptr CONTEXT : ", p);
         Panic();
     }
+    ss<<"Ctx:"<<ctx->index<<" PC task="<<caStringFormat::hex<<ctx->pcb[1]<<"\r\n";
+    Dbg::Put(buff);
     if (ctx->pcb[1] != ctx->pcb[16]) {
         if (ctx->pcb[16] > ptr_to_uint(hal_llc_mem.hll_heap_start())) {
             Dbg::Put("ERROR : TASK JUMP ADDRESS FAULT : HIGHER", p);
@@ -724,11 +730,16 @@ void caScheduler::CheckValid(caThreadContext *ctx, u32 p) {
 #endif
 
 u32 caScheduler::GetCurrentTaskId(void) {
-    if (current_task == nullptr) {
+    if ( current_task == nullptr ) {
         return -1;
     } else {
         return current_task->index;
     }
+}
+
+
+caThreadContext *caScheduler::GetCurrentContext(void) {
+    return current_task;
 }
 
 

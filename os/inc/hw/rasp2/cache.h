@@ -30,31 +30,27 @@ public:
     static u32 IsEnabled(void);
 
     static u32 GetCacheType(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c0,c0,1" : "=r" (res));
+        asm volatile ("MRC p15,0,r0,c0,c0,1");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static u32 GetCacheSizeId(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,1,%0,c0,c0,0" : "=r" (res));
+        asm volatile ("MRC p15,1,r0,c0,c0,0");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static u32 GetCacheLevelId(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,1,%0,c0,c0,1" : "=r" (res));
+        asm volatile ("MRC p15,1,r0,c0,c0,1");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static u32 GetCacheSizeSelection(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,2,%0,c0,c0,0" : "=r" (res));
+        asm volatile ("MRC p15,2,r0,c0,c0,0");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void SetCacheSizeSelection(register u32) __attribute__ ((naked)) {
@@ -128,17 +124,15 @@ public:
     }
 
     static u32 GetL2Control(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,1,r0,c9,c0,2" : "=r" (res));
+        asm volatile ("MRC p15,1,r0,c9,c0,2");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static u32 GetL2ExtendedControl(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,1,r0,c9,c0,3" : "=r" (res));
+        asm volatile ("MRC p15,1,r0,c9,c0,3");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void SetL2ExtendedControl(register u32) __attribute__ ((naked)) {

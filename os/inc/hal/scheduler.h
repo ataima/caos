@@ -70,19 +70,19 @@ typedef struct tag_ca_thread_context {
     u32 stack_end;
     caJobMode mode; // th mode
     caJobPriority priority; // th pripority
-     u32 cur_prio; // temporary priority from priority to lowest 
-     caJobStatus status; // th status
-     u32 count;
-     u32 sleep;
-     u32 time;
-     u32 result;
-     u32 nswitch;    
+    u32 cur_prio; // temporary priority from priority to lowest 
+    caJobStatus status; // th status
+    u32 count;
+    u32 sleep;
+    u32 time;
+    u32 result;
+    u32 nswitch;
     char name[64];
 } caThreadContext;
 
-typedef caThreadContext * (*ptrGetNextContext)( caThreadContext *current);
+typedef caThreadContext * (*ptrGetNextContext)(caThreadContext *current);
 
-inline bool less( caThreadContext* a,  caThreadContext* b) {
+inline bool less(caThreadContext* a, caThreadContext* b) {
     // TEST true SWAP TARGET
     if (a->cur_prio == b->cur_prio)
         return (a->nswitch / a->priority) > (b->nswitch / b->priority);
@@ -103,18 +103,18 @@ private:
     static caArray< caThreadContext *> table;
     static u32 cur_index;
 public:
-    static bool Init( caThreadContext ** ebuff, s_t max_task);
+    static bool Init(caThreadContext ** ebuff, s_t max_task);
     static bool Detach(void);
     static bool AddTask(caThreadContext *ctx);
     static bool RemoveTask(s_t idx);
-    static caThreadContext * RoundRobinNextContext( caThreadContext *current);
-    static caThreadContext * PriorityNextContext( caThreadContext *current);
+    static caThreadContext * RoundRobinNextContext(caThreadContext *current);
+    static caThreadContext * PriorityNextContext(caThreadContext *current);
     static bool IsValidContext(u32 thIdx);
     static void WakeUp(u32 thid);
     static u32 ToSleep(u32 thid, u32 tick);
     static u32 ToSleepForSignal(u32 thid);
     static bool ChangePriority(s_t thIdx, caJobPriority newPrio);
- 
+
     static inline s_t Size(void) {
         return table.Size();
     }
@@ -133,21 +133,20 @@ class caScheduler {
 private:
 
     class caThread {
-
     public:
 
-        
+
         static u32 CreateThread(const char *name, caJobMode mode,
                 caJobPriority p, thFunc func,
                 u32 par1, u32 par2, u32 stack);
 
         static void LaunchThread(thFunc f, u32 p1, u32 p2);
 
-        static void Dump(caStringStream<s8> & ss,  caThreadContext *ctx);
-        static void DumpPcb(caStringStream<s8> & ss,   caThreadContext *ctx);
+        static void Dump(caStringStream<s8> & ss, caThreadContext *ctx);
+        static void DumpPcb(caStringStream<s8> & ss, caThreadContext *ctx);
 
     };
-public: 
+public:
     static caThreadContext *GetContextFromIdx(u32 idx);
 private:
 
@@ -158,15 +157,15 @@ private:
     static caThreadContext *current_task;
     static u32 switch_time;
 #if DEBUG_CHECK_TASK    
-    static void CheckValid( caThreadContext *ctx,u32 p);
+    static void CheckValid(caThreadContext *ctx, u32 p);
     static void Panic(void);
     static void InvalidTask(u32 idx);
     static void InfoSwitchTask(u32 oldIdx, u32 newIdx);
 #else
-    #define    Panic()       
-    #define    CheckValid(ctx,p)
-    #define    InvalidTask(idx)
-    #define    InfoSwitchTask(oldidx,newidx)
+#define    Panic()       
+#define    CheckValid(ctx,p)
+#define    InvalidTask(idx)
+#define    InfoSwitchTask(oldidx,newidx)
 #endif        
     static void EndTask(u32 result);
     static u32 StartTask(void);
@@ -178,14 +177,13 @@ public:
 
     static void GetNextContext(void);
 
-    static inline  caThreadContext *GetCurrentContext(void) {
-        return current_task;
-    }
+    static caThreadContext *GetCurrentContext(void);
 
     static u32 GetCurrentTaskId(void);
     static u32 SetSleepMode(u32 tick, u32 thIdx);
     static u32 Dump(caStringStream<s8> & ss);
     static u32 DumpPcb(caStringStream<s8> & ss);
+
     static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio) {
         return mng.ChangePriority(thIdx, newPrio);
     }
@@ -198,10 +196,10 @@ public:
         mng.WakeUp(thid);
     }
 
-    static inline u32 GetSwitchTime(void){
+    static inline u32 GetSwitchTime(void) {
         return switch_time;
-    }    
-    
+    }
+
     static inline bool IsValidContext(u32 thid) {
         return mng.IsValidContext(thid);
     }
@@ -230,7 +228,7 @@ public:
 
     static u32 Sleep(u32 ms);
 
-    static u32 WaitForSignal(void) ;
+    static u32 WaitForSignal(void);
 };
 
 #endif /* SCHEDULER_H */

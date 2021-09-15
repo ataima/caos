@@ -342,22 +342,24 @@ public:
     }
 
     static inline void WaitForInterrupt(__attribute__((unused)) caThreadContext *ctx=nullptr ) {
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
-        asm volatile("wfi");
+        while(1){            
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+            asm volatile("wfi");
+        }
     }
 
     static inline void DisableAll(void) {

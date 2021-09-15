@@ -38,7 +38,7 @@
 
 extern "C" {
     
-  
+    static u32 start_up=0;
     
 
     void sysInit(void) {
@@ -64,6 +64,7 @@ extern "C" {
         Dbg::Put(caos_version);
         Dbg::Put("\r\n");
         caMemory::Start();
+        start_up++;
     }
 
     void sysStop(void) {

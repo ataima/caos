@@ -36,7 +36,9 @@
 .extern sysInit
 .extern sysStop
 .extern memory_check_dram
-
+.extern get_next_context
+.extern get_current_context
+.extern start_upquit
 
 
 
@@ -193,6 +195,7 @@ retry_pos:
         msr     CPSR_c, #MODE_HYP | I_BIT | F_BIT
         mov     sp, r0
 
+        
 
         mov     r0, #0
         ldr     r1, =_bss_start
@@ -297,7 +300,7 @@ go_software:
 req_switch_context:
     MSR     SPSR_cxsf,R2  
     LDMFD   SP!,  {r0,r1,r2}
-    B switchContext 
+    B switchContext_new 
     eret
 
 go_prefecth:
@@ -357,7 +360,7 @@ irq_scheduler:
     LDMFD   sp!,{r1}          
     MSR     SPSR_cxsf,r1    
     LDMFD    sp!,   {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}
-    B switchContext 
+    B switchContext_new 
     eret
 
 
@@ -378,7 +381,7 @@ fiq_scheduler:
     LDMFD   sp!,{r1}          
     MSR     SPSR_cxsf,r1    
     LDMFD    sp!,   {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,lr}
-    B switchContext   
+    B switchContext_new
     eret
 
 
@@ -461,6 +464,34 @@ jump_to:
     dsb
     isb
     bx r0
+
+
+.global switchContext_new
+switchContext_new:
+        mov   r0,r0
+        STMFD SP!,{R0-R3}     
+        MRS   R1, SPSR            //Copy SPSR into R1
+        LDR R2, =_ZN11caScheduler12current_taskE
+        LDR R0, [R2]      //Load PCB_[0] into R0	
+switchContext_new_1:
+        STMIA R0!, {R1, R14}    //Store LR (return address) into PCB[1]
+        ADD   R0, R0, #16         //location of R[4]
+        STMIA R0!, {R4-R12}     //store R4-R12 into PCB
+        STMIA R0, {R13-R14}^    //store SP LR into PCB
+        SUB   R4, R0, #52       //R3 = PCB_[2]
+        STMIA R4!, {R0-R3}      //R0, R1 stored in PCB    
+switchContext_new_2:
+        bl get_next_context
+        LDR R2, =_ZN11caScheduler12current_taskE
+        LDR R0, [R2]
+switchContext_new_3:
+        LDMIA R0!, {R1, R14}    //Copy top 2 contents of PCB i.e. SPSR, ret Address into R1, R14
+        MSR   SPSR_cxfs, R1     //Copy Saved StateRegister into usr SPSR
+        LDMIA R0, {R0-R14}^     //Load from PCB R0-R14
+        mov   r0,r0
+switchContext_new_4:
+        mov   r0,r0
+        ERET
 
 
 

@@ -155,7 +155,6 @@ void caArmCpu::DumpRegs(CpuRegs * regs) {
 
 void caArmCpu::DumpRegs() {
     CpuRegs reg;
-    //caMemAux<u32>::MemSet((u32 *)&reg,0,sizeof(CpuRegs));
     GetRegs(&reg);
     DumpRegs(&reg);
 }

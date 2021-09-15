@@ -129,10 +129,9 @@ public:
     }
 
     static u32 Get32_TTBR0(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c2,c0,0" : "=r" (res));
+        asm volatile ("MRC p15,0,r0,c2,c0,0");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void Set32_TTBR0(register u32) __attribute__ ((naked)) {
@@ -153,10 +152,9 @@ public:
     }
 
     static u32 Get32_TTBR1(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c2,c0,1" : "=r" (res));
+        asm volatile ("MRC p15,0,%0,c2,c0,1");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void Set32_TTBR1(register u32) __attribute__ ((naked)) {
@@ -177,10 +175,9 @@ public:
     }
 
     static u32 GetTTBCR(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c2,c0,2" : "=r" (res));
+        asm volatile ("MRC p15,0,%0,c2,c0,2");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void SetTTBCR(register u32) __attribute__ ((naked)) {
@@ -189,10 +186,9 @@ public:
     }
 
     static u32 GetHTCR(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,4,%0,c2,c0,2" : "=r" (res));
+        asm volatile ("MRC p15,4,r0,c2,c0,2");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void SetHTCR(register u32) __attribute__ ((naked)) {
@@ -201,10 +197,9 @@ public:
     }
 
     static u32 GetVTCR(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,4,%0,c2,c1,2" : "=r" (res));
+        asm volatile ("MRC p15,4,%0,c2,c1,2");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
     static void SetVTCR(register u32) __attribute__ ((naked)) {
@@ -237,10 +232,9 @@ public:
     }
 
     static u32 GetTLBType(void) __attribute__ ((naked)) {
-        register u32 res = 0;
-        asm volatile ("MRC p15,0,%0,c0,c0,3" : "=r" (res));
+        asm volatile ("MRC p15,0,r0,c0,c0,3");
         asm volatile ("BX LR");
-        return res;
+        return 0;
     }
 
 

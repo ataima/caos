@@ -35,17 +35,8 @@ public:
         asm volatile ("DSB"); //TOTEST
         asm volatile ("ISB"); //TOTEST
         asm volatile ("SVC #1");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
-        asm volatile ("bx lr");
+        // TO DO VERIFY
+        asm volatile ("movs pc,lr")
     }
 
     static void DumpSvc(const char *name, const char *file, u32 line);

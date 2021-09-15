@@ -23,10 +23,12 @@
 #include "kdebug.h"
 #include "caos.h"
 #include "console.h"
+#include "hw/rasp2/cpu.h"
 
-u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
+u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {    
     u32 st = 0;
     u32 counter=0;
+    caArmCpu::DumpRegs();
     hal_llc_reset_req.hll_leds_off();
     while (1) {
         Dbg::Put("Main : ",counter++);
@@ -50,8 +52,7 @@ void hal_main(void) {
     caScheduler::Init(caSchedulerMode::Priority);
     caScheduler::AddSystemJob("mainled",
             caJobPriority::caThLevel3,
-            mainTask);
-    // todo set io port from xml init file....
+            mainTask);    
     //caScheduler::AddJob("console",
     //        caJobPriority::caThLevel6,
     //        caConsole::consoleTask);
