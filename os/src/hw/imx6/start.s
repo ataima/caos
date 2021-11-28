@@ -107,7 +107,7 @@ ResetISR:
         bne     no_Monitor  
         mrs	r0, cpsr
         bic     r0,r0,#0x1F
-        orr     r0,r0,#0x1F   @13 SVC
+        orr     r0,r0,#0x13   @13 SVC
         msr     spsr_cxsf,r0
         ldr     r0,=no_hyper
         msr     ELR_hyp,r0
@@ -199,11 +199,12 @@ bssloop:
         blo     bssloop
 
 
+entrypoint:
         /*
          * Main program invocation.
          */
         // to SUPERVISOR MODE 
-        mov r0,#(F_BIT|I_BIT|MODE_SYS)
+        mov r0,#(F_BIT|I_BIT|MODE_SVC)
         bl  changeCPSR
         ldr r0,=0x8000;   @entry point 
         MSR LR_usr,R0

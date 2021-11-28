@@ -41,6 +41,7 @@ extern s8 __heap_end__;
 extern s8 __user_ram_start__;
 extern s8 __user_ram_end__;
 
+caThreadContext *current_task;
 
 extern "C" {
 
@@ -135,19 +136,19 @@ extern "C" {
     }
 
     static u32 irq_request_1(void *, u8 *, s_t, s_t &) {
-        caMiniUart::Send('1');
+        //caMiniUart::Send('1');
         return 0;
     }
 
     static u32 irq_request_2(void *, u8 *, s_t, s_t &) {
-        caMiniUart::Send('2');
+        //caMiniUart::Send('2');
         return 0;
     }
 
 
 
     static void req_svc_7961(void) {
-        Dbg::Put("reschedule\n");
+        //Dbg::Put("reschedule\n");
         caArmCpu::SVC_7961();
     }
 
@@ -215,7 +216,7 @@ hal_llc_reset hal_llc_reset_req{
     caSysLed::LedOff,
     caSysLed::LedOn};
 
-
+#if DEBUG_COM
 // Hardware connectors to COM1 (usually debug)
 hal_llc_com_io hal_llc_com1 = {
     nullptr,
@@ -234,7 +235,7 @@ hal_llc_com_io hal_llc_com1 = {
     caMiniUart::Send,
     caMiniUart::Recv
 };
-
+#endif
 
 hal_llc_scheduler_io hal_llc_scheduler = {
     caSysTimer::GetCount,

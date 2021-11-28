@@ -24,7 +24,9 @@
 
 #include "array.h"
 #include "heaparray.h"
-#include "atomiclock.h"
+
+
+
 
 typedef enum tag_ca_thread_mode {
     MODE_USR = 0x10,
@@ -56,7 +58,6 @@ typedef enum tag_ca_thread_status {
     thRemove = 8,
     thRun = 0x40,
     thInit = 0x80,
-    thRunning = 0xc0,
     thFreezing = 0x81,
     thStopping = 0x82,
     thSleeping = 0x84
@@ -68,15 +69,15 @@ typedef struct tag_ca_thread_context {
     u32 index; //index over taskList array
     u32 stack_start;
     u32 stack_end;
-    caJobMode mode; // th mode
-    caJobPriority priority; // th pripority
-    u32 cur_prio; // temporary priority from priority to lowest 
-    caJobStatus status; // th status
-    u32 count;
-    u32 sleep;
-    u32 time;
-    u32 result;
-    u32 nswitch;
+    volatile caJobMode mode; // th mode
+    volatile caJobPriority priority; // th pripority
+    volatile u32 cur_prio; // temporary priority from priority to lowest 
+    volatile caJobStatus status; // th status
+    volatile u32 count;
+    volatile u32 sleep;
+    volatile u32 time;
+    volatile u32 result;
+    volatile u32 nswitch;
     char name[64];
 } caThreadContext;
 
@@ -94,6 +95,8 @@ typedef u32(*thFunc)(u32 idx, u32 p1, u32 p2);
 
 #define TH_MIN_STACK_BLK       0x8000
 
+
+extern caThreadContext *current_task;
 
 
 // simple ROUND ROBIN TASK MANAGER 
@@ -148,23 +151,21 @@ private:
     };
 public:
     static caThreadContext *GetContextFromIdx(u32 idx);
+    static void InvalidTask(u32 idx);
 private:
 
     static caNextTaskManager mng;
     static ptrGetNextContext getnextcontext;
     static caThreadContext *taskList[MAX_TASK];
     static caThreadContext main_ctx;
-    static caThreadContext *current_task;
     static u32 switch_time;
 #if DEBUG_CHECK_TASK    
     static void CheckValid(caThreadContext *ctx, u32 p);
     static void Panic(void);
-    static void InvalidTask(u32 idx);
     static void InfoSwitchTask(u32 oldIdx, u32 newIdx);
 #else
 #define    Panic()       
 #define    CheckValid(ctx,p)
-#define    InvalidTask(idx)
 #define    InfoSwitchTask(oldidx,newidx)
 #endif        
     static void EndTask(u32 result);
@@ -177,12 +178,13 @@ public:
 
     static void GetNextContext(void);
 
-    static caThreadContext *GetCurrentContext(void);
+    static inline caThreadContext *GetCurrentContext(void){return current_task;}
+    static inline caThreadContext *GetMainContext(void) {return &main_ctx;}
 
     static u32 GetCurrentTaskId(void);
-    static u32 SetSleepMode(u32 tick, u32 thIdx);
     static u32 Dump(caStringStream<s8> & ss);
     static u32 DumpPcb(caStringStream<s8> & ss);
+    static u32 DumpContext(caStringStream<s8> & ss,caThreadContext * context);
 
     static inline bool ChangePriority(s_t thIdx, caJobPriority newPrio) {
         return mng.ChangePriority(thIdx, newPrio);

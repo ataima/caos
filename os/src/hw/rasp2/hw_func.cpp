@@ -49,10 +49,13 @@ extern "C" {
         caMemory::Init();
         Dbg::Put("@Avaiable memory : ",ptr_to_uint(caMemory::GetAvailMemory()));
         caIrqCtrl::Init(); // start all fiq/irq disabled 
+        
+#if DEBUG_COM        
         caMiniUart::Init(115200, 8, 1, 8);
         caMiniUart::DisableIrqRx();
         caMiniUart::DisableIrqTx();
         caMiniUart::Enable(1, 1);
+#endif        
         caArmCpu::GetMainIdCpuInfo();
 #if CACHE_DEVICE    
         if (caCache::Start()) {

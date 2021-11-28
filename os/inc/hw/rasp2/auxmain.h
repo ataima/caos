@@ -22,7 +22,7 @@
 
 #include "bcm2836.h"
 
-#if (HAVE_MINIUART || HAVE_SPI_1 || HAVE_SPI_2)
+#if (DEBUG_COM || HAVE_SPI_1 || HAVE_SPI_2)
 
 class caAuxMain {
 public:

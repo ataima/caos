@@ -466,6 +466,7 @@ u32 caConsole::consoleTask(u32 thIdx, u32 /*p1*/, u32/*p2*/) {
     in.parity = 0;
     in.stop = 1;
     res = caOS::Open("TTY1", in, port);
+    while(1){}
     if (res == deviceError::no_error) {
         caOS::Write(port,"Welcome to caOS console....\n");
         caComDeviceCtrl comCtrl;

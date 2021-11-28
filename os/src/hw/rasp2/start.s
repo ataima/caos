@@ -31,13 +31,13 @@
 .extern ISR_Prefetch
 .extern msgWelcome
 .extern msgByeBye
-.extern switchContext
+//.extern switchContext
 .extern msgSchedule    
 .extern sysInit
 .extern sysStop
 .extern memory_check_dram
 .extern get_next_context
-.extern get_current_context
+.extern _current_task
 .extern start_upquit
 
 
@@ -111,7 +111,7 @@ ResetISR:
         bne     no_Monitor  
         mrs	r0, cpsr
         bic     r0,r0,#0x1F
-        orr     r0,r0,#0x1F   @13 SVC
+        orr     r0,r0,#0x13   @13 SVC
         msr     spsr_cxsf,r0
         ldr     r0,=no_hyper
         msr     ELR_hyp,r0
@@ -215,7 +215,7 @@ bssloop:
 
 start_1:
         ldr     r0, =__user_stack_pos__
-        msr     CPSR_c,#(F_BIT|I_BIT|MODE_SYS)   
+        msr     CPSR_c,#(F_BIT|I_BIT|MODE_SVC)   
         mov     sp, r0
         ldr r0,=0x8000;   @entry point 
         MSR LR_usr,R0
@@ -468,21 +468,22 @@ jump_to:
 
 .global switchContext_new
 switchContext_new:
+//        cpsid iaf;     //disable int
         mov   r0,r0
         STMFD SP!,{R0-R3}     
-        MRS   R1, SPSR            //Copy SPSR into R1
-        LDR R2, =_ZN11caScheduler12current_taskE
+        MRS   R1, SPSR          //Copy SPSR into R1
+        LDR R2, =current_task
         LDR R0, [R2]      //Load PCB_[0] into R0	
 switchContext_new_1:
         STMIA R0!, {R1, R14}    //Store LR (return address) into PCB[1]
-        ADD   R0, R0, #16         //location of R[4]
+        ADD   R0, R0, #16       //location of R[4]
         STMIA R0!, {R4-R12}     //store R4-R12 into PCB
         STMIA R0, {R13-R14}^    //store SP LR into PCB
         SUB   R4, R0, #52       //R3 = PCB_[2]
         STMIA R4!, {R0-R3}      //R0, R1 stored in PCB    
 switchContext_new_2:
         bl get_next_context
-        LDR R2, =_ZN11caScheduler12current_taskE
+        LDR R2, =current_task
         LDR R0, [R2]
 switchContext_new_3:
         LDMIA R0!, {R1, R14}    //Copy top 2 contents of PCB i.e. SPSR, ret Address into R1, R14
@@ -490,7 +491,9 @@ switchContext_new_3:
         LDMIA R0, {R0-R14}^     //Load from PCB R0-R14
         mov   r0,r0
 switchContext_new_4:
+        ADD   SP, SP, #16
         mov   r0,r0
+//        cpsie iaf
         ERET
 
 

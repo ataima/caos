@@ -25,11 +25,11 @@
 
 #define HAVE_DUMP_OBJ           0
 //MINIUART 
-#define HAVE_MINIUART           1
+#define DEBUG_COM                1
 //SPIO1 
-#define HAVE_SPI_1      0
+#define HAVE_SPI_1               0
 //SPIO2
-#define HAVE_SPI_2      0
+#define HAVE_SPI_2              0
 //LEDS 
 #define HAVE_LEDS               1
 // ARM AP804 SYSTEM TIMER
@@ -42,10 +42,6 @@
 #define SYS_TIMER_TICK  1000
 // SCHEDULER FIQ OR IRQ
 #define SYS_FIQ_TIMER   0
-// soft request interrupt true or simulated
-#define SYS_SOFT_REQ_ENABLED  0
-// soft request Debug
-#define SYS_SOFT_REQ_DEBUG  1
 
 ///////////////////////////// INCLUDE - EXCLUDE DEVICE FROM KERNEL
 // SYSTEM TIMER
@@ -57,6 +53,7 @@
 #define SYS_TIMER_7_DEVICE      0
 #define SYS_TIMER_8_DEVICE      0
 // COMS    
+#define COM1_DEVICE             0    
 #define COM2_DEVICE             0    
 #define COM3_DEVICE             0    
 #define COM4_DEVICE             0    
@@ -66,7 +63,7 @@
 #define COM8_DEVICE             0    
 //
 #define MEM_PIPE_DEVICE         1    
-#define CACHE_DEVICE             1  
+#define CACHE_DEVICE            1  
 #define SCHEDULER_DEVICE        1
 
 

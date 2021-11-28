@@ -21,15 +21,22 @@
 
 
 #include "kdebug.h"
+#include "hal.h"
 
 #define LOCK_V 0x07091961
 
 #define LOCK_FREE 0
 
+extern hal_llc_interrupt hal_llc_int_req;
+
 class caAtomicLock {
     u32 key;
 
-    static inline u32 AtomicSwap(u32 *ptr, u32 v_old, u32 v_new) {
+    
+#if 0    
+    static u32 AtomicSwap(u32 *ptr, u32 v_old, u32 v_new) {
+
+        
         u32 oldval;
         u32 res;
 #ifdef HW_RASPI2         
@@ -50,10 +57,12 @@ class caAtomicLock {
         res = oldval = v_old;
         return res;
 #endif // ARM
-
-        return oldval;
+    
+    return oldval;
     }
-
+    
+#endif
+    
 public:
 
     inline caAtomicLock() {
@@ -61,23 +70,20 @@ public:
     }
 
     inline u32 Lock(void) {
-        u32 register res = AtomicSwap(&key, 0, LOCK_V);
-        if (res != LOCK_V && res != 0)            
-            Dbg::Put("Key=",key);
-        return res == 0;
+        hal_llc_int_req.hll_disable();
+        if(key==0)key=LOCK_V;
+        hal_llc_int_req.hll_enable();
+        return key==LOCK_V;
     }
 
     inline u32 UnLock(void) {
-        u32 register res = AtomicSwap(&key, LOCK_V, 0);
-          if (res != LOCK_V && res != 0)            
-            Dbg::Put("Key=",key);
-        return res == LOCK_V;
+        hal_llc_int_req.hll_disable();
+        if(key==LOCK_V)key=0;
+        hal_llc_int_req.hll_enable();
+        return key==0;
     }
 
     inline u32 Get(void) {
-        if (key == LOCK_V)
-        if (key != LOCK_V && key != 0)            
-            Dbg::Put("Key=",key);
         return key;
     }
 };

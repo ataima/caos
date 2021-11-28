@@ -20,7 +20,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#if   HAVE_MINIUART 
+#if   DEBUG_COM 
+
+
+#include <atomiclock.h>
 
 class caMiniUart {
 private:
@@ -36,6 +39,8 @@ private:
     static u32 txOverrun;
     // error rx 
     static u32 rxOverrun;
+    // spinlock
+    static caAtomicLock txLock;
 
     static void IrqServiceTx(void);
 
@@ -131,12 +136,7 @@ public:
         return mu->io.asReg;
     }
 
-    static void Send(u32 c) {
-        system_aux_mini_uart(mu);
-        while (!mu->lsr.asBit.txempty){};
-        mu->io.asReg = c;
-        while (!mu->lsr.asBit.txempty){};        
-    }
+    static void Send(u32 c);
 
     static inline void Ready(void) {
         system_aux_mini_uart(mu);

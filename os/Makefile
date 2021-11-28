@@ -142,7 +142,20 @@ jtag:   all
 	@echo jtag ...done.
 	@echo $(SEP)
 
-start_openocd: all
+
+
+gdbgui: 
+	@echo "file $(BUILD_DIR)/caOS.elf" >gdb.conf
+	@echo "target extended-remote :3333" >>gdb.conf
+	@echo "monitor halt" >>gdb.conf
+	@echo "monitor targets bcm2836.cpu0" >> gdb.conf
+	@echo "load" >> gdb.conf        
+	@echo  $(EH)  $(C_RED )[GDBGUI] $(C_RESET)
+	@echo  $(EH)  $(C_RESET)
+	@gdbgui -g arm-none-eabi-gdb --gdb-args="-command=gdb.conf"
+
+
+start_openocd: 
 	@openocd -f ./raspi2.cfg &
 
 stop_openocd:
@@ -165,5 +178,5 @@ distclean: clean
 
 
 
-.PHONY: clean dwload qemu all all_obj distclean kernel7.img
+.PHONY: clean dwload qemu all all_obj distclean kernel7.img jtag
 

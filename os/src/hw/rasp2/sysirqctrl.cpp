@@ -73,10 +73,11 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
     }
     if (irq->basepending.asBit.pending1) {
         if (irq->gpu0.asBit.irqaux29 == 1) {
+#if ( DEBUG_COM || HAVE_SPI_1 || HAVE_SPI_2)
             //Dbg::Put("AUX = ", irq->basepending.asReg);
             system_aux(aux);
             if (aux->irq.asBit.miniuart) {
-                caMiniUart::IrqService();
+                // caMiniUart::IrqService();
             } else
                 if (aux->irq.asBit.spi_m_1) {
                 Dbg::Put("SP1 = ", irq->basepending.asReg);
@@ -84,6 +85,7 @@ u32 caIrqCtrl::SelectServiceIrq(void) {
                 if (aux->irq.asBit.spi_m_2) {
                 Dbg::Put("SP2 = ", irq->basepending.asReg);
             }
+#endif            
         } else {
             Dbg::Put("BASE = ", irq->basepending.asReg);
             Dbg::Put("GPU0 = ", irq->gpu0.asReg);

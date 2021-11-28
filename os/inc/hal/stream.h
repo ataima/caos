@@ -222,7 +222,7 @@ protected:
     //Tested
 
     inline void Add(T v) {
-        if (start != stop) {
+        if (Available()>0) {
             *start++ = v;
             size++;
         }

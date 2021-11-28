@@ -184,8 +184,9 @@ deviceError caOS::Init(void) {
 #if SYS_TIMER_8_DEVICE
             caHalSysTimerDevice::Init(&timer8, &hal_llc_time_8, ioCtrlRequest::SysTimer8);
 #endif
-
+#if COM1_DEVICE
             caHalComDevice::Init(&com1, &hal_llc_com1, ioCtrlRequest::Com1);
+#endif            
 
 #if COM2_DEVICE
             caHalComDevice::Init(&com2, &hal_llc_com2, ioCtrlRequest::Com2);

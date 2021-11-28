@@ -58,6 +58,8 @@ extern "C" {
         caInterruptRequest::Hypervisor(lr_usr,  lr_svc,  lr_irq,  lr_abt);
     }
 
+    
+    /*
     void switchContext(void) {
 
         //asm volatile ("CPSID IAF"); //DISABLE INTERRUPT
@@ -104,5 +106,5 @@ extern "C" {
 
         asm volatile ("ERET");
     }
-
+*/
 }

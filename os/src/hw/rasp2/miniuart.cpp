@@ -32,7 +32,7 @@
 
 
 
-#if HAVE_MINIUART
+#if DEBUG_COM
 #define RATE_DIV(baudrate) ((BCM2836_CLOCK_FREQ / (8 * (baudrate))) - 1)
 #define BAUD_1M  RATE_DIV(1000000)
 #define BAUD_115200  RATE_DIV(115200)
@@ -51,19 +51,27 @@ u32 caMiniUart::txPos = 0;
 u32 caMiniUart::txOverrun = 0;
 // error rx overrun
 u32 caMiniUart::rxOverrun = 0;
+//
+caAtomicLock caMiniUart::txLock;
 
 // loss time on setup to flush char in cache
-static inline void debounce(){
-    u32 counter=0;
-    while(counter<1000){
-        u32 a=5;
+
+static inline void debounce() {
+    u32 counter = 0;
+    while (counter < 100) {
+        u32 a = 5;
         a++;
-        counter++;                           
+        counter++;
     }
 }
 
+void caMiniUart::Send(u32 c) {
+    system_aux_mini_uart(mu);
+    mu->io.asReg = c;
+    while (!mu->lsr.asBit.txempty){};
+}
+
 u32 caMiniUart::Init(u32 vel, u32 /*stop*/, u32 /*parity*/, u32 data) {
-    debounce();
     system_aux_mini_uart(mu);
     caGpio::SetAlt5(14);
     caGpio::SetAlt5(15);

@@ -20,7 +20,10 @@
 // History:        
 ////////////////////////////////////////////////////////////////////////////////
 
-#if (HAVE_MINIUART || HAVE_SPI_1 || HAVE_SPI_2)
+
+
+
+#if (DEBUG_COM || HAVE_SPI_1 || HAVE_SPI_2)
 
 typedef union aux_irq_sel {
 
@@ -52,7 +55,7 @@ typedef struct aux_gen {
 
 #endif
 
-#if HAVE_MINIUART
+#if DEBUG_COM
 
 typedef union mu_io_reg {
 

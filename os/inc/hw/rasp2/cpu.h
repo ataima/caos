@@ -344,21 +344,6 @@ public:
     static inline void WaitForInterrupt(__attribute__((unused)) caThreadContext *ctx=nullptr ) {
         while(1){            
             asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
-            asm volatile("wfi");
         }
     }
 

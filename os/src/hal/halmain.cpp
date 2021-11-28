@@ -28,10 +28,10 @@
 u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {    
     u32 st = 0;
     u32 counter=0;
-    caArmCpu::DumpRegs();
     hal_llc_reset_req.hll_leds_off();
     while (1) {
-        Dbg::Put("Main : ",counter++);
+        counter++;
+        Dbg::Put("counter : ",counter++,Dbg::kformat::dec,1);
         if (st) {
             hal_llc_reset_req.hll_led_off(1);
             hal_llc_reset_req.hll_led_on(2);
@@ -40,11 +40,30 @@ u32 mainTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {
             hal_llc_reset_req.hll_led_on(1);
         }
         st = !st;
-        caScheduler::Sleep(250);
+        caScheduler::Sleep(50);
+        caThreadContext *th = caScheduler::GetCurrentContext();
+        if(th!=nullptr){
+            Dbg::Put("MAINLED : ",th->status,Dbg::kformat::dec,1);
+        }
     };
     return 0;
 }
 
+
+
+u32 simpleTask(u32 /*thIdx*/, u32 /*p1*/, u32/*p2*/) {    
+    u32 second=0;
+    while (1) {
+        second++;
+        Dbg::Put("second : ",second++,Dbg::kformat::dec,1);
+        caScheduler::Sleep(100);
+        caThreadContext *th = caScheduler::GetCurrentContext();
+        if(th!=nullptr){
+            Dbg::Put("SIMPLE : ",th->status,Dbg::kformat::dec,1);
+        }
+    };
+    return 0;
+}
 
 
 void hal_main(void) {
@@ -52,10 +71,14 @@ void hal_main(void) {
     caScheduler::Init(caSchedulerMode::Priority);
     caScheduler::AddSystemJob("mainled",
             caJobPriority::caThLevel3,
-            mainTask);    
+            mainTask);   
+    caScheduler::AddSystemJob("simpletimer",
+            caJobPriority::caThLevel3,
+            simpleTask);   
     //caScheduler::AddJob("console",
-    //        caJobPriority::caThLevel6,
+    //        caJobPriority::caThLevel2,
     //        caConsole::consoleTask);
+    
     hal_llc_time_1.hll_start();
     hal_llc_int_req.hll_wait_for_interrupt(nullptr);
     hal_llc_int_req.hll_wait_for_ever();
